@@ -36,6 +36,15 @@ const intQuery = (value: unknown): number | undefined => {
 
 const routeId = (value: string | string[]): string => Array.isArray(value) ? value[0] : value;
 
+/** Strict body for clarification selection — exactly one key: a non-empty, non-whitespace string token. */
+function selectClarificationRequest(body: unknown): body is { optionToken: string } {
+  if (typeof body !== 'object' || body === null || Array.isArray(body)) return false;
+  const value = body as Record<string, unknown>;
+  const keys = Object.keys(value);
+  if (keys.length !== 1 || keys[0] !== 'optionToken') return false;
+  return typeof value.optionToken === 'string' && value.optionToken.trim().length > 0;
+}
+
 export function createAssistantControllers(
   application: AssistantApplicationService,
   conversations: AssistantConversationService,
@@ -117,7 +126,36 @@ export function createAssistantControllers(
       sendSuccess(res, await drafts.cancel(userId, routeId(req.params.draftId), req.correlationId), 'Financial draft cancelled');
     } catch (error) { forwardError(error, res, next); }
   }
-  return { execute, messages, list, get, archive, confirmDraft, cancelDraft };
+  async function selectClarification(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = getAuthenticatedUserId(req);
+      if (!userId) return sendError(res, 'Unauthorized', 401);
+      if (!selectClarificationRequest(req.body)) {
+        return sendError(res, 'Request body must include a non-empty string "optionToken" and no other fields', 400, 'BAD_REQUEST');
+      }
+      const conversationId = routeId(req.params.conversationId);
+      const clarificationId = routeId(req.params.clarificationId);
+      const result = await application.selectClarification(userId, req.correlationId, req.body.optionToken, conversationId, clarificationId);
+      if (result.response.status === 'error' || result.response.status === 'rejected') {
+        return void res.status(result.httpStatus).json({ success: false, error: { ...result.response, statusCode: result.httpStatus } });
+      }
+      sendSuccess(res, result.response, 'Clarification processed');
+    } catch (error) { forwardError(error, res, next); }
+  }
+  async function cancelClarification(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = getAuthenticatedUserId(req);
+      if (!userId) return sendError(res, 'Unauthorized', 401);
+      const conversationId = routeId(req.params.conversationId);
+      const clarificationId = routeId(req.params.clarificationId);
+      const result = await application.cancelClarification(userId, req.correlationId, clarificationId, conversationId);
+      if (result.response.status === 'error' || result.response.status === 'rejected') {
+        return void res.status(result.httpStatus).json({ success: false, error: { ...result.response, statusCode: result.httpStatus } });
+      }
+      sendSuccess(res, result.response, 'Clarification cancelled');
+    } catch (error) { forwardError(error, res, next); }
+  }
+  return { execute, messages, list, get, archive, confirmDraft, cancelDraft, selectClarification, cancelClarification };
 }
 
 const controllers = createAssistantControllers(assistantApplicationService, assistantConversationService, assistantFinancialDraftService, assistantProviderRuntime);
@@ -128,3 +166,5 @@ export const getAssistantConversation = controllers.get;
 export const archiveAssistantConversation = controllers.archive;
 export const confirmAssistantFinancialDraft = controllers.confirmDraft;
 export const cancelAssistantFinancialDraft = controllers.cancelDraft;
+export const selectAssistantClarification = controllers.selectClarification;
+export const cancelAssistantClarification = controllers.cancelClarification;

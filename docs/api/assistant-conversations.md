@@ -82,3 +82,63 @@ Confirmation locks the draft in PostgreSQL, checks the database-unique `(userId,
 Audit JSON contains only draft/operation/status and, after commit, transaction ID. Raw draft payloads, wallet objects, balances, request bodies, and internal errors are excluded. Authoritative transactions referenced by committed drafts or successful idempotency records are protected by restrictive foreign keys; deleting Assistant history never cascades to a transaction.
 
 If the finance domain rejects confirmation, its transaction is rolled back before any financial mutation or idempotency success can persist. Recording the separate durable rejection history is best-effort: a secondary persistence failure can leave the draft pending, but the API returns no false success and performs no automatic retry. A later explicit retry remains subject to the same lifecycle and idempotency checks. No frontend, external channel, provider failover, tool loop, recovery worker, or stale-draft cleanup worker is part of this phase.
+
+## Clarification selection and cancellation
+
+When wallet, merchant, or category resolution returns `ambiguous` during `transaction.create`, the Backend persists a `ClarificationRequest` with up to five bounded, deterministically ordered options and returns one freshly issued, cryptographically random token per option. Each token is returned exactly once, at creation. Only its SHA-256 digest is stored; the raw token is never persisted, logged, or reconstructable, so a lost token cannot be recovered or reissued — the User must restart from a new ambiguous request.
+
+- `POST /assistant/conversations/:conversationId/clarifications/:clarificationId/select`
+- `POST /assistant/conversations/:conversationId/clarifications/:clarificationId/cancel`
+
+Both routes require an authenticated User and are scoped to that User's own conversation and clarification; an unknown clarification, a clarification owned by another User, and a clarification belonging to a different conversation all return the same `ASSISTANT_CLARIFICATION_NOT_FOUND` response, so ownership and conversation binding are never distinguishable from "not found."
+
+### Select
+
+The request body accepts exactly one key:
+
+```json
+{ "optionToken": "clarify_<opaque-example-token>" }
+```
+
+Any other shape — a missing key, an additional key, an empty or non-string `optionToken`, an array, or a non-plain-object body — is rejected with `400 BAD_REQUEST` before the token is ever compared against stored digests. Selection is deterministic-only: there is no candidate ID, index, or natural-language selection path.
+
+Lifecycle and expiry are resolved from database time before the supplied token is hashed and matched, so an already-terminal or expired clarification never reveals whether the token would otherwise have matched. A non-`PENDING` clarification returns its specific terminal outcome instead of a generic error:
+
+| Condition | HTTP status | Code |
+|---|---:|---|
+| Clarification not found, not owned, or conversation mismatch | 404 | `ASSISTANT_CLARIFICATION_NOT_FOUND` |
+| Token does not match any option on this clarification | 400 | `ASSISTANT_CLARIFICATION_INVALID_OPTION` |
+| Already selected | 409 | `ASSISTANT_CLARIFICATION_ALREADY_CONSUMED` |
+| Already cancelled | 409 | `ASSISTANT_CLARIFICATION_CANCELLED` |
+| Past its 15-minute expiry | 409 | `ASSISTANT_CLARIFICATION_EXPIRED` |
+| Terminalized for another reason (e.g. a stored context that no longer parses) | 409 | `ASSISTANT_CLARIFICATION_STALE` |
+| Trusted context failed structural validation | 409 | `ASSISTANT_CLARIFICATION_CONTEXT_INVALID` |
+| Entity type is no longer one the continuation path recognizes | 409 | `ASSISTANT_CLARIFICATION_CONTINUATION_INVALID` |
+
+A valid, still-pending token atomically claims the clarification (`PENDING → CONSUMED`) and revalidates the selected candidate and any already-resolved prerequisite (wallet, then merchant) under the authenticated User's current ownership before continuing. A successful selection returns one of two safe shapes:
+
+```json
+{ "status": "clarification_required", "data": { "kind": "ambiguous", "entityType": "merchant", "clarification": { "clarificationId": "...", "prompt": "...", "options": [{ "token": "...", "label": "..." }], "expiresAt": "..." } } }
+```
+
+```json
+{ "status": "success", "data": { "draftId": "...", "status": "PENDING_CONFIRMATION", "preview": { "...": "..." } } }
+```
+
+The first shape means the wallet → merchant → category sequence has another ambiguity: a new child clarification is created with its own fresh 15-minute expiry and its own tokens (the parent's expiry is never extended), and the original immutable context (amount, type, date, description) carries forward unchanged. The second shape means every entity is now resolved and a `PENDING_CONFIRMATION` draft was prepared; explicit confirmation through `POST /drafts/:draftId/confirm` remains the only path to the Transaction Service — selection itself never creates a Transaction or changes a wallet balance. The provider is never re-invoked during continuation.
+
+The atomic claim, prerequisite/candidate revalidation, child-clarification-or-draft creation, and Assistant lifecycle persistence all run inside the same interactive database transaction. If any downstream step fails, the entire transaction — including the claim — rolls back, so the clarification remains `PENDING` and the same token can be retried safely. No raw token, token digest, internal candidate ID, or trusted-context field appears in any response, error, or log.
+
+### Cancel
+
+The cancel body must be empty (`{}` or no body); any key is rejected with `400 BAD_REQUEST`. Cancellation is idempotent: cancelling an already-cancelled clarification returns the same success response rather than a conflict. Cancelling a clarification that is already `CONSUMED`, `STALE`, or expired returns its existing terminal outcome using the same status/code table as select. A successful cancellation returns:
+
+```json
+{ "status": "success", "data": { "clarificationId": "...", "status": "CANCELLED" } }
+```
+
+Cancelling creates no child clarification and no draft.
+
+### Conversation state and recovery
+
+The bounded `assistantState` projection returned with conversation reads exposes at most one active clarification (safe labels and optional discriminators only — no tokens, digests, or candidate IDs), one pending draft preview, and the most recent terminal clarification outcome (status and `terminalCode` when applicable). If a User loses an issued option token, conversation state cannot recover or reissue it; the only path forward is cancelling (or waiting for expiry) and letting a new request re-resolve the ambiguity from scratch.
