@@ -65,6 +65,18 @@ description: Use when working on authentication, JWT verification, users/sync, m
   through the central handler (`src/middlewares/error.middleware.ts`) which
   returns a generic message + `requestId` in production.
 
+## Assistant & Clarification Ownership
+
+- Assistant requests, clarification requests, clarification options, Pending
+  Financial Drafts, and Assistant continuation/cancellation all belong to the
+  authenticated user (`req.auth` / `getAuthenticatedUserId(req)`) — the same
+  ownership isolation as any other resource. Never resolve, continue, cancel,
+  or confirm one of these on behalf of a different user id.
+- Assistant lifecycle mechanics (clarification tokens, expiry, atomic
+  continuation, draft confirmation) are owned by
+  `assistant-core.skill.md` — this file only owns the identity/ownership
+  gate, not the state machine.
+
 ## Common Mistakes
 
 - "Identify the user by `x-user-id` for this internal script/test" — no; mint a

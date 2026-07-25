@@ -61,9 +61,8 @@ Before opening it:
 - Verify the task branch was created from `dev`.
 - Verify there are no unrelated commits or files (`git status`, diff against
   merge-base with `origin/dev`).
-- Run the verification commands in `agent-rules.skill.md` (tsc, build,
-  vitest, prisma validate, packaging check) plus the PR validation checklist
-  below.
+- Run the verification checks CI enforces (see `deployment-operations.skill.md`)
+  plus the PR validation checklist below.
 - Push the task branch and open the PR targeting `dev`.
 - Never target `main` unless the user explicitly says this is a release PR.
 - Never merge the PR unless the user explicitly asks.
@@ -75,8 +74,10 @@ Before opening it:
 - Commits in the task branch not in `dev`
 - Changed files — no accidental secrets, `.env` files, generated artifacts,
   database dumps, or unrelated changes
-- lint / `tsc --noEmit` / `vitest run` / `npm run build`
+- `tsc --noEmit` / `vitest run` / `npm run build`
 - `prisma validate` and migration checks when Prisma is touched
+
+There is no lint script or lint gate in this repository — do not require one.
 
 ### PR Content
 
@@ -121,11 +122,11 @@ Before creating it:
   see `prisma-database.skill.md` for the full procedure. Production migration
   must use `prisma migrate deploy` — never `prisma migrate dev` or `prisma db
   push` against production.
-- Confirm environment documentation (`docs/deployment-runbook.md`,
-  `docs/prisma-migration-reconciliation.md`) is current.
-- **PM-STAB-004 remains open** until production deployment and post-deploy
-  smoke validation actually pass — do not describe it as resolved in a
-  release PR based on staging/disposable-DB verification alone.
+- Confirm environment documentation (`docs/deployment-runbook.md`) is current.
+- Deployment stability status (e.g. PM-STAB-004) is tracked in
+  `deployment-operations.skill.md` — check current status there before
+  describing a release as fully validated; do not restate or contradict it
+  here.
 
 ### Release PR Content
 
@@ -165,5 +166,5 @@ requested as a release).
 - Opening a normal PR against `main` instead of `dev`.
 - Staying on the task branch after a PR is created instead of returning to
   `dev`.
-- Calling PM-STAB-004 resolved without an actual production + smoke-test
-  pass.
+- Restating a deployment stability status (e.g. PM-STAB-004) here instead of
+  deferring to `deployment-operations.skill.md`, the canonical owner.

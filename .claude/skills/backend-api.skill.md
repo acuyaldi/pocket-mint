@@ -59,13 +59,29 @@ endpoint already ships.
 
 ## Command/Query Boundaries
 
+Non-exhaustive examples of the command/query split — check `src/routes/` and
+`src/services/` for the full current set before assuming a module isn't
+covered:
+
 - transactions: `transaction.service.ts` (mutations) + `transaction-query.service.ts`
 - wallets: `wallet.service.ts` (mutations) + `wallet-query.service.ts`
 - dashboard: `dashboard-query.service.ts` (read-only)
 - installments: `installment-query.service.ts` (read-only)
 
-New behavior goes into the matching service, following the factory pattern the
-existing services use.
+`src/routes/` currently also includes (non-exhaustive): analytics, budget,
+category, merchant mapping, notifications, recurring transactions, saving
+goals, users, and the Assistant routes below. New behavior goes into the
+matching service, following the factory pattern the existing services use.
+
+## Assistant & Clarification HTTP Integration
+
+`src/routes/assistantRoutes.ts` follows the same layering as every other
+route module — thin controllers in `src/controllers/assistant.controller.ts`,
+`requireUser` on every route, `mutationLimiter` on every mutating route. The
+Assistant state machine, entity resolution, clarification, and draft
+mechanics behind these endpoints are owned by `assistant-core.skill.md` —
+this file only owns that they follow the standard HTTP/controller
+conventions above, not their internals.
 
 ## Verification
 
