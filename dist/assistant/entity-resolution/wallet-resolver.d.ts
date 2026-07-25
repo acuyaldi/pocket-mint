@@ -7,4 +7,3 @@ interface WalletTransactionCreateConstraints extends TrustedEntityConstraints {
 export declare const WALLET_TRANSACTION_CREATE_CONSTRAINTS: Readonly<WalletTransactionCreateConstraints>;
 export declare function createWalletResolver(db: Pick<PrismaClient, 'wallet'>): EntityResolver;
 export {};
-//# sourceMappingURL=wallet-resolver.d.ts.map

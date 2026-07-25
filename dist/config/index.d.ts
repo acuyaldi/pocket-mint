@@ -69,4 +69,3 @@ export declare const corsConfig: {
  * work is not blocked. Never prints secret values.
  */
 export declare function validateConfig(): void;
-//# sourceMappingURL=index.d.ts.map

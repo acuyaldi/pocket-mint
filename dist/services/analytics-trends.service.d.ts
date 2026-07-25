@@ -6,4 +6,3 @@ export declare function createAnalyticsTrendsService(db: AnalyticsPrismaClient):
 export declare const analyticsTrendsService: {
     getTrends: (input: AnalyticsPeriodQueryInput) => Promise<AnalyticsTrendsResult>;
 };
-//# sourceMappingURL=analytics-trends.service.d.ts.map

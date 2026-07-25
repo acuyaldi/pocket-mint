@@ -62,4 +62,3 @@ export interface TransactionSummaryResult {
 }
 export { TRANSACTION_INCLUDE };
 export type { TransactionWithRelations };
-//# sourceMappingURL=transaction-query.types.d.ts.map

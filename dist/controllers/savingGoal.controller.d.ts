@@ -16,4 +16,3 @@ export declare class SavingGoalController {
         id: string;
     }>, res: Response, next: NextFunction): Promise<void>;
 }
-//# sourceMappingURL=savingGoal.controller.d.ts.map

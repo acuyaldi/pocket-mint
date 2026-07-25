@@ -19,4 +19,3 @@ declare global {
  * the log chain intact.
  */
 export declare function correlationMiddleware(req: Request, res: Response, next: NextFunction): void;
-//# sourceMappingURL=correlation.d.ts.map

@@ -30,4 +30,3 @@ export interface ListMerchantMappingsInput {
     /** Case-insensitive substring filter on merchantName. */
     search?: string;
 }
-//# sourceMappingURL=merchantMapping.types.d.ts.map

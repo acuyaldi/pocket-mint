@@ -11,4 +11,3 @@ export interface CreateEntityCandidateInput {
 }
 export declare function createEntityCandidate(input: CreateEntityCandidateInput): EntityCandidate;
 export declare function revalidateEntityCandidate(value: EntityCandidate): EntityCandidate;
-//# sourceMappingURL=candidate.d.ts.map

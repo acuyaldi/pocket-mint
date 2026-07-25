@@ -5,4 +5,3 @@ export declare class WalletError extends Error {
     readonly isOperational = true;
     constructor(message: string, statusCode: number, code: string);
 }
-//# sourceMappingURL=wallet.errors.d.ts.map

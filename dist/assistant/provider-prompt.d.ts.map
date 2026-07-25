@@ -1,1 +1,0 @@
-{"version":3,"file":"provider-prompt.d.ts","sources":["../../src/assistant/provider-prompt.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,gBAAgB,EAAE,MAAM,iBAAiB,CAAC;AAExD,OAAO,EAAkC,KAAK,qBAAqB,EAAE,KAAK,kBAAkB,EAAE,MAAM,kBAAkB,CAAC;AAEvH,wBAAgB,6BAA6B,CAC3C,OAAO,EAAE,gBAAgB,EACzB,OAAO,EAAE,SAAS,kBAAkB,EAAE,EACtC,MAAM,GAAE,WAA0C,GACjD,qBAAqB,CAavB"}

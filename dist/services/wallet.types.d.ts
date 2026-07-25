@@ -62,4 +62,3 @@ export interface DeleteWalletInput {
 export interface DeleteWalletResult {
     id: string;
 }
-//# sourceMappingURL=wallet.types.d.ts.map

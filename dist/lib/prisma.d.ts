@@ -7,4 +7,3 @@ export declare const prismaPool: Pool;
 /** Idempotent shutdown: disconnect Prisma and end the pool. No-op if never connected. */
 export declare const closePrisma: () => Promise<void>;
 export default prisma;
-//# sourceMappingURL=prisma.d.ts.map

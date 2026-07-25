@@ -6,4 +6,3 @@ export declare function createAnalyticsCategoriesService(db: AnalyticsPrismaClie
 export declare const analyticsCategoriesService: {
     getCategoryBreakdown: (input: AnalyticsCategoryBreakdownInput) => Promise<AnalyticsCategoryBreakdownResult>;
 };
-//# sourceMappingURL=analytics-categories.service.d.ts.map

@@ -17,4 +17,3 @@ export declare function codeForStatus(statusCode: number): string;
  * logger; the client receives a generic message plus a correlation id.
  */
 export declare const errorHandler: (err: AppError, _req: Request, res: Response, next: NextFunction) => void;
-//# sourceMappingURL=error.middleware.d.ts.map

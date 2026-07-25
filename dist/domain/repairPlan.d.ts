@@ -23,4 +23,3 @@ export interface RepairPlanOptions {
  * read-only — the caller decides whether, when, and how to act on a proposal.
  */
 export declare function buildRepairPlan(audits: WalletAudit[], options?: RepairPlanOptions): RepairProposal[];
-//# sourceMappingURL=repairPlan.d.ts.map

@@ -17,4 +17,3 @@ export interface SuggestionInput {
     type: 'INCOME' | 'EXPENSE';
     candidates: CategoryCandidate[];
 }
-//# sourceMappingURL=types.d.ts.map

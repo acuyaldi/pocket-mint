@@ -10,4 +10,3 @@ export declare const transactionQueryService: {
     countTransactions: (input: ListTransactionsInput) => Promise<number>;
     getSummary: (input: TransactionSummaryInput) => Promise<TransactionSummaryResult>;
 };
-//# sourceMappingURL=transaction-query.service.d.ts.map

@@ -7,4 +7,3 @@ export declare function createRecurringReminderEngineService(db: RecurringRemind
 export declare const recurringReminderEngineService: {
     evaluateReminders: (evaluationDate: string, userId?: string) => Promise<RecurringReminderEvent[]>;
 };
-//# sourceMappingURL=recurringReminderEngine.service.d.ts.map

@@ -49,4 +49,3 @@ export declare function createAssistantProviderRuntime(deps: RuntimeDependencies
 };
 export type AssistantProviderRuntime = ReturnType<typeof createAssistantProviderRuntime>;
 export {};
-//# sourceMappingURL=provider-runtime.d.ts.map

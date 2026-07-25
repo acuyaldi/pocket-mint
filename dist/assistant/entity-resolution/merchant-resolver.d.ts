@@ -7,4 +7,3 @@ interface MerchantTransactionCreateConstraints extends TrustedEntityConstraints 
 export declare const MERCHANT_TRANSACTION_CREATE_CONSTRAINTS: Readonly<MerchantTransactionCreateConstraints>;
 export declare function createMerchantResolver(db: Pick<PrismaClient, 'merchantMapping'>): EntityResolver;
 export {};
-//# sourceMappingURL=merchant-resolver.d.ts.map

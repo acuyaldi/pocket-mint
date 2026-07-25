@@ -7,4 +7,3 @@ export declare const installmentPaymentService: {
     payInstallment: (input: PayInstallmentInput) => Promise<PayInstallmentResult>;
     payBill: (input: PayInstallmentInput) => Promise<PayInstallmentResult>;
 };
-//# sourceMappingURL=installment-payment.service.d.ts.map

@@ -9,4 +9,3 @@ export declare const CATEGORY_TRANSACTION_CREATE_CONSTRAINTS: Readonly<CategoryT
 export declare function categoryConstraintsForType(transactionType: 'INCOME' | 'EXPENSE'): Readonly<CategoryTransactionCreateConstraints>;
 export declare function createCategoryResolver(db: Pick<PrismaClient, 'category'>): EntityResolver;
 export {};
-//# sourceMappingURL=category-resolver.d.ts.map

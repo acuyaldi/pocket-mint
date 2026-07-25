@@ -65,4 +65,3 @@ export declare const getWalletSparkline: (req: Request<{
     id: string;
 }>, res: Response, next: NextFunction) => Promise<void>;
 export {};
-//# sourceMappingURL=account.controller.d.ts.map

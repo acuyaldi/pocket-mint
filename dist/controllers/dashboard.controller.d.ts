@@ -4,4 +4,3 @@ import { Request, Response, NextFunction } from 'express';
  * Returns aggregated financial summary: total_aset, total_utang, net_worth.
  */
 export declare const getDashboardSummary: (req: Request, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>;
-//# sourceMappingURL=dashboard.controller.d.ts.map

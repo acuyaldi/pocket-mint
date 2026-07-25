@@ -16,4 +16,3 @@ export declare const corsMiddleware: (req: cors.CorsRequest, res: {
     setHeader(key: string, value: string): any;
     end(): any;
 }, next: (err?: any) => any) => void;
-//# sourceMappingURL=cors.d.ts.map

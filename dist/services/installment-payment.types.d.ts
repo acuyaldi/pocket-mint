@@ -41,4 +41,3 @@ export interface PayInstallmentResult {
     installment: PaidInstallment;
     transaction: InstallmentPaymentTransaction;
 }
-//# sourceMappingURL=installment-payment.types.d.ts.map

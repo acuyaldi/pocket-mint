@@ -26,4 +26,3 @@ export declare function createAssistantApplicationService(deps: {
     getAssistantState: (userId: string, conversationId: string) => Promise<import("./clarification.types").AssistantStateProjection>;
 };
 export type AssistantApplicationService = ReturnType<typeof createAssistantApplicationService>;
-//# sourceMappingURL=application.service.d.ts.map

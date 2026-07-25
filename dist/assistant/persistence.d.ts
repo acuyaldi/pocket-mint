@@ -16,4 +16,3 @@ export declare function monthlySummaryOutputForAudit(output: {
     transactionCount: number;
     topCategories: unknown[];
 }): Prisma.InputJsonObject;
-//# sourceMappingURL=persistence.d.ts.map

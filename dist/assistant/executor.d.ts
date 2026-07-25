@@ -10,4 +10,3 @@ export type HandlerRegistry = Map<ToolId, ToolHandler>;
  * for operational failures (they become `FAILED` results).
  */
 export declare function executeTool(toolId: ToolId, untrustedArgs: unknown, ctx: ExecutionContext, toolRegistry: ToolRegistry, handlerRegistry: HandlerRegistry): Promise<ToolExecutionResult>;
-//# sourceMappingURL=executor.d.ts.map

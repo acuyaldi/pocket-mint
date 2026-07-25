@@ -29,4 +29,3 @@ export interface DashboardSummaryResult {
     totalUtang: Prisma.Decimal;
     netWorth: Prisma.Decimal;
 }
-//# sourceMappingURL=dashboard-query.types.d.ts.map

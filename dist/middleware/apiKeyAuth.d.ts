@@ -24,4 +24,3 @@ export declare function requireUser(req: Request, res: Response, next: NextFunct
  * the authority and any `supabaseId` in the body is ignored downstream.
  */
 export declare function requireVerifiedJwt(req: Request, res: Response, next: NextFunction): Promise<void>;
-//# sourceMappingURL=apiKeyAuth.d.ts.map

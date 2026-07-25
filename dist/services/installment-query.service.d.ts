@@ -6,4 +6,3 @@ export declare function createInstallmentQueryService(db: InstallmentQueryPrisma
 export declare const installmentQueryService: {
     listInstallments: (input: ListInstallmentsInput) => Promise<InstallmentListItem[]>;
 };
-//# sourceMappingURL=installment-query.service.d.ts.map

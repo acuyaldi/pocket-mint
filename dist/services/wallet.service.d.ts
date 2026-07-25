@@ -10,4 +10,3 @@ export declare const walletService: {
     updateWallet: (input: UpdateWalletInput) => Promise<Wallet>;
     deleteWallet: (input: DeleteWalletInput) => Promise<DeleteWalletResult>;
 };
-//# sourceMappingURL=wallet.service.d.ts.map

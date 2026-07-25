@@ -62,4 +62,3 @@ export declare const monthlySpendingSummary: ToolContract<{
 }, MonthlySpendingSummaryOutput>;
 export declare const transactionCreate: ToolContract<TransactionCreateToolInput, TransactionCreateToolInput>;
 export {};
-//# sourceMappingURL=tools.d.ts.map

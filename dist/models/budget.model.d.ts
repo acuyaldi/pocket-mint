@@ -6,4 +6,3 @@ export interface UpdateBudgetAmountDto {
     amount: number;
 }
 export type BudgetListStatus = 'active' | 'archived';
-//# sourceMappingURL=budget.model.d.ts.map

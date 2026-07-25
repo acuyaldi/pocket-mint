@@ -23,4 +23,3 @@ export declare function prepareForMatching(input: Pick<SuggestionInput, 'descrip
     normalized: string;
     tokens: string[];
 };
-//# sourceMappingURL=merchantNormalizer.d.ts.map

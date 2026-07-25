@@ -124,4 +124,3 @@ export interface ClarificationAdvanceResult {
     /** Present when all clarifications are resolved. */
     readonly draftPreview?: SafeDraftMetadata;
 }
-//# sourceMappingURL=clarification.types.d.ts.map

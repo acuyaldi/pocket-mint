@@ -39,4 +39,3 @@ export declare const generalLimiter: RateLimitRequestHandler;
  * rate limiting turns it into a passthrough.
  */
 export declare const mutationLimiter: RateLimitRequestHandler;
-//# sourceMappingURL=rateLimit.d.ts.map

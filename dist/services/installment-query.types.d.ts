@@ -46,4 +46,3 @@ export type InstallmentListItem = Prisma.InstallmentGetPayload<{
         };
     };
 }>;
-//# sourceMappingURL=installment-query.types.d.ts.map

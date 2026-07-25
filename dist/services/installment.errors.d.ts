@@ -5,4 +5,3 @@ export declare class InstallmentError extends Error {
     readonly isOperational = true;
     constructor(message: string, statusCode: number, code: string);
 }
-//# sourceMappingURL=installment.errors.d.ts.map

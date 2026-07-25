@@ -1,1 +1,0 @@
-{"version":3,"file":"budget.model.d.ts","sources":["../../src/models/budget.model.ts"],"names":[],"mappings":"AACA,MAAM,WAAW,eAAe;IAC9B,UAAU,EAAE,MAAM,CAAC;IACnB,MAAM,EAAE,MAAM,CAAC;CAChB;AAKD,MAAM,WAAW,qBAAqB;IACpC,MAAM,EAAE,MAAM,CAAC;CAChB;AAED,MAAM,MAAM,gBAAgB,GAAG,QAAQ,GAAG,UAAU,CAAC"}

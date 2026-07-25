@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "prisma generate && node src/scripts/strip-prisma-whitespace.cjs src/generated/prisma/index.d.ts && tsc && node src/scripts/copy-prisma-client.cjs && node src/scripts/strip-prisma-whitespace.cjs dist/generated/prisma/index.d.ts && node src/scripts/normalize-declaration-maps.cjs",
+    "build": "prisma generate && node src/scripts/strip-prisma-whitespace.cjs src/generated/prisma/index.d.ts && tsc && node src/scripts/copy-prisma-client.cjs && node src/scripts/strip-prisma-whitespace.cjs dist/generated/prisma/index.d.ts",
     "start": "node dist/server.js",
     "test": "vitest run",
     "test:watch": "vitest",

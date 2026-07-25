@@ -12,4 +12,3 @@ export declare const jwtVerificationConfigured: boolean;
  * wrong-audience/issuer, or unverifiable token — never throws.
  */
 export declare function verifySupabaseJwt(token: string): Promise<VerifiedIdentity | null>;
-//# sourceMappingURL=supabaseJwt.d.ts.map

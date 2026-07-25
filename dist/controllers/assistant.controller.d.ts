@@ -19,4 +19,3 @@ export declare const getAssistantConversation: (req: Request, res: Response, nex
 export declare const archiveAssistantConversation: (req: Request, res: Response, next: NextFunction) => Promise<void>;
 export declare const confirmAssistantFinancialDraft: (req: Request, res: Response, next: NextFunction) => Promise<void>;
 export declare const cancelAssistantFinancialDraft: (req: Request, res: Response, next: NextFunction) => Promise<void>;
-//# sourceMappingURL=assistant.controller.d.ts.map

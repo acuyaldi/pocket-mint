@@ -16,4 +16,3 @@ export interface MonthlySpendingSummaryOutput {
     topCategories: MonthlyCategoryBreakdown[];
 }
 export declare function handleMonthlySpendingSummary(input: MonthlySpendingSummaryInput, ctx: ExecutionContext): Promise<MonthlySpendingSummaryOutput>;
-//# sourceMappingURL=monthly-spending-summary.handler.d.ts.map

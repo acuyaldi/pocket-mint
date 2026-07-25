@@ -12,4 +12,3 @@ export { createWalletResolver, WALLET_TRANSACTION_CREATE_CONSTRAINTS, } from './
 export { createMerchantResolver, MERCHANT_TRANSACTION_CREATE_CONSTRAINTS, } from './merchant-resolver';
 export { createCategoryResolver, categoryConstraintsForType, CATEGORY_TRANSACTION_CREATE_CONSTRAINTS, } from './category-resolver';
 export * from './types';
-//# sourceMappingURL=index.d.ts.map

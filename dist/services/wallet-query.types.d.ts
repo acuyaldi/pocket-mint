@@ -46,4 +46,3 @@ export interface WalletSparklinePoint {
     date: string;
     balance: Prisma.Decimal | null;
 }
-//# sourceMappingURL=wallet-query.types.d.ts.map

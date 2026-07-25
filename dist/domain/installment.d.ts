@@ -39,4 +39,3 @@ export declare function computeFinalMonthlyAmount(grandTotal: Prisma.Decimal, mo
  * so the caller fails before any mutation.
  */
 export declare function computeInstallmentPlan(input: InstallmentPlanInput): InstallmentPlan;
-//# sourceMappingURL=installment.d.ts.map

@@ -13,4 +13,3 @@ export declare const notificationService: {
     markAllNotificationsRead: (userId: string) => Promise<MarkAllNotificationsReadResult>;
     confirmReminder: (input: ConfirmReminderInput) => Promise<ConfirmReminderResult>;
 };
-//# sourceMappingURL=notification.service.d.ts.map

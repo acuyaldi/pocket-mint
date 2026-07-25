@@ -54,4 +54,3 @@ export interface FinalizeWithoutToolInput extends BeginTurnResult {
     assistantSource: AssistantMessageSource;
     safeErrorCode?: string;
 }
-//# sourceMappingURL=conversation.types.d.ts.map

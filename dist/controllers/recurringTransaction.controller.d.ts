@@ -10,4 +10,3 @@ export declare class RecurringTransactionController {
         id: string;
     }>, res: Response, next: NextFunction): Promise<void>;
 }
-//# sourceMappingURL=recurringTransaction.controller.d.ts.map

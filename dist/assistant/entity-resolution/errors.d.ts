@@ -8,4 +8,3 @@ export declare class EntityResolutionError extends Error {
     static configuration(): EntityResolutionError;
     static failed(): EntityResolutionError;
 }
-//# sourceMappingURL=errors.d.ts.map

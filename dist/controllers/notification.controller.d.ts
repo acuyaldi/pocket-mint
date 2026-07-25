@@ -12,4 +12,3 @@ export declare class NotificationController {
         amount?: string | number;
     }>, res: Response, next: NextFunction): Promise<void>;
 }
-//# sourceMappingURL=notification.controller.d.ts.map

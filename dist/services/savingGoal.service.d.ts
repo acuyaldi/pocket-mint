@@ -15,4 +15,3 @@ export declare const savingGoalService: {
     updateSavingGoalProgress: (input: UpdateSavingGoalProgressInput) => Promise<SavingGoalRecord>;
     archiveSavingGoal: (input: ArchiveSavingGoalInput) => Promise<SavingGoalRecord>;
 };
-//# sourceMappingURL=savingGoal.service.d.ts.map

@@ -11,4 +11,3 @@ import type { NextFunction, Request, Response } from 'express';
  *   type        — "INCOME" or "EXPENSE" (default: "EXPENSE")
  */
 export declare function getSuggestions(req: Request, res: Response, next: NextFunction): Promise<void>;
-//# sourceMappingURL=categorization.controller.d.ts.map

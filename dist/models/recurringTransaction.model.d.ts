@@ -32,4 +32,3 @@ export interface UpdateRecurringTransactionDto {
     reminderEnabled?: boolean;
     reminderOffsetDays?: number | null;
 }
-//# sourceMappingURL=recurringTransaction.model.d.ts.map

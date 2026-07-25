@@ -14,4 +14,3 @@ export declare class ToolRegistry {
     get size(): number;
     private validateInvariants;
 }
-//# sourceMappingURL=registry.d.ts.map

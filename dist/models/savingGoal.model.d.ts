@@ -16,4 +16,3 @@ export interface UpdateSavingGoalDto {
 export interface UpdateSavingGoalProgressDto {
     currentAmount: number;
 }
-//# sourceMappingURL=savingGoal.model.d.ts.map

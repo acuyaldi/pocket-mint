@@ -10,4 +10,3 @@ export declare class MerchantMappingController {
         id: string;
     }>, res: Response, next: NextFunction): Promise<void>;
 }
-//# sourceMappingURL=merchantMapping.controller.d.ts.map

@@ -7,4 +7,3 @@ export declare class AnalyticsController {
     static budgetPerformance(req: Request, res: Response, next: NextFunction): Promise<void>;
     static transactions(req: Request, res: Response, next: NextFunction): Promise<void>;
 }
-//# sourceMappingURL=analytics.controller.d.ts.map

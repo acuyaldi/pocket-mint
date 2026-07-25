@@ -6,4 +6,3 @@ export declare function createDashboardQueryService(db: DashboardQueryPrismaClie
 export declare const dashboardQueryService: {
     getSummary: (input: GetDashboardSummaryInput) => Promise<DashboardSummaryResult>;
 };
-//# sourceMappingURL=dashboard-query.service.d.ts.map

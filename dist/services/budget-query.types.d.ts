@@ -59,4 +59,3 @@ export interface ListActiveBudgetUsageInput {
     year?: number;
     status?: 'active' | 'archived';
 }
-//# sourceMappingURL=budget-query.types.d.ts.map

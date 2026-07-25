@@ -69,4 +69,3 @@ export interface AuditReport {
  * Read-only and deterministic.
  */
 export declare function auditWalletBalances(wallets: AuditWalletSnapshot[], transactions: AuditTransaction[], grandTotalByInstallment?: Map<string, Prisma.Decimal>, options?: AuditOptions): AuditReport;
-//# sourceMappingURL=reconciliation.d.ts.map

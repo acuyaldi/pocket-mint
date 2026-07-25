@@ -22,4 +22,3 @@ export declare function payInstallment(req: Request<{
     amount?: number | string;
     date?: string;
 }>, res: Response, next: NextFunction): Promise<void>;
-//# sourceMappingURL=installment.controller.d.ts.map

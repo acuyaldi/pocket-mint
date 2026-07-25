@@ -157,4 +157,3 @@ export declare const assistantProviderAuditService: import("./provider-runtime")
 export declare const assistantProviderRuntime: {
     sendMessage: (userId: string, correlationId: string, input: import("./provider-runtime").AssistantProviderMessageInput) => Promise<import("./provider-runtime").AssistantProviderRuntimeResult>;
 } | undefined;
-//# sourceMappingURL=bootstrap.d.ts.map

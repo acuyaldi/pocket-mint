@@ -10,4 +10,3 @@ export declare function createAssistantContextService(db: PrismaClient, clock?: 
     buildExecutionContext: (input: BuildAssistantExecutionContextInput) => Promise<AssistantContext>;
 };
 export type AssistantContextService = ReturnType<typeof createAssistantContextService>;
-//# sourceMappingURL=context.service.d.ts.map

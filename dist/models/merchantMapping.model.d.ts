@@ -6,4 +6,3 @@ export interface UpdateMerchantMappingDto {
     merchantName?: string;
     categoryId?: string;
 }
-//# sourceMappingURL=merchantMapping.model.d.ts.map

@@ -16,4 +16,3 @@ export interface AssistantProviderConfig {
 type Environment = Readonly<Record<string, string | undefined>>;
 export declare function loadAssistantProviderConfig(env: Environment): AssistantProviderConfig;
 export {};
-//# sourceMappingURL=assistant-provider.d.ts.map

@@ -14,4 +14,3 @@ export declare const merchantMappingService: {
     remove: (input: DeleteMerchantMappingInput) => Promise<void>;
     findByNormalizedMerchant: (userId: string, normalizedMerchant: string) => Promise<MerchantMappingRecord | null>;
 };
-//# sourceMappingURL=merchantMapping.service.d.ts.map
