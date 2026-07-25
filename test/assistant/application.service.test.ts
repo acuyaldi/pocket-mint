@@ -3,6 +3,9 @@ import { createAssistantApplicationService } from '../../src/assistant/applicati
 import { ToolRegistry } from '../../src/assistant/registry';
 import { monthlySpendingSummary, transactionCreate } from '../../src/assistant/tools';
 
+/** Stand-in for a Prisma interactive transaction client in mocked tests. */
+const TX_STUB = { __tx: true };
+
 function setup() {
   const conversations = {
     assertContinuable: vi.fn(), beginTurn: vi.fn().mockResolvedValue({ conversationId: 'c1', turnId: 't1' }),
@@ -77,6 +80,7 @@ function setup() {
     }),
     cancel: vi.fn().mockResolvedValue(undefined),
     getAssistantState: vi.fn().mockResolvedValue({}),
+    runInTransaction: vi.fn((work: (tx: unknown) => unknown) => work(TX_STUB)),
   };
   const context = {
     system: { contextVersion: '1' as const, locale: 'id-ID' },
@@ -712,9 +716,39 @@ describe('Assistant application lifecycle', () => {
 
     expect(clarification.select).toHaveBeenCalledWith({
       userId: 'u1', conversationId: 'c1', token: 'clarify_token_a', correlationId: 'corr-sel',
-    });
+    }, { transaction: TX_STUB });
     expect(financialDrafts.prepare).toHaveBeenCalled();
     expect(result.response.status).toBe('success');
+  });
+
+  it('selectClarification threads the same transaction to merchant and category resolution', async () => {
+    const { service, clarification, entityResolution } = setup();
+    clarification.select.mockResolvedValue({
+      clarificationId: 'clar-1',
+      entityType: 'wallet',
+      status: 'CONSUMED',
+      selectedCandidateId: 'wallet-a',
+      selectedDisplayLabel: 'BCA Debit',
+      trustedContext: {
+        version: 1, operation: 'transaction.create', type: 'EXPENSE', amount: '20000', date: '2026-07-23',
+        merchantReference: 'Starbucks', categoryReference: 'Food', resumeAt: new Date().toISOString(),
+      },
+      previousTrustedContext: {
+        version: 1, operation: 'transaction.create', type: 'EXPENSE', amount: '20000', date: '2026-07-23',
+        resumeAt: new Date().toISOString(),
+      },
+    });
+
+    await service.selectClarification('u1', 'corr-sel', 'clarify_token_a', 'c1');
+
+    expect(entityResolution.resolve).toHaveBeenCalledWith(expect.objectContaining({
+      reference: expect.objectContaining({ entityType: 'merchant' }),
+      transaction: TX_STUB,
+    }));
+    expect(entityResolution.resolve).toHaveBeenCalledWith(expect.objectContaining({
+      reference: expect.objectContaining({ entityType: 'category' }),
+      transaction: TX_STUB,
+    }));
   });
 
   // ---- Cancel clarification flow ----
@@ -725,7 +759,7 @@ describe('Assistant application lifecycle', () => {
     const result = await service.cancelClarification('u1', 'corr-can', 'clar-1', 'c1');
 
     expect(clarification.cancel).toHaveBeenCalledWith({
-      userId: 'u1', clarificationId: 'clar-1', reason: 'user_cancelled',
+      userId: 'u1', clarificationId: 'clar-1', conversationId: 'c1', reason: 'user_cancelled',
     });
     expect(result.response.status).toBe('success');
   });

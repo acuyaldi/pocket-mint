@@ -100,4 +100,36 @@ describe('production CategoryResolver', () => {
       trustedConstraints: CATEGORY_TRANSACTION_CREATE_CONSTRAINTS,
     })).rejects.toThrow();
   });
+
+  it('uses the supplied transaction client for every read, leaving the global client untouched', async () => {
+    const globalFindMany = vi.fn().mockResolvedValue([{ id: 'cat-global', name: 'Global', type: 'EXPENSE' as const }]);
+    const txFindMany = vi.fn().mockResolvedValue([{ id: 'cat-1', name: 'Makan Siang', type: 'EXPENSE' as const }]);
+    const registry = new EntityResolverRegistry();
+    registry.register(createCategoryResolver({ category: { findMany: globalFindMany } } as never));
+    registry.finalize();
+    const service = createEntityResolutionService(registry);
+
+    const tx = { category: { findMany: txFindMany }, merchantMapping: {}, wallet: {} } as never;
+    const result = await service.resolve({
+      authenticatedUserId: 'user-1',
+      reference: { entityType: 'category', referenceText: 'Makan Siang', source: 'provider_extracted' },
+      trustedConstraints: CATEGORY_TRANSACTION_CREATE_CONSTRAINTS,
+      transaction: tx,
+    });
+
+    expect(txFindMany).toHaveBeenCalledTimes(1);
+    expect(globalFindMany).not.toHaveBeenCalled();
+    expect(result.kind).toBe('resolved');
+    if (result.kind === 'resolved') expect(result.entity.internalId).toBe('cat-1');
+  });
+
+  it('falls back to the default client when no transaction override is supplied', async () => {
+    const { findMany, service } = setup([{ id: 'cat-1', name: 'Makan Siang', type: 'EXPENSE' }]);
+    await service.resolve({
+      authenticatedUserId: 'user-1',
+      reference: { entityType: 'category', referenceText: 'Makan Siang', source: 'provider_extracted' },
+      trustedConstraints: CATEGORY_TRANSACTION_CREATE_CONSTRAINTS,
+    });
+    expect(findMany).toHaveBeenCalledTimes(1);
+  });
 });

@@ -53,6 +53,9 @@ const integrationTests = [
   'test/assistant/context-service.integration.test.ts',
   'test/assistant/provider-runtime.integration.test.ts',
   'test/assistant/clarification-sequential.integration.test.ts',
+  'test/assistant/clarification-http.integration.test.ts',
+  'test/assistant/clarification-expiry.integration.test.ts',
+  'test/assistant/entity-resolution-transaction.integration.test.ts',
 ];
 
 async function main() {
