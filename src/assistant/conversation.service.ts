@@ -68,9 +68,9 @@ export function createAssistantConversationService(db: PrismaClient) {
     return row.id;
   }
 
-  async function finalize(input: FinalizeToolInput): Promise<void> {
+  async function finalize(input: FinalizeToolInput, options: { transaction?: Prisma.TransactionClient } = {}): Promise<void> {
     assertAssistantMessageLength(input.assistantContent);
-    await db.$transaction(async (tx) => {
+    const work = async (tx: Prisma.TransactionClient) => {
       const now = new Date();
       await tx.assistantToolExecution.update({ where: { id: input.executionId }, data: {
         status: input.status, completedAt: now, durationMs: input.durationMs, safeErrorCode: input.safeErrorCode,
@@ -84,7 +84,9 @@ export function createAssistantConversationService(db: PrismaClient) {
         status: input.turnStatus, safeErrorCode: input.safeErrorCode, finishedAt: now,
       }});
       await tx.assistantConversation.update({ where: { id: input.conversationId }, data: { lastActivityAt: now } });
-    });
+    };
+    if (options.transaction) await work(options.transaction);
+    else await db.$transaction(work);
   }
 
   async function finalizeRejected(input: BeginTurnResult & { content: string; safeErrorCode: string }): Promise<void> {
@@ -97,9 +99,9 @@ export function createAssistantConversationService(db: PrismaClient) {
     });
   }
 
-  async function finalizeWithoutTool(input: FinalizeWithoutToolInput): Promise<void> {
+  async function finalizeWithoutTool(input: FinalizeWithoutToolInput, options: { transaction?: Prisma.TransactionClient } = {}): Promise<void> {
     assertAssistantMessageLength(input.assistantContent);
-    await db.$transaction(async (tx) => {
+    const work = async (tx: Prisma.TransactionClient) => {
       const now = new Date();
       await tx.assistantMessage.create({ data: {
         conversationId: input.conversationId,
@@ -114,7 +116,9 @@ export function createAssistantConversationService(db: PrismaClient) {
         finishedAt: now,
       } });
       await tx.assistantConversation.update({ where: { id: input.conversationId }, data: { lastActivityAt: now } });
-    });
+    };
+    if (options.transaction) await work(options.transaction);
+    else await db.$transaction(work);
   }
 
   async function listOwnedConversations(userId: string, page?: number, limit?: number): Promise<Page<ConversationSummaryDto>> {

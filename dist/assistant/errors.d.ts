@@ -24,4 +24,12 @@ export declare class AssistantError extends Error {
     static draftNotFound(): AssistantError;
     static draftConflict(status: string): AssistantError;
     static idempotencyConflict(): AssistantError;
+    static clarificationNotFound(): AssistantError;
+    static clarificationInvalidOption(): AssistantError;
+    static clarificationAlreadyConsumed(): AssistantError;
+    static clarificationCancelled(): AssistantError;
+    static clarificationStale(): AssistantError;
+    static clarificationExpired(): AssistantError;
+    static clarificationContinuationInvalid(): AssistantError;
+    static clarificationContextInvalid(): AssistantError;
 }

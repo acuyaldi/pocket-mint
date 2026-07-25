@@ -67,7 +67,8 @@ export function createCategoryResolver(
       if (!isTransactionCreateConstraints(trustedConstraints)) {
         throw EntityResolutionError.configuration();
       }
-      const categories = await db.category.findMany({
+      const client = scope.transaction ?? db;
+      const categories = await client.category.findMany({
         where: { userId: authenticatedUserId, type: trustedConstraints.transactionType },
         select: { id: true, name: true, type: true },
         take: ENTITY_RESOLUTION_LIMITS.candidates + 1,

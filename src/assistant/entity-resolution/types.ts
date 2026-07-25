@@ -1,3 +1,12 @@
+import type { PrismaClient } from '../../generated/prisma/client';
+
+/**
+ * Narrow structural client shared by every entity resolver's tx override —
+ * a Prisma interactive transaction client satisfies this without a hard
+ * dependency on `Prisma.TransactionClient` here.
+ */
+export type EntityResolutionDbClient = Pick<PrismaClient, 'merchantMapping' | 'category' | 'wallet'>;
+
 export const ENTITY_TYPES = ['wallet', 'merchant', 'category'] as const;
 export type EntityType = (typeof ENTITY_TYPES)[number];
 
@@ -80,6 +89,8 @@ export interface EntityResolverScope {
   readonly authenticatedUserId: string;
   readonly normalizedReference: string;
   readonly trustedConstraints?: TrustedEntityConstraints;
+  /** When supplied, every read must use this client instead of the resolver's default. */
+  readonly transaction?: EntityResolutionDbClient;
 }
 
 export interface EntityResolverMatchInput {
@@ -148,6 +159,8 @@ export interface ResolveEntityInput {
   readonly authenticatedUserId: string;
   readonly reference: unknown;
   readonly trustedConstraints?: TrustedEntityConstraints;
+  /** When supplied, resolution runs entirely against this client (e.g. an open interactive transaction). */
+  readonly transaction?: EntityResolutionDbClient;
 }
 
 export interface EntityResolutionService {

@@ -44,6 +44,7 @@ function createEntityResolutionService(registry) {
                     ...(input.trustedConstraints === undefined
                         ? {}
                         : { trustedConstraints: input.trustedConstraints }),
+                    ...(input.transaction === undefined ? {} : { transaction: input.transaction }),
                 });
             }
             catch (error) {

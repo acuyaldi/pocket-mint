@@ -61,6 +61,7 @@ export function createEntityResolutionService(
           ...(input.trustedConstraints === undefined
             ? {}
             : { trustedConstraints: input.trustedConstraints }),
+          ...(input.transaction === undefined ? {} : { transaction: input.transaction }),
         });
       } catch (error) {
         if (error instanceof EntityResolutionError) throw error;

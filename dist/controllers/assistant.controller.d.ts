@@ -11,6 +11,8 @@ export declare function createAssistantControllers(application: AssistantApplica
     archive: (req: Request, res: Response, next: NextFunction) => Promise<void>;
     confirmDraft: (req: Request, res: Response, next: NextFunction) => Promise<void>;
     cancelDraft: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+    selectClarification: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+    cancelClarification: (req: Request, res: Response, next: NextFunction) => Promise<void>;
 };
 export declare const assistantExecute: (req: Request, res: Response, next: NextFunction) => Promise<void>;
 export declare const assistantMessages: (req: Request, res: Response, next: NextFunction) => Promise<void>;
@@ -19,3 +21,5 @@ export declare const getAssistantConversation: (req: Request, res: Response, nex
 export declare const archiveAssistantConversation: (req: Request, res: Response, next: NextFunction) => Promise<void>;
 export declare const confirmAssistantFinancialDraft: (req: Request, res: Response, next: NextFunction) => Promise<void>;
 export declare const cancelAssistantFinancialDraft: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+export declare const selectAssistantClarification: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+export declare const cancelAssistantClarification: (req: Request, res: Response, next: NextFunction) => Promise<void>;

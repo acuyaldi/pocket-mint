@@ -16,4 +16,6 @@ assistantRouter.get('/conversations/:conversationId', apiKeyAuth_1.requireUser, 
 assistantRouter.post('/conversations/:conversationId/archive', apiKeyAuth_1.requireUser, rateLimit_1.mutationLimiter, assistant_controller_1.archiveAssistantConversation);
 assistantRouter.post('/drafts/:draftId/confirm', apiKeyAuth_1.requireUser, rateLimit_1.mutationLimiter, assistant_controller_1.confirmAssistantFinancialDraft);
 assistantRouter.post('/drafts/:draftId/cancel', apiKeyAuth_1.requireUser, rateLimit_1.mutationLimiter, assistant_controller_1.cancelAssistantFinancialDraft);
+assistantRouter.post('/conversations/:conversationId/clarifications/:clarificationId/select', apiKeyAuth_1.requireUser, rateLimit_1.mutationLimiter, assistant_controller_1.selectAssistantClarification);
+assistantRouter.post('/conversations/:conversationId/clarifications/:clarificationId/cancel', apiKeyAuth_1.requireUser, rateLimit_1.mutationLimiter, assistant_controller_1.cancelAssistantClarification);
 //# sourceMappingURL=assistantRoutes.js.map

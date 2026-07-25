@@ -85,6 +85,30 @@ class AssistantError extends Error {
     static idempotencyConflict() {
         return new AssistantError('Idempotency key is already bound to another operation', 409, 'ASSISTANT_IDEMPOTENCY_CONFLICT');
     }
+    static clarificationNotFound() {
+        return new AssistantError('Clarification not found', 404, 'ASSISTANT_CLARIFICATION_NOT_FOUND');
+    }
+    static clarificationInvalidOption() {
+        return new AssistantError('Clarification option is invalid', 400, 'ASSISTANT_CLARIFICATION_INVALID_OPTION');
+    }
+    static clarificationAlreadyConsumed() {
+        return new AssistantError('Clarification was already consumed', 409, 'ASSISTANT_CLARIFICATION_ALREADY_CONSUMED');
+    }
+    static clarificationCancelled() {
+        return new AssistantError('Clarification was already cancelled', 409, 'ASSISTANT_CLARIFICATION_CANCELLED');
+    }
+    static clarificationStale() {
+        return new AssistantError('Clarification is stale and requires restart', 409, 'ASSISTANT_CLARIFICATION_STALE');
+    }
+    static clarificationExpired() {
+        return new AssistantError('Clarification has expired and requires restart', 409, 'ASSISTANT_CLARIFICATION_EXPIRED');
+    }
+    static clarificationContinuationInvalid() {
+        return new AssistantError('Clarification cannot be continued', 409, 'ASSISTANT_CLARIFICATION_CONTINUATION_INVALID');
+    }
+    static clarificationContextInvalid() {
+        return new AssistantError('Clarification context is invalid', 409, 'ASSISTANT_CLARIFICATION_CONTEXT_INVALID');
+    }
 }
 exports.AssistantError = AssistantError;
 //# sourceMappingURL=errors.js.map

@@ -53,7 +53,8 @@ export function createMerchantResolver(
       if (!isTransactionCreateConstraints(trustedConstraints)) {
         throw EntityResolutionError.configuration();
       }
-      const mappings = await db.merchantMapping.findMany({
+      const client = scope.transaction ?? db;
+      const mappings = await client.merchantMapping.findMany({
         where: { userId: authenticatedUserId },
         select: { id: true, merchantName: true, normalizedMerchant: true },
         take: ENTITY_RESOLUTION_LIMITS.candidates + 1,

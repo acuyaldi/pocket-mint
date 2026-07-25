@@ -251,6 +251,7 @@ exports.Prisma.ClarificationRequestScalarFieldEnum = {
   prompt: 'prompt',
   terminalCode: 'terminalCode',
   restartRequired: 'restartRequired',
+  expiresAt: 'expiresAt',
   consumedAt: 'consumedAt',
   cancelledAt: 'cancelledAt',
   createdAt: 'createdAt',

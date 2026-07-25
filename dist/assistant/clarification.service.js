@@ -7,11 +7,25 @@
 // All mutations are atomic (Prisma transactions).
 // ============================================================
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CLARIFICATION_TTL_MS = void 0;
 exports.createClarificationService = createClarificationService;
 const node_crypto_1 = require("node:crypto");
+const client_1 = require("../generated/prisma/client");
 const errors_1 = require("./errors");
 const TOKEN_BYTES = 32;
 const TOKEN_PREFIX = 'clarify_';
+exports.CLARIFICATION_TTL_MS = 15 * 60 * 1000;
+const EXPIRED_TERMINAL_CODE = 'expired';
+/**
+ * Database-backed current time — never the application process clock.
+ * Rendered as an explicit UTC ISO-8601 string (not a raw `timestamptz`
+ * value) so parsing never depends on the driver's or process's local
+ * timezone, which may differ from the database session's.
+ */
+async function dbNow(client) {
+    const rows = await client.$queryRaw(client_1.Prisma.sql `SELECT to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS "now"`);
+    return new Date(rows[0].now);
+}
 function digestToken(token) {
     return (0, node_crypto_1.createHash)('sha256').update(token).digest('hex');
 }
@@ -34,16 +48,56 @@ function tokenToDigest(raw) {
     }
     return digestToken(raw);
 }
+const KNOWN_ENTITY_TYPES = new Set(['wallet', 'merchant', 'category']);
+/**
+ * Structural validity of a persisted trustedContext blob. Guards against a
+ * corrupted/malformed JSON payload before it's trusted for continuation.
+ */
+function isValidTrustedContext(value) {
+    if (typeof value !== 'object' || value === null)
+        return false;
+    const ctx = value;
+    return ctx.version === 1 &&
+        ctx.operation === 'transaction.create' &&
+        (ctx.type === 'INCOME' || ctx.type === 'EXPENSE') &&
+        typeof ctx.amount === 'string' &&
+        typeof ctx.date === 'string';
+}
+/** Maps a non-PENDING terminal status to its specific bounded error. */
+function terminalStatusError(status, terminalCode) {
+    if (status === 'CONSUMED')
+        return errors_1.AssistantError.clarificationAlreadyConsumed();
+    if (status === 'CANCELLED')
+        return errors_1.AssistantError.clarificationCancelled();
+    if (status === 'STALE')
+        return terminalCode === EXPIRED_TERMINAL_CODE ? errors_1.AssistantError.clarificationExpired() : errors_1.AssistantError.clarificationStale();
+    return errors_1.AssistantError.clarificationNotFound();
+}
+/**
+ * Idempotent terminalization to STALE (restart required) — guarded by
+ * status='PENDING'. If a concurrent transition already won the race, this
+ * reports the actual winning terminal status instead of asserting the
+ * caller's intended one.
+ */
+async function terminalizeOrReportActual(client, requestId, terminalCode, onWin) {
+    const claimed = await client.clarificationRequest.updateMany({
+        where: { id: requestId, status: 'PENDING' },
+        data: { status: 'STALE', terminalCode, restartRequired: true },
+    });
+    if (claimed.count === 1)
+        throw onWin();
+    const current = await client.clarificationRequest.findUniqueOrThrow({ where: { id: requestId } });
+    throw terminalStatusError(current.status, current.terminalCode);
+}
 function createClarificationService(db) {
     // ---- Create ---------------------------------------------------------------
-    async function create(input) {
+    async function create(input, options = {}) {
         if (input.options.length === 0) {
             throw errors_1.AssistantError.invalidInput('clarification.create', 'at least one option is required');
         }
         if (input.options.some((opt) => !opt.candidateId?.trim())) {
             throw errors_1.AssistantError.invalidInput('clarification.create', 'every option must have a non-empty candidateId');
         }
-        const now = new Date();
         const tokens = input.options.map(() => ({
             raw: generateToken(),
             digest: '', // filled after generation
@@ -52,7 +106,10 @@ function createClarificationService(db) {
         for (const t of tokens) {
             t.digest = digestToken(t.raw);
         }
-        const row = await db.$transaction(async (tx) => {
+        const work = async (tx) => {
+            // A fresh 15-minute expiry from database time — every clarification
+            // (parent or child) gets its own; a parent's expiry is never extended.
+            const expiresAt = new Date((await dbNow(tx)).getTime() + exports.CLARIFICATION_TTL_MS);
             const request = await tx.clarificationRequest.create({
                 data: {
                     userId: input.userId,
@@ -64,6 +121,7 @@ function createClarificationService(db) {
                     status: 'PENDING',
                     trustedContext: input.trustedContext,
                     prompt: input.prompt,
+                    expiresAt,
                 },
             });
             await tx.clarificationOption.createMany({
@@ -76,7 +134,8 @@ function createClarificationService(db) {
                 })),
             });
             return request;
-        });
+        };
+        const row = options.transaction ? await work(options.transaction) : await db.$transaction(work);
         return {
             clarificationId: row.id,
             entityType: row.entityType,
@@ -86,66 +145,132 @@ function createClarificationService(db) {
                 label: opt.displayLabel,
                 ...(opt.discriminator ? { discriminator: opt.discriminator } : {}),
             })),
+            expiresAt: row.expiresAt.toISOString(),
         };
     }
     // ---- Select ----------------------------------------------------------------
-    async function select(input) {
+    async function select(input, options = {}) {
+        // Token digest is pure hashing — no DB lookup, no information disclosed
+        // about any specific request — so validating its shape up front is safe.
         const tokenDigest = tokenToDigest(input.token);
         assertValidTokenDigest(tokenDigest);
-        return db.$transaction(async (tx) => {
-            // Lock the clarification request to prevent races
-            const request = await tx.clarificationRequest.findFirst({
-                where: { conversationId: input.conversationId, userId: input.userId, status: 'PENDING' },
-                include: { options: true },
-                orderBy: { createdAt: 'desc' },
-            });
-            if (!request) {
-                throw errors_1.AssistantError.conversationNotContinuable();
-            }
-            // ponytail: advisory lock via row selection already gives us per-conversation
-            // serialisation since we only ever have one PENDING clarification per conversation.
-            const matched = request.options.find((o) => o.tokenDigest === tokenDigest);
-            if (!matched) {
-                throw errors_1.AssistantError.invalidInput('clarification.select', 'token does not match any active option');
-            }
-            const now = new Date();
-            const updated = await tx.clarificationRequest.update({
-                where: { id: request.id },
-                data: { status: 'CONSUMED', consumedAt: now },
-                include: { options: true },
-            });
-            const trustedContext = updated.trustedContext;
-            return {
-                clarificationId: updated.id,
-                entityType: updated.entityType,
-                status: 'CONSUMED',
-                selectedCandidateId: matched.candidateId,
-                selectedDisplayLabel: matched.displayLabel,
-                trustedContext,
-                previousTrustedContext: trustedContext,
-                ...(updated.parentId ? { parentId: updated.parentId } : {}),
-            };
+        // Plain (unlocked) read — a non-PENDING match must produce a specific
+        // terminal error rather than being indistinguishable from "not found".
+        // The fields read here (options, trustedContext, entityType, parentId)
+        // are immutable after creation, so they stay valid through the claim below.
+        const request = await db.clarificationRequest.findFirst({
+            where: {
+                conversationId: input.conversationId,
+                userId: input.userId,
+                ...(input.clarificationId ? { id: input.clarificationId } : {}),
+            },
+            include: { options: true },
+            orderBy: { createdAt: 'desc' },
         });
+        if (!request) {
+            throw errors_1.AssistantError.clarificationNotFound();
+        }
+        // A previously-terminalized row (including a prior expiry) reports its
+        // actual terminal outcome deterministically — repeat calls never re-derive it.
+        if (request.status !== 'PENDING') {
+            throw terminalStatusError(request.status, request.terminalCode);
+        }
+        // Lifecycle (expiry) is resolved from database time BEFORE the token is
+        // ever matched against stored digests — an expired request never reveals
+        // whether the supplied token would otherwise have been valid.
+        const now = await dbNow(db);
+        if (request.expiresAt <= now) {
+            // Must commit even though the caller receives an error — runs outside
+            // (not nested inside) the claim below, same as the other terminalizations.
+            await terminalizeOrReportActual(db, request.id, EXPIRED_TERMINAL_CODE, () => errors_1.AssistantError.clarificationExpired());
+        }
+        // These terminalizations must also commit even though the caller receives
+        // an error, so they run outside (not nested inside) the claim transaction.
+        if (!isValidTrustedContext(request.trustedContext)) {
+            await terminalizeOrReportActual(db, request.id, 'context_invalid', () => errors_1.AssistantError.clarificationContextInvalid());
+        }
+        if (!KNOWN_ENTITY_TYPES.has(request.entityType)) {
+            await terminalizeOrReportActual(db, request.id, 'continuation_invalid', () => errors_1.AssistantError.clarificationContinuationInvalid());
+        }
+        const matched = request.options.find((o) => o.tokenDigest === tokenDigest);
+        if (!matched) {
+            throw errors_1.AssistantError.clarificationInvalidOption();
+        }
+        // Atomic claim: only succeeds if the row is still PENDING at commit time.
+        // Under a concurrent same-token race, exactly one caller wins this single
+        // UPDATE; the loser observes count === 0 and reports the winner's outcome.
+        // Runs against the caller-supplied transaction (when provided) so this
+        // claim commits or rolls back together with whatever downstream work
+        // (child clarification / draft creation, Assistant lifecycle persistence)
+        // the caller performs in that same transaction.
+        const client = options.transaction ?? db;
+        const claimed = await client.clarificationRequest.updateMany({
+            where: { id: request.id, status: 'PENDING' },
+            data: { status: 'CONSUMED', consumedAt: now },
+        });
+        if (claimed.count !== 1) {
+            const current = await client.clarificationRequest.findUniqueOrThrow({ where: { id: request.id } });
+            throw terminalStatusError(current.status, current.terminalCode);
+        }
+        const trustedContext = request.trustedContext;
+        return {
+            clarificationId: request.id,
+            entityType: request.entityType,
+            status: 'CONSUMED',
+            selectedCandidateId: matched.candidateId,
+            selectedDisplayLabel: matched.displayLabel,
+            trustedContext,
+            previousTrustedContext: trustedContext,
+            ...(request.parentId ? { parentId: request.parentId } : {}),
+        };
     }
     // ---- Cancel ----------------------------------------------------------------
-    async function cancel(input) {
-        await db.$transaction(async (tx) => {
-            const request = await tx.clarificationRequest.findFirst({
-                where: { id: input.clarificationId, userId: input.userId, status: 'PENDING' },
-            });
-            if (!request) {
-                throw errors_1.AssistantError.conversationNotContinuable();
-            }
-            await tx.clarificationRequest.update({
-                where: { id: request.id },
-                data: {
-                    status: 'CANCELLED',
-                    cancelledAt: new Date(),
-                    terminalCode: input.reason || 'user_cancelled',
-                    restartRequired: true,
-                },
-            });
+    async function cancel(input, options = {}) {
+        // Plain (unlocked) read, same rationale as select(): a non-PENDING match
+        // must produce its specific terminal outcome, not be folded into the
+        // claim transaction below.
+        const request = await db.clarificationRequest.findFirst({
+            where: {
+                id: input.clarificationId,
+                userId: input.userId,
+                ...(input.conversationId ? { conversationId: input.conversationId } : {}),
+            },
         });
+        if (!request) {
+            throw errors_1.AssistantError.clarificationNotFound();
+        }
+        // Repeated cancellation is idempotent and safe — already-cancelled is a
+        // no-op success, not an error.
+        if (request.status === 'CANCELLED')
+            return;
+        if (request.status !== 'PENDING') {
+            throw terminalStatusError(request.status, request.terminalCode);
+        }
+        // Lifecycle (expiry) is resolved from database time before the
+        // cancellation claim, and — like the other early terminalizations — must
+        // commit even though the caller receives an error, so it runs against
+        // `db` directly rather than the claim transaction below.
+        const now = await dbNow(db);
+        if (request.expiresAt <= now) {
+            await terminalizeOrReportActual(db, request.id, EXPIRED_TERMINAL_CODE, () => errors_1.AssistantError.clarificationExpired());
+        }
+        // Atomic claim, same race-safety rationale as select().
+        const client = options.transaction ?? db;
+        const claimed = await client.clarificationRequest.updateMany({
+            where: { id: request.id, status: 'PENDING' },
+            data: {
+                status: 'CANCELLED',
+                cancelledAt: now,
+                terminalCode: input.reason || 'user_cancelled',
+                restartRequired: true,
+            },
+        });
+        if (claimed.count !== 1) {
+            const current = await client.clarificationRequest.findUniqueOrThrow({ where: { id: request.id } });
+            if (current.status === 'CANCELLED')
+                return;
+            throw terminalStatusError(current.status, current.terminalCode);
+        }
     }
     // ---- State projection ------------------------------------------------------
     async function getAssistantState(userId, conversationId) {
@@ -188,6 +313,7 @@ function createClarificationService(db) {
                 label: opt.displayLabel,
                 ...(opt.discriminator ? { discriminator: opt.discriminator } : {}),
             })),
+            expiresAt: activeRequest.expiresAt.toISOString(),
         } : undefined;
         const safeDraft = pendingDraft ? {
             draftId: pendingDraft.id,
@@ -227,12 +353,23 @@ function createClarificationService(db) {
     function buildConsumedResult(consumedClarificationId) {
         return { consumedClarificationId };
     }
+    /**
+     * Runs `work` in a single interactive Prisma transaction and returns its
+     * result. Callers (application service) use this to make the clarification
+     * claim, any child clarification / draft creation, and Assistant lifecycle
+     * persistence commit or roll back together. Reuses `existing` instead of
+     * opening a nested transaction when the caller is already inside one.
+     */
+    function runInTransaction(work, existing) {
+        return existing ? work(existing) : db.$transaction(work);
+    }
     return {
         create,
         select,
         cancel,
         getAssistantState,
         buildConsumedResult,
+        runInTransaction,
         // Exported for tests only
         _digestToken: digestToken,
         _generateToken: generateToken,
