@@ -85,4 +85,3 @@ export interface WalletReconciliation {
  * `grandTotalByInstallment` supplies the full debt for installment expenses.
  */
 export declare function reconcileWalletBalances(wallets: WalletSnapshot[], transactions: LedgerTransaction[], grandTotalByInstallment?: Map<string, Prisma.Decimal>): WalletReconciliation[];
-//# sourceMappingURL=transactionBalance.d.ts.map

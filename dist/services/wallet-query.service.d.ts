@@ -10,4 +10,3 @@ export declare const walletQueryService: {
     getNetWorth: (input: GetNetWorthInput) => Promise<WalletTotals>;
     getWalletSparkline: (input: GetWalletSparklineInput) => Promise<WalletSparklinePoint[]>;
 };
-//# sourceMappingURL=wallet-query.service.d.ts.map

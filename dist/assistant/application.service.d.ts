@@ -5,6 +5,7 @@ import type { AssistantConversationService } from './conversation.service';
 import type { AssistantFinancialDraftService } from './financial-draft.service';
 import type { AssistantContextService, BuildAssistantExecutionContextInput } from './context.service';
 import { type EntityResolutionService } from './entity-resolution';
+import type { ClarificationService } from './clarification.service';
 export interface AssistantApplicationResult {
     response: AssistantCanonicalResponse;
     httpStatus: number;
@@ -16,9 +17,12 @@ export declare function createAssistantApplicationService(deps: {
     handlerRegistry: HandlerRegistry;
     financialDrafts?: AssistantFinancialDraftService;
     entityResolution?: EntityResolutionService;
+    clarification?: ClarificationService;
 }): {
     execute: (userId: string, correlationId: string, request: AssistantCanonicalRequest) => Promise<AssistantApplicationResult>;
     prepareProviderExecution: (input: BuildAssistantExecutionContextInput) => Promise<import("./context.types").AssistantContext>;
+    selectClarification: (userId: string, correlationId: string, token: string, conversationId: string) => Promise<AssistantApplicationResult>;
+    cancelClarification: (userId: string, correlationId: string, clarificationId: string, conversationId: string) => Promise<AssistantApplicationResult>;
+    getAssistantState: (userId: string, conversationId: string) => Promise<import("./clarification.types").AssistantStateProjection>;
 };
 export type AssistantApplicationService = ReturnType<typeof createAssistantApplicationService>;
-//# sourceMappingURL=application.service.d.ts.map

@@ -11,4 +11,3 @@ export declare const transactionService: {
     deleteTransaction: (input: DeleteTransactionInput) => Promise<DeleteTransactionResult>;
 };
 export type TransactionService = ReturnType<typeof createTransactionService>;
-//# sourceMappingURL=transaction.service.d.ts.map

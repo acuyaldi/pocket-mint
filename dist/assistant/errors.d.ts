@@ -25,4 +25,3 @@ export declare class AssistantError extends Error {
     static draftConflict(status: string): AssistantError;
     static idempotencyConflict(): AssistantError;
 }
-//# sourceMappingURL=errors.d.ts.map

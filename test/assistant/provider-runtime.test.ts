@@ -68,7 +68,7 @@ describe('provider-safe capability catalogue and prompt', () => {
     });
     expect(catalog[1]).toMatchObject({
       category: 'transaction.create',
-      requiredArguments: ['amount', 'categoryReference', 'date', 'merchantReference', 'type', 'walletReference'],
+      requiredArguments: ['amount', 'categoryId', 'date', 'type', 'walletReference'],
       optionalArguments: ['description'],
       confirmationMayBeRequired: true,
     });

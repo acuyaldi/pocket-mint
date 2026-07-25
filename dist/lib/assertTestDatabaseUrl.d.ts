@@ -8,4 +8,3 @@
  * skipping — against the wrong database.
  */
 export declare function assertTestDatabaseUrl(rawUrl: string): void;
-//# sourceMappingURL=assertTestDatabaseUrl.d.ts.map

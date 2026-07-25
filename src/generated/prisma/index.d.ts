@@ -54,6 +54,16 @@ export type AssistantToolExecution = $Result.DefaultSelection<Prisma.$AssistantT
  */
 export type AssistantProviderExecution = $Result.DefaultSelection<Prisma.$AssistantProviderExecutionPayload>
 /**
+ * Model ClarificationRequest
+ *
+ */
+export type ClarificationRequest = $Result.DefaultSelection<Prisma.$ClarificationRequestPayload>
+/**
+ * Model ClarificationOption
+ *
+ */
+export type ClarificationOption = $Result.DefaultSelection<Prisma.$ClarificationOptionPayload>
+/**
  * Model Wallet
  *
  */
@@ -179,6 +189,16 @@ export const AssistantFinancialDraftStatus: {
 export type AssistantFinancialDraftStatus = (typeof AssistantFinancialDraftStatus)[keyof typeof AssistantFinancialDraftStatus]
 
 
+export const AssistantClarificationStatus: {
+  PENDING: 'PENDING',
+  CONSUMED: 'CONSUMED',
+  CANCELLED: 'CANCELLED',
+  STALE: 'STALE'
+};
+
+export type AssistantClarificationStatus = (typeof AssistantClarificationStatus)[keyof typeof AssistantClarificationStatus]
+
+
 export const WalletType: {
   CASH: 'CASH',
   BANK: 'BANK',
@@ -288,6 +308,10 @@ export const AssistantProviderExecutionStatus: typeof $Enums.AssistantProviderEx
 export type AssistantFinancialDraftStatus = $Enums.AssistantFinancialDraftStatus
 
 export const AssistantFinancialDraftStatus: typeof $Enums.AssistantFinancialDraftStatus
+
+export type AssistantClarificationStatus = $Enums.AssistantClarificationStatus
+
+export const AssistantClarificationStatus: typeof $Enums.AssistantClarificationStatus
 
 export type WalletType = $Enums.WalletType
 
@@ -525,6 +549,26 @@ export class PrismaClient<
     * ```
     */
   get assistantProviderExecution(): Prisma.AssistantProviderExecutionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.clarificationRequest`: Exposes CRUD operations for the **ClarificationRequest** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ClarificationRequests
+    * const clarificationRequests = await prisma.clarificationRequest.findMany()
+    * ```
+    */
+  get clarificationRequest(): Prisma.ClarificationRequestDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.clarificationOption`: Exposes CRUD operations for the **ClarificationOption** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ClarificationOptions
+    * const clarificationOptions = await prisma.clarificationOption.findMany()
+    * ```
+    */
+  get clarificationOption(): Prisma.ClarificationOptionDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.wallet`: Exposes CRUD operations for the **Wallet** model.
@@ -1057,6 +1101,8 @@ export namespace Prisma {
     AssistantIdempotencyRecord: 'AssistantIdempotencyRecord',
     AssistantToolExecution: 'AssistantToolExecution',
     AssistantProviderExecution: 'AssistantProviderExecution',
+    ClarificationRequest: 'ClarificationRequest',
+    ClarificationOption: 'ClarificationOption',
     Wallet: 'Wallet',
     Category: 'Category',
     MerchantMapping: 'MerchantMapping',
@@ -1081,7 +1127,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "assistantConversation" | "assistantTurn" | "assistantMessage" | "assistantFinancialDraft" | "assistantIdempotencyRecord" | "assistantToolExecution" | "assistantProviderExecution" | "wallet" | "category" | "merchantMapping" | "transaction" | "installment" | "recurringTransactionTemplate" | "recurringReminderEvent" | "savingGoal" | "budget"
+      modelProps: "user" | "assistantConversation" | "assistantTurn" | "assistantMessage" | "assistantFinancialDraft" | "assistantIdempotencyRecord" | "assistantToolExecution" | "assistantProviderExecution" | "clarificationRequest" | "clarificationOption" | "wallet" | "category" | "merchantMapping" | "transaction" | "installment" | "recurringTransactionTemplate" | "recurringReminderEvent" | "savingGoal" | "budget"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1674,6 +1720,154 @@ export namespace Prisma {
           count: {
             args: Prisma.AssistantProviderExecutionCountArgs<ExtArgs>
             result: $Utils.Optional<AssistantProviderExecutionCountAggregateOutputType> | number
+          }
+        }
+      }
+      ClarificationRequest: {
+        payload: Prisma.$ClarificationRequestPayload<ExtArgs>
+        fields: Prisma.ClarificationRequestFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ClarificationRequestFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationRequestPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ClarificationRequestFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationRequestPayload>
+          }
+          findFirst: {
+            args: Prisma.ClarificationRequestFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationRequestPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ClarificationRequestFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationRequestPayload>
+          }
+          findMany: {
+            args: Prisma.ClarificationRequestFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationRequestPayload>[]
+          }
+          create: {
+            args: Prisma.ClarificationRequestCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationRequestPayload>
+          }
+          createMany: {
+            args: Prisma.ClarificationRequestCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ClarificationRequestCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationRequestPayload>[]
+          }
+          delete: {
+            args: Prisma.ClarificationRequestDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationRequestPayload>
+          }
+          update: {
+            args: Prisma.ClarificationRequestUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationRequestPayload>
+          }
+          deleteMany: {
+            args: Prisma.ClarificationRequestDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ClarificationRequestUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ClarificationRequestUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationRequestPayload>[]
+          }
+          upsert: {
+            args: Prisma.ClarificationRequestUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationRequestPayload>
+          }
+          aggregate: {
+            args: Prisma.ClarificationRequestAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateClarificationRequest>
+          }
+          groupBy: {
+            args: Prisma.ClarificationRequestGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ClarificationRequestGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ClarificationRequestCountArgs<ExtArgs>
+            result: $Utils.Optional<ClarificationRequestCountAggregateOutputType> | number
+          }
+        }
+      }
+      ClarificationOption: {
+        payload: Prisma.$ClarificationOptionPayload<ExtArgs>
+        fields: Prisma.ClarificationOptionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ClarificationOptionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationOptionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ClarificationOptionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationOptionPayload>
+          }
+          findFirst: {
+            args: Prisma.ClarificationOptionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationOptionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ClarificationOptionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationOptionPayload>
+          }
+          findMany: {
+            args: Prisma.ClarificationOptionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationOptionPayload>[]
+          }
+          create: {
+            args: Prisma.ClarificationOptionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationOptionPayload>
+          }
+          createMany: {
+            args: Prisma.ClarificationOptionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ClarificationOptionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationOptionPayload>[]
+          }
+          delete: {
+            args: Prisma.ClarificationOptionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationOptionPayload>
+          }
+          update: {
+            args: Prisma.ClarificationOptionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationOptionPayload>
+          }
+          deleteMany: {
+            args: Prisma.ClarificationOptionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ClarificationOptionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ClarificationOptionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationOptionPayload>[]
+          }
+          upsert: {
+            args: Prisma.ClarificationOptionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClarificationOptionPayload>
+          }
+          aggregate: {
+            args: Prisma.ClarificationOptionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateClarificationOption>
+          }
+          groupBy: {
+            args: Prisma.ClarificationOptionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ClarificationOptionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ClarificationOptionCountArgs<ExtArgs>
+            result: $Utils.Optional<ClarificationOptionCountAggregateOutputType> | number
           }
         }
       }
@@ -2459,6 +2653,8 @@ export namespace Prisma {
     assistantIdempotencyRecord?: AssistantIdempotencyRecordOmit
     assistantToolExecution?: AssistantToolExecutionOmit
     assistantProviderExecution?: AssistantProviderExecutionOmit
+    clarificationRequest?: ClarificationRequestOmit
+    clarificationOption?: ClarificationOptionOmit
     wallet?: WalletOmit
     category?: CategoryOmit
     merchantMapping?: MerchantMappingOmit
@@ -2560,6 +2756,7 @@ export namespace Prisma {
     assistantFinancialDrafts: number
     assistantIdempotencyRecords: number
     assistantProviderExecutions: number
+    clarificationRequests: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2575,6 +2772,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: boolean | UserCountOutputTypeCountAssistantFinancialDraftsArgs
     assistantIdempotencyRecords?: boolean | UserCountOutputTypeCountAssistantIdempotencyRecordsArgs
     assistantProviderExecutions?: boolean | UserCountOutputTypeCountAssistantProviderExecutionsArgs
+    clarificationRequests?: boolean | UserCountOutputTypeCountClarificationRequestsArgs
   }
 
   // Custom InputTypes
@@ -2672,6 +2870,13 @@ export namespace Prisma {
     where?: AssistantProviderExecutionWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountClarificationRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClarificationRequestWhereInput
+  }
+
 
   /**
    * Count Type AssistantConversationCountOutputType
@@ -2683,6 +2888,7 @@ export namespace Prisma {
     toolExecutions: number
     financialDrafts: number
     providerExecutions: number
+    clarificationRequests: number
   }
 
   export type AssistantConversationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2691,6 +2897,7 @@ export namespace Prisma {
     toolExecutions?: boolean | AssistantConversationCountOutputTypeCountToolExecutionsArgs
     financialDrafts?: boolean | AssistantConversationCountOutputTypeCountFinancialDraftsArgs
     providerExecutions?: boolean | AssistantConversationCountOutputTypeCountProviderExecutionsArgs
+    clarificationRequests?: boolean | AssistantConversationCountOutputTypeCountClarificationRequestsArgs
   }
 
   // Custom InputTypes
@@ -2739,6 +2946,13 @@ export namespace Prisma {
     where?: AssistantProviderExecutionWhereInput
   }
 
+  /**
+   * AssistantConversationCountOutputType without action
+   */
+  export type AssistantConversationCountOutputTypeCountClarificationRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClarificationRequestWhereInput
+  }
+
 
   /**
    * Count Type AssistantTurnCountOutputType
@@ -2749,6 +2963,7 @@ export namespace Prisma {
     toolExecutions: number
     financialDrafts: number
     providerExecutions: number
+    clarificationRequests: number
   }
 
   export type AssistantTurnCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2756,6 +2971,7 @@ export namespace Prisma {
     toolExecutions?: boolean | AssistantTurnCountOutputTypeCountToolExecutionsArgs
     financialDrafts?: boolean | AssistantTurnCountOutputTypeCountFinancialDraftsArgs
     providerExecutions?: boolean | AssistantTurnCountOutputTypeCountProviderExecutionsArgs
+    clarificationRequests?: boolean | AssistantTurnCountOutputTypeCountClarificationRequestsArgs
   }
 
   // Custom InputTypes
@@ -2797,6 +3013,13 @@ export namespace Prisma {
     where?: AssistantProviderExecutionWhereInput
   }
 
+  /**
+   * AssistantTurnCountOutputType without action
+   */
+  export type AssistantTurnCountOutputTypeCountClarificationRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClarificationRequestWhereInput
+  }
+
 
   /**
    * Count Type AssistantFinancialDraftCountOutputType
@@ -2826,6 +3049,46 @@ export namespace Prisma {
    */
   export type AssistantFinancialDraftCountOutputTypeCountIdempotencyRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AssistantIdempotencyRecordWhereInput
+  }
+
+
+  /**
+   * Count Type ClarificationRequestCountOutputType
+   */
+
+  export type ClarificationRequestCountOutputType = {
+    children: number
+    options: number
+  }
+
+  export type ClarificationRequestCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    children?: boolean | ClarificationRequestCountOutputTypeCountChildrenArgs
+    options?: boolean | ClarificationRequestCountOutputTypeCountOptionsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ClarificationRequestCountOutputType without action
+   */
+  export type ClarificationRequestCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationRequestCountOutputType
+     */
+    select?: ClarificationRequestCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ClarificationRequestCountOutputType without action
+   */
+  export type ClarificationRequestCountOutputTypeCountChildrenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClarificationRequestWhereInput
+  }
+
+  /**
+   * ClarificationRequestCountOutputType without action
+   */
+  export type ClarificationRequestCountOutputTypeCountOptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClarificationOptionWhereInput
   }
 
 
@@ -3235,6 +3498,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: boolean | User$assistantFinancialDraftsArgs<ExtArgs>
     assistantIdempotencyRecords?: boolean | User$assistantIdempotencyRecordsArgs<ExtArgs>
     assistantProviderExecutions?: boolean | User$assistantProviderExecutionsArgs<ExtArgs>
+    clarificationRequests?: boolean | User$clarificationRequestsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3279,6 +3543,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: boolean | User$assistantFinancialDraftsArgs<ExtArgs>
     assistantIdempotencyRecords?: boolean | User$assistantIdempotencyRecordsArgs<ExtArgs>
     assistantProviderExecutions?: boolean | User$assistantProviderExecutionsArgs<ExtArgs>
+    clarificationRequests?: boolean | User$clarificationRequestsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3299,6 +3564,7 @@ export namespace Prisma {
       assistantFinancialDrafts: Prisma.$AssistantFinancialDraftPayload<ExtArgs>[]
       assistantIdempotencyRecords: Prisma.$AssistantIdempotencyRecordPayload<ExtArgs>[]
       assistantProviderExecutions: Prisma.$AssistantProviderExecutionPayload<ExtArgs>[]
+      clarificationRequests: Prisma.$ClarificationRequestPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3713,6 +3979,7 @@ export namespace Prisma {
     assistantFinancialDrafts<T extends User$assistantFinancialDraftsArgs<ExtArgs> = {}>(args?: Subset<T, User$assistantFinancialDraftsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AssistantFinancialDraftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     assistantIdempotencyRecords<T extends User$assistantIdempotencyRecordsArgs<ExtArgs> = {}>(args?: Subset<T, User$assistantIdempotencyRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AssistantIdempotencyRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     assistantProviderExecutions<T extends User$assistantProviderExecutionsArgs<ExtArgs> = {}>(args?: Subset<T, User$assistantProviderExecutionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AssistantProviderExecutionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    clarificationRequests<T extends User$clarificationRequestsArgs<ExtArgs> = {}>(args?: Subset<T, User$clarificationRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClarificationRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4429,6 +4696,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.clarificationRequests
+   */
+  export type User$clarificationRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationRequest
+     */
+    select?: ClarificationRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationRequest
+     */
+    omit?: ClarificationRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationRequestInclude<ExtArgs> | null
+    where?: ClarificationRequestWhereInput
+    orderBy?: ClarificationRequestOrderByWithRelationInput | ClarificationRequestOrderByWithRelationInput[]
+    cursor?: ClarificationRequestWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ClarificationRequestScalarFieldEnum | ClarificationRequestScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4641,6 +4932,7 @@ export namespace Prisma {
     toolExecutions?: boolean | AssistantConversation$toolExecutionsArgs<ExtArgs>
     financialDrafts?: boolean | AssistantConversation$financialDraftsArgs<ExtArgs>
     providerExecutions?: boolean | AssistantConversation$providerExecutionsArgs<ExtArgs>
+    clarificationRequests?: boolean | AssistantConversation$clarificationRequestsArgs<ExtArgs>
     _count?: boolean | AssistantConversationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["assistantConversation"]>
 
@@ -4687,6 +4979,7 @@ export namespace Prisma {
     toolExecutions?: boolean | AssistantConversation$toolExecutionsArgs<ExtArgs>
     financialDrafts?: boolean | AssistantConversation$financialDraftsArgs<ExtArgs>
     providerExecutions?: boolean | AssistantConversation$providerExecutionsArgs<ExtArgs>
+    clarificationRequests?: boolean | AssistantConversation$clarificationRequestsArgs<ExtArgs>
     _count?: boolean | AssistantConversationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AssistantConversationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4705,6 +4998,7 @@ export namespace Prisma {
       toolExecutions: Prisma.$AssistantToolExecutionPayload<ExtArgs>[]
       financialDrafts: Prisma.$AssistantFinancialDraftPayload<ExtArgs>[]
       providerExecutions: Prisma.$AssistantProviderExecutionPayload<ExtArgs>[]
+      clarificationRequests: Prisma.$ClarificationRequestPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5115,6 +5409,7 @@ export namespace Prisma {
     toolExecutions<T extends AssistantConversation$toolExecutionsArgs<ExtArgs> = {}>(args?: Subset<T, AssistantConversation$toolExecutionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AssistantToolExecutionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     financialDrafts<T extends AssistantConversation$financialDraftsArgs<ExtArgs> = {}>(args?: Subset<T, AssistantConversation$financialDraftsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AssistantFinancialDraftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     providerExecutions<T extends AssistantConversation$providerExecutionsArgs<ExtArgs> = {}>(args?: Subset<T, AssistantConversation$providerExecutionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AssistantProviderExecutionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    clarificationRequests<T extends AssistantConversation$clarificationRequestsArgs<ExtArgs> = {}>(args?: Subset<T, AssistantConversation$clarificationRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClarificationRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5673,6 +5968,30 @@ export namespace Prisma {
   }
 
   /**
+   * AssistantConversation.clarificationRequests
+   */
+  export type AssistantConversation$clarificationRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationRequest
+     */
+    select?: ClarificationRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationRequest
+     */
+    omit?: ClarificationRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationRequestInclude<ExtArgs> | null
+    where?: ClarificationRequestWhereInput
+    orderBy?: ClarificationRequestOrderByWithRelationInput | ClarificationRequestOrderByWithRelationInput[]
+    cursor?: ClarificationRequestWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ClarificationRequestScalarFieldEnum | ClarificationRequestScalarFieldEnum[]
+  }
+
+  /**
    * AssistantConversation without action
    */
   export type AssistantConversationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5908,6 +6227,7 @@ export namespace Prisma {
     toolExecutions?: boolean | AssistantTurn$toolExecutionsArgs<ExtArgs>
     financialDrafts?: boolean | AssistantTurn$financialDraftsArgs<ExtArgs>
     providerExecutions?: boolean | AssistantTurn$providerExecutionsArgs<ExtArgs>
+    clarificationRequests?: boolean | AssistantTurn$clarificationRequestsArgs<ExtArgs>
     _count?: boolean | AssistantTurnCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["assistantTurn"]>
 
@@ -5962,6 +6282,7 @@ export namespace Prisma {
     toolExecutions?: boolean | AssistantTurn$toolExecutionsArgs<ExtArgs>
     financialDrafts?: boolean | AssistantTurn$financialDraftsArgs<ExtArgs>
     providerExecutions?: boolean | AssistantTurn$providerExecutionsArgs<ExtArgs>
+    clarificationRequests?: boolean | AssistantTurn$clarificationRequestsArgs<ExtArgs>
     _count?: boolean | AssistantTurnCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AssistantTurnIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5979,6 +6300,7 @@ export namespace Prisma {
       toolExecutions: Prisma.$AssistantToolExecutionPayload<ExtArgs>[]
       financialDrafts: Prisma.$AssistantFinancialDraftPayload<ExtArgs>[]
       providerExecutions: Prisma.$AssistantProviderExecutionPayload<ExtArgs>[]
+      clarificationRequests: Prisma.$ClarificationRequestPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6391,6 +6713,7 @@ export namespace Prisma {
     toolExecutions<T extends AssistantTurn$toolExecutionsArgs<ExtArgs> = {}>(args?: Subset<T, AssistantTurn$toolExecutionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AssistantToolExecutionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     financialDrafts<T extends AssistantTurn$financialDraftsArgs<ExtArgs> = {}>(args?: Subset<T, AssistantTurn$financialDraftsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AssistantFinancialDraftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     providerExecutions<T extends AssistantTurn$providerExecutionsArgs<ExtArgs> = {}>(args?: Subset<T, AssistantTurn$providerExecutionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AssistantProviderExecutionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    clarificationRequests<T extends AssistantTurn$clarificationRequestsArgs<ExtArgs> = {}>(args?: Subset<T, AssistantTurn$clarificationRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClarificationRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6925,6 +7248,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AssistantProviderExecutionScalarFieldEnum | AssistantProviderExecutionScalarFieldEnum[]
+  }
+
+  /**
+   * AssistantTurn.clarificationRequests
+   */
+  export type AssistantTurn$clarificationRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationRequest
+     */
+    select?: ClarificationRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationRequest
+     */
+    omit?: ClarificationRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationRequestInclude<ExtArgs> | null
+    where?: ClarificationRequestWhereInput
+    orderBy?: ClarificationRequestOrderByWithRelationInput | ClarificationRequestOrderByWithRelationInput[]
+    cursor?: ClarificationRequestWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ClarificationRequestScalarFieldEnum | ClarificationRequestScalarFieldEnum[]
   }
 
   /**
@@ -13138,6 +13485,2398 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: AssistantProviderExecutionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ClarificationRequest
+   */
+
+  export type AggregateClarificationRequest = {
+    _count: ClarificationRequestCountAggregateOutputType | null
+    _min: ClarificationRequestMinAggregateOutputType | null
+    _max: ClarificationRequestMaxAggregateOutputType | null
+  }
+
+  export type ClarificationRequestMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    conversationId: string | null
+    originatingTurnId: string | null
+    executionId: string | null
+    parentId: string | null
+    entityType: string | null
+    status: $Enums.AssistantClarificationStatus | null
+    prompt: string | null
+    terminalCode: string | null
+    restartRequired: boolean | null
+    consumedAt: Date | null
+    cancelledAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ClarificationRequestMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    conversationId: string | null
+    originatingTurnId: string | null
+    executionId: string | null
+    parentId: string | null
+    entityType: string | null
+    status: $Enums.AssistantClarificationStatus | null
+    prompt: string | null
+    terminalCode: string | null
+    restartRequired: boolean | null
+    consumedAt: Date | null
+    cancelledAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ClarificationRequestCountAggregateOutputType = {
+    id: number
+    userId: number
+    conversationId: number
+    originatingTurnId: number
+    executionId: number
+    parentId: number
+    entityType: number
+    status: number
+    trustedContext: number
+    prompt: number
+    terminalCode: number
+    restartRequired: number
+    consumedAt: number
+    cancelledAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ClarificationRequestMinAggregateInputType = {
+    id?: true
+    userId?: true
+    conversationId?: true
+    originatingTurnId?: true
+    executionId?: true
+    parentId?: true
+    entityType?: true
+    status?: true
+    prompt?: true
+    terminalCode?: true
+    restartRequired?: true
+    consumedAt?: true
+    cancelledAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ClarificationRequestMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    conversationId?: true
+    originatingTurnId?: true
+    executionId?: true
+    parentId?: true
+    entityType?: true
+    status?: true
+    prompt?: true
+    terminalCode?: true
+    restartRequired?: true
+    consumedAt?: true
+    cancelledAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ClarificationRequestCountAggregateInputType = {
+    id?: true
+    userId?: true
+    conversationId?: true
+    originatingTurnId?: true
+    executionId?: true
+    parentId?: true
+    entityType?: true
+    status?: true
+    trustedContext?: true
+    prompt?: true
+    terminalCode?: true
+    restartRequired?: true
+    consumedAt?: true
+    cancelledAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ClarificationRequestAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ClarificationRequest to aggregate.
+     */
+    where?: ClarificationRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ClarificationRequests to fetch.
+     */
+    orderBy?: ClarificationRequestOrderByWithRelationInput | ClarificationRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: ClarificationRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ClarificationRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ClarificationRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned ClarificationRequests
+    **/
+    _count?: true | ClarificationRequestCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: ClarificationRequestMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: ClarificationRequestMaxAggregateInputType
+  }
+
+  export type GetClarificationRequestAggregateType<T extends ClarificationRequestAggregateArgs> = {
+        [P in keyof T & keyof AggregateClarificationRequest]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateClarificationRequest[P]>
+      : GetScalarType<T[P], AggregateClarificationRequest[P]>
+  }
+
+
+
+
+  export type ClarificationRequestGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClarificationRequestWhereInput
+    orderBy?: ClarificationRequestOrderByWithAggregationInput | ClarificationRequestOrderByWithAggregationInput[]
+    by: ClarificationRequestScalarFieldEnum[] | ClarificationRequestScalarFieldEnum
+    having?: ClarificationRequestScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ClarificationRequestCountAggregateInputType | true
+    _min?: ClarificationRequestMinAggregateInputType
+    _max?: ClarificationRequestMaxAggregateInputType
+  }
+
+  export type ClarificationRequestGroupByOutputType = {
+    id: string
+    userId: string
+    conversationId: string
+    originatingTurnId: string
+    executionId: string
+    parentId: string | null
+    entityType: string
+    status: $Enums.AssistantClarificationStatus
+    trustedContext: JsonValue
+    prompt: string
+    terminalCode: string | null
+    restartRequired: boolean
+    consumedAt: Date | null
+    cancelledAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: ClarificationRequestCountAggregateOutputType | null
+    _min: ClarificationRequestMinAggregateOutputType | null
+    _max: ClarificationRequestMaxAggregateOutputType | null
+  }
+
+  type GetClarificationRequestGroupByPayload<T extends ClarificationRequestGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ClarificationRequestGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ClarificationRequestGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ClarificationRequestGroupByOutputType[P]>
+            : GetScalarType<T[P], ClarificationRequestGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ClarificationRequestSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    conversationId?: boolean
+    originatingTurnId?: boolean
+    executionId?: boolean
+    parentId?: boolean
+    entityType?: boolean
+    status?: boolean
+    trustedContext?: boolean
+    prompt?: boolean
+    terminalCode?: boolean
+    restartRequired?: boolean
+    consumedAt?: boolean
+    cancelledAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    conversation?: boolean | AssistantConversationDefaultArgs<ExtArgs>
+    originatingTurn?: boolean | AssistantTurnDefaultArgs<ExtArgs>
+    parent?: boolean | ClarificationRequest$parentArgs<ExtArgs>
+    children?: boolean | ClarificationRequest$childrenArgs<ExtArgs>
+    options?: boolean | ClarificationRequest$optionsArgs<ExtArgs>
+    _count?: boolean | ClarificationRequestCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clarificationRequest"]>
+
+  export type ClarificationRequestSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    conversationId?: boolean
+    originatingTurnId?: boolean
+    executionId?: boolean
+    parentId?: boolean
+    entityType?: boolean
+    status?: boolean
+    trustedContext?: boolean
+    prompt?: boolean
+    terminalCode?: boolean
+    restartRequired?: boolean
+    consumedAt?: boolean
+    cancelledAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    conversation?: boolean | AssistantConversationDefaultArgs<ExtArgs>
+    originatingTurn?: boolean | AssistantTurnDefaultArgs<ExtArgs>
+    parent?: boolean | ClarificationRequest$parentArgs<ExtArgs>
+  }, ExtArgs["result"]["clarificationRequest"]>
+
+  export type ClarificationRequestSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    conversationId?: boolean
+    originatingTurnId?: boolean
+    executionId?: boolean
+    parentId?: boolean
+    entityType?: boolean
+    status?: boolean
+    trustedContext?: boolean
+    prompt?: boolean
+    terminalCode?: boolean
+    restartRequired?: boolean
+    consumedAt?: boolean
+    cancelledAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    conversation?: boolean | AssistantConversationDefaultArgs<ExtArgs>
+    originatingTurn?: boolean | AssistantTurnDefaultArgs<ExtArgs>
+    parent?: boolean | ClarificationRequest$parentArgs<ExtArgs>
+  }, ExtArgs["result"]["clarificationRequest"]>
+
+  export type ClarificationRequestSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    conversationId?: boolean
+    originatingTurnId?: boolean
+    executionId?: boolean
+    parentId?: boolean
+    entityType?: boolean
+    status?: boolean
+    trustedContext?: boolean
+    prompt?: boolean
+    terminalCode?: boolean
+    restartRequired?: boolean
+    consumedAt?: boolean
+    cancelledAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ClarificationRequestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "conversationId" | "originatingTurnId" | "executionId" | "parentId" | "entityType" | "status" | "trustedContext" | "prompt" | "terminalCode" | "restartRequired" | "consumedAt" | "cancelledAt" | "createdAt" | "updatedAt", ExtArgs["result"]["clarificationRequest"]>
+  export type ClarificationRequestInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    conversation?: boolean | AssistantConversationDefaultArgs<ExtArgs>
+    originatingTurn?: boolean | AssistantTurnDefaultArgs<ExtArgs>
+    parent?: boolean | ClarificationRequest$parentArgs<ExtArgs>
+    children?: boolean | ClarificationRequest$childrenArgs<ExtArgs>
+    options?: boolean | ClarificationRequest$optionsArgs<ExtArgs>
+    _count?: boolean | ClarificationRequestCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ClarificationRequestIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    conversation?: boolean | AssistantConversationDefaultArgs<ExtArgs>
+    originatingTurn?: boolean | AssistantTurnDefaultArgs<ExtArgs>
+    parent?: boolean | ClarificationRequest$parentArgs<ExtArgs>
+  }
+  export type ClarificationRequestIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    conversation?: boolean | AssistantConversationDefaultArgs<ExtArgs>
+    originatingTurn?: boolean | AssistantTurnDefaultArgs<ExtArgs>
+    parent?: boolean | ClarificationRequest$parentArgs<ExtArgs>
+  }
+
+  export type $ClarificationRequestPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ClarificationRequest"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      conversation: Prisma.$AssistantConversationPayload<ExtArgs>
+      originatingTurn: Prisma.$AssistantTurnPayload<ExtArgs>
+      parent: Prisma.$ClarificationRequestPayload<ExtArgs> | null
+      children: Prisma.$ClarificationRequestPayload<ExtArgs>[]
+      options: Prisma.$ClarificationOptionPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      conversationId: string
+      originatingTurnId: string
+      executionId: string
+      parentId: string | null
+      entityType: string
+      status: $Enums.AssistantClarificationStatus
+      trustedContext: Prisma.JsonValue
+      prompt: string
+      terminalCode: string | null
+      restartRequired: boolean
+      consumedAt: Date | null
+      cancelledAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["clarificationRequest"]>
+    composites: {}
+  }
+
+  type ClarificationRequestGetPayload<S extends boolean | null | undefined | ClarificationRequestDefaultArgs> = $Result.GetResult<Prisma.$ClarificationRequestPayload, S>
+
+  type ClarificationRequestCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ClarificationRequestFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ClarificationRequestCountAggregateInputType | true
+    }
+
+  export interface ClarificationRequestDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ClarificationRequest'], meta: { name: 'ClarificationRequest' } }
+    /**
+     * Find zero or one ClarificationRequest that matches the filter.
+     * @param {ClarificationRequestFindUniqueArgs} args - Arguments to find a ClarificationRequest
+     * @example
+     * // Get one ClarificationRequest
+     * const clarificationRequest = await prisma.clarificationRequest.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ClarificationRequestFindUniqueArgs>(args: SelectSubset<T, ClarificationRequestFindUniqueArgs<ExtArgs>>): Prisma__ClarificationRequestClient<$Result.GetResult<Prisma.$ClarificationRequestPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ClarificationRequest that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ClarificationRequestFindUniqueOrThrowArgs} args - Arguments to find a ClarificationRequest
+     * @example
+     * // Get one ClarificationRequest
+     * const clarificationRequest = await prisma.clarificationRequest.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ClarificationRequestFindUniqueOrThrowArgs>(args: SelectSubset<T, ClarificationRequestFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ClarificationRequestClient<$Result.GetResult<Prisma.$ClarificationRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ClarificationRequest that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClarificationRequestFindFirstArgs} args - Arguments to find a ClarificationRequest
+     * @example
+     * // Get one ClarificationRequest
+     * const clarificationRequest = await prisma.clarificationRequest.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ClarificationRequestFindFirstArgs>(args?: SelectSubset<T, ClarificationRequestFindFirstArgs<ExtArgs>>): Prisma__ClarificationRequestClient<$Result.GetResult<Prisma.$ClarificationRequestPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ClarificationRequest that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClarificationRequestFindFirstOrThrowArgs} args - Arguments to find a ClarificationRequest
+     * @example
+     * // Get one ClarificationRequest
+     * const clarificationRequest = await prisma.clarificationRequest.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ClarificationRequestFindFirstOrThrowArgs>(args?: SelectSubset<T, ClarificationRequestFindFirstOrThrowArgs<ExtArgs>>): Prisma__ClarificationRequestClient<$Result.GetResult<Prisma.$ClarificationRequestPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ClarificationRequests that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClarificationRequestFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ClarificationRequests
+     * const clarificationRequests = await prisma.clarificationRequest.findMany()
+     *
+     * // Get first 10 ClarificationRequests
+     * const clarificationRequests = await prisma.clarificationRequest.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const clarificationRequestWithIdOnly = await prisma.clarificationRequest.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends ClarificationRequestFindManyArgs>(args?: SelectSubset<T, ClarificationRequestFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClarificationRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ClarificationRequest.
+     * @param {ClarificationRequestCreateArgs} args - Arguments to create a ClarificationRequest.
+     * @example
+     * // Create one ClarificationRequest
+     * const ClarificationRequest = await prisma.clarificationRequest.create({
+     *   data: {
+     *     // ... data to create a ClarificationRequest
+     *   }
+     * })
+     *
+     */
+    create<T extends ClarificationRequestCreateArgs>(args: SelectSubset<T, ClarificationRequestCreateArgs<ExtArgs>>): Prisma__ClarificationRequestClient<$Result.GetResult<Prisma.$ClarificationRequestPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ClarificationRequests.
+     * @param {ClarificationRequestCreateManyArgs} args - Arguments to create many ClarificationRequests.
+     * @example
+     * // Create many ClarificationRequests
+     * const clarificationRequest = await prisma.clarificationRequest.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends ClarificationRequestCreateManyArgs>(args?: SelectSubset<T, ClarificationRequestCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ClarificationRequests and returns the data saved in the database.
+     * @param {ClarificationRequestCreateManyAndReturnArgs} args - Arguments to create many ClarificationRequests.
+     * @example
+     * // Create many ClarificationRequests
+     * const clarificationRequest = await prisma.clarificationRequest.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many ClarificationRequests and only return the `id`
+     * const clarificationRequestWithIdOnly = await prisma.clarificationRequest.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends ClarificationRequestCreateManyAndReturnArgs>(args?: SelectSubset<T, ClarificationRequestCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClarificationRequestPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ClarificationRequest.
+     * @param {ClarificationRequestDeleteArgs} args - Arguments to delete one ClarificationRequest.
+     * @example
+     * // Delete one ClarificationRequest
+     * const ClarificationRequest = await prisma.clarificationRequest.delete({
+     *   where: {
+     *     // ... filter to delete one ClarificationRequest
+     *   }
+     * })
+     *
+     */
+    delete<T extends ClarificationRequestDeleteArgs>(args: SelectSubset<T, ClarificationRequestDeleteArgs<ExtArgs>>): Prisma__ClarificationRequestClient<$Result.GetResult<Prisma.$ClarificationRequestPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ClarificationRequest.
+     * @param {ClarificationRequestUpdateArgs} args - Arguments to update one ClarificationRequest.
+     * @example
+     * // Update one ClarificationRequest
+     * const clarificationRequest = await prisma.clarificationRequest.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends ClarificationRequestUpdateArgs>(args: SelectSubset<T, ClarificationRequestUpdateArgs<ExtArgs>>): Prisma__ClarificationRequestClient<$Result.GetResult<Prisma.$ClarificationRequestPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ClarificationRequests.
+     * @param {ClarificationRequestDeleteManyArgs} args - Arguments to filter ClarificationRequests to delete.
+     * @example
+     * // Delete a few ClarificationRequests
+     * const { count } = await prisma.clarificationRequest.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends ClarificationRequestDeleteManyArgs>(args?: SelectSubset<T, ClarificationRequestDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ClarificationRequests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClarificationRequestUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ClarificationRequests
+     * const clarificationRequest = await prisma.clarificationRequest.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends ClarificationRequestUpdateManyArgs>(args: SelectSubset<T, ClarificationRequestUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ClarificationRequests and returns the data updated in the database.
+     * @param {ClarificationRequestUpdateManyAndReturnArgs} args - Arguments to update many ClarificationRequests.
+     * @example
+     * // Update many ClarificationRequests
+     * const clarificationRequest = await prisma.clarificationRequest.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more ClarificationRequests and only return the `id`
+     * const clarificationRequestWithIdOnly = await prisma.clarificationRequest.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends ClarificationRequestUpdateManyAndReturnArgs>(args: SelectSubset<T, ClarificationRequestUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClarificationRequestPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ClarificationRequest.
+     * @param {ClarificationRequestUpsertArgs} args - Arguments to update or create a ClarificationRequest.
+     * @example
+     * // Update or create a ClarificationRequest
+     * const clarificationRequest = await prisma.clarificationRequest.upsert({
+     *   create: {
+     *     // ... data to create a ClarificationRequest
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ClarificationRequest we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ClarificationRequestUpsertArgs>(args: SelectSubset<T, ClarificationRequestUpsertArgs<ExtArgs>>): Prisma__ClarificationRequestClient<$Result.GetResult<Prisma.$ClarificationRequestPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ClarificationRequests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClarificationRequestCountArgs} args - Arguments to filter ClarificationRequests to count.
+     * @example
+     * // Count the number of ClarificationRequests
+     * const count = await prisma.clarificationRequest.count({
+     *   where: {
+     *     // ... the filter for the ClarificationRequests we want to count
+     *   }
+     * })
+    **/
+    count<T extends ClarificationRequestCountArgs>(
+      args?: Subset<T, ClarificationRequestCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ClarificationRequestCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ClarificationRequest.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClarificationRequestAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ClarificationRequestAggregateArgs>(args: Subset<T, ClarificationRequestAggregateArgs>): Prisma.PrismaPromise<GetClarificationRequestAggregateType<T>>
+
+    /**
+     * Group by ClarificationRequest.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClarificationRequestGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<
+      T extends ClarificationRequestGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ClarificationRequestGroupByArgs['orderBy'] }
+        : { orderBy?: ClarificationRequestGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ClarificationRequestGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetClarificationRequestGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ClarificationRequest model
+   */
+  readonly fields: ClarificationRequestFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ClarificationRequest.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ClarificationRequestClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    conversation<T extends AssistantConversationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AssistantConversationDefaultArgs<ExtArgs>>): Prisma__AssistantConversationClient<$Result.GetResult<Prisma.$AssistantConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    originatingTurn<T extends AssistantTurnDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AssistantTurnDefaultArgs<ExtArgs>>): Prisma__AssistantTurnClient<$Result.GetResult<Prisma.$AssistantTurnPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    parent<T extends ClarificationRequest$parentArgs<ExtArgs> = {}>(args?: Subset<T, ClarificationRequest$parentArgs<ExtArgs>>): Prisma__ClarificationRequestClient<$Result.GetResult<Prisma.$ClarificationRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    children<T extends ClarificationRequest$childrenArgs<ExtArgs> = {}>(args?: Subset<T, ClarificationRequest$childrenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClarificationRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    options<T extends ClarificationRequest$optionsArgs<ExtArgs> = {}>(args?: Subset<T, ClarificationRequest$optionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClarificationOptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ClarificationRequest model
+   */
+  interface ClarificationRequestFieldRefs {
+    readonly id: FieldRef<"ClarificationRequest", 'String'>
+    readonly userId: FieldRef<"ClarificationRequest", 'String'>
+    readonly conversationId: FieldRef<"ClarificationRequest", 'String'>
+    readonly originatingTurnId: FieldRef<"ClarificationRequest", 'String'>
+    readonly executionId: FieldRef<"ClarificationRequest", 'String'>
+    readonly parentId: FieldRef<"ClarificationRequest", 'String'>
+    readonly entityType: FieldRef<"ClarificationRequest", 'String'>
+    readonly status: FieldRef<"ClarificationRequest", 'AssistantClarificationStatus'>
+    readonly trustedContext: FieldRef<"ClarificationRequest", 'Json'>
+    readonly prompt: FieldRef<"ClarificationRequest", 'String'>
+    readonly terminalCode: FieldRef<"ClarificationRequest", 'String'>
+    readonly restartRequired: FieldRef<"ClarificationRequest", 'Boolean'>
+    readonly consumedAt: FieldRef<"ClarificationRequest", 'DateTime'>
+    readonly cancelledAt: FieldRef<"ClarificationRequest", 'DateTime'>
+    readonly createdAt: FieldRef<"ClarificationRequest", 'DateTime'>
+    readonly updatedAt: FieldRef<"ClarificationRequest", 'DateTime'>
+  }
+
+
+  // Custom InputTypes
+  /**
+   * ClarificationRequest findUnique
+   */
+  export type ClarificationRequestFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationRequest
+     */
+    select?: ClarificationRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationRequest
+     */
+    omit?: ClarificationRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which ClarificationRequest to fetch.
+     */
+    where: ClarificationRequestWhereUniqueInput
+  }
+
+  /**
+   * ClarificationRequest findUniqueOrThrow
+   */
+  export type ClarificationRequestFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationRequest
+     */
+    select?: ClarificationRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationRequest
+     */
+    omit?: ClarificationRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which ClarificationRequest to fetch.
+     */
+    where: ClarificationRequestWhereUniqueInput
+  }
+
+  /**
+   * ClarificationRequest findFirst
+   */
+  export type ClarificationRequestFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationRequest
+     */
+    select?: ClarificationRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationRequest
+     */
+    omit?: ClarificationRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which ClarificationRequest to fetch.
+     */
+    where?: ClarificationRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ClarificationRequests to fetch.
+     */
+    orderBy?: ClarificationRequestOrderByWithRelationInput | ClarificationRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ClarificationRequests.
+     */
+    cursor?: ClarificationRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ClarificationRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ClarificationRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ClarificationRequests.
+     */
+    distinct?: ClarificationRequestScalarFieldEnum | ClarificationRequestScalarFieldEnum[]
+  }
+
+  /**
+   * ClarificationRequest findFirstOrThrow
+   */
+  export type ClarificationRequestFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationRequest
+     */
+    select?: ClarificationRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationRequest
+     */
+    omit?: ClarificationRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which ClarificationRequest to fetch.
+     */
+    where?: ClarificationRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ClarificationRequests to fetch.
+     */
+    orderBy?: ClarificationRequestOrderByWithRelationInput | ClarificationRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ClarificationRequests.
+     */
+    cursor?: ClarificationRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ClarificationRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ClarificationRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ClarificationRequests.
+     */
+    distinct?: ClarificationRequestScalarFieldEnum | ClarificationRequestScalarFieldEnum[]
+  }
+
+  /**
+   * ClarificationRequest findMany
+   */
+  export type ClarificationRequestFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationRequest
+     */
+    select?: ClarificationRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationRequest
+     */
+    omit?: ClarificationRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which ClarificationRequests to fetch.
+     */
+    where?: ClarificationRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ClarificationRequests to fetch.
+     */
+    orderBy?: ClarificationRequestOrderByWithRelationInput | ClarificationRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing ClarificationRequests.
+     */
+    cursor?: ClarificationRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ClarificationRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ClarificationRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ClarificationRequests.
+     */
+    distinct?: ClarificationRequestScalarFieldEnum | ClarificationRequestScalarFieldEnum[]
+  }
+
+  /**
+   * ClarificationRequest create
+   */
+  export type ClarificationRequestCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationRequest
+     */
+    select?: ClarificationRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationRequest
+     */
+    omit?: ClarificationRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationRequestInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ClarificationRequest.
+     */
+    data: XOR<ClarificationRequestCreateInput, ClarificationRequestUncheckedCreateInput>
+  }
+
+  /**
+   * ClarificationRequest createMany
+   */
+  export type ClarificationRequestCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ClarificationRequests.
+     */
+    data: ClarificationRequestCreateManyInput | ClarificationRequestCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ClarificationRequest createManyAndReturn
+   */
+  export type ClarificationRequestCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationRequest
+     */
+    select?: ClarificationRequestSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationRequest
+     */
+    omit?: ClarificationRequestOmit<ExtArgs> | null
+    /**
+     * The data used to create many ClarificationRequests.
+     */
+    data: ClarificationRequestCreateManyInput | ClarificationRequestCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationRequestIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ClarificationRequest update
+   */
+  export type ClarificationRequestUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationRequest
+     */
+    select?: ClarificationRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationRequest
+     */
+    omit?: ClarificationRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationRequestInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ClarificationRequest.
+     */
+    data: XOR<ClarificationRequestUpdateInput, ClarificationRequestUncheckedUpdateInput>
+    /**
+     * Choose, which ClarificationRequest to update.
+     */
+    where: ClarificationRequestWhereUniqueInput
+  }
+
+  /**
+   * ClarificationRequest updateMany
+   */
+  export type ClarificationRequestUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ClarificationRequests.
+     */
+    data: XOR<ClarificationRequestUpdateManyMutationInput, ClarificationRequestUncheckedUpdateManyInput>
+    /**
+     * Filter which ClarificationRequests to update
+     */
+    where?: ClarificationRequestWhereInput
+    /**
+     * Limit how many ClarificationRequests to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ClarificationRequest updateManyAndReturn
+   */
+  export type ClarificationRequestUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationRequest
+     */
+    select?: ClarificationRequestSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationRequest
+     */
+    omit?: ClarificationRequestOmit<ExtArgs> | null
+    /**
+     * The data used to update ClarificationRequests.
+     */
+    data: XOR<ClarificationRequestUpdateManyMutationInput, ClarificationRequestUncheckedUpdateManyInput>
+    /**
+     * Filter which ClarificationRequests to update
+     */
+    where?: ClarificationRequestWhereInput
+    /**
+     * Limit how many ClarificationRequests to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationRequestIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ClarificationRequest upsert
+   */
+  export type ClarificationRequestUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationRequest
+     */
+    select?: ClarificationRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationRequest
+     */
+    omit?: ClarificationRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationRequestInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ClarificationRequest to update in case it exists.
+     */
+    where: ClarificationRequestWhereUniqueInput
+    /**
+     * In case the ClarificationRequest found by the `where` argument doesn't exist, create a new ClarificationRequest with this data.
+     */
+    create: XOR<ClarificationRequestCreateInput, ClarificationRequestUncheckedCreateInput>
+    /**
+     * In case the ClarificationRequest was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ClarificationRequestUpdateInput, ClarificationRequestUncheckedUpdateInput>
+  }
+
+  /**
+   * ClarificationRequest delete
+   */
+  export type ClarificationRequestDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationRequest
+     */
+    select?: ClarificationRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationRequest
+     */
+    omit?: ClarificationRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationRequestInclude<ExtArgs> | null
+    /**
+     * Filter which ClarificationRequest to delete.
+     */
+    where: ClarificationRequestWhereUniqueInput
+  }
+
+  /**
+   * ClarificationRequest deleteMany
+   */
+  export type ClarificationRequestDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ClarificationRequests to delete
+     */
+    where?: ClarificationRequestWhereInput
+    /**
+     * Limit how many ClarificationRequests to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ClarificationRequest.parent
+   */
+  export type ClarificationRequest$parentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationRequest
+     */
+    select?: ClarificationRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationRequest
+     */
+    omit?: ClarificationRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationRequestInclude<ExtArgs> | null
+    where?: ClarificationRequestWhereInput
+  }
+
+  /**
+   * ClarificationRequest.children
+   */
+  export type ClarificationRequest$childrenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationRequest
+     */
+    select?: ClarificationRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationRequest
+     */
+    omit?: ClarificationRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationRequestInclude<ExtArgs> | null
+    where?: ClarificationRequestWhereInput
+    orderBy?: ClarificationRequestOrderByWithRelationInput | ClarificationRequestOrderByWithRelationInput[]
+    cursor?: ClarificationRequestWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ClarificationRequestScalarFieldEnum | ClarificationRequestScalarFieldEnum[]
+  }
+
+  /**
+   * ClarificationRequest.options
+   */
+  export type ClarificationRequest$optionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationOption
+     */
+    select?: ClarificationOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationOption
+     */
+    omit?: ClarificationOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationOptionInclude<ExtArgs> | null
+    where?: ClarificationOptionWhereInput
+    orderBy?: ClarificationOptionOrderByWithRelationInput | ClarificationOptionOrderByWithRelationInput[]
+    cursor?: ClarificationOptionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ClarificationOptionScalarFieldEnum | ClarificationOptionScalarFieldEnum[]
+  }
+
+  /**
+   * ClarificationRequest without action
+   */
+  export type ClarificationRequestDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationRequest
+     */
+    select?: ClarificationRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationRequest
+     */
+    omit?: ClarificationRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationRequestInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ClarificationOption
+   */
+
+  export type AggregateClarificationOption = {
+    _count: ClarificationOptionCountAggregateOutputType | null
+    _min: ClarificationOptionMinAggregateOutputType | null
+    _max: ClarificationOptionMaxAggregateOutputType | null
+  }
+
+  export type ClarificationOptionMinAggregateOutputType = {
+    id: string | null
+    requestId: string | null
+    tokenDigest: string | null
+    displayLabel: string | null
+    discriminator: string | null
+    candidateId: string | null
+    createdAt: Date | null
+  }
+
+  export type ClarificationOptionMaxAggregateOutputType = {
+    id: string | null
+    requestId: string | null
+    tokenDigest: string | null
+    displayLabel: string | null
+    discriminator: string | null
+    candidateId: string | null
+    createdAt: Date | null
+  }
+
+  export type ClarificationOptionCountAggregateOutputType = {
+    id: number
+    requestId: number
+    tokenDigest: number
+    displayLabel: number
+    discriminator: number
+    candidateId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ClarificationOptionMinAggregateInputType = {
+    id?: true
+    requestId?: true
+    tokenDigest?: true
+    displayLabel?: true
+    discriminator?: true
+    candidateId?: true
+    createdAt?: true
+  }
+
+  export type ClarificationOptionMaxAggregateInputType = {
+    id?: true
+    requestId?: true
+    tokenDigest?: true
+    displayLabel?: true
+    discriminator?: true
+    candidateId?: true
+    createdAt?: true
+  }
+
+  export type ClarificationOptionCountAggregateInputType = {
+    id?: true
+    requestId?: true
+    tokenDigest?: true
+    displayLabel?: true
+    discriminator?: true
+    candidateId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ClarificationOptionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ClarificationOption to aggregate.
+     */
+    where?: ClarificationOptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ClarificationOptions to fetch.
+     */
+    orderBy?: ClarificationOptionOrderByWithRelationInput | ClarificationOptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: ClarificationOptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ClarificationOptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ClarificationOptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned ClarificationOptions
+    **/
+    _count?: true | ClarificationOptionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: ClarificationOptionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: ClarificationOptionMaxAggregateInputType
+  }
+
+  export type GetClarificationOptionAggregateType<T extends ClarificationOptionAggregateArgs> = {
+        [P in keyof T & keyof AggregateClarificationOption]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateClarificationOption[P]>
+      : GetScalarType<T[P], AggregateClarificationOption[P]>
+  }
+
+
+
+
+  export type ClarificationOptionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClarificationOptionWhereInput
+    orderBy?: ClarificationOptionOrderByWithAggregationInput | ClarificationOptionOrderByWithAggregationInput[]
+    by: ClarificationOptionScalarFieldEnum[] | ClarificationOptionScalarFieldEnum
+    having?: ClarificationOptionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ClarificationOptionCountAggregateInputType | true
+    _min?: ClarificationOptionMinAggregateInputType
+    _max?: ClarificationOptionMaxAggregateInputType
+  }
+
+  export type ClarificationOptionGroupByOutputType = {
+    id: string
+    requestId: string
+    tokenDigest: string
+    displayLabel: string
+    discriminator: string | null
+    candidateId: string
+    createdAt: Date
+    _count: ClarificationOptionCountAggregateOutputType | null
+    _min: ClarificationOptionMinAggregateOutputType | null
+    _max: ClarificationOptionMaxAggregateOutputType | null
+  }
+
+  type GetClarificationOptionGroupByPayload<T extends ClarificationOptionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ClarificationOptionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ClarificationOptionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ClarificationOptionGroupByOutputType[P]>
+            : GetScalarType<T[P], ClarificationOptionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ClarificationOptionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    requestId?: boolean
+    tokenDigest?: boolean
+    displayLabel?: boolean
+    discriminator?: boolean
+    candidateId?: boolean
+    createdAt?: boolean
+    request?: boolean | ClarificationRequestDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clarificationOption"]>
+
+  export type ClarificationOptionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    requestId?: boolean
+    tokenDigest?: boolean
+    displayLabel?: boolean
+    discriminator?: boolean
+    candidateId?: boolean
+    createdAt?: boolean
+    request?: boolean | ClarificationRequestDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clarificationOption"]>
+
+  export type ClarificationOptionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    requestId?: boolean
+    tokenDigest?: boolean
+    displayLabel?: boolean
+    discriminator?: boolean
+    candidateId?: boolean
+    createdAt?: boolean
+    request?: boolean | ClarificationRequestDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clarificationOption"]>
+
+  export type ClarificationOptionSelectScalar = {
+    id?: boolean
+    requestId?: boolean
+    tokenDigest?: boolean
+    displayLabel?: boolean
+    discriminator?: boolean
+    candidateId?: boolean
+    createdAt?: boolean
+  }
+
+  export type ClarificationOptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "requestId" | "tokenDigest" | "displayLabel" | "discriminator" | "candidateId" | "createdAt", ExtArgs["result"]["clarificationOption"]>
+  export type ClarificationOptionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    request?: boolean | ClarificationRequestDefaultArgs<ExtArgs>
+  }
+  export type ClarificationOptionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    request?: boolean | ClarificationRequestDefaultArgs<ExtArgs>
+  }
+  export type ClarificationOptionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    request?: boolean | ClarificationRequestDefaultArgs<ExtArgs>
+  }
+
+  export type $ClarificationOptionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ClarificationOption"
+    objects: {
+      request: Prisma.$ClarificationRequestPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      requestId: string
+      tokenDigest: string
+      displayLabel: string
+      discriminator: string | null
+      candidateId: string
+      createdAt: Date
+    }, ExtArgs["result"]["clarificationOption"]>
+    composites: {}
+  }
+
+  type ClarificationOptionGetPayload<S extends boolean | null | undefined | ClarificationOptionDefaultArgs> = $Result.GetResult<Prisma.$ClarificationOptionPayload, S>
+
+  type ClarificationOptionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ClarificationOptionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ClarificationOptionCountAggregateInputType | true
+    }
+
+  export interface ClarificationOptionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ClarificationOption'], meta: { name: 'ClarificationOption' } }
+    /**
+     * Find zero or one ClarificationOption that matches the filter.
+     * @param {ClarificationOptionFindUniqueArgs} args - Arguments to find a ClarificationOption
+     * @example
+     * // Get one ClarificationOption
+     * const clarificationOption = await prisma.clarificationOption.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ClarificationOptionFindUniqueArgs>(args: SelectSubset<T, ClarificationOptionFindUniqueArgs<ExtArgs>>): Prisma__ClarificationOptionClient<$Result.GetResult<Prisma.$ClarificationOptionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ClarificationOption that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ClarificationOptionFindUniqueOrThrowArgs} args - Arguments to find a ClarificationOption
+     * @example
+     * // Get one ClarificationOption
+     * const clarificationOption = await prisma.clarificationOption.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ClarificationOptionFindUniqueOrThrowArgs>(args: SelectSubset<T, ClarificationOptionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ClarificationOptionClient<$Result.GetResult<Prisma.$ClarificationOptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ClarificationOption that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClarificationOptionFindFirstArgs} args - Arguments to find a ClarificationOption
+     * @example
+     * // Get one ClarificationOption
+     * const clarificationOption = await prisma.clarificationOption.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ClarificationOptionFindFirstArgs>(args?: SelectSubset<T, ClarificationOptionFindFirstArgs<ExtArgs>>): Prisma__ClarificationOptionClient<$Result.GetResult<Prisma.$ClarificationOptionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ClarificationOption that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClarificationOptionFindFirstOrThrowArgs} args - Arguments to find a ClarificationOption
+     * @example
+     * // Get one ClarificationOption
+     * const clarificationOption = await prisma.clarificationOption.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ClarificationOptionFindFirstOrThrowArgs>(args?: SelectSubset<T, ClarificationOptionFindFirstOrThrowArgs<ExtArgs>>): Prisma__ClarificationOptionClient<$Result.GetResult<Prisma.$ClarificationOptionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ClarificationOptions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClarificationOptionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ClarificationOptions
+     * const clarificationOptions = await prisma.clarificationOption.findMany()
+     *
+     * // Get first 10 ClarificationOptions
+     * const clarificationOptions = await prisma.clarificationOption.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const clarificationOptionWithIdOnly = await prisma.clarificationOption.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends ClarificationOptionFindManyArgs>(args?: SelectSubset<T, ClarificationOptionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClarificationOptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ClarificationOption.
+     * @param {ClarificationOptionCreateArgs} args - Arguments to create a ClarificationOption.
+     * @example
+     * // Create one ClarificationOption
+     * const ClarificationOption = await prisma.clarificationOption.create({
+     *   data: {
+     *     // ... data to create a ClarificationOption
+     *   }
+     * })
+     *
+     */
+    create<T extends ClarificationOptionCreateArgs>(args: SelectSubset<T, ClarificationOptionCreateArgs<ExtArgs>>): Prisma__ClarificationOptionClient<$Result.GetResult<Prisma.$ClarificationOptionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ClarificationOptions.
+     * @param {ClarificationOptionCreateManyArgs} args - Arguments to create many ClarificationOptions.
+     * @example
+     * // Create many ClarificationOptions
+     * const clarificationOption = await prisma.clarificationOption.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends ClarificationOptionCreateManyArgs>(args?: SelectSubset<T, ClarificationOptionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ClarificationOptions and returns the data saved in the database.
+     * @param {ClarificationOptionCreateManyAndReturnArgs} args - Arguments to create many ClarificationOptions.
+     * @example
+     * // Create many ClarificationOptions
+     * const clarificationOption = await prisma.clarificationOption.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many ClarificationOptions and only return the `id`
+     * const clarificationOptionWithIdOnly = await prisma.clarificationOption.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends ClarificationOptionCreateManyAndReturnArgs>(args?: SelectSubset<T, ClarificationOptionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClarificationOptionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ClarificationOption.
+     * @param {ClarificationOptionDeleteArgs} args - Arguments to delete one ClarificationOption.
+     * @example
+     * // Delete one ClarificationOption
+     * const ClarificationOption = await prisma.clarificationOption.delete({
+     *   where: {
+     *     // ... filter to delete one ClarificationOption
+     *   }
+     * })
+     *
+     */
+    delete<T extends ClarificationOptionDeleteArgs>(args: SelectSubset<T, ClarificationOptionDeleteArgs<ExtArgs>>): Prisma__ClarificationOptionClient<$Result.GetResult<Prisma.$ClarificationOptionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ClarificationOption.
+     * @param {ClarificationOptionUpdateArgs} args - Arguments to update one ClarificationOption.
+     * @example
+     * // Update one ClarificationOption
+     * const clarificationOption = await prisma.clarificationOption.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends ClarificationOptionUpdateArgs>(args: SelectSubset<T, ClarificationOptionUpdateArgs<ExtArgs>>): Prisma__ClarificationOptionClient<$Result.GetResult<Prisma.$ClarificationOptionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ClarificationOptions.
+     * @param {ClarificationOptionDeleteManyArgs} args - Arguments to filter ClarificationOptions to delete.
+     * @example
+     * // Delete a few ClarificationOptions
+     * const { count } = await prisma.clarificationOption.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends ClarificationOptionDeleteManyArgs>(args?: SelectSubset<T, ClarificationOptionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ClarificationOptions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClarificationOptionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ClarificationOptions
+     * const clarificationOption = await prisma.clarificationOption.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends ClarificationOptionUpdateManyArgs>(args: SelectSubset<T, ClarificationOptionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ClarificationOptions and returns the data updated in the database.
+     * @param {ClarificationOptionUpdateManyAndReturnArgs} args - Arguments to update many ClarificationOptions.
+     * @example
+     * // Update many ClarificationOptions
+     * const clarificationOption = await prisma.clarificationOption.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more ClarificationOptions and only return the `id`
+     * const clarificationOptionWithIdOnly = await prisma.clarificationOption.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends ClarificationOptionUpdateManyAndReturnArgs>(args: SelectSubset<T, ClarificationOptionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClarificationOptionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ClarificationOption.
+     * @param {ClarificationOptionUpsertArgs} args - Arguments to update or create a ClarificationOption.
+     * @example
+     * // Update or create a ClarificationOption
+     * const clarificationOption = await prisma.clarificationOption.upsert({
+     *   create: {
+     *     // ... data to create a ClarificationOption
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ClarificationOption we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ClarificationOptionUpsertArgs>(args: SelectSubset<T, ClarificationOptionUpsertArgs<ExtArgs>>): Prisma__ClarificationOptionClient<$Result.GetResult<Prisma.$ClarificationOptionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ClarificationOptions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClarificationOptionCountArgs} args - Arguments to filter ClarificationOptions to count.
+     * @example
+     * // Count the number of ClarificationOptions
+     * const count = await prisma.clarificationOption.count({
+     *   where: {
+     *     // ... the filter for the ClarificationOptions we want to count
+     *   }
+     * })
+    **/
+    count<T extends ClarificationOptionCountArgs>(
+      args?: Subset<T, ClarificationOptionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ClarificationOptionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ClarificationOption.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClarificationOptionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ClarificationOptionAggregateArgs>(args: Subset<T, ClarificationOptionAggregateArgs>): Prisma.PrismaPromise<GetClarificationOptionAggregateType<T>>
+
+    /**
+     * Group by ClarificationOption.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClarificationOptionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<
+      T extends ClarificationOptionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ClarificationOptionGroupByArgs['orderBy'] }
+        : { orderBy?: ClarificationOptionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ClarificationOptionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetClarificationOptionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ClarificationOption model
+   */
+  readonly fields: ClarificationOptionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ClarificationOption.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ClarificationOptionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    request<T extends ClarificationRequestDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClarificationRequestDefaultArgs<ExtArgs>>): Prisma__ClarificationRequestClient<$Result.GetResult<Prisma.$ClarificationRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ClarificationOption model
+   */
+  interface ClarificationOptionFieldRefs {
+    readonly id: FieldRef<"ClarificationOption", 'String'>
+    readonly requestId: FieldRef<"ClarificationOption", 'String'>
+    readonly tokenDigest: FieldRef<"ClarificationOption", 'String'>
+    readonly displayLabel: FieldRef<"ClarificationOption", 'String'>
+    readonly discriminator: FieldRef<"ClarificationOption", 'String'>
+    readonly candidateId: FieldRef<"ClarificationOption", 'String'>
+    readonly createdAt: FieldRef<"ClarificationOption", 'DateTime'>
+  }
+
+
+  // Custom InputTypes
+  /**
+   * ClarificationOption findUnique
+   */
+  export type ClarificationOptionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationOption
+     */
+    select?: ClarificationOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationOption
+     */
+    omit?: ClarificationOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationOptionInclude<ExtArgs> | null
+    /**
+     * Filter, which ClarificationOption to fetch.
+     */
+    where: ClarificationOptionWhereUniqueInput
+  }
+
+  /**
+   * ClarificationOption findUniqueOrThrow
+   */
+  export type ClarificationOptionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationOption
+     */
+    select?: ClarificationOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationOption
+     */
+    omit?: ClarificationOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationOptionInclude<ExtArgs> | null
+    /**
+     * Filter, which ClarificationOption to fetch.
+     */
+    where: ClarificationOptionWhereUniqueInput
+  }
+
+  /**
+   * ClarificationOption findFirst
+   */
+  export type ClarificationOptionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationOption
+     */
+    select?: ClarificationOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationOption
+     */
+    omit?: ClarificationOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationOptionInclude<ExtArgs> | null
+    /**
+     * Filter, which ClarificationOption to fetch.
+     */
+    where?: ClarificationOptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ClarificationOptions to fetch.
+     */
+    orderBy?: ClarificationOptionOrderByWithRelationInput | ClarificationOptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ClarificationOptions.
+     */
+    cursor?: ClarificationOptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ClarificationOptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ClarificationOptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ClarificationOptions.
+     */
+    distinct?: ClarificationOptionScalarFieldEnum | ClarificationOptionScalarFieldEnum[]
+  }
+
+  /**
+   * ClarificationOption findFirstOrThrow
+   */
+  export type ClarificationOptionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationOption
+     */
+    select?: ClarificationOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationOption
+     */
+    omit?: ClarificationOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationOptionInclude<ExtArgs> | null
+    /**
+     * Filter, which ClarificationOption to fetch.
+     */
+    where?: ClarificationOptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ClarificationOptions to fetch.
+     */
+    orderBy?: ClarificationOptionOrderByWithRelationInput | ClarificationOptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ClarificationOptions.
+     */
+    cursor?: ClarificationOptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ClarificationOptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ClarificationOptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ClarificationOptions.
+     */
+    distinct?: ClarificationOptionScalarFieldEnum | ClarificationOptionScalarFieldEnum[]
+  }
+
+  /**
+   * ClarificationOption findMany
+   */
+  export type ClarificationOptionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationOption
+     */
+    select?: ClarificationOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationOption
+     */
+    omit?: ClarificationOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationOptionInclude<ExtArgs> | null
+    /**
+     * Filter, which ClarificationOptions to fetch.
+     */
+    where?: ClarificationOptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ClarificationOptions to fetch.
+     */
+    orderBy?: ClarificationOptionOrderByWithRelationInput | ClarificationOptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing ClarificationOptions.
+     */
+    cursor?: ClarificationOptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ClarificationOptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ClarificationOptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ClarificationOptions.
+     */
+    distinct?: ClarificationOptionScalarFieldEnum | ClarificationOptionScalarFieldEnum[]
+  }
+
+  /**
+   * ClarificationOption create
+   */
+  export type ClarificationOptionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationOption
+     */
+    select?: ClarificationOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationOption
+     */
+    omit?: ClarificationOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationOptionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ClarificationOption.
+     */
+    data: XOR<ClarificationOptionCreateInput, ClarificationOptionUncheckedCreateInput>
+  }
+
+  /**
+   * ClarificationOption createMany
+   */
+  export type ClarificationOptionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ClarificationOptions.
+     */
+    data: ClarificationOptionCreateManyInput | ClarificationOptionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ClarificationOption createManyAndReturn
+   */
+  export type ClarificationOptionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationOption
+     */
+    select?: ClarificationOptionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationOption
+     */
+    omit?: ClarificationOptionOmit<ExtArgs> | null
+    /**
+     * The data used to create many ClarificationOptions.
+     */
+    data: ClarificationOptionCreateManyInput | ClarificationOptionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationOptionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ClarificationOption update
+   */
+  export type ClarificationOptionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationOption
+     */
+    select?: ClarificationOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationOption
+     */
+    omit?: ClarificationOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationOptionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ClarificationOption.
+     */
+    data: XOR<ClarificationOptionUpdateInput, ClarificationOptionUncheckedUpdateInput>
+    /**
+     * Choose, which ClarificationOption to update.
+     */
+    where: ClarificationOptionWhereUniqueInput
+  }
+
+  /**
+   * ClarificationOption updateMany
+   */
+  export type ClarificationOptionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ClarificationOptions.
+     */
+    data: XOR<ClarificationOptionUpdateManyMutationInput, ClarificationOptionUncheckedUpdateManyInput>
+    /**
+     * Filter which ClarificationOptions to update
+     */
+    where?: ClarificationOptionWhereInput
+    /**
+     * Limit how many ClarificationOptions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ClarificationOption updateManyAndReturn
+   */
+  export type ClarificationOptionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationOption
+     */
+    select?: ClarificationOptionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationOption
+     */
+    omit?: ClarificationOptionOmit<ExtArgs> | null
+    /**
+     * The data used to update ClarificationOptions.
+     */
+    data: XOR<ClarificationOptionUpdateManyMutationInput, ClarificationOptionUncheckedUpdateManyInput>
+    /**
+     * Filter which ClarificationOptions to update
+     */
+    where?: ClarificationOptionWhereInput
+    /**
+     * Limit how many ClarificationOptions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationOptionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ClarificationOption upsert
+   */
+  export type ClarificationOptionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationOption
+     */
+    select?: ClarificationOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationOption
+     */
+    omit?: ClarificationOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationOptionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ClarificationOption to update in case it exists.
+     */
+    where: ClarificationOptionWhereUniqueInput
+    /**
+     * In case the ClarificationOption found by the `where` argument doesn't exist, create a new ClarificationOption with this data.
+     */
+    create: XOR<ClarificationOptionCreateInput, ClarificationOptionUncheckedCreateInput>
+    /**
+     * In case the ClarificationOption was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ClarificationOptionUpdateInput, ClarificationOptionUncheckedUpdateInput>
+  }
+
+  /**
+   * ClarificationOption delete
+   */
+  export type ClarificationOptionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationOption
+     */
+    select?: ClarificationOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationOption
+     */
+    omit?: ClarificationOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationOptionInclude<ExtArgs> | null
+    /**
+     * Filter which ClarificationOption to delete.
+     */
+    where: ClarificationOptionWhereUniqueInput
+  }
+
+  /**
+   * ClarificationOption deleteMany
+   */
+  export type ClarificationOptionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ClarificationOptions to delete
+     */
+    where?: ClarificationOptionWhereInput
+    /**
+     * Limit how many ClarificationOptions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ClarificationOption without action
+   */
+  export type ClarificationOptionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClarificationOption
+     */
+    select?: ClarificationOptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClarificationOption
+     */
+    omit?: ClarificationOptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClarificationOptionInclude<ExtArgs> | null
   }
 
 
@@ -24654,6 +27393,41 @@ export namespace Prisma {
   export type AssistantProviderExecutionScalarFieldEnum = (typeof AssistantProviderExecutionScalarFieldEnum)[keyof typeof AssistantProviderExecutionScalarFieldEnum]
 
 
+  export const ClarificationRequestScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    conversationId: 'conversationId',
+    originatingTurnId: 'originatingTurnId',
+    executionId: 'executionId',
+    parentId: 'parentId',
+    entityType: 'entityType',
+    status: 'status',
+    trustedContext: 'trustedContext',
+    prompt: 'prompt',
+    terminalCode: 'terminalCode',
+    restartRequired: 'restartRequired',
+    consumedAt: 'consumedAt',
+    cancelledAt: 'cancelledAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ClarificationRequestScalarFieldEnum = (typeof ClarificationRequestScalarFieldEnum)[keyof typeof ClarificationRequestScalarFieldEnum]
+
+
+  export const ClarificationOptionScalarFieldEnum: {
+    id: 'id',
+    requestId: 'requestId',
+    tokenDigest: 'tokenDigest',
+    displayLabel: 'displayLabel',
+    discriminator: 'discriminator',
+    candidateId: 'candidateId',
+    createdAt: 'createdAt'
+  };
+
+  export type ClarificationOptionScalarFieldEnum = (typeof ClarificationOptionScalarFieldEnum)[keyof typeof ClarificationOptionScalarFieldEnum]
+
+
   export const WalletScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
@@ -24834,6 +27608,13 @@ export namespace Prisma {
   };
 
   export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+  export const JsonNullValueInput: {
+    JsonNull: typeof JsonNull
+  };
+
+  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
   export const QueryMode: {
@@ -25049,6 +27830,27 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'AssistantClarificationStatus'
+   */
+  export type EnumAssistantClarificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssistantClarificationStatus'>
+
+
+
+  /**
+   * Reference to a field of type 'AssistantClarificationStatus[]'
+   */
+  export type ListEnumAssistantClarificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssistantClarificationStatus[]'>
+
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+
+
+
+  /**
    * Reference to a field of type 'WalletType'
    */
   export type EnumWalletTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WalletType'>
@@ -25059,13 +27861,6 @@ export namespace Prisma {
    * Reference to a field of type 'WalletType[]'
    */
   export type ListEnumWalletTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WalletType[]'>
-
-
-
-  /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
 
 
 
@@ -25206,6 +28001,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftListRelationFilter
     assistantIdempotencyRecords?: AssistantIdempotencyRecordListRelationFilter
     assistantProviderExecutions?: AssistantProviderExecutionListRelationFilter
+    clarificationRequests?: ClarificationRequestListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -25227,6 +28023,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftOrderByRelationAggregateInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordOrderByRelationAggregateInput
     assistantProviderExecutions?: AssistantProviderExecutionOrderByRelationAggregateInput
+    clarificationRequests?: ClarificationRequestOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -25251,6 +28048,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftListRelationFilter
     assistantIdempotencyRecords?: AssistantIdempotencyRecordListRelationFilter
     assistantProviderExecutions?: AssistantProviderExecutionListRelationFilter
+    clarificationRequests?: ClarificationRequestListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -25295,6 +28093,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionListRelationFilter
     financialDrafts?: AssistantFinancialDraftListRelationFilter
     providerExecutions?: AssistantProviderExecutionListRelationFilter
+    clarificationRequests?: ClarificationRequestListRelationFilter
   }
 
   export type AssistantConversationOrderByWithRelationInput = {
@@ -25312,6 +28111,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionOrderByRelationAggregateInput
     financialDrafts?: AssistantFinancialDraftOrderByRelationAggregateInput
     providerExecutions?: AssistantProviderExecutionOrderByRelationAggregateInput
+    clarificationRequests?: ClarificationRequestOrderByRelationAggregateInput
   }
 
   export type AssistantConversationWhereUniqueInput = Prisma.AtLeast<{
@@ -25332,6 +28132,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionListRelationFilter
     financialDrafts?: AssistantFinancialDraftListRelationFilter
     providerExecutions?: AssistantProviderExecutionListRelationFilter
+    clarificationRequests?: ClarificationRequestListRelationFilter
   }, "id">
 
   export type AssistantConversationOrderByWithAggregationInput = {
@@ -25382,6 +28183,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionListRelationFilter
     financialDrafts?: AssistantFinancialDraftListRelationFilter
     providerExecutions?: AssistantProviderExecutionListRelationFilter
+    clarificationRequests?: ClarificationRequestListRelationFilter
   }
 
   export type AssistantTurnOrderByWithRelationInput = {
@@ -25401,6 +28203,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionOrderByRelationAggregateInput
     financialDrafts?: AssistantFinancialDraftOrderByRelationAggregateInput
     providerExecutions?: AssistantProviderExecutionOrderByRelationAggregateInput
+    clarificationRequests?: ClarificationRequestOrderByRelationAggregateInput
   }
 
   export type AssistantTurnWhereUniqueInput = Prisma.AtLeast<{
@@ -25423,6 +28226,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionListRelationFilter
     financialDrafts?: AssistantFinancialDraftListRelationFilter
     providerExecutions?: AssistantProviderExecutionListRelationFilter
+    clarificationRequests?: ClarificationRequestListRelationFilter
   }, "id" | "correlationId">
 
   export type AssistantTurnOrderByWithAggregationInput = {
@@ -25995,6 +28799,197 @@ export namespace Prisma {
     outputTokens?: IntNullableWithAggregatesFilter<"AssistantProviderExecution"> | number | null
     totalTokens?: IntNullableWithAggregatesFilter<"AssistantProviderExecution"> | number | null
     cachedInputTokens?: IntNullableWithAggregatesFilter<"AssistantProviderExecution"> | number | null
+  }
+
+  export type ClarificationRequestWhereInput = {
+    AND?: ClarificationRequestWhereInput | ClarificationRequestWhereInput[]
+    OR?: ClarificationRequestWhereInput[]
+    NOT?: ClarificationRequestWhereInput | ClarificationRequestWhereInput[]
+    id?: StringFilter<"ClarificationRequest"> | string
+    userId?: StringFilter<"ClarificationRequest"> | string
+    conversationId?: StringFilter<"ClarificationRequest"> | string
+    originatingTurnId?: StringFilter<"ClarificationRequest"> | string
+    executionId?: StringFilter<"ClarificationRequest"> | string
+    parentId?: StringNullableFilter<"ClarificationRequest"> | string | null
+    entityType?: StringFilter<"ClarificationRequest"> | string
+    status?: EnumAssistantClarificationStatusFilter<"ClarificationRequest"> | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonFilter<"ClarificationRequest">
+    prompt?: StringFilter<"ClarificationRequest"> | string
+    terminalCode?: StringNullableFilter<"ClarificationRequest"> | string | null
+    restartRequired?: BoolFilter<"ClarificationRequest"> | boolean
+    consumedAt?: DateTimeNullableFilter<"ClarificationRequest"> | Date | string | null
+    cancelledAt?: DateTimeNullableFilter<"ClarificationRequest"> | Date | string | null
+    createdAt?: DateTimeFilter<"ClarificationRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"ClarificationRequest"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    conversation?: XOR<AssistantConversationScalarRelationFilter, AssistantConversationWhereInput>
+    originatingTurn?: XOR<AssistantTurnScalarRelationFilter, AssistantTurnWhereInput>
+    parent?: XOR<ClarificationRequestNullableScalarRelationFilter, ClarificationRequestWhereInput> | null
+    children?: ClarificationRequestListRelationFilter
+    options?: ClarificationOptionListRelationFilter
+  }
+
+  export type ClarificationRequestOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    conversationId?: SortOrder
+    originatingTurnId?: SortOrder
+    executionId?: SortOrder
+    parentId?: SortOrderInput | SortOrder
+    entityType?: SortOrder
+    status?: SortOrder
+    trustedContext?: SortOrder
+    prompt?: SortOrder
+    terminalCode?: SortOrderInput | SortOrder
+    restartRequired?: SortOrder
+    consumedAt?: SortOrderInput | SortOrder
+    cancelledAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    conversation?: AssistantConversationOrderByWithRelationInput
+    originatingTurn?: AssistantTurnOrderByWithRelationInput
+    parent?: ClarificationRequestOrderByWithRelationInput
+    children?: ClarificationRequestOrderByRelationAggregateInput
+    options?: ClarificationOptionOrderByRelationAggregateInput
+  }
+
+  export type ClarificationRequestWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    executionId?: string
+    AND?: ClarificationRequestWhereInput | ClarificationRequestWhereInput[]
+    OR?: ClarificationRequestWhereInput[]
+    NOT?: ClarificationRequestWhereInput | ClarificationRequestWhereInput[]
+    userId?: StringFilter<"ClarificationRequest"> | string
+    conversationId?: StringFilter<"ClarificationRequest"> | string
+    originatingTurnId?: StringFilter<"ClarificationRequest"> | string
+    parentId?: StringNullableFilter<"ClarificationRequest"> | string | null
+    entityType?: StringFilter<"ClarificationRequest"> | string
+    status?: EnumAssistantClarificationStatusFilter<"ClarificationRequest"> | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonFilter<"ClarificationRequest">
+    prompt?: StringFilter<"ClarificationRequest"> | string
+    terminalCode?: StringNullableFilter<"ClarificationRequest"> | string | null
+    restartRequired?: BoolFilter<"ClarificationRequest"> | boolean
+    consumedAt?: DateTimeNullableFilter<"ClarificationRequest"> | Date | string | null
+    cancelledAt?: DateTimeNullableFilter<"ClarificationRequest"> | Date | string | null
+    createdAt?: DateTimeFilter<"ClarificationRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"ClarificationRequest"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    conversation?: XOR<AssistantConversationScalarRelationFilter, AssistantConversationWhereInput>
+    originatingTurn?: XOR<AssistantTurnScalarRelationFilter, AssistantTurnWhereInput>
+    parent?: XOR<ClarificationRequestNullableScalarRelationFilter, ClarificationRequestWhereInput> | null
+    children?: ClarificationRequestListRelationFilter
+    options?: ClarificationOptionListRelationFilter
+  }, "id" | "executionId">
+
+  export type ClarificationRequestOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    conversationId?: SortOrder
+    originatingTurnId?: SortOrder
+    executionId?: SortOrder
+    parentId?: SortOrderInput | SortOrder
+    entityType?: SortOrder
+    status?: SortOrder
+    trustedContext?: SortOrder
+    prompt?: SortOrder
+    terminalCode?: SortOrderInput | SortOrder
+    restartRequired?: SortOrder
+    consumedAt?: SortOrderInput | SortOrder
+    cancelledAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ClarificationRequestCountOrderByAggregateInput
+    _max?: ClarificationRequestMaxOrderByAggregateInput
+    _min?: ClarificationRequestMinOrderByAggregateInput
+  }
+
+  export type ClarificationRequestScalarWhereWithAggregatesInput = {
+    AND?: ClarificationRequestScalarWhereWithAggregatesInput | ClarificationRequestScalarWhereWithAggregatesInput[]
+    OR?: ClarificationRequestScalarWhereWithAggregatesInput[]
+    NOT?: ClarificationRequestScalarWhereWithAggregatesInput | ClarificationRequestScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ClarificationRequest"> | string
+    userId?: StringWithAggregatesFilter<"ClarificationRequest"> | string
+    conversationId?: StringWithAggregatesFilter<"ClarificationRequest"> | string
+    originatingTurnId?: StringWithAggregatesFilter<"ClarificationRequest"> | string
+    executionId?: StringWithAggregatesFilter<"ClarificationRequest"> | string
+    parentId?: StringNullableWithAggregatesFilter<"ClarificationRequest"> | string | null
+    entityType?: StringWithAggregatesFilter<"ClarificationRequest"> | string
+    status?: EnumAssistantClarificationStatusWithAggregatesFilter<"ClarificationRequest"> | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonWithAggregatesFilter<"ClarificationRequest">
+    prompt?: StringWithAggregatesFilter<"ClarificationRequest"> | string
+    terminalCode?: StringNullableWithAggregatesFilter<"ClarificationRequest"> | string | null
+    restartRequired?: BoolWithAggregatesFilter<"ClarificationRequest"> | boolean
+    consumedAt?: DateTimeNullableWithAggregatesFilter<"ClarificationRequest"> | Date | string | null
+    cancelledAt?: DateTimeNullableWithAggregatesFilter<"ClarificationRequest"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ClarificationRequest"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ClarificationRequest"> | Date | string
+  }
+
+  export type ClarificationOptionWhereInput = {
+    AND?: ClarificationOptionWhereInput | ClarificationOptionWhereInput[]
+    OR?: ClarificationOptionWhereInput[]
+    NOT?: ClarificationOptionWhereInput | ClarificationOptionWhereInput[]
+    id?: StringFilter<"ClarificationOption"> | string
+    requestId?: StringFilter<"ClarificationOption"> | string
+    tokenDigest?: StringFilter<"ClarificationOption"> | string
+    displayLabel?: StringFilter<"ClarificationOption"> | string
+    discriminator?: StringNullableFilter<"ClarificationOption"> | string | null
+    candidateId?: StringFilter<"ClarificationOption"> | string
+    createdAt?: DateTimeFilter<"ClarificationOption"> | Date | string
+    request?: XOR<ClarificationRequestScalarRelationFilter, ClarificationRequestWhereInput>
+  }
+
+  export type ClarificationOptionOrderByWithRelationInput = {
+    id?: SortOrder
+    requestId?: SortOrder
+    tokenDigest?: SortOrder
+    displayLabel?: SortOrder
+    discriminator?: SortOrderInput | SortOrder
+    candidateId?: SortOrder
+    createdAt?: SortOrder
+    request?: ClarificationRequestOrderByWithRelationInput
+  }
+
+  export type ClarificationOptionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    requestId_tokenDigest?: ClarificationOptionRequestIdTokenDigestCompoundUniqueInput
+    AND?: ClarificationOptionWhereInput | ClarificationOptionWhereInput[]
+    OR?: ClarificationOptionWhereInput[]
+    NOT?: ClarificationOptionWhereInput | ClarificationOptionWhereInput[]
+    requestId?: StringFilter<"ClarificationOption"> | string
+    tokenDigest?: StringFilter<"ClarificationOption"> | string
+    displayLabel?: StringFilter<"ClarificationOption"> | string
+    discriminator?: StringNullableFilter<"ClarificationOption"> | string | null
+    candidateId?: StringFilter<"ClarificationOption"> | string
+    createdAt?: DateTimeFilter<"ClarificationOption"> | Date | string
+    request?: XOR<ClarificationRequestScalarRelationFilter, ClarificationRequestWhereInput>
+  }, "id" | "requestId_tokenDigest">
+
+  export type ClarificationOptionOrderByWithAggregationInput = {
+    id?: SortOrder
+    requestId?: SortOrder
+    tokenDigest?: SortOrder
+    displayLabel?: SortOrder
+    discriminator?: SortOrderInput | SortOrder
+    candidateId?: SortOrder
+    createdAt?: SortOrder
+    _count?: ClarificationOptionCountOrderByAggregateInput
+    _max?: ClarificationOptionMaxOrderByAggregateInput
+    _min?: ClarificationOptionMinOrderByAggregateInput
+  }
+
+  export type ClarificationOptionScalarWhereWithAggregatesInput = {
+    AND?: ClarificationOptionScalarWhereWithAggregatesInput | ClarificationOptionScalarWhereWithAggregatesInput[]
+    OR?: ClarificationOptionScalarWhereWithAggregatesInput[]
+    NOT?: ClarificationOptionScalarWhereWithAggregatesInput | ClarificationOptionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ClarificationOption"> | string
+    requestId?: StringWithAggregatesFilter<"ClarificationOption"> | string
+    tokenDigest?: StringWithAggregatesFilter<"ClarificationOption"> | string
+    displayLabel?: StringWithAggregatesFilter<"ClarificationOption"> | string
+    discriminator?: StringNullableWithAggregatesFilter<"ClarificationOption"> | string | null
+    candidateId?: StringWithAggregatesFilter<"ClarificationOption"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"ClarificationOption"> | Date | string
   }
 
   export type WalletWhereInput = {
@@ -26940,6 +29935,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -26961,6 +29957,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -26982,6 +29979,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -27003,6 +30001,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -27046,6 +30045,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionCreateNestedManyWithoutConversationInput
     financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutConversationInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationUncheckedCreateInput = {
@@ -27062,6 +30062,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUncheckedCreateNestedManyWithoutConversationInput
     financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutConversationInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationUpdateInput = {
@@ -27078,6 +30079,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUpdateManyWithoutConversationNestedInput
     financialDrafts?: AssistantFinancialDraftUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUpdateManyWithoutConversationNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantConversationUncheckedUpdateInput = {
@@ -27094,6 +30096,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUncheckedUpdateManyWithoutConversationNestedInput
     financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutConversationNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantConversationCreateManyInput = {
@@ -27144,6 +30147,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionCreateNestedManyWithoutTurnInput
     financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutOriginatingTurnInput
     providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutTurnInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutOriginatingTurnInput
   }
 
   export type AssistantTurnUncheckedCreateInput = {
@@ -27162,6 +30166,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUncheckedCreateNestedManyWithoutTurnInput
     financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutOriginatingTurnInput
     providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutTurnInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutOriginatingTurnInput
   }
 
   export type AssistantTurnUpdateInput = {
@@ -27180,6 +30185,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUpdateManyWithoutTurnNestedInput
     financialDrafts?: AssistantFinancialDraftUpdateManyWithoutOriginatingTurnNestedInput
     providerExecutions?: AssistantProviderExecutionUpdateManyWithoutTurnNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutOriginatingTurnNestedInput
   }
 
   export type AssistantTurnUncheckedUpdateInput = {
@@ -27198,6 +30204,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUncheckedUpdateManyWithoutTurnNestedInput
     financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutOriginatingTurnNestedInput
     providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutTurnNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutOriginatingTurnNestedInput
   }
 
   export type AssistantTurnCreateManyInput = {
@@ -27820,6 +30827,212 @@ export namespace Prisma {
     outputTokens?: NullableIntFieldUpdateOperationsInput | number | null
     totalTokens?: NullableIntFieldUpdateOperationsInput | number | null
     cachedInputTokens?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type ClarificationRequestCreateInput = {
+    id?: string
+    executionId: string
+    entityType: string
+    status?: $Enums.AssistantClarificationStatus
+    trustedContext: JsonNullValueInput | InputJsonValue
+    prompt: string
+    terminalCode?: string | null
+    restartRequired?: boolean
+    consumedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutClarificationRequestsInput
+    conversation: AssistantConversationCreateNestedOneWithoutClarificationRequestsInput
+    originatingTurn: AssistantTurnCreateNestedOneWithoutClarificationRequestsInput
+    parent?: ClarificationRequestCreateNestedOneWithoutChildrenInput
+    children?: ClarificationRequestCreateNestedManyWithoutParentInput
+    options?: ClarificationOptionCreateNestedManyWithoutRequestInput
+  }
+
+  export type ClarificationRequestUncheckedCreateInput = {
+    id?: string
+    userId: string
+    conversationId: string
+    originatingTurnId: string
+    executionId: string
+    parentId?: string | null
+    entityType: string
+    status?: $Enums.AssistantClarificationStatus
+    trustedContext: JsonNullValueInput | InputJsonValue
+    prompt: string
+    terminalCode?: string | null
+    restartRequired?: boolean
+    consumedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: ClarificationRequestUncheckedCreateNestedManyWithoutParentInput
+    options?: ClarificationOptionUncheckedCreateNestedManyWithoutRequestInput
+  }
+
+  export type ClarificationRequestUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    executionId?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantClarificationStatusFieldUpdateOperationsInput | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonNullValueInput | InputJsonValue
+    prompt?: StringFieldUpdateOperationsInput | string
+    terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutClarificationRequestsNestedInput
+    conversation?: AssistantConversationUpdateOneRequiredWithoutClarificationRequestsNestedInput
+    originatingTurn?: AssistantTurnUpdateOneRequiredWithoutClarificationRequestsNestedInput
+    parent?: ClarificationRequestUpdateOneWithoutChildrenNestedInput
+    children?: ClarificationRequestUpdateManyWithoutParentNestedInput
+    options?: ClarificationOptionUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ClarificationRequestUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    originatingTurnId?: StringFieldUpdateOperationsInput | string
+    executionId?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantClarificationStatusFieldUpdateOperationsInput | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonNullValueInput | InputJsonValue
+    prompt?: StringFieldUpdateOperationsInput | string
+    terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: ClarificationRequestUncheckedUpdateManyWithoutParentNestedInput
+    options?: ClarificationOptionUncheckedUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ClarificationRequestCreateManyInput = {
+    id?: string
+    userId: string
+    conversationId: string
+    originatingTurnId: string
+    executionId: string
+    parentId?: string | null
+    entityType: string
+    status?: $Enums.AssistantClarificationStatus
+    trustedContext: JsonNullValueInput | InputJsonValue
+    prompt: string
+    terminalCode?: string | null
+    restartRequired?: boolean
+    consumedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ClarificationRequestUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    executionId?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantClarificationStatusFieldUpdateOperationsInput | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonNullValueInput | InputJsonValue
+    prompt?: StringFieldUpdateOperationsInput | string
+    terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClarificationRequestUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    originatingTurnId?: StringFieldUpdateOperationsInput | string
+    executionId?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantClarificationStatusFieldUpdateOperationsInput | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonNullValueInput | InputJsonValue
+    prompt?: StringFieldUpdateOperationsInput | string
+    terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClarificationOptionCreateInput = {
+    id?: string
+    tokenDigest: string
+    displayLabel: string
+    discriminator?: string | null
+    candidateId: string
+    createdAt?: Date | string
+    request: ClarificationRequestCreateNestedOneWithoutOptionsInput
+  }
+
+  export type ClarificationOptionUncheckedCreateInput = {
+    id?: string
+    requestId: string
+    tokenDigest: string
+    displayLabel: string
+    discriminator?: string | null
+    candidateId: string
+    createdAt?: Date | string
+  }
+
+  export type ClarificationOptionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenDigest?: StringFieldUpdateOperationsInput | string
+    displayLabel?: StringFieldUpdateOperationsInput | string
+    discriminator?: NullableStringFieldUpdateOperationsInput | string | null
+    candidateId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    request?: ClarificationRequestUpdateOneRequiredWithoutOptionsNestedInput
+  }
+
+  export type ClarificationOptionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    tokenDigest?: StringFieldUpdateOperationsInput | string
+    displayLabel?: StringFieldUpdateOperationsInput | string
+    discriminator?: NullableStringFieldUpdateOperationsInput | string | null
+    candidateId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClarificationOptionCreateManyInput = {
+    id?: string
+    requestId: string
+    tokenDigest: string
+    displayLabel: string
+    discriminator?: string | null
+    candidateId: string
+    createdAt?: Date | string
+  }
+
+  export type ClarificationOptionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenDigest?: StringFieldUpdateOperationsInput | string
+    displayLabel?: StringFieldUpdateOperationsInput | string
+    discriminator?: NullableStringFieldUpdateOperationsInput | string | null
+    candidateId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClarificationOptionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    tokenDigest?: StringFieldUpdateOperationsInput | string
+    displayLabel?: StringFieldUpdateOperationsInput | string
+    discriminator?: NullableStringFieldUpdateOperationsInput | string | null
+    candidateId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type WalletCreateInput = {
@@ -28944,6 +32157,12 @@ export namespace Prisma {
     none?: AssistantProviderExecutionWhereInput
   }
 
+  export type ClarificationRequestListRelationFilter = {
+    every?: ClarificationRequestWhereInput
+    some?: ClarificationRequestWhereInput
+    none?: ClarificationRequestWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -28994,6 +32213,10 @@ export namespace Prisma {
   }
 
   export type AssistantProviderExecutionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ClarificationRequestOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -29799,16 +33022,200 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
-  export type EnumWalletTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.WalletType | EnumWalletTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.WalletType[] | ListEnumWalletTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.WalletType[] | ListEnumWalletTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumWalletTypeFilter<$PrismaModel> | $Enums.WalletType
+  export type EnumAssistantClarificationStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AssistantClarificationStatus | EnumAssistantClarificationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AssistantClarificationStatus[] | ListEnumAssistantClarificationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AssistantClarificationStatus[] | ListEnumAssistantClarificationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAssistantClarificationStatusFilter<$PrismaModel> | $Enums.AssistantClarificationStatus
+  }
+  export type JsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type BoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type ClarificationRequestNullableScalarRelationFilter = {
+    is?: ClarificationRequestWhereInput | null
+    isNot?: ClarificationRequestWhereInput | null
+  }
+
+  export type ClarificationOptionListRelationFilter = {
+    every?: ClarificationOptionWhereInput
+    some?: ClarificationOptionWhereInput
+    none?: ClarificationOptionWhereInput
+  }
+
+  export type ClarificationOptionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ClarificationRequestCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    conversationId?: SortOrder
+    originatingTurnId?: SortOrder
+    executionId?: SortOrder
+    parentId?: SortOrder
+    entityType?: SortOrder
+    status?: SortOrder
+    trustedContext?: SortOrder
+    prompt?: SortOrder
+    terminalCode?: SortOrder
+    restartRequired?: SortOrder
+    consumedAt?: SortOrder
+    cancelledAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ClarificationRequestMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    conversationId?: SortOrder
+    originatingTurnId?: SortOrder
+    executionId?: SortOrder
+    parentId?: SortOrder
+    entityType?: SortOrder
+    status?: SortOrder
+    prompt?: SortOrder
+    terminalCode?: SortOrder
+    restartRequired?: SortOrder
+    consumedAt?: SortOrder
+    cancelledAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ClarificationRequestMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    conversationId?: SortOrder
+    originatingTurnId?: SortOrder
+    executionId?: SortOrder
+    parentId?: SortOrder
+    entityType?: SortOrder
+    status?: SortOrder
+    prompt?: SortOrder
+    terminalCode?: SortOrder
+    restartRequired?: SortOrder
+    consumedAt?: SortOrder
+    cancelledAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumAssistantClarificationStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AssistantClarificationStatus | EnumAssistantClarificationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AssistantClarificationStatus[] | ListEnumAssistantClarificationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AssistantClarificationStatus[] | ListEnumAssistantClarificationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAssistantClarificationStatusWithAggregatesFilter<$PrismaModel> | $Enums.AssistantClarificationStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAssistantClarificationStatusFilter<$PrismaModel>
+    _max?: NestedEnumAssistantClarificationStatusFilter<$PrismaModel>
+  }
+  export type JsonWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedJsonFilter<$PrismaModel>
+    _max?: NestedJsonFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type ClarificationRequestScalarRelationFilter = {
+    is?: ClarificationRequestWhereInput
+    isNot?: ClarificationRequestWhereInput
+  }
+
+  export type ClarificationOptionRequestIdTokenDigestCompoundUniqueInput = {
+    requestId: string
+    tokenDigest: string
+  }
+
+  export type ClarificationOptionCountOrderByAggregateInput = {
+    id?: SortOrder
+    requestId?: SortOrder
+    tokenDigest?: SortOrder
+    displayLabel?: SortOrder
+    discriminator?: SortOrder
+    candidateId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ClarificationOptionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    requestId?: SortOrder
+    tokenDigest?: SortOrder
+    displayLabel?: SortOrder
+    discriminator?: SortOrder
+    candidateId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ClarificationOptionMinOrderByAggregateInput = {
+    id?: SortOrder
+    requestId?: SortOrder
+    tokenDigest?: SortOrder
+    displayLabel?: SortOrder
+    discriminator?: SortOrder
+    candidateId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumWalletTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.WalletType | EnumWalletTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.WalletType[] | ListEnumWalletTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WalletType[] | ListEnumWalletTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumWalletTypeFilter<$PrismaModel> | $Enums.WalletType
   }
 
   export type EnumAdminFeeTypeFilter<$PrismaModel = never> = {
@@ -29906,14 +33313,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumWalletTypeFilter<$PrismaModel>
     _max?: NestedEnumWalletTypeFilter<$PrismaModel>
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type EnumAdminFeeTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -30639,6 +34038,13 @@ export namespace Prisma {
     connect?: AssistantProviderExecutionWhereUniqueInput | AssistantProviderExecutionWhereUniqueInput[]
   }
 
+  export type ClarificationRequestCreateNestedManyWithoutUserInput = {
+    create?: XOR<ClarificationRequestCreateWithoutUserInput, ClarificationRequestUncheckedCreateWithoutUserInput> | ClarificationRequestCreateWithoutUserInput[] | ClarificationRequestUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ClarificationRequestCreateOrConnectWithoutUserInput | ClarificationRequestCreateOrConnectWithoutUserInput[]
+    createMany?: ClarificationRequestCreateManyUserInputEnvelope
+    connect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+  }
+
   export type WalletUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<WalletCreateWithoutUserInput, WalletUncheckedCreateWithoutUserInput> | WalletCreateWithoutUserInput[] | WalletUncheckedCreateWithoutUserInput[]
     connectOrCreate?: WalletCreateOrConnectWithoutUserInput | WalletCreateOrConnectWithoutUserInput[]
@@ -30721,6 +34127,13 @@ export namespace Prisma {
     connectOrCreate?: AssistantProviderExecutionCreateOrConnectWithoutUserInput | AssistantProviderExecutionCreateOrConnectWithoutUserInput[]
     createMany?: AssistantProviderExecutionCreateManyUserInputEnvelope
     connect?: AssistantProviderExecutionWhereUniqueInput | AssistantProviderExecutionWhereUniqueInput[]
+  }
+
+  export type ClarificationRequestUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ClarificationRequestCreateWithoutUserInput, ClarificationRequestUncheckedCreateWithoutUserInput> | ClarificationRequestCreateWithoutUserInput[] | ClarificationRequestUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ClarificationRequestCreateOrConnectWithoutUserInput | ClarificationRequestCreateOrConnectWithoutUserInput[]
+    createMany?: ClarificationRequestCreateManyUserInputEnvelope
+    connect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -30903,6 +34316,20 @@ export namespace Prisma {
     deleteMany?: AssistantProviderExecutionScalarWhereInput | AssistantProviderExecutionScalarWhereInput[]
   }
 
+  export type ClarificationRequestUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ClarificationRequestCreateWithoutUserInput, ClarificationRequestUncheckedCreateWithoutUserInput> | ClarificationRequestCreateWithoutUserInput[] | ClarificationRequestUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ClarificationRequestCreateOrConnectWithoutUserInput | ClarificationRequestCreateOrConnectWithoutUserInput[]
+    upsert?: ClarificationRequestUpsertWithWhereUniqueWithoutUserInput | ClarificationRequestUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ClarificationRequestCreateManyUserInputEnvelope
+    set?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    disconnect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    delete?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    connect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    update?: ClarificationRequestUpdateWithWhereUniqueWithoutUserInput | ClarificationRequestUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ClarificationRequestUpdateManyWithWhereWithoutUserInput | ClarificationRequestUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ClarificationRequestScalarWhereInput | ClarificationRequestScalarWhereInput[]
+  }
+
   export type WalletUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<WalletCreateWithoutUserInput, WalletUncheckedCreateWithoutUserInput> | WalletCreateWithoutUserInput[] | WalletUncheckedCreateWithoutUserInput[]
     connectOrCreate?: WalletCreateOrConnectWithoutUserInput | WalletCreateOrConnectWithoutUserInput[]
@@ -31071,6 +34498,20 @@ export namespace Prisma {
     deleteMany?: AssistantProviderExecutionScalarWhereInput | AssistantProviderExecutionScalarWhereInput[]
   }
 
+  export type ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ClarificationRequestCreateWithoutUserInput, ClarificationRequestUncheckedCreateWithoutUserInput> | ClarificationRequestCreateWithoutUserInput[] | ClarificationRequestUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ClarificationRequestCreateOrConnectWithoutUserInput | ClarificationRequestCreateOrConnectWithoutUserInput[]
+    upsert?: ClarificationRequestUpsertWithWhereUniqueWithoutUserInput | ClarificationRequestUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ClarificationRequestCreateManyUserInputEnvelope
+    set?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    disconnect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    delete?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    connect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    update?: ClarificationRequestUpdateWithWhereUniqueWithoutUserInput | ClarificationRequestUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ClarificationRequestUpdateManyWithWhereWithoutUserInput | ClarificationRequestUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ClarificationRequestScalarWhereInput | ClarificationRequestScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutAssistantConversationsInput = {
     create?: XOR<UserCreateWithoutAssistantConversationsInput, UserUncheckedCreateWithoutAssistantConversationsInput>
     connectOrCreate?: UserCreateOrConnectWithoutAssistantConversationsInput
@@ -31112,6 +34553,13 @@ export namespace Prisma {
     connect?: AssistantProviderExecutionWhereUniqueInput | AssistantProviderExecutionWhereUniqueInput[]
   }
 
+  export type ClarificationRequestCreateNestedManyWithoutConversationInput = {
+    create?: XOR<ClarificationRequestCreateWithoutConversationInput, ClarificationRequestUncheckedCreateWithoutConversationInput> | ClarificationRequestCreateWithoutConversationInput[] | ClarificationRequestUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ClarificationRequestCreateOrConnectWithoutConversationInput | ClarificationRequestCreateOrConnectWithoutConversationInput[]
+    createMany?: ClarificationRequestCreateManyConversationInputEnvelope
+    connect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+  }
+
   export type AssistantTurnUncheckedCreateNestedManyWithoutConversationInput = {
     create?: XOR<AssistantTurnCreateWithoutConversationInput, AssistantTurnUncheckedCreateWithoutConversationInput> | AssistantTurnCreateWithoutConversationInput[] | AssistantTurnUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: AssistantTurnCreateOrConnectWithoutConversationInput | AssistantTurnCreateOrConnectWithoutConversationInput[]
@@ -31145,6 +34593,13 @@ export namespace Prisma {
     connectOrCreate?: AssistantProviderExecutionCreateOrConnectWithoutConversationInput | AssistantProviderExecutionCreateOrConnectWithoutConversationInput[]
     createMany?: AssistantProviderExecutionCreateManyConversationInputEnvelope
     connect?: AssistantProviderExecutionWhereUniqueInput | AssistantProviderExecutionWhereUniqueInput[]
+  }
+
+  export type ClarificationRequestUncheckedCreateNestedManyWithoutConversationInput = {
+    create?: XOR<ClarificationRequestCreateWithoutConversationInput, ClarificationRequestUncheckedCreateWithoutConversationInput> | ClarificationRequestCreateWithoutConversationInput[] | ClarificationRequestUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ClarificationRequestCreateOrConnectWithoutConversationInput | ClarificationRequestCreateOrConnectWithoutConversationInput[]
+    createMany?: ClarificationRequestCreateManyConversationInputEnvelope
+    connect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
   }
 
   export type EnumAssistantConversationStatusFieldUpdateOperationsInput = {
@@ -31233,6 +34688,20 @@ export namespace Prisma {
     deleteMany?: AssistantProviderExecutionScalarWhereInput | AssistantProviderExecutionScalarWhereInput[]
   }
 
+  export type ClarificationRequestUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<ClarificationRequestCreateWithoutConversationInput, ClarificationRequestUncheckedCreateWithoutConversationInput> | ClarificationRequestCreateWithoutConversationInput[] | ClarificationRequestUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ClarificationRequestCreateOrConnectWithoutConversationInput | ClarificationRequestCreateOrConnectWithoutConversationInput[]
+    upsert?: ClarificationRequestUpsertWithWhereUniqueWithoutConversationInput | ClarificationRequestUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: ClarificationRequestCreateManyConversationInputEnvelope
+    set?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    disconnect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    delete?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    connect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    update?: ClarificationRequestUpdateWithWhereUniqueWithoutConversationInput | ClarificationRequestUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: ClarificationRequestUpdateManyWithWhereWithoutConversationInput | ClarificationRequestUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: ClarificationRequestScalarWhereInput | ClarificationRequestScalarWhereInput[]
+  }
+
   export type AssistantTurnUncheckedUpdateManyWithoutConversationNestedInput = {
     create?: XOR<AssistantTurnCreateWithoutConversationInput, AssistantTurnUncheckedCreateWithoutConversationInput> | AssistantTurnCreateWithoutConversationInput[] | AssistantTurnUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: AssistantTurnCreateOrConnectWithoutConversationInput | AssistantTurnCreateOrConnectWithoutConversationInput[]
@@ -31303,6 +34772,20 @@ export namespace Prisma {
     deleteMany?: AssistantProviderExecutionScalarWhereInput | AssistantProviderExecutionScalarWhereInput[]
   }
 
+  export type ClarificationRequestUncheckedUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<ClarificationRequestCreateWithoutConversationInput, ClarificationRequestUncheckedCreateWithoutConversationInput> | ClarificationRequestCreateWithoutConversationInput[] | ClarificationRequestUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ClarificationRequestCreateOrConnectWithoutConversationInput | ClarificationRequestCreateOrConnectWithoutConversationInput[]
+    upsert?: ClarificationRequestUpsertWithWhereUniqueWithoutConversationInput | ClarificationRequestUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: ClarificationRequestCreateManyConversationInputEnvelope
+    set?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    disconnect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    delete?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    connect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    update?: ClarificationRequestUpdateWithWhereUniqueWithoutConversationInput | ClarificationRequestUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: ClarificationRequestUpdateManyWithWhereWithoutConversationInput | ClarificationRequestUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: ClarificationRequestScalarWhereInput | ClarificationRequestScalarWhereInput[]
+  }
+
   export type AssistantConversationCreateNestedOneWithoutTurnsInput = {
     create?: XOR<AssistantConversationCreateWithoutTurnsInput, AssistantConversationUncheckedCreateWithoutTurnsInput>
     connectOrCreate?: AssistantConversationCreateOrConnectWithoutTurnsInput
@@ -31337,6 +34820,13 @@ export namespace Prisma {
     connect?: AssistantProviderExecutionWhereUniqueInput | AssistantProviderExecutionWhereUniqueInput[]
   }
 
+  export type ClarificationRequestCreateNestedManyWithoutOriginatingTurnInput = {
+    create?: XOR<ClarificationRequestCreateWithoutOriginatingTurnInput, ClarificationRequestUncheckedCreateWithoutOriginatingTurnInput> | ClarificationRequestCreateWithoutOriginatingTurnInput[] | ClarificationRequestUncheckedCreateWithoutOriginatingTurnInput[]
+    connectOrCreate?: ClarificationRequestCreateOrConnectWithoutOriginatingTurnInput | ClarificationRequestCreateOrConnectWithoutOriginatingTurnInput[]
+    createMany?: ClarificationRequestCreateManyOriginatingTurnInputEnvelope
+    connect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+  }
+
   export type AssistantMessageUncheckedCreateNestedManyWithoutTurnInput = {
     create?: XOR<AssistantMessageCreateWithoutTurnInput, AssistantMessageUncheckedCreateWithoutTurnInput> | AssistantMessageCreateWithoutTurnInput[] | AssistantMessageUncheckedCreateWithoutTurnInput[]
     connectOrCreate?: AssistantMessageCreateOrConnectWithoutTurnInput | AssistantMessageCreateOrConnectWithoutTurnInput[]
@@ -31363,6 +34853,13 @@ export namespace Prisma {
     connectOrCreate?: AssistantProviderExecutionCreateOrConnectWithoutTurnInput | AssistantProviderExecutionCreateOrConnectWithoutTurnInput[]
     createMany?: AssistantProviderExecutionCreateManyTurnInputEnvelope
     connect?: AssistantProviderExecutionWhereUniqueInput | AssistantProviderExecutionWhereUniqueInput[]
+  }
+
+  export type ClarificationRequestUncheckedCreateNestedManyWithoutOriginatingTurnInput = {
+    create?: XOR<ClarificationRequestCreateWithoutOriginatingTurnInput, ClarificationRequestUncheckedCreateWithoutOriginatingTurnInput> | ClarificationRequestCreateWithoutOriginatingTurnInput[] | ClarificationRequestUncheckedCreateWithoutOriginatingTurnInput[]
+    connectOrCreate?: ClarificationRequestCreateOrConnectWithoutOriginatingTurnInput | ClarificationRequestCreateOrConnectWithoutOriginatingTurnInput[]
+    createMany?: ClarificationRequestCreateManyOriginatingTurnInputEnvelope
+    connect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
   }
 
   export type EnumAssistantTurnStatusFieldUpdateOperationsInput = {
@@ -31433,6 +34930,20 @@ export namespace Prisma {
     deleteMany?: AssistantProviderExecutionScalarWhereInput | AssistantProviderExecutionScalarWhereInput[]
   }
 
+  export type ClarificationRequestUpdateManyWithoutOriginatingTurnNestedInput = {
+    create?: XOR<ClarificationRequestCreateWithoutOriginatingTurnInput, ClarificationRequestUncheckedCreateWithoutOriginatingTurnInput> | ClarificationRequestCreateWithoutOriginatingTurnInput[] | ClarificationRequestUncheckedCreateWithoutOriginatingTurnInput[]
+    connectOrCreate?: ClarificationRequestCreateOrConnectWithoutOriginatingTurnInput | ClarificationRequestCreateOrConnectWithoutOriginatingTurnInput[]
+    upsert?: ClarificationRequestUpsertWithWhereUniqueWithoutOriginatingTurnInput | ClarificationRequestUpsertWithWhereUniqueWithoutOriginatingTurnInput[]
+    createMany?: ClarificationRequestCreateManyOriginatingTurnInputEnvelope
+    set?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    disconnect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    delete?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    connect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    update?: ClarificationRequestUpdateWithWhereUniqueWithoutOriginatingTurnInput | ClarificationRequestUpdateWithWhereUniqueWithoutOriginatingTurnInput[]
+    updateMany?: ClarificationRequestUpdateManyWithWhereWithoutOriginatingTurnInput | ClarificationRequestUpdateManyWithWhereWithoutOriginatingTurnInput[]
+    deleteMany?: ClarificationRequestScalarWhereInput | ClarificationRequestScalarWhereInput[]
+  }
+
   export type AssistantMessageUncheckedUpdateManyWithoutTurnNestedInput = {
     create?: XOR<AssistantMessageCreateWithoutTurnInput, AssistantMessageUncheckedCreateWithoutTurnInput> | AssistantMessageCreateWithoutTurnInput[] | AssistantMessageUncheckedCreateWithoutTurnInput[]
     connectOrCreate?: AssistantMessageCreateOrConnectWithoutTurnInput | AssistantMessageCreateOrConnectWithoutTurnInput[]
@@ -31487,6 +34998,20 @@ export namespace Prisma {
     update?: AssistantProviderExecutionUpdateWithWhereUniqueWithoutTurnInput | AssistantProviderExecutionUpdateWithWhereUniqueWithoutTurnInput[]
     updateMany?: AssistantProviderExecutionUpdateManyWithWhereWithoutTurnInput | AssistantProviderExecutionUpdateManyWithWhereWithoutTurnInput[]
     deleteMany?: AssistantProviderExecutionScalarWhereInput | AssistantProviderExecutionScalarWhereInput[]
+  }
+
+  export type ClarificationRequestUncheckedUpdateManyWithoutOriginatingTurnNestedInput = {
+    create?: XOR<ClarificationRequestCreateWithoutOriginatingTurnInput, ClarificationRequestUncheckedCreateWithoutOriginatingTurnInput> | ClarificationRequestCreateWithoutOriginatingTurnInput[] | ClarificationRequestUncheckedCreateWithoutOriginatingTurnInput[]
+    connectOrCreate?: ClarificationRequestCreateOrConnectWithoutOriginatingTurnInput | ClarificationRequestCreateOrConnectWithoutOriginatingTurnInput[]
+    upsert?: ClarificationRequestUpsertWithWhereUniqueWithoutOriginatingTurnInput | ClarificationRequestUpsertWithWhereUniqueWithoutOriginatingTurnInput[]
+    createMany?: ClarificationRequestCreateManyOriginatingTurnInputEnvelope
+    set?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    disconnect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    delete?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    connect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    update?: ClarificationRequestUpdateWithWhereUniqueWithoutOriginatingTurnInput | ClarificationRequestUpdateWithWhereUniqueWithoutOriginatingTurnInput[]
+    updateMany?: ClarificationRequestUpdateManyWithWhereWithoutOriginatingTurnInput | ClarificationRequestUpdateManyWithWhereWithoutOriginatingTurnInput[]
+    deleteMany?: ClarificationRequestScalarWhereInput | ClarificationRequestScalarWhereInput[]
   }
 
   export type AssistantConversationCreateNestedOneWithoutMessagesInput = {
@@ -31827,6 +35352,170 @@ export namespace Prisma {
     update?: XOR<XOR<AssistantTurnUpdateToOneWithWhereWithoutProviderExecutionsInput, AssistantTurnUpdateWithoutProviderExecutionsInput>, AssistantTurnUncheckedUpdateWithoutProviderExecutionsInput>
   }
 
+  export type UserCreateNestedOneWithoutClarificationRequestsInput = {
+    create?: XOR<UserCreateWithoutClarificationRequestsInput, UserUncheckedCreateWithoutClarificationRequestsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutClarificationRequestsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type AssistantConversationCreateNestedOneWithoutClarificationRequestsInput = {
+    create?: XOR<AssistantConversationCreateWithoutClarificationRequestsInput, AssistantConversationUncheckedCreateWithoutClarificationRequestsInput>
+    connectOrCreate?: AssistantConversationCreateOrConnectWithoutClarificationRequestsInput
+    connect?: AssistantConversationWhereUniqueInput
+  }
+
+  export type AssistantTurnCreateNestedOneWithoutClarificationRequestsInput = {
+    create?: XOR<AssistantTurnCreateWithoutClarificationRequestsInput, AssistantTurnUncheckedCreateWithoutClarificationRequestsInput>
+    connectOrCreate?: AssistantTurnCreateOrConnectWithoutClarificationRequestsInput
+    connect?: AssistantTurnWhereUniqueInput
+  }
+
+  export type ClarificationRequestCreateNestedOneWithoutChildrenInput = {
+    create?: XOR<ClarificationRequestCreateWithoutChildrenInput, ClarificationRequestUncheckedCreateWithoutChildrenInput>
+    connectOrCreate?: ClarificationRequestCreateOrConnectWithoutChildrenInput
+    connect?: ClarificationRequestWhereUniqueInput
+  }
+
+  export type ClarificationRequestCreateNestedManyWithoutParentInput = {
+    create?: XOR<ClarificationRequestCreateWithoutParentInput, ClarificationRequestUncheckedCreateWithoutParentInput> | ClarificationRequestCreateWithoutParentInput[] | ClarificationRequestUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: ClarificationRequestCreateOrConnectWithoutParentInput | ClarificationRequestCreateOrConnectWithoutParentInput[]
+    createMany?: ClarificationRequestCreateManyParentInputEnvelope
+    connect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+  }
+
+  export type ClarificationOptionCreateNestedManyWithoutRequestInput = {
+    create?: XOR<ClarificationOptionCreateWithoutRequestInput, ClarificationOptionUncheckedCreateWithoutRequestInput> | ClarificationOptionCreateWithoutRequestInput[] | ClarificationOptionUncheckedCreateWithoutRequestInput[]
+    connectOrCreate?: ClarificationOptionCreateOrConnectWithoutRequestInput | ClarificationOptionCreateOrConnectWithoutRequestInput[]
+    createMany?: ClarificationOptionCreateManyRequestInputEnvelope
+    connect?: ClarificationOptionWhereUniqueInput | ClarificationOptionWhereUniqueInput[]
+  }
+
+  export type ClarificationRequestUncheckedCreateNestedManyWithoutParentInput = {
+    create?: XOR<ClarificationRequestCreateWithoutParentInput, ClarificationRequestUncheckedCreateWithoutParentInput> | ClarificationRequestCreateWithoutParentInput[] | ClarificationRequestUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: ClarificationRequestCreateOrConnectWithoutParentInput | ClarificationRequestCreateOrConnectWithoutParentInput[]
+    createMany?: ClarificationRequestCreateManyParentInputEnvelope
+    connect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+  }
+
+  export type ClarificationOptionUncheckedCreateNestedManyWithoutRequestInput = {
+    create?: XOR<ClarificationOptionCreateWithoutRequestInput, ClarificationOptionUncheckedCreateWithoutRequestInput> | ClarificationOptionCreateWithoutRequestInput[] | ClarificationOptionUncheckedCreateWithoutRequestInput[]
+    connectOrCreate?: ClarificationOptionCreateOrConnectWithoutRequestInput | ClarificationOptionCreateOrConnectWithoutRequestInput[]
+    createMany?: ClarificationOptionCreateManyRequestInputEnvelope
+    connect?: ClarificationOptionWhereUniqueInput | ClarificationOptionWhereUniqueInput[]
+  }
+
+  export type EnumAssistantClarificationStatusFieldUpdateOperationsInput = {
+    set?: $Enums.AssistantClarificationStatus
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type UserUpdateOneRequiredWithoutClarificationRequestsNestedInput = {
+    create?: XOR<UserCreateWithoutClarificationRequestsInput, UserUncheckedCreateWithoutClarificationRequestsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutClarificationRequestsInput
+    upsert?: UserUpsertWithoutClarificationRequestsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutClarificationRequestsInput, UserUpdateWithoutClarificationRequestsInput>, UserUncheckedUpdateWithoutClarificationRequestsInput>
+  }
+
+  export type AssistantConversationUpdateOneRequiredWithoutClarificationRequestsNestedInput = {
+    create?: XOR<AssistantConversationCreateWithoutClarificationRequestsInput, AssistantConversationUncheckedCreateWithoutClarificationRequestsInput>
+    connectOrCreate?: AssistantConversationCreateOrConnectWithoutClarificationRequestsInput
+    upsert?: AssistantConversationUpsertWithoutClarificationRequestsInput
+    connect?: AssistantConversationWhereUniqueInput
+    update?: XOR<XOR<AssistantConversationUpdateToOneWithWhereWithoutClarificationRequestsInput, AssistantConversationUpdateWithoutClarificationRequestsInput>, AssistantConversationUncheckedUpdateWithoutClarificationRequestsInput>
+  }
+
+  export type AssistantTurnUpdateOneRequiredWithoutClarificationRequestsNestedInput = {
+    create?: XOR<AssistantTurnCreateWithoutClarificationRequestsInput, AssistantTurnUncheckedCreateWithoutClarificationRequestsInput>
+    connectOrCreate?: AssistantTurnCreateOrConnectWithoutClarificationRequestsInput
+    upsert?: AssistantTurnUpsertWithoutClarificationRequestsInput
+    connect?: AssistantTurnWhereUniqueInput
+    update?: XOR<XOR<AssistantTurnUpdateToOneWithWhereWithoutClarificationRequestsInput, AssistantTurnUpdateWithoutClarificationRequestsInput>, AssistantTurnUncheckedUpdateWithoutClarificationRequestsInput>
+  }
+
+  export type ClarificationRequestUpdateOneWithoutChildrenNestedInput = {
+    create?: XOR<ClarificationRequestCreateWithoutChildrenInput, ClarificationRequestUncheckedCreateWithoutChildrenInput>
+    connectOrCreate?: ClarificationRequestCreateOrConnectWithoutChildrenInput
+    upsert?: ClarificationRequestUpsertWithoutChildrenInput
+    disconnect?: ClarificationRequestWhereInput | boolean
+    delete?: ClarificationRequestWhereInput | boolean
+    connect?: ClarificationRequestWhereUniqueInput
+    update?: XOR<XOR<ClarificationRequestUpdateToOneWithWhereWithoutChildrenInput, ClarificationRequestUpdateWithoutChildrenInput>, ClarificationRequestUncheckedUpdateWithoutChildrenInput>
+  }
+
+  export type ClarificationRequestUpdateManyWithoutParentNestedInput = {
+    create?: XOR<ClarificationRequestCreateWithoutParentInput, ClarificationRequestUncheckedCreateWithoutParentInput> | ClarificationRequestCreateWithoutParentInput[] | ClarificationRequestUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: ClarificationRequestCreateOrConnectWithoutParentInput | ClarificationRequestCreateOrConnectWithoutParentInput[]
+    upsert?: ClarificationRequestUpsertWithWhereUniqueWithoutParentInput | ClarificationRequestUpsertWithWhereUniqueWithoutParentInput[]
+    createMany?: ClarificationRequestCreateManyParentInputEnvelope
+    set?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    disconnect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    delete?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    connect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    update?: ClarificationRequestUpdateWithWhereUniqueWithoutParentInput | ClarificationRequestUpdateWithWhereUniqueWithoutParentInput[]
+    updateMany?: ClarificationRequestUpdateManyWithWhereWithoutParentInput | ClarificationRequestUpdateManyWithWhereWithoutParentInput[]
+    deleteMany?: ClarificationRequestScalarWhereInput | ClarificationRequestScalarWhereInput[]
+  }
+
+  export type ClarificationOptionUpdateManyWithoutRequestNestedInput = {
+    create?: XOR<ClarificationOptionCreateWithoutRequestInput, ClarificationOptionUncheckedCreateWithoutRequestInput> | ClarificationOptionCreateWithoutRequestInput[] | ClarificationOptionUncheckedCreateWithoutRequestInput[]
+    connectOrCreate?: ClarificationOptionCreateOrConnectWithoutRequestInput | ClarificationOptionCreateOrConnectWithoutRequestInput[]
+    upsert?: ClarificationOptionUpsertWithWhereUniqueWithoutRequestInput | ClarificationOptionUpsertWithWhereUniqueWithoutRequestInput[]
+    createMany?: ClarificationOptionCreateManyRequestInputEnvelope
+    set?: ClarificationOptionWhereUniqueInput | ClarificationOptionWhereUniqueInput[]
+    disconnect?: ClarificationOptionWhereUniqueInput | ClarificationOptionWhereUniqueInput[]
+    delete?: ClarificationOptionWhereUniqueInput | ClarificationOptionWhereUniqueInput[]
+    connect?: ClarificationOptionWhereUniqueInput | ClarificationOptionWhereUniqueInput[]
+    update?: ClarificationOptionUpdateWithWhereUniqueWithoutRequestInput | ClarificationOptionUpdateWithWhereUniqueWithoutRequestInput[]
+    updateMany?: ClarificationOptionUpdateManyWithWhereWithoutRequestInput | ClarificationOptionUpdateManyWithWhereWithoutRequestInput[]
+    deleteMany?: ClarificationOptionScalarWhereInput | ClarificationOptionScalarWhereInput[]
+  }
+
+  export type ClarificationRequestUncheckedUpdateManyWithoutParentNestedInput = {
+    create?: XOR<ClarificationRequestCreateWithoutParentInput, ClarificationRequestUncheckedCreateWithoutParentInput> | ClarificationRequestCreateWithoutParentInput[] | ClarificationRequestUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: ClarificationRequestCreateOrConnectWithoutParentInput | ClarificationRequestCreateOrConnectWithoutParentInput[]
+    upsert?: ClarificationRequestUpsertWithWhereUniqueWithoutParentInput | ClarificationRequestUpsertWithWhereUniqueWithoutParentInput[]
+    createMany?: ClarificationRequestCreateManyParentInputEnvelope
+    set?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    disconnect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    delete?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    connect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+    update?: ClarificationRequestUpdateWithWhereUniqueWithoutParentInput | ClarificationRequestUpdateWithWhereUniqueWithoutParentInput[]
+    updateMany?: ClarificationRequestUpdateManyWithWhereWithoutParentInput | ClarificationRequestUpdateManyWithWhereWithoutParentInput[]
+    deleteMany?: ClarificationRequestScalarWhereInput | ClarificationRequestScalarWhereInput[]
+  }
+
+  export type ClarificationOptionUncheckedUpdateManyWithoutRequestNestedInput = {
+    create?: XOR<ClarificationOptionCreateWithoutRequestInput, ClarificationOptionUncheckedCreateWithoutRequestInput> | ClarificationOptionCreateWithoutRequestInput[] | ClarificationOptionUncheckedCreateWithoutRequestInput[]
+    connectOrCreate?: ClarificationOptionCreateOrConnectWithoutRequestInput | ClarificationOptionCreateOrConnectWithoutRequestInput[]
+    upsert?: ClarificationOptionUpsertWithWhereUniqueWithoutRequestInput | ClarificationOptionUpsertWithWhereUniqueWithoutRequestInput[]
+    createMany?: ClarificationOptionCreateManyRequestInputEnvelope
+    set?: ClarificationOptionWhereUniqueInput | ClarificationOptionWhereUniqueInput[]
+    disconnect?: ClarificationOptionWhereUniqueInput | ClarificationOptionWhereUniqueInput[]
+    delete?: ClarificationOptionWhereUniqueInput | ClarificationOptionWhereUniqueInput[]
+    connect?: ClarificationOptionWhereUniqueInput | ClarificationOptionWhereUniqueInput[]
+    update?: ClarificationOptionUpdateWithWhereUniqueWithoutRequestInput | ClarificationOptionUpdateWithWhereUniqueWithoutRequestInput[]
+    updateMany?: ClarificationOptionUpdateManyWithWhereWithoutRequestInput | ClarificationOptionUpdateManyWithWhereWithoutRequestInput[]
+    deleteMany?: ClarificationOptionScalarWhereInput | ClarificationOptionScalarWhereInput[]
+  }
+
+  export type ClarificationRequestCreateNestedOneWithoutOptionsInput = {
+    create?: XOR<ClarificationRequestCreateWithoutOptionsInput, ClarificationRequestUncheckedCreateWithoutOptionsInput>
+    connectOrCreate?: ClarificationRequestCreateOrConnectWithoutOptionsInput
+    connect?: ClarificationRequestWhereUniqueInput
+  }
+
+  export type ClarificationRequestUpdateOneRequiredWithoutOptionsNestedInput = {
+    create?: XOR<ClarificationRequestCreateWithoutOptionsInput, ClarificationRequestUncheckedCreateWithoutOptionsInput>
+    connectOrCreate?: ClarificationRequestCreateOrConnectWithoutOptionsInput
+    upsert?: ClarificationRequestUpsertWithoutOptionsInput
+    connect?: ClarificationRequestWhereUniqueInput
+    update?: XOR<XOR<ClarificationRequestUpdateToOneWithWhereWithoutOptionsInput, ClarificationRequestUpdateWithoutOptionsInput>, ClarificationRequestUncheckedUpdateWithoutOptionsInput>
+  }
+
   export type UserCreateNestedOneWithoutWalletsInput = {
     create?: XOR<UserCreateWithoutWalletsInput, UserUncheckedCreateWithoutWalletsInput>
     connectOrCreate?: UserCreateOrConnectWithoutWalletsInput
@@ -31891,10 +35580,6 @@ export namespace Prisma {
 
   export type EnumWalletTypeFieldUpdateOperationsInput = {
     set?: $Enums.WalletType
-  }
-
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
   }
 
   export type EnumAdminFeeTypeFieldUpdateOperationsInput = {
@@ -33107,16 +36792,64 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type NestedEnumWalletTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.WalletType | EnumWalletTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.WalletType[] | ListEnumWalletTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.WalletType[] | ListEnumWalletTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumWalletTypeFilter<$PrismaModel> | $Enums.WalletType
+  export type NestedEnumAssistantClarificationStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AssistantClarificationStatus | EnumAssistantClarificationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AssistantClarificationStatus[] | ListEnumAssistantClarificationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AssistantClarificationStatus[] | ListEnumAssistantClarificationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAssistantClarificationStatusFilter<$PrismaModel> | $Enums.AssistantClarificationStatus
   }
 
   export type NestedBoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedEnumAssistantClarificationStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AssistantClarificationStatus | EnumAssistantClarificationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AssistantClarificationStatus[] | ListEnumAssistantClarificationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AssistantClarificationStatus[] | ListEnumAssistantClarificationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAssistantClarificationStatusWithAggregatesFilter<$PrismaModel> | $Enums.AssistantClarificationStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAssistantClarificationStatusFilter<$PrismaModel>
+    _max?: NestedEnumAssistantClarificationStatusFilter<$PrismaModel>
+  }
+  export type NestedJsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedEnumWalletTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.WalletType | EnumWalletTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.WalletType[] | ListEnumWalletTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WalletType[] | ListEnumWalletTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumWalletTypeFilter<$PrismaModel> | $Enums.WalletType
   }
 
   export type NestedEnumAdminFeeTypeFilter<$PrismaModel = never> = {
@@ -33134,14 +36867,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumWalletTypeFilter<$PrismaModel>
     _max?: NestedEnumWalletTypeFilter<$PrismaModel>
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedEnumAdminFeeTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -33638,6 +37363,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionCreateNestedManyWithoutConversationInput
     financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutConversationInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationUncheckedCreateWithoutUserInput = {
@@ -33653,6 +37379,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUncheckedCreateNestedManyWithoutConversationInput
     financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutConversationInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationCreateOrConnectWithoutUserInput = {
@@ -33798,6 +37525,56 @@ export namespace Prisma {
 
   export type AssistantProviderExecutionCreateManyUserInputEnvelope = {
     data: AssistantProviderExecutionCreateManyUserInput | AssistantProviderExecutionCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ClarificationRequestCreateWithoutUserInput = {
+    id?: string
+    executionId: string
+    entityType: string
+    status?: $Enums.AssistantClarificationStatus
+    trustedContext: JsonNullValueInput | InputJsonValue
+    prompt: string
+    terminalCode?: string | null
+    restartRequired?: boolean
+    consumedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversation: AssistantConversationCreateNestedOneWithoutClarificationRequestsInput
+    originatingTurn: AssistantTurnCreateNestedOneWithoutClarificationRequestsInput
+    parent?: ClarificationRequestCreateNestedOneWithoutChildrenInput
+    children?: ClarificationRequestCreateNestedManyWithoutParentInput
+    options?: ClarificationOptionCreateNestedManyWithoutRequestInput
+  }
+
+  export type ClarificationRequestUncheckedCreateWithoutUserInput = {
+    id?: string
+    conversationId: string
+    originatingTurnId: string
+    executionId: string
+    parentId?: string | null
+    entityType: string
+    status?: $Enums.AssistantClarificationStatus
+    trustedContext: JsonNullValueInput | InputJsonValue
+    prompt: string
+    terminalCode?: string | null
+    restartRequired?: boolean
+    consumedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: ClarificationRequestUncheckedCreateNestedManyWithoutParentInput
+    options?: ClarificationOptionUncheckedCreateNestedManyWithoutRequestInput
+  }
+
+  export type ClarificationRequestCreateOrConnectWithoutUserInput = {
+    where: ClarificationRequestWhereUniqueInput
+    create: XOR<ClarificationRequestCreateWithoutUserInput, ClarificationRequestUncheckedCreateWithoutUserInput>
+  }
+
+  export type ClarificationRequestCreateManyUserInputEnvelope = {
+    data: ClarificationRequestCreateManyUserInput | ClarificationRequestCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -34220,6 +37997,44 @@ export namespace Prisma {
     cachedInputTokens?: IntNullableFilter<"AssistantProviderExecution"> | number | null
   }
 
+  export type ClarificationRequestUpsertWithWhereUniqueWithoutUserInput = {
+    where: ClarificationRequestWhereUniqueInput
+    update: XOR<ClarificationRequestUpdateWithoutUserInput, ClarificationRequestUncheckedUpdateWithoutUserInput>
+    create: XOR<ClarificationRequestCreateWithoutUserInput, ClarificationRequestUncheckedCreateWithoutUserInput>
+  }
+
+  export type ClarificationRequestUpdateWithWhereUniqueWithoutUserInput = {
+    where: ClarificationRequestWhereUniqueInput
+    data: XOR<ClarificationRequestUpdateWithoutUserInput, ClarificationRequestUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ClarificationRequestUpdateManyWithWhereWithoutUserInput = {
+    where: ClarificationRequestScalarWhereInput
+    data: XOR<ClarificationRequestUpdateManyMutationInput, ClarificationRequestUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ClarificationRequestScalarWhereInput = {
+    AND?: ClarificationRequestScalarWhereInput | ClarificationRequestScalarWhereInput[]
+    OR?: ClarificationRequestScalarWhereInput[]
+    NOT?: ClarificationRequestScalarWhereInput | ClarificationRequestScalarWhereInput[]
+    id?: StringFilter<"ClarificationRequest"> | string
+    userId?: StringFilter<"ClarificationRequest"> | string
+    conversationId?: StringFilter<"ClarificationRequest"> | string
+    originatingTurnId?: StringFilter<"ClarificationRequest"> | string
+    executionId?: StringFilter<"ClarificationRequest"> | string
+    parentId?: StringNullableFilter<"ClarificationRequest"> | string | null
+    entityType?: StringFilter<"ClarificationRequest"> | string
+    status?: EnumAssistantClarificationStatusFilter<"ClarificationRequest"> | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonFilter<"ClarificationRequest">
+    prompt?: StringFilter<"ClarificationRequest"> | string
+    terminalCode?: StringNullableFilter<"ClarificationRequest"> | string | null
+    restartRequired?: BoolFilter<"ClarificationRequest"> | boolean
+    consumedAt?: DateTimeNullableFilter<"ClarificationRequest"> | Date | string | null
+    cancelledAt?: DateTimeNullableFilter<"ClarificationRequest"> | Date | string | null
+    createdAt?: DateTimeFilter<"ClarificationRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"ClarificationRequest"> | Date | string
+  }
+
   export type UserCreateWithoutAssistantConversationsInput = {
     id?: string
     email: string
@@ -34238,6 +38053,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAssistantConversationsInput = {
@@ -34258,6 +38074,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAssistantConversationsInput = {
@@ -34280,6 +38097,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionCreateNestedManyWithoutTurnInput
     financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutOriginatingTurnInput
     providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutTurnInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutOriginatingTurnInput
   }
 
   export type AssistantTurnUncheckedCreateWithoutConversationInput = {
@@ -34297,6 +38115,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUncheckedCreateNestedManyWithoutTurnInput
     financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutOriginatingTurnInput
     providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutTurnInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutOriginatingTurnInput
   }
 
   export type AssistantTurnCreateOrConnectWithoutConversationInput = {
@@ -34493,6 +38312,56 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ClarificationRequestCreateWithoutConversationInput = {
+    id?: string
+    executionId: string
+    entityType: string
+    status?: $Enums.AssistantClarificationStatus
+    trustedContext: JsonNullValueInput | InputJsonValue
+    prompt: string
+    terminalCode?: string | null
+    restartRequired?: boolean
+    consumedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutClarificationRequestsInput
+    originatingTurn: AssistantTurnCreateNestedOneWithoutClarificationRequestsInput
+    parent?: ClarificationRequestCreateNestedOneWithoutChildrenInput
+    children?: ClarificationRequestCreateNestedManyWithoutParentInput
+    options?: ClarificationOptionCreateNestedManyWithoutRequestInput
+  }
+
+  export type ClarificationRequestUncheckedCreateWithoutConversationInput = {
+    id?: string
+    userId: string
+    originatingTurnId: string
+    executionId: string
+    parentId?: string | null
+    entityType: string
+    status?: $Enums.AssistantClarificationStatus
+    trustedContext: JsonNullValueInput | InputJsonValue
+    prompt: string
+    terminalCode?: string | null
+    restartRequired?: boolean
+    consumedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: ClarificationRequestUncheckedCreateNestedManyWithoutParentInput
+    options?: ClarificationOptionUncheckedCreateNestedManyWithoutRequestInput
+  }
+
+  export type ClarificationRequestCreateOrConnectWithoutConversationInput = {
+    where: ClarificationRequestWhereUniqueInput
+    create: XOR<ClarificationRequestCreateWithoutConversationInput, ClarificationRequestUncheckedCreateWithoutConversationInput>
+  }
+
+  export type ClarificationRequestCreateManyConversationInputEnvelope = {
+    data: ClarificationRequestCreateManyConversationInput | ClarificationRequestCreateManyConversationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutAssistantConversationsInput = {
     update: XOR<UserUpdateWithoutAssistantConversationsInput, UserUncheckedUpdateWithoutAssistantConversationsInput>
     create: XOR<UserCreateWithoutAssistantConversationsInput, UserUncheckedCreateWithoutAssistantConversationsInput>
@@ -34522,6 +38391,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssistantConversationsInput = {
@@ -34542,6 +38412,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AssistantTurnUpsertWithWhereUniqueWithoutConversationInput = {
@@ -34676,6 +38547,22 @@ export namespace Prisma {
     data: XOR<AssistantProviderExecutionUpdateManyMutationInput, AssistantProviderExecutionUncheckedUpdateManyWithoutConversationInput>
   }
 
+  export type ClarificationRequestUpsertWithWhereUniqueWithoutConversationInput = {
+    where: ClarificationRequestWhereUniqueInput
+    update: XOR<ClarificationRequestUpdateWithoutConversationInput, ClarificationRequestUncheckedUpdateWithoutConversationInput>
+    create: XOR<ClarificationRequestCreateWithoutConversationInput, ClarificationRequestUncheckedCreateWithoutConversationInput>
+  }
+
+  export type ClarificationRequestUpdateWithWhereUniqueWithoutConversationInput = {
+    where: ClarificationRequestWhereUniqueInput
+    data: XOR<ClarificationRequestUpdateWithoutConversationInput, ClarificationRequestUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type ClarificationRequestUpdateManyWithWhereWithoutConversationInput = {
+    where: ClarificationRequestScalarWhereInput
+    data: XOR<ClarificationRequestUpdateManyMutationInput, ClarificationRequestUncheckedUpdateManyWithoutConversationInput>
+  }
+
   export type AssistantConversationCreateWithoutTurnsInput = {
     id?: string
     status?: $Enums.AssistantConversationStatus
@@ -34689,6 +38576,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionCreateNestedManyWithoutConversationInput
     financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutConversationInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationUncheckedCreateWithoutTurnsInput = {
@@ -34704,6 +38592,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUncheckedCreateNestedManyWithoutConversationInput
     financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutConversationInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationCreateOrConnectWithoutTurnsInput = {
@@ -34895,6 +38784,56 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ClarificationRequestCreateWithoutOriginatingTurnInput = {
+    id?: string
+    executionId: string
+    entityType: string
+    status?: $Enums.AssistantClarificationStatus
+    trustedContext: JsonNullValueInput | InputJsonValue
+    prompt: string
+    terminalCode?: string | null
+    restartRequired?: boolean
+    consumedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutClarificationRequestsInput
+    conversation: AssistantConversationCreateNestedOneWithoutClarificationRequestsInput
+    parent?: ClarificationRequestCreateNestedOneWithoutChildrenInput
+    children?: ClarificationRequestCreateNestedManyWithoutParentInput
+    options?: ClarificationOptionCreateNestedManyWithoutRequestInput
+  }
+
+  export type ClarificationRequestUncheckedCreateWithoutOriginatingTurnInput = {
+    id?: string
+    userId: string
+    conversationId: string
+    executionId: string
+    parentId?: string | null
+    entityType: string
+    status?: $Enums.AssistantClarificationStatus
+    trustedContext: JsonNullValueInput | InputJsonValue
+    prompt: string
+    terminalCode?: string | null
+    restartRequired?: boolean
+    consumedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: ClarificationRequestUncheckedCreateNestedManyWithoutParentInput
+    options?: ClarificationOptionUncheckedCreateNestedManyWithoutRequestInput
+  }
+
+  export type ClarificationRequestCreateOrConnectWithoutOriginatingTurnInput = {
+    where: ClarificationRequestWhereUniqueInput
+    create: XOR<ClarificationRequestCreateWithoutOriginatingTurnInput, ClarificationRequestUncheckedCreateWithoutOriginatingTurnInput>
+  }
+
+  export type ClarificationRequestCreateManyOriginatingTurnInputEnvelope = {
+    data: ClarificationRequestCreateManyOriginatingTurnInput | ClarificationRequestCreateManyOriginatingTurnInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AssistantConversationUpsertWithoutTurnsInput = {
     update: XOR<AssistantConversationUpdateWithoutTurnsInput, AssistantConversationUncheckedUpdateWithoutTurnsInput>
     create: XOR<AssistantConversationCreateWithoutTurnsInput, AssistantConversationUncheckedCreateWithoutTurnsInput>
@@ -34919,6 +38858,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUpdateManyWithoutConversationNestedInput
     financialDrafts?: AssistantFinancialDraftUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUpdateManyWithoutConversationNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantConversationUncheckedUpdateWithoutTurnsInput = {
@@ -34934,6 +38874,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUncheckedUpdateManyWithoutConversationNestedInput
     financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutConversationNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantMessageUpsertWithWhereUniqueWithoutTurnInput = {
@@ -35000,6 +38941,22 @@ export namespace Prisma {
     data: XOR<AssistantProviderExecutionUpdateManyMutationInput, AssistantProviderExecutionUncheckedUpdateManyWithoutTurnInput>
   }
 
+  export type ClarificationRequestUpsertWithWhereUniqueWithoutOriginatingTurnInput = {
+    where: ClarificationRequestWhereUniqueInput
+    update: XOR<ClarificationRequestUpdateWithoutOriginatingTurnInput, ClarificationRequestUncheckedUpdateWithoutOriginatingTurnInput>
+    create: XOR<ClarificationRequestCreateWithoutOriginatingTurnInput, ClarificationRequestUncheckedCreateWithoutOriginatingTurnInput>
+  }
+
+  export type ClarificationRequestUpdateWithWhereUniqueWithoutOriginatingTurnInput = {
+    where: ClarificationRequestWhereUniqueInput
+    data: XOR<ClarificationRequestUpdateWithoutOriginatingTurnInput, ClarificationRequestUncheckedUpdateWithoutOriginatingTurnInput>
+  }
+
+  export type ClarificationRequestUpdateManyWithWhereWithoutOriginatingTurnInput = {
+    where: ClarificationRequestScalarWhereInput
+    data: XOR<ClarificationRequestUpdateManyMutationInput, ClarificationRequestUncheckedUpdateManyWithoutOriginatingTurnInput>
+  }
+
   export type AssistantConversationCreateWithoutMessagesInput = {
     id?: string
     status?: $Enums.AssistantConversationStatus
@@ -35013,6 +38970,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionCreateNestedManyWithoutConversationInput
     financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutConversationInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationUncheckedCreateWithoutMessagesInput = {
@@ -35028,6 +38986,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUncheckedCreateNestedManyWithoutConversationInput
     financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutConversationInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationCreateOrConnectWithoutMessagesInput = {
@@ -35050,6 +39009,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionCreateNestedManyWithoutTurnInput
     financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutOriginatingTurnInput
     providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutTurnInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutOriginatingTurnInput
   }
 
   export type AssistantTurnUncheckedCreateWithoutMessagesInput = {
@@ -35067,6 +39027,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUncheckedCreateNestedManyWithoutTurnInput
     financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutOriginatingTurnInput
     providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutTurnInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutOriginatingTurnInput
   }
 
   export type AssistantTurnCreateOrConnectWithoutMessagesInput = {
@@ -35098,6 +39059,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUpdateManyWithoutConversationNestedInput
     financialDrafts?: AssistantFinancialDraftUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUpdateManyWithoutConversationNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantConversationUncheckedUpdateWithoutMessagesInput = {
@@ -35113,6 +39075,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUncheckedUpdateManyWithoutConversationNestedInput
     financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutConversationNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantTurnUpsertWithoutMessagesInput = {
@@ -35141,6 +39104,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUpdateManyWithoutTurnNestedInput
     financialDrafts?: AssistantFinancialDraftUpdateManyWithoutOriginatingTurnNestedInput
     providerExecutions?: AssistantProviderExecutionUpdateManyWithoutTurnNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutOriginatingTurnNestedInput
   }
 
   export type AssistantTurnUncheckedUpdateWithoutMessagesInput = {
@@ -35158,6 +39122,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUncheckedUpdateManyWithoutTurnNestedInput
     financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutOriginatingTurnNestedInput
     providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutTurnNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutOriginatingTurnNestedInput
   }
 
   export type UserCreateWithoutAssistantFinancialDraftsInput = {
@@ -35178,6 +39143,7 @@ export namespace Prisma {
     assistantConversations?: AssistantConversationCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAssistantFinancialDraftsInput = {
@@ -35198,6 +39164,7 @@ export namespace Prisma {
     assistantConversations?: AssistantConversationUncheckedCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAssistantFinancialDraftsInput = {
@@ -35218,6 +39185,7 @@ export namespace Prisma {
     messages?: AssistantMessageCreateNestedManyWithoutConversationInput
     toolExecutions?: AssistantToolExecutionCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutConversationInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationUncheckedCreateWithoutFinancialDraftsInput = {
@@ -35233,6 +39201,7 @@ export namespace Prisma {
     messages?: AssistantMessageUncheckedCreateNestedManyWithoutConversationInput
     toolExecutions?: AssistantToolExecutionUncheckedCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutConversationInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationCreateOrConnectWithoutFinancialDraftsInput = {
@@ -35255,6 +39224,7 @@ export namespace Prisma {
     messages?: AssistantMessageCreateNestedManyWithoutTurnInput
     toolExecutions?: AssistantToolExecutionCreateNestedManyWithoutTurnInput
     providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutTurnInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutOriginatingTurnInput
   }
 
   export type AssistantTurnUncheckedCreateWithoutFinancialDraftsInput = {
@@ -35272,6 +39242,7 @@ export namespace Prisma {
     messages?: AssistantMessageUncheckedCreateNestedManyWithoutTurnInput
     toolExecutions?: AssistantToolExecutionUncheckedCreateNestedManyWithoutTurnInput
     providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutTurnInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutOriginatingTurnInput
   }
 
   export type AssistantTurnCreateOrConnectWithoutFinancialDraftsInput = {
@@ -35420,6 +39391,7 @@ export namespace Prisma {
     assistantConversations?: AssistantConversationUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssistantFinancialDraftsInput = {
@@ -35440,6 +39412,7 @@ export namespace Prisma {
     assistantConversations?: AssistantConversationUncheckedUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AssistantConversationUpsertWithoutFinancialDraftsInput = {
@@ -35466,6 +39439,7 @@ export namespace Prisma {
     messages?: AssistantMessageUpdateManyWithoutConversationNestedInput
     toolExecutions?: AssistantToolExecutionUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUpdateManyWithoutConversationNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantConversationUncheckedUpdateWithoutFinancialDraftsInput = {
@@ -35481,6 +39455,7 @@ export namespace Prisma {
     messages?: AssistantMessageUncheckedUpdateManyWithoutConversationNestedInput
     toolExecutions?: AssistantToolExecutionUncheckedUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutConversationNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantTurnUpsertWithoutFinancialDraftsInput = {
@@ -35509,6 +39484,7 @@ export namespace Prisma {
     messages?: AssistantMessageUpdateManyWithoutTurnNestedInput
     toolExecutions?: AssistantToolExecutionUpdateManyWithoutTurnNestedInput
     providerExecutions?: AssistantProviderExecutionUpdateManyWithoutTurnNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutOriginatingTurnNestedInput
   }
 
   export type AssistantTurnUncheckedUpdateWithoutFinancialDraftsInput = {
@@ -35526,6 +39502,7 @@ export namespace Prisma {
     messages?: AssistantMessageUncheckedUpdateManyWithoutTurnNestedInput
     toolExecutions?: AssistantToolExecutionUncheckedUpdateManyWithoutTurnNestedInput
     providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutTurnNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutOriginatingTurnNestedInput
   }
 
   export type AssistantToolExecutionUpsertWithoutFinancialDraftInput = {
@@ -35658,6 +39635,7 @@ export namespace Prisma {
     assistantConversations?: AssistantConversationCreateNestedManyWithoutUserInput
     assistantFinancialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAssistantIdempotencyRecordsInput = {
@@ -35678,6 +39656,7 @@ export namespace Prisma {
     assistantConversations?: AssistantConversationUncheckedCreateNestedManyWithoutUserInput
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAssistantIdempotencyRecordsInput = {
@@ -35806,6 +39785,7 @@ export namespace Prisma {
     assistantConversations?: AssistantConversationUpdateManyWithoutUserNestedInput
     assistantFinancialDrafts?: AssistantFinancialDraftUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssistantIdempotencyRecordsInput = {
@@ -35826,6 +39806,7 @@ export namespace Prisma {
     assistantConversations?: AssistantConversationUncheckedUpdateManyWithoutUserNestedInput
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AssistantFinancialDraftUpsertWithoutIdempotencyRecordsInput = {
@@ -35945,6 +39926,7 @@ export namespace Prisma {
     messages?: AssistantMessageCreateNestedManyWithoutConversationInput
     financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutConversationInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationUncheckedCreateWithoutToolExecutionsInput = {
@@ -35960,6 +39942,7 @@ export namespace Prisma {
     messages?: AssistantMessageUncheckedCreateNestedManyWithoutConversationInput
     financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutConversationInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationCreateOrConnectWithoutToolExecutionsInput = {
@@ -35982,6 +39965,7 @@ export namespace Prisma {
     messages?: AssistantMessageCreateNestedManyWithoutTurnInput
     financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutOriginatingTurnInput
     providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutTurnInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutOriginatingTurnInput
   }
 
   export type AssistantTurnUncheckedCreateWithoutToolExecutionsInput = {
@@ -35999,6 +39983,7 @@ export namespace Prisma {
     messages?: AssistantMessageUncheckedCreateNestedManyWithoutTurnInput
     financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutOriginatingTurnInput
     providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutTurnInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutOriginatingTurnInput
   }
 
   export type AssistantTurnCreateOrConnectWithoutToolExecutionsInput = {
@@ -36081,6 +40066,7 @@ export namespace Prisma {
     messages?: AssistantMessageUpdateManyWithoutConversationNestedInput
     financialDrafts?: AssistantFinancialDraftUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUpdateManyWithoutConversationNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantConversationUncheckedUpdateWithoutToolExecutionsInput = {
@@ -36096,6 +40082,7 @@ export namespace Prisma {
     messages?: AssistantMessageUncheckedUpdateManyWithoutConversationNestedInput
     financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutConversationNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantTurnUpsertWithoutToolExecutionsInput = {
@@ -36124,6 +40111,7 @@ export namespace Prisma {
     messages?: AssistantMessageUpdateManyWithoutTurnNestedInput
     financialDrafts?: AssistantFinancialDraftUpdateManyWithoutOriginatingTurnNestedInput
     providerExecutions?: AssistantProviderExecutionUpdateManyWithoutTurnNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutOriginatingTurnNestedInput
   }
 
   export type AssistantTurnUncheckedUpdateWithoutToolExecutionsInput = {
@@ -36141,6 +40129,7 @@ export namespace Prisma {
     messages?: AssistantMessageUncheckedUpdateManyWithoutTurnNestedInput
     financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutOriginatingTurnNestedInput
     providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutTurnNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutOriginatingTurnNestedInput
   }
 
   export type AssistantFinancialDraftUpsertWithoutOriginatingExecutionInput = {
@@ -36218,6 +40207,7 @@ export namespace Prisma {
     assistantConversations?: AssistantConversationCreateNestedManyWithoutUserInput
     assistantFinancialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAssistantProviderExecutionsInput = {
@@ -36238,6 +40228,7 @@ export namespace Prisma {
     assistantConversations?: AssistantConversationUncheckedCreateNestedManyWithoutUserInput
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAssistantProviderExecutionsInput = {
@@ -36258,6 +40249,7 @@ export namespace Prisma {
     messages?: AssistantMessageCreateNestedManyWithoutConversationInput
     toolExecutions?: AssistantToolExecutionCreateNestedManyWithoutConversationInput
     financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutConversationInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationUncheckedCreateWithoutProviderExecutionsInput = {
@@ -36273,6 +40265,7 @@ export namespace Prisma {
     messages?: AssistantMessageUncheckedCreateNestedManyWithoutConversationInput
     toolExecutions?: AssistantToolExecutionUncheckedCreateNestedManyWithoutConversationInput
     financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutConversationInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationCreateOrConnectWithoutProviderExecutionsInput = {
@@ -36295,6 +40288,7 @@ export namespace Prisma {
     messages?: AssistantMessageCreateNestedManyWithoutTurnInput
     toolExecutions?: AssistantToolExecutionCreateNestedManyWithoutTurnInput
     financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutOriginatingTurnInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutOriginatingTurnInput
   }
 
   export type AssistantTurnUncheckedCreateWithoutProviderExecutionsInput = {
@@ -36312,6 +40306,7 @@ export namespace Prisma {
     messages?: AssistantMessageUncheckedCreateNestedManyWithoutTurnInput
     toolExecutions?: AssistantToolExecutionUncheckedCreateNestedManyWithoutTurnInput
     financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutOriginatingTurnInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutOriginatingTurnInput
   }
 
   export type AssistantTurnCreateOrConnectWithoutProviderExecutionsInput = {
@@ -36348,6 +40343,7 @@ export namespace Prisma {
     assistantConversations?: AssistantConversationUpdateManyWithoutUserNestedInput
     assistantFinancialDrafts?: AssistantFinancialDraftUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssistantProviderExecutionsInput = {
@@ -36368,6 +40364,7 @@ export namespace Prisma {
     assistantConversations?: AssistantConversationUncheckedUpdateManyWithoutUserNestedInput
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AssistantConversationUpsertWithoutProviderExecutionsInput = {
@@ -36394,6 +40391,7 @@ export namespace Prisma {
     messages?: AssistantMessageUpdateManyWithoutConversationNestedInput
     toolExecutions?: AssistantToolExecutionUpdateManyWithoutConversationNestedInput
     financialDrafts?: AssistantFinancialDraftUpdateManyWithoutConversationNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantConversationUncheckedUpdateWithoutProviderExecutionsInput = {
@@ -36409,6 +40407,7 @@ export namespace Prisma {
     messages?: AssistantMessageUncheckedUpdateManyWithoutConversationNestedInput
     toolExecutions?: AssistantToolExecutionUncheckedUpdateManyWithoutConversationNestedInput
     financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutConversationNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantTurnUpsertWithoutProviderExecutionsInput = {
@@ -36437,6 +40436,7 @@ export namespace Prisma {
     messages?: AssistantMessageUpdateManyWithoutTurnNestedInput
     toolExecutions?: AssistantToolExecutionUpdateManyWithoutTurnNestedInput
     financialDrafts?: AssistantFinancialDraftUpdateManyWithoutOriginatingTurnNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutOriginatingTurnNestedInput
   }
 
   export type AssistantTurnUncheckedUpdateWithoutProviderExecutionsInput = {
@@ -36454,6 +40454,590 @@ export namespace Prisma {
     messages?: AssistantMessageUncheckedUpdateManyWithoutTurnNestedInput
     toolExecutions?: AssistantToolExecutionUncheckedUpdateManyWithoutTurnNestedInput
     financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutOriginatingTurnNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutOriginatingTurnNestedInput
+  }
+
+  export type UserCreateWithoutClarificationRequestsInput = {
+    id?: string
+    email: string
+    name: string
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    wallets?: WalletCreateNestedManyWithoutUserInput
+    categories?: CategoryCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    installments?: InstallmentCreateNestedManyWithoutUserInput
+    recurringTransactionTemplates?: RecurringTransactionTemplateCreateNestedManyWithoutUserInput
+    savingGoals?: SavingGoalCreateNestedManyWithoutUserInput
+    budgets?: BudgetCreateNestedManyWithoutUserInput
+    merchantMappings?: MerchantMappingCreateNestedManyWithoutUserInput
+    assistantConversations?: AssistantConversationCreateNestedManyWithoutUserInput
+    assistantFinancialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutUserInput
+    assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
+    assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutClarificationRequestsInput = {
+    id?: string
+    email: string
+    name: string
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    wallets?: WalletUncheckedCreateNestedManyWithoutUserInput
+    categories?: CategoryUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    installments?: InstallmentUncheckedCreateNestedManyWithoutUserInput
+    recurringTransactionTemplates?: RecurringTransactionTemplateUncheckedCreateNestedManyWithoutUserInput
+    savingGoals?: SavingGoalUncheckedCreateNestedManyWithoutUserInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutUserInput
+    merchantMappings?: MerchantMappingUncheckedCreateNestedManyWithoutUserInput
+    assistantConversations?: AssistantConversationUncheckedCreateNestedManyWithoutUserInput
+    assistantFinancialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutUserInput
+    assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
+    assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutClarificationRequestsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutClarificationRequestsInput, UserUncheckedCreateWithoutClarificationRequestsInput>
+  }
+
+  export type AssistantConversationCreateWithoutClarificationRequestsInput = {
+    id?: string
+    status?: $Enums.AssistantConversationStatus
+    locale?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastActivityAt?: Date | string
+    archivedAt?: Date | string | null
+    user: UserCreateNestedOneWithoutAssistantConversationsInput
+    turns?: AssistantTurnCreateNestedManyWithoutConversationInput
+    messages?: AssistantMessageCreateNestedManyWithoutConversationInput
+    toolExecutions?: AssistantToolExecutionCreateNestedManyWithoutConversationInput
+    financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutConversationInput
+    providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutConversationInput
+  }
+
+  export type AssistantConversationUncheckedCreateWithoutClarificationRequestsInput = {
+    id?: string
+    userId: string
+    status?: $Enums.AssistantConversationStatus
+    locale?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastActivityAt?: Date | string
+    archivedAt?: Date | string | null
+    turns?: AssistantTurnUncheckedCreateNestedManyWithoutConversationInput
+    messages?: AssistantMessageUncheckedCreateNestedManyWithoutConversationInput
+    toolExecutions?: AssistantToolExecutionUncheckedCreateNestedManyWithoutConversationInput
+    financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutConversationInput
+    providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type AssistantConversationCreateOrConnectWithoutClarificationRequestsInput = {
+    where: AssistantConversationWhereUniqueInput
+    create: XOR<AssistantConversationCreateWithoutClarificationRequestsInput, AssistantConversationUncheckedCreateWithoutClarificationRequestsInput>
+  }
+
+  export type AssistantTurnCreateWithoutClarificationRequestsInput = {
+    id?: string
+    correlationId: string
+    status?: $Enums.AssistantTurnStatus
+    intent: string
+    locale: string
+    safeErrorCode?: string | null
+    startedAt?: Date | string
+    finishedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversation: AssistantConversationCreateNestedOneWithoutTurnsInput
+    messages?: AssistantMessageCreateNestedManyWithoutTurnInput
+    toolExecutions?: AssistantToolExecutionCreateNestedManyWithoutTurnInput
+    financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutOriginatingTurnInput
+    providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutTurnInput
+  }
+
+  export type AssistantTurnUncheckedCreateWithoutClarificationRequestsInput = {
+    id?: string
+    conversationId: string
+    correlationId: string
+    status?: $Enums.AssistantTurnStatus
+    intent: string
+    locale: string
+    safeErrorCode?: string | null
+    startedAt?: Date | string
+    finishedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: AssistantMessageUncheckedCreateNestedManyWithoutTurnInput
+    toolExecutions?: AssistantToolExecutionUncheckedCreateNestedManyWithoutTurnInput
+    financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutOriginatingTurnInput
+    providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutTurnInput
+  }
+
+  export type AssistantTurnCreateOrConnectWithoutClarificationRequestsInput = {
+    where: AssistantTurnWhereUniqueInput
+    create: XOR<AssistantTurnCreateWithoutClarificationRequestsInput, AssistantTurnUncheckedCreateWithoutClarificationRequestsInput>
+  }
+
+  export type ClarificationRequestCreateWithoutChildrenInput = {
+    id?: string
+    executionId: string
+    entityType: string
+    status?: $Enums.AssistantClarificationStatus
+    trustedContext: JsonNullValueInput | InputJsonValue
+    prompt: string
+    terminalCode?: string | null
+    restartRequired?: boolean
+    consumedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutClarificationRequestsInput
+    conversation: AssistantConversationCreateNestedOneWithoutClarificationRequestsInput
+    originatingTurn: AssistantTurnCreateNestedOneWithoutClarificationRequestsInput
+    parent?: ClarificationRequestCreateNestedOneWithoutChildrenInput
+    options?: ClarificationOptionCreateNestedManyWithoutRequestInput
+  }
+
+  export type ClarificationRequestUncheckedCreateWithoutChildrenInput = {
+    id?: string
+    userId: string
+    conversationId: string
+    originatingTurnId: string
+    executionId: string
+    parentId?: string | null
+    entityType: string
+    status?: $Enums.AssistantClarificationStatus
+    trustedContext: JsonNullValueInput | InputJsonValue
+    prompt: string
+    terminalCode?: string | null
+    restartRequired?: boolean
+    consumedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    options?: ClarificationOptionUncheckedCreateNestedManyWithoutRequestInput
+  }
+
+  export type ClarificationRequestCreateOrConnectWithoutChildrenInput = {
+    where: ClarificationRequestWhereUniqueInput
+    create: XOR<ClarificationRequestCreateWithoutChildrenInput, ClarificationRequestUncheckedCreateWithoutChildrenInput>
+  }
+
+  export type ClarificationRequestCreateWithoutParentInput = {
+    id?: string
+    executionId: string
+    entityType: string
+    status?: $Enums.AssistantClarificationStatus
+    trustedContext: JsonNullValueInput | InputJsonValue
+    prompt: string
+    terminalCode?: string | null
+    restartRequired?: boolean
+    consumedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutClarificationRequestsInput
+    conversation: AssistantConversationCreateNestedOneWithoutClarificationRequestsInput
+    originatingTurn: AssistantTurnCreateNestedOneWithoutClarificationRequestsInput
+    children?: ClarificationRequestCreateNestedManyWithoutParentInput
+    options?: ClarificationOptionCreateNestedManyWithoutRequestInput
+  }
+
+  export type ClarificationRequestUncheckedCreateWithoutParentInput = {
+    id?: string
+    userId: string
+    conversationId: string
+    originatingTurnId: string
+    executionId: string
+    entityType: string
+    status?: $Enums.AssistantClarificationStatus
+    trustedContext: JsonNullValueInput | InputJsonValue
+    prompt: string
+    terminalCode?: string | null
+    restartRequired?: boolean
+    consumedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: ClarificationRequestUncheckedCreateNestedManyWithoutParentInput
+    options?: ClarificationOptionUncheckedCreateNestedManyWithoutRequestInput
+  }
+
+  export type ClarificationRequestCreateOrConnectWithoutParentInput = {
+    where: ClarificationRequestWhereUniqueInput
+    create: XOR<ClarificationRequestCreateWithoutParentInput, ClarificationRequestUncheckedCreateWithoutParentInput>
+  }
+
+  export type ClarificationRequestCreateManyParentInputEnvelope = {
+    data: ClarificationRequestCreateManyParentInput | ClarificationRequestCreateManyParentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ClarificationOptionCreateWithoutRequestInput = {
+    id?: string
+    tokenDigest: string
+    displayLabel: string
+    discriminator?: string | null
+    candidateId: string
+    createdAt?: Date | string
+  }
+
+  export type ClarificationOptionUncheckedCreateWithoutRequestInput = {
+    id?: string
+    tokenDigest: string
+    displayLabel: string
+    discriminator?: string | null
+    candidateId: string
+    createdAt?: Date | string
+  }
+
+  export type ClarificationOptionCreateOrConnectWithoutRequestInput = {
+    where: ClarificationOptionWhereUniqueInput
+    create: XOR<ClarificationOptionCreateWithoutRequestInput, ClarificationOptionUncheckedCreateWithoutRequestInput>
+  }
+
+  export type ClarificationOptionCreateManyRequestInputEnvelope = {
+    data: ClarificationOptionCreateManyRequestInput | ClarificationOptionCreateManyRequestInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutClarificationRequestsInput = {
+    update: XOR<UserUpdateWithoutClarificationRequestsInput, UserUncheckedUpdateWithoutClarificationRequestsInput>
+    create: XOR<UserCreateWithoutClarificationRequestsInput, UserUncheckedCreateWithoutClarificationRequestsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutClarificationRequestsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutClarificationRequestsInput, UserUncheckedUpdateWithoutClarificationRequestsInput>
+  }
+
+  export type UserUpdateWithoutClarificationRequestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    wallets?: WalletUpdateManyWithoutUserNestedInput
+    categories?: CategoryUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    installments?: InstallmentUpdateManyWithoutUserNestedInput
+    recurringTransactionTemplates?: RecurringTransactionTemplateUpdateManyWithoutUserNestedInput
+    savingGoals?: SavingGoalUpdateManyWithoutUserNestedInput
+    budgets?: BudgetUpdateManyWithoutUserNestedInput
+    merchantMappings?: MerchantMappingUpdateManyWithoutUserNestedInput
+    assistantConversations?: AssistantConversationUpdateManyWithoutUserNestedInput
+    assistantFinancialDrafts?: AssistantFinancialDraftUpdateManyWithoutUserNestedInput
+    assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
+    assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutClarificationRequestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    wallets?: WalletUncheckedUpdateManyWithoutUserNestedInput
+    categories?: CategoryUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    installments?: InstallmentUncheckedUpdateManyWithoutUserNestedInput
+    recurringTransactionTemplates?: RecurringTransactionTemplateUncheckedUpdateManyWithoutUserNestedInput
+    savingGoals?: SavingGoalUncheckedUpdateManyWithoutUserNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutUserNestedInput
+    merchantMappings?: MerchantMappingUncheckedUpdateManyWithoutUserNestedInput
+    assistantConversations?: AssistantConversationUncheckedUpdateManyWithoutUserNestedInput
+    assistantFinancialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutUserNestedInput
+    assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
+    assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type AssistantConversationUpsertWithoutClarificationRequestsInput = {
+    update: XOR<AssistantConversationUpdateWithoutClarificationRequestsInput, AssistantConversationUncheckedUpdateWithoutClarificationRequestsInput>
+    create: XOR<AssistantConversationCreateWithoutClarificationRequestsInput, AssistantConversationUncheckedCreateWithoutClarificationRequestsInput>
+    where?: AssistantConversationWhereInput
+  }
+
+  export type AssistantConversationUpdateToOneWithWhereWithoutClarificationRequestsInput = {
+    where?: AssistantConversationWhereInput
+    data: XOR<AssistantConversationUpdateWithoutClarificationRequestsInput, AssistantConversationUncheckedUpdateWithoutClarificationRequestsInput>
+  }
+
+  export type AssistantConversationUpdateWithoutClarificationRequestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantConversationStatusFieldUpdateOperationsInput | $Enums.AssistantConversationStatus
+    locale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateOneRequiredWithoutAssistantConversationsNestedInput
+    turns?: AssistantTurnUpdateManyWithoutConversationNestedInput
+    messages?: AssistantMessageUpdateManyWithoutConversationNestedInput
+    toolExecutions?: AssistantToolExecutionUpdateManyWithoutConversationNestedInput
+    financialDrafts?: AssistantFinancialDraftUpdateManyWithoutConversationNestedInput
+    providerExecutions?: AssistantProviderExecutionUpdateManyWithoutConversationNestedInput
+  }
+
+  export type AssistantConversationUncheckedUpdateWithoutClarificationRequestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantConversationStatusFieldUpdateOperationsInput | $Enums.AssistantConversationStatus
+    locale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    turns?: AssistantTurnUncheckedUpdateManyWithoutConversationNestedInput
+    messages?: AssistantMessageUncheckedUpdateManyWithoutConversationNestedInput
+    toolExecutions?: AssistantToolExecutionUncheckedUpdateManyWithoutConversationNestedInput
+    financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutConversationNestedInput
+    providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type AssistantTurnUpsertWithoutClarificationRequestsInput = {
+    update: XOR<AssistantTurnUpdateWithoutClarificationRequestsInput, AssistantTurnUncheckedUpdateWithoutClarificationRequestsInput>
+    create: XOR<AssistantTurnCreateWithoutClarificationRequestsInput, AssistantTurnUncheckedCreateWithoutClarificationRequestsInput>
+    where?: AssistantTurnWhereInput
+  }
+
+  export type AssistantTurnUpdateToOneWithWhereWithoutClarificationRequestsInput = {
+    where?: AssistantTurnWhereInput
+    data: XOR<AssistantTurnUpdateWithoutClarificationRequestsInput, AssistantTurnUncheckedUpdateWithoutClarificationRequestsInput>
+  }
+
+  export type AssistantTurnUpdateWithoutClarificationRequestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    correlationId?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantTurnStatusFieldUpdateOperationsInput | $Enums.AssistantTurnStatus
+    intent?: StringFieldUpdateOperationsInput | string
+    locale?: StringFieldUpdateOperationsInput | string
+    safeErrorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: AssistantConversationUpdateOneRequiredWithoutTurnsNestedInput
+    messages?: AssistantMessageUpdateManyWithoutTurnNestedInput
+    toolExecutions?: AssistantToolExecutionUpdateManyWithoutTurnNestedInput
+    financialDrafts?: AssistantFinancialDraftUpdateManyWithoutOriginatingTurnNestedInput
+    providerExecutions?: AssistantProviderExecutionUpdateManyWithoutTurnNestedInput
+  }
+
+  export type AssistantTurnUncheckedUpdateWithoutClarificationRequestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    correlationId?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantTurnStatusFieldUpdateOperationsInput | $Enums.AssistantTurnStatus
+    intent?: StringFieldUpdateOperationsInput | string
+    locale?: StringFieldUpdateOperationsInput | string
+    safeErrorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: AssistantMessageUncheckedUpdateManyWithoutTurnNestedInput
+    toolExecutions?: AssistantToolExecutionUncheckedUpdateManyWithoutTurnNestedInput
+    financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutOriginatingTurnNestedInput
+    providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutTurnNestedInput
+  }
+
+  export type ClarificationRequestUpsertWithoutChildrenInput = {
+    update: XOR<ClarificationRequestUpdateWithoutChildrenInput, ClarificationRequestUncheckedUpdateWithoutChildrenInput>
+    create: XOR<ClarificationRequestCreateWithoutChildrenInput, ClarificationRequestUncheckedCreateWithoutChildrenInput>
+    where?: ClarificationRequestWhereInput
+  }
+
+  export type ClarificationRequestUpdateToOneWithWhereWithoutChildrenInput = {
+    where?: ClarificationRequestWhereInput
+    data: XOR<ClarificationRequestUpdateWithoutChildrenInput, ClarificationRequestUncheckedUpdateWithoutChildrenInput>
+  }
+
+  export type ClarificationRequestUpdateWithoutChildrenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    executionId?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantClarificationStatusFieldUpdateOperationsInput | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonNullValueInput | InputJsonValue
+    prompt?: StringFieldUpdateOperationsInput | string
+    terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutClarificationRequestsNestedInput
+    conversation?: AssistantConversationUpdateOneRequiredWithoutClarificationRequestsNestedInput
+    originatingTurn?: AssistantTurnUpdateOneRequiredWithoutClarificationRequestsNestedInput
+    parent?: ClarificationRequestUpdateOneWithoutChildrenNestedInput
+    options?: ClarificationOptionUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ClarificationRequestUncheckedUpdateWithoutChildrenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    originatingTurnId?: StringFieldUpdateOperationsInput | string
+    executionId?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantClarificationStatusFieldUpdateOperationsInput | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonNullValueInput | InputJsonValue
+    prompt?: StringFieldUpdateOperationsInput | string
+    terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    options?: ClarificationOptionUncheckedUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ClarificationRequestUpsertWithWhereUniqueWithoutParentInput = {
+    where: ClarificationRequestWhereUniqueInput
+    update: XOR<ClarificationRequestUpdateWithoutParentInput, ClarificationRequestUncheckedUpdateWithoutParentInput>
+    create: XOR<ClarificationRequestCreateWithoutParentInput, ClarificationRequestUncheckedCreateWithoutParentInput>
+  }
+
+  export type ClarificationRequestUpdateWithWhereUniqueWithoutParentInput = {
+    where: ClarificationRequestWhereUniqueInput
+    data: XOR<ClarificationRequestUpdateWithoutParentInput, ClarificationRequestUncheckedUpdateWithoutParentInput>
+  }
+
+  export type ClarificationRequestUpdateManyWithWhereWithoutParentInput = {
+    where: ClarificationRequestScalarWhereInput
+    data: XOR<ClarificationRequestUpdateManyMutationInput, ClarificationRequestUncheckedUpdateManyWithoutParentInput>
+  }
+
+  export type ClarificationOptionUpsertWithWhereUniqueWithoutRequestInput = {
+    where: ClarificationOptionWhereUniqueInput
+    update: XOR<ClarificationOptionUpdateWithoutRequestInput, ClarificationOptionUncheckedUpdateWithoutRequestInput>
+    create: XOR<ClarificationOptionCreateWithoutRequestInput, ClarificationOptionUncheckedCreateWithoutRequestInput>
+  }
+
+  export type ClarificationOptionUpdateWithWhereUniqueWithoutRequestInput = {
+    where: ClarificationOptionWhereUniqueInput
+    data: XOR<ClarificationOptionUpdateWithoutRequestInput, ClarificationOptionUncheckedUpdateWithoutRequestInput>
+  }
+
+  export type ClarificationOptionUpdateManyWithWhereWithoutRequestInput = {
+    where: ClarificationOptionScalarWhereInput
+    data: XOR<ClarificationOptionUpdateManyMutationInput, ClarificationOptionUncheckedUpdateManyWithoutRequestInput>
+  }
+
+  export type ClarificationOptionScalarWhereInput = {
+    AND?: ClarificationOptionScalarWhereInput | ClarificationOptionScalarWhereInput[]
+    OR?: ClarificationOptionScalarWhereInput[]
+    NOT?: ClarificationOptionScalarWhereInput | ClarificationOptionScalarWhereInput[]
+    id?: StringFilter<"ClarificationOption"> | string
+    requestId?: StringFilter<"ClarificationOption"> | string
+    tokenDigest?: StringFilter<"ClarificationOption"> | string
+    displayLabel?: StringFilter<"ClarificationOption"> | string
+    discriminator?: StringNullableFilter<"ClarificationOption"> | string | null
+    candidateId?: StringFilter<"ClarificationOption"> | string
+    createdAt?: DateTimeFilter<"ClarificationOption"> | Date | string
+  }
+
+  export type ClarificationRequestCreateWithoutOptionsInput = {
+    id?: string
+    executionId: string
+    entityType: string
+    status?: $Enums.AssistantClarificationStatus
+    trustedContext: JsonNullValueInput | InputJsonValue
+    prompt: string
+    terminalCode?: string | null
+    restartRequired?: boolean
+    consumedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutClarificationRequestsInput
+    conversation: AssistantConversationCreateNestedOneWithoutClarificationRequestsInput
+    originatingTurn: AssistantTurnCreateNestedOneWithoutClarificationRequestsInput
+    parent?: ClarificationRequestCreateNestedOneWithoutChildrenInput
+    children?: ClarificationRequestCreateNestedManyWithoutParentInput
+  }
+
+  export type ClarificationRequestUncheckedCreateWithoutOptionsInput = {
+    id?: string
+    userId: string
+    conversationId: string
+    originatingTurnId: string
+    executionId: string
+    parentId?: string | null
+    entityType: string
+    status?: $Enums.AssistantClarificationStatus
+    trustedContext: JsonNullValueInput | InputJsonValue
+    prompt: string
+    terminalCode?: string | null
+    restartRequired?: boolean
+    consumedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: ClarificationRequestUncheckedCreateNestedManyWithoutParentInput
+  }
+
+  export type ClarificationRequestCreateOrConnectWithoutOptionsInput = {
+    where: ClarificationRequestWhereUniqueInput
+    create: XOR<ClarificationRequestCreateWithoutOptionsInput, ClarificationRequestUncheckedCreateWithoutOptionsInput>
+  }
+
+  export type ClarificationRequestUpsertWithoutOptionsInput = {
+    update: XOR<ClarificationRequestUpdateWithoutOptionsInput, ClarificationRequestUncheckedUpdateWithoutOptionsInput>
+    create: XOR<ClarificationRequestCreateWithoutOptionsInput, ClarificationRequestUncheckedCreateWithoutOptionsInput>
+    where?: ClarificationRequestWhereInput
+  }
+
+  export type ClarificationRequestUpdateToOneWithWhereWithoutOptionsInput = {
+    where?: ClarificationRequestWhereInput
+    data: XOR<ClarificationRequestUpdateWithoutOptionsInput, ClarificationRequestUncheckedUpdateWithoutOptionsInput>
+  }
+
+  export type ClarificationRequestUpdateWithoutOptionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    executionId?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantClarificationStatusFieldUpdateOperationsInput | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonNullValueInput | InputJsonValue
+    prompt?: StringFieldUpdateOperationsInput | string
+    terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutClarificationRequestsNestedInput
+    conversation?: AssistantConversationUpdateOneRequiredWithoutClarificationRequestsNestedInput
+    originatingTurn?: AssistantTurnUpdateOneRequiredWithoutClarificationRequestsNestedInput
+    parent?: ClarificationRequestUpdateOneWithoutChildrenNestedInput
+    children?: ClarificationRequestUpdateManyWithoutParentNestedInput
+  }
+
+  export type ClarificationRequestUncheckedUpdateWithoutOptionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    originatingTurnId?: StringFieldUpdateOperationsInput | string
+    executionId?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantClarificationStatusFieldUpdateOperationsInput | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonNullValueInput | InputJsonValue
+    prompt?: StringFieldUpdateOperationsInput | string
+    terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: ClarificationRequestUncheckedUpdateManyWithoutParentNestedInput
   }
 
   export type UserCreateWithoutWalletsInput = {
@@ -36474,6 +41058,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutWalletsInput = {
@@ -36494,6 +41079,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutWalletsInput = {
@@ -36734,6 +41320,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWalletsInput = {
@@ -36754,6 +41341,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TransactionUpsertWithWhereUniqueWithoutWalletInput = {
@@ -36838,6 +41426,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCategoriesInput = {
@@ -36858,6 +41447,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCategoriesInput = {
@@ -37046,6 +41636,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCategoriesInput = {
@@ -37066,6 +41657,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TransactionUpsertWithWhereUniqueWithoutCategoryInput = {
@@ -37150,6 +41742,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMerchantMappingsInput = {
@@ -37170,6 +41763,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMerchantMappingsInput = {
@@ -37239,6 +41833,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMerchantMappingsInput = {
@@ -37259,6 +41854,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CategoryUpsertWithoutMerchantMappingsInput = {
@@ -37318,6 +41914,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsInput = {
@@ -37338,6 +41935,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsInput = {
@@ -37676,6 +42274,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsInput = {
@@ -37696,6 +42295,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type WalletUpsertWithoutTransactionsInput = {
@@ -38042,6 +42642,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutInstallmentsInput = {
@@ -38062,6 +42663,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutInstallmentsInput = {
@@ -38231,6 +42833,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInstallmentsInput = {
@@ -38251,6 +42854,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type WalletUpsertWithoutInstallmentsInput = {
@@ -38377,6 +42981,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutRecurringTransactionTemplatesInput = {
@@ -38397,6 +43002,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutRecurringTransactionTemplatesInput = {
@@ -38553,6 +43159,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRecurringTransactionTemplatesInput = {
@@ -38573,6 +43180,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type WalletUpsertWithoutRecurringTransactionTemplatesInput = {
@@ -39009,6 +43617,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSavingGoalsInput = {
@@ -39029,6 +43638,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSavingGoalsInput = {
@@ -39065,6 +43675,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSavingGoalsInput = {
@@ -39085,6 +43696,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutBudgetsInput = {
@@ -39105,6 +43717,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutBudgetsInput = {
@@ -39125,6 +43738,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutBudgetsInput = {
@@ -39194,6 +43808,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBudgetsInput = {
@@ -39214,6 +43829,7 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CategoryUpsertWithoutBudgetsInput = {
@@ -39432,6 +44048,24 @@ export namespace Prisma {
     outputTokens?: number | null
     totalTokens?: number | null
     cachedInputTokens?: number | null
+  }
+
+  export type ClarificationRequestCreateManyUserInput = {
+    id?: string
+    conversationId: string
+    originatingTurnId: string
+    executionId: string
+    parentId?: string | null
+    entityType: string
+    status?: $Enums.AssistantClarificationStatus
+    trustedContext: JsonNullValueInput | InputJsonValue
+    prompt: string
+    terminalCode?: string | null
+    restartRequired?: boolean
+    consumedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type WalletUpdateWithoutUserInput = {
@@ -39826,6 +44460,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUpdateManyWithoutConversationNestedInput
     financialDrafts?: AssistantFinancialDraftUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUpdateManyWithoutConversationNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantConversationUncheckedUpdateWithoutUserInput = {
@@ -39841,6 +44476,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUncheckedUpdateManyWithoutConversationNestedInput
     financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutConversationNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantConversationUncheckedUpdateManyWithoutUserInput = {
@@ -40011,6 +44647,64 @@ export namespace Prisma {
     cachedInputTokens?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
+  export type ClarificationRequestUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    executionId?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantClarificationStatusFieldUpdateOperationsInput | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonNullValueInput | InputJsonValue
+    prompt?: StringFieldUpdateOperationsInput | string
+    terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: AssistantConversationUpdateOneRequiredWithoutClarificationRequestsNestedInput
+    originatingTurn?: AssistantTurnUpdateOneRequiredWithoutClarificationRequestsNestedInput
+    parent?: ClarificationRequestUpdateOneWithoutChildrenNestedInput
+    children?: ClarificationRequestUpdateManyWithoutParentNestedInput
+    options?: ClarificationOptionUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ClarificationRequestUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    originatingTurnId?: StringFieldUpdateOperationsInput | string
+    executionId?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantClarificationStatusFieldUpdateOperationsInput | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonNullValueInput | InputJsonValue
+    prompt?: StringFieldUpdateOperationsInput | string
+    terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: ClarificationRequestUncheckedUpdateManyWithoutParentNestedInput
+    options?: ClarificationOptionUncheckedUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ClarificationRequestUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    originatingTurnId?: StringFieldUpdateOperationsInput | string
+    executionId?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantClarificationStatusFieldUpdateOperationsInput | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonNullValueInput | InputJsonValue
+    prompt?: StringFieldUpdateOperationsInput | string
+    terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type AssistantTurnCreateManyConversationInput = {
     id?: string
     correlationId: string
@@ -40094,6 +44788,24 @@ export namespace Prisma {
     cachedInputTokens?: number | null
   }
 
+  export type ClarificationRequestCreateManyConversationInput = {
+    id?: string
+    userId: string
+    originatingTurnId: string
+    executionId: string
+    parentId?: string | null
+    entityType: string
+    status?: $Enums.AssistantClarificationStatus
+    trustedContext: JsonNullValueInput | InputJsonValue
+    prompt: string
+    terminalCode?: string | null
+    restartRequired?: boolean
+    consumedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type AssistantTurnUpdateWithoutConversationInput = {
     id?: StringFieldUpdateOperationsInput | string
     correlationId?: StringFieldUpdateOperationsInput | string
@@ -40109,6 +44821,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUpdateManyWithoutTurnNestedInput
     financialDrafts?: AssistantFinancialDraftUpdateManyWithoutOriginatingTurnNestedInput
     providerExecutions?: AssistantProviderExecutionUpdateManyWithoutTurnNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutOriginatingTurnNestedInput
   }
 
   export type AssistantTurnUncheckedUpdateWithoutConversationInput = {
@@ -40126,6 +44839,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUncheckedUpdateManyWithoutTurnNestedInput
     financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutOriginatingTurnNestedInput
     providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutTurnNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutOriginatingTurnNestedInput
   }
 
   export type AssistantTurnUncheckedUpdateManyWithoutConversationInput = {
@@ -40355,6 +45069,64 @@ export namespace Prisma {
     cachedInputTokens?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
+  export type ClarificationRequestUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    executionId?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantClarificationStatusFieldUpdateOperationsInput | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonNullValueInput | InputJsonValue
+    prompt?: StringFieldUpdateOperationsInput | string
+    terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutClarificationRequestsNestedInput
+    originatingTurn?: AssistantTurnUpdateOneRequiredWithoutClarificationRequestsNestedInput
+    parent?: ClarificationRequestUpdateOneWithoutChildrenNestedInput
+    children?: ClarificationRequestUpdateManyWithoutParentNestedInput
+    options?: ClarificationOptionUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ClarificationRequestUncheckedUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    originatingTurnId?: StringFieldUpdateOperationsInput | string
+    executionId?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantClarificationStatusFieldUpdateOperationsInput | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonNullValueInput | InputJsonValue
+    prompt?: StringFieldUpdateOperationsInput | string
+    terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: ClarificationRequestUncheckedUpdateManyWithoutParentNestedInput
+    options?: ClarificationOptionUncheckedUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ClarificationRequestUncheckedUpdateManyWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    originatingTurnId?: StringFieldUpdateOperationsInput | string
+    executionId?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantClarificationStatusFieldUpdateOperationsInput | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonNullValueInput | InputJsonValue
+    prompt?: StringFieldUpdateOperationsInput | string
+    terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type AssistantMessageCreateManyTurnInput = {
     id?: string
     conversationId: string
@@ -40423,6 +45195,24 @@ export namespace Prisma {
     outputTokens?: number | null
     totalTokens?: number | null
     cachedInputTokens?: number | null
+  }
+
+  export type ClarificationRequestCreateManyOriginatingTurnInput = {
+    id?: string
+    userId: string
+    conversationId: string
+    executionId: string
+    parentId?: string | null
+    entityType: string
+    status?: $Enums.AssistantClarificationStatus
+    trustedContext: JsonNullValueInput | InputJsonValue
+    prompt: string
+    terminalCode?: string | null
+    restartRequired?: boolean
+    consumedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type AssistantMessageUpdateWithoutTurnInput = {
@@ -40639,6 +45429,64 @@ export namespace Prisma {
     cachedInputTokens?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
+  export type ClarificationRequestUpdateWithoutOriginatingTurnInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    executionId?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantClarificationStatusFieldUpdateOperationsInput | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonNullValueInput | InputJsonValue
+    prompt?: StringFieldUpdateOperationsInput | string
+    terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutClarificationRequestsNestedInput
+    conversation?: AssistantConversationUpdateOneRequiredWithoutClarificationRequestsNestedInput
+    parent?: ClarificationRequestUpdateOneWithoutChildrenNestedInput
+    children?: ClarificationRequestUpdateManyWithoutParentNestedInput
+    options?: ClarificationOptionUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ClarificationRequestUncheckedUpdateWithoutOriginatingTurnInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    executionId?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantClarificationStatusFieldUpdateOperationsInput | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonNullValueInput | InputJsonValue
+    prompt?: StringFieldUpdateOperationsInput | string
+    terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: ClarificationRequestUncheckedUpdateManyWithoutParentNestedInput
+    options?: ClarificationOptionUncheckedUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ClarificationRequestUncheckedUpdateManyWithoutOriginatingTurnInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    executionId?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantClarificationStatusFieldUpdateOperationsInput | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonNullValueInput | InputJsonValue
+    prompt?: StringFieldUpdateOperationsInput | string
+    terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type AssistantIdempotencyRecordCreateManyDraftInput = {
     id?: string
     userId: string
@@ -40672,6 +45520,118 @@ export namespace Prisma {
     operation?: StringFieldUpdateOperationsInput | string
     key?: StringFieldUpdateOperationsInput | string
     transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClarificationRequestCreateManyParentInput = {
+    id?: string
+    userId: string
+    conversationId: string
+    originatingTurnId: string
+    executionId: string
+    entityType: string
+    status?: $Enums.AssistantClarificationStatus
+    trustedContext: JsonNullValueInput | InputJsonValue
+    prompt: string
+    terminalCode?: string | null
+    restartRequired?: boolean
+    consumedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ClarificationOptionCreateManyRequestInput = {
+    id?: string
+    tokenDigest: string
+    displayLabel: string
+    discriminator?: string | null
+    candidateId: string
+    createdAt?: Date | string
+  }
+
+  export type ClarificationRequestUpdateWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    executionId?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantClarificationStatusFieldUpdateOperationsInput | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonNullValueInput | InputJsonValue
+    prompt?: StringFieldUpdateOperationsInput | string
+    terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutClarificationRequestsNestedInput
+    conversation?: AssistantConversationUpdateOneRequiredWithoutClarificationRequestsNestedInput
+    originatingTurn?: AssistantTurnUpdateOneRequiredWithoutClarificationRequestsNestedInput
+    children?: ClarificationRequestUpdateManyWithoutParentNestedInput
+    options?: ClarificationOptionUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ClarificationRequestUncheckedUpdateWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    originatingTurnId?: StringFieldUpdateOperationsInput | string
+    executionId?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantClarificationStatusFieldUpdateOperationsInput | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonNullValueInput | InputJsonValue
+    prompt?: StringFieldUpdateOperationsInput | string
+    terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: ClarificationRequestUncheckedUpdateManyWithoutParentNestedInput
+    options?: ClarificationOptionUncheckedUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ClarificationRequestUncheckedUpdateManyWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    originatingTurnId?: StringFieldUpdateOperationsInput | string
+    executionId?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantClarificationStatusFieldUpdateOperationsInput | $Enums.AssistantClarificationStatus
+    trustedContext?: JsonNullValueInput | InputJsonValue
+    prompt?: StringFieldUpdateOperationsInput | string
+    terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClarificationOptionUpdateWithoutRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenDigest?: StringFieldUpdateOperationsInput | string
+    displayLabel?: StringFieldUpdateOperationsInput | string
+    discriminator?: NullableStringFieldUpdateOperationsInput | string | null
+    candidateId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClarificationOptionUncheckedUpdateWithoutRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenDigest?: StringFieldUpdateOperationsInput | string
+    displayLabel?: StringFieldUpdateOperationsInput | string
+    discriminator?: NullableStringFieldUpdateOperationsInput | string | null
+    candidateId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClarificationOptionUncheckedUpdateManyWithoutRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenDigest?: StringFieldUpdateOperationsInput | string
+    displayLabel?: StringFieldUpdateOperationsInput | string
+    discriminator?: NullableStringFieldUpdateOperationsInput | string | null
+    candidateId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

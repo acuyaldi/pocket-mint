@@ -6,4 +6,3 @@ export declare function createAnalyticsOverviewService(db: AnalyticsPrismaClient
 export declare const analyticsOverviewService: {
     getOverview: (input: AnalyticsPeriodQueryInput) => Promise<AnalyticsOverviewResult>;
 };
-//# sourceMappingURL=analytics-overview.service.d.ts.map

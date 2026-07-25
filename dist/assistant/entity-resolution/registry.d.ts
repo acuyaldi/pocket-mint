@@ -8,4 +8,3 @@ export declare class EntityResolverRegistry {
     finalize(): void;
     get isFinalized(): boolean;
 }
-//# sourceMappingURL=registry.d.ts.map

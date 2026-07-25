@@ -40,4 +40,3 @@ export declare function parseBusinessDate(value: string | undefined, zone: strin
  * silently accept month-only input.
  */
 export declare function parseReportingAnchor(value: string | undefined, zone: string, now?: Date): Date;
-//# sourceMappingURL=reportingTime.d.ts.map

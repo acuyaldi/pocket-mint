@@ -31,4 +31,3 @@ export declare const categoryService: {
     }[]>;
 };
 export {};
-//# sourceMappingURL=category.service.d.ts.map

@@ -66,4 +66,3 @@ export type RecurringTransactionWithRelations = Prisma.RecurringTransactionTempl
 export interface DeleteRecurringTransactionResult {
     id: string;
 }
-//# sourceMappingURL=recurringTransaction.types.d.ts.map

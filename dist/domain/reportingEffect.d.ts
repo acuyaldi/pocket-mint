@@ -12,4 +12,3 @@ export interface ReportingTransaction {
 }
 export declare function getWalletReportingEffect(transaction: ReportingTransaction, walletId: string): Prisma.Decimal;
 export declare function getAggregateCashFlowEffect(transaction: ReportingTransaction): Prisma.Decimal;
-//# sourceMappingURL=reportingEffect.d.ts.map

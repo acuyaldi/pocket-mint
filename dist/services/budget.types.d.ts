@@ -29,4 +29,3 @@ export interface RestoreBudgetInput {
     userId: string;
     budgetId: string;
 }
-//# sourceMappingURL=budget.types.d.ts.map

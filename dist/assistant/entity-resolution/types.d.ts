@@ -126,4 +126,3 @@ export interface EntityResolutionService {
     resolve(input: ResolveEntityInput): Promise<EntityResolutionResult>;
 }
 export declare function isEntityType(value: unknown): value is EntityType;
-//# sourceMappingURL=types.d.ts.map

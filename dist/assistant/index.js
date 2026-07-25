@@ -21,7 +21,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AssistantProviderError = exports.validateAssistantPlan = exports.assembleAssistantModelRequest = exports.buildAssistantSystemInstruction = exports.buildProviderCapabilityCatalog = exports.createGeminiAssistantProvider = exports.createAssistantProviderAuditService = exports.createAssistantProviderRuntime = exports.createAssistantApplicationService = exports.createAssistantConversationService = exports.handlerRegistry = exports.toolRegistry = exports.renderMonthlySpendingSummary = exports.resolveIntent = exports.executeTool = exports.transactionCreate = exports.monthlySpendingSummary = exports.ToolRegistry = exports.evaluatePolicy = exports.AssistantError = void 0;
+exports.createClarificationService = exports.AssistantProviderError = exports.validateAssistantPlan = exports.assembleAssistantModelRequest = exports.buildAssistantSystemInstruction = exports.buildProviderCapabilityCatalog = exports.createGeminiAssistantProvider = exports.createAssistantProviderAuditService = exports.createAssistantProviderRuntime = exports.createAssistantApplicationService = exports.createAssistantConversationService = exports.handlerRegistry = exports.toolRegistry = exports.renderMonthlySpendingSummary = exports.resolveIntent = exports.executeTool = exports.transactionCreate = exports.monthlySpendingSummary = exports.ToolRegistry = exports.evaluatePolicy = exports.AssistantError = void 0;
 var errors_1 = require("./errors");
 Object.defineProperty(exports, "AssistantError", { enumerable: true, get: function () { return errors_1.AssistantError; } });
 var policy_1 = require("./policy");
@@ -62,4 +62,6 @@ var provider_types_1 = require("./provider-types");
 Object.defineProperty(exports, "AssistantProviderError", { enumerable: true, get: function () { return provider_types_1.AssistantProviderError; } });
 __exportStar(require("./entity-resolution"), exports);
 __exportStar(require("./persistence"), exports);
+var clarification_service_1 = require("./clarification.service");
+Object.defineProperty(exports, "createClarificationService", { enumerable: true, get: function () { return clarification_service_1.createClarificationService; } });
 //# sourceMappingURL=index.js.map

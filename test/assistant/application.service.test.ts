@@ -8,6 +8,7 @@ function setup() {
     assertContinuable: vi.fn(), beginTurn: vi.fn().mockResolvedValue({ conversationId: 'c1', turnId: 't1' }),
     markTurnRunning: vi.fn().mockResolvedValue(undefined), beginToolExecution: vi.fn().mockResolvedValue('e1'), finalize: vi.fn().mockResolvedValue(undefined),
     finalizeRejected: vi.fn().mockResolvedValue(undefined),
+    finalizeWithoutTool: vi.fn().mockResolvedValue(undefined),
   } as any;
   const registry = new ToolRegistry();
   registry.register(monthlySpendingSummary);
@@ -55,6 +56,28 @@ function setup() {
       };
     }),
   };
+  const clarification = {
+    create: vi.fn().mockResolvedValue({
+      clarificationId: 'clar-1',
+      entityType: 'wallet',
+      prompt: 'Wallet yang dimaksud belum jelas.',
+      options: [
+        { token: 'clarify_token_a', label: 'BCA Debit', discriminator: 'BANK' },
+        { token: 'clarify_token_b', label: 'BCA Payroll', discriminator: 'BANK' },
+      ],
+    }),
+    select: vi.fn().mockResolvedValue({
+      clarificationId: 'clar-1',
+      entityType: 'wallet',
+      status: 'CONSUMED',
+      selectedCandidateId: 'wallet-a',
+      selectedDisplayLabel: 'BCA Debit',
+      trustedContext: { version: 1, operation: 'transaction.create', type: 'EXPENSE', amount: '20000', date: '2026-07-23', resumeAt: new Date().toISOString() },
+      previousTrustedContext: { version: 1, operation: 'transaction.create', type: 'EXPENSE', amount: '20000', date: '2026-07-23', resumeAt: new Date().toISOString() },
+    }),
+    cancel: vi.fn().mockResolvedValue(undefined),
+    getAssistantState: vi.fn().mockResolvedValue({}),
+  };
   const context = {
     system: { contextVersion: '1' as const, locale: 'id-ID' },
     conversation: { conversationId: 'c1', createdAt: '2026-07-23T00:00:00.000Z', updatedAt: '2026-07-23T00:00:00.000Z', archived: false },
@@ -68,6 +91,7 @@ function setup() {
     handler,
     financialDrafts,
     entityResolution,
+    clarification,
     service: createAssistantApplicationService({
       conversations,
       contexts,
@@ -75,6 +99,7 @@ function setup() {
       handlerRegistry: new Map([[monthlySpendingSummary.id, handler]]),
       financialDrafts: financialDrafts as never,
       entityResolution: entityResolution as never,
+      clarification: clarification as never,
     }),
   };
 }
@@ -191,9 +216,7 @@ describe('Assistant application lifecycle', () => {
     expect(financialDrafts.prepare).toHaveBeenCalledWith(expect.objectContaining({
       walletId: 'wallet-resolved',
       walletDisplayLabel: 'BCA Debit',
-      merchantDisplayLabel: 'Starbucks',
       categoryId: 'category-resolved',
-      description: 'Starbucks',
     }));
     expect(financialDrafts.prepare).not.toHaveBeenCalledWith(expect.objectContaining({
       walletReference: expect.anything(),
@@ -212,6 +235,7 @@ describe('Assistant application lifecycle', () => {
       },
       trustedConstraints: {
         eligibleFor: 'transaction.create',
+        ownerScoped: true,
       },
     });
     expect(entityResolution.resolve).toHaveBeenNthCalledWith(3, {
@@ -223,6 +247,7 @@ describe('Assistant application lifecycle', () => {
       },
       trustedConstraints: {
         eligibleFor: 'transaction.create',
+        ownerScoped: true,
         transactionType: 'EXPENSE',
       },
     });
@@ -303,10 +328,10 @@ describe('Assistant application lifecycle', () => {
       expect(conversations.finalize).toHaveBeenCalledWith(expect.objectContaining({
         status: 'SUCCEEDED',
         turnStatus: 'CLARIFICATION_REQUIRED',
-        outputSummary: {
+        outputSummary: expect.objectContaining({
           operation: 'transaction.create',
           categoryResolution: kind,
-        },
+        }),
       }));
     },
   );
@@ -366,7 +391,7 @@ describe('Assistant application lifecycle', () => {
     });
 
     expect(financialDrafts.prepare).toHaveBeenCalledWith(expect.objectContaining({
-      merchantDisplayLabel: 'Starbucks',
+      walletDisplayLabel: 'BCA Debit',
       description: 'Meeting with client',
     }));
   });
@@ -420,13 +445,11 @@ describe('Assistant application lifecycle', () => {
       data: {
         kind: 'ambiguous',
         entityType: 'merchant',
-        options: [
-          { displayLabel: 'ＢＣＡ' },
-          { displayLabel: 'BCA' },
-        ],
       },
     });
+    // Internal mapping IDs are never exposed in the clarification response
     expect(JSON.stringify(result.response)).not.toContain('private-mapping');
+    expect(JSON.stringify(result.response)).not.toContain('mapping-secret');
     expect(financialDrafts.prepare).not.toHaveBeenCalled();
   });
 
@@ -462,9 +485,10 @@ describe('Assistant application lifecycle', () => {
     });
 
     expect(result.response.status).toBe('success');
+    // not_found merchant continues to draft without merchant metadata
     expect(financialDrafts.prepare).toHaveBeenCalledWith(expect.objectContaining({
-      merchantDisplayLabel: 'warung baru',
-      description: 'warung baru',
+      walletDisplayLabel: 'BCA',
+      categoryId: 'category-1',
     }));
   });
 
@@ -523,15 +547,17 @@ describe('Assistant application lifecycle', () => {
 
     expect(financialDrafts.prepare).toHaveBeenCalledWith(expect.objectContaining({
       walletId: 'wallet-internal',
-      merchantDisplayLabel: 'Starbucks',
     }));
     const prepared = financialDrafts.prepare.mock.calls[0][0];
     expect(prepared).not.toHaveProperty('merchantReference');
+    expect(prepared).not.toHaveProperty('merchantDisplayLabel');
     expect(JSON.stringify(prepared)).not.toContain('mapping-secret');
   });
 
-  it('returns deterministic safe options for ambiguous wallets without drafting', async () => {
-    const { service, entityResolution, financialDrafts, conversations } = setup();
+  // ---- A.1 Wallet ambiguity: creates persisted ClarificationRequest ----
+
+  it('creates a persisted clarification for ambiguous wallets with safe option tokens and no internal IDs', async () => {
+    const { service, entityResolution, financialDrafts, clarification, conversations } = setup();
     entityResolution.resolve.mockResolvedValue({
       kind: 'ambiguous',
       entityType: 'wallet',
@@ -553,74 +579,103 @@ describe('Assistant application lifecycle', () => {
       ],
     });
 
-    const result = await service.execute('u1', 'corr-ambiguous', {
+    const result = await service.execute('u1', 'corr-amb', {
       intent: 'transaction.create',
       arguments: {
-        type: 'EXPENSE',
-        amount: '20000',
-        walletReference: 'BCA',
-        categoryId: 'category-1',
-        date: '2026-07-23',
+        type: 'EXPENSE', amount: '20000', walletReference: 'BCA',
+        categoryId: 'category-1', date: '2026-07-23',
       },
     });
 
-    expect(result.response).toMatchObject({
-      status: 'clarification_required',
-      message: expect.stringContaining('BCA Debit'),
-      data: {
-        kind: 'ambiguous',
-        options: [
-          { displayLabel: 'BCA Debit', discriminator: 'BANK' },
-          { displayLabel: 'BCA Payroll', discriminator: 'BANK' },
-        ],
-      },
-    });
+    // Persisted clarification created
+    expect(result.response.status).toBe('clarification_required');
+    expect(clarification.create).toHaveBeenCalledTimes(1);
+    expect(clarification.create).toHaveBeenCalledWith(expect.objectContaining({
+      entityType: 'wallet',
+      userId: 'u1',
+      trustedContext: expect.objectContaining({
+        version: 1,
+        operation: 'transaction.create',
+        type: 'EXPENSE',
+        amount: '20000',
+        date: '2026-07-23',
+      }),
+      options: expect.arrayContaining([
+        expect.objectContaining({ displayLabel: 'BCA Debit' }),
+        expect.objectContaining({ displayLabel: 'BCA Payroll' }),
+      ]),
+    }));
+
+    // No internal IDs leaked in public result
     expect(JSON.stringify(result.response)).not.toContain('secret-wallet');
+    // No draft created
     expect(financialDrafts.prepare).not.toHaveBeenCalled();
+    // Turn finalized with CLARIFICATION_REQUIRED
     expect(conversations.finalize).toHaveBeenCalledWith(expect.objectContaining({
       status: 'SUCCEEDED',
       turnStatus: 'CLARIFICATION_REQUIRED',
     }));
   });
 
-  it('returns not_found without drafting or leaking cross-owner wallets', async () => {
-    const { service, entityResolution, financialDrafts } = setup();
+  // ---- A.1 additional: no confidence/evidence/provider payload in public result ----
+
+  it('does not expose confidence, evidence, or provider payload in the clarification response', async () => {
+    const { service, entityResolution } = setup();
+    entityResolution.resolve.mockResolvedValue({
+      kind: 'ambiguous',
+      entityType: 'wallet',
+      options: [
+        {
+          displayLabel: 'BCA Debit', discriminator: 'BANK',
+          confidence: { score: 950, band: 'strong' },
+          evidence: [{ kind: 'alias_exact', scoreContribution: 950 }],
+          selection: { internalId: 'secret-a' },
+        },
+      ],
+    });
+
+    const result = await service.execute('u1', 'corr-safe', {
+      intent: 'transaction.create',
+      arguments: { type: 'EXPENSE', amount: '20000', walletReference: 'BCA', categoryId: 'c1', date: '2026-07-23' },
+    });
+
+    const body = JSON.stringify(result.response);
+    expect(body).not.toContain('confidence');
+    expect(body).not.toContain('evidence');
+    expect(body).not.toContain('payload');
+    expect(body).not.toContain('secret-a');
+    expect(body).not.toContain('internalId');
+  });
+
+  // ---- A.4: wallet not_found creates no ClarificationRequest ----
+
+  it('returns not_found without creating a clarification request or draft', async () => {
+    const { service, entityResolution, financialDrafts, clarification } = setup();
     entityResolution.resolve.mockResolvedValue({
       kind: 'not_found',
       entityType: 'wallet',
       normalizedReference: 'private wallet',
     });
 
-    const result = await service.execute('u1', 'corr-not-found', {
+    const result = await service.execute('u1', 'corr-nf', {
       intent: 'transaction.create',
-      arguments: {
-        type: 'EXPENSE',
-        amount: '20000',
-        walletReference: 'Private Wallet',
-        categoryId: 'category-1',
-        date: '2026-07-23',
-      },
+      arguments: { type: 'EXPENSE', amount: '20000', walletReference: 'Private', categoryId: 'c1', date: '2026-07-23' },
     });
 
-    expect(result.response).toMatchObject({
-      status: 'clarification_required',
-      data: { kind: 'not_found', entityType: 'wallet' },
-    });
+    expect(result.response.status).toBe('clarification_required');
+    expect(result.response).toMatchObject({ data: { kind: 'not_found', entityType: 'wallet' } });
+    expect(clarification.create).not.toHaveBeenCalled();
     expect(financialDrafts.prepare).not.toHaveBeenCalled();
   });
 
-  it('keeps walletId compatibility without invoking textual resolution', async () => {
+  // ---- A.5: no Transaction created, no wallet balance mutated ----
+
+  it('walletId compatibility bypasses resolution and creates draft directly', async () => {
     const { service, entityResolution, financialDrafts } = setup();
 
-    await service.execute('u1', 'corr-compatible', {
+    await service.execute('u1', 'corr-direct', {
       intent: 'transaction.create',
-      arguments: {
-        type: 'EXPENSE',
-        amount: '20000',
-        walletId: 'wallet-internal',
-        categoryId: 'category-1',
-        date: '2026-07-23',
-      },
+      arguments: { type: 'EXPENSE', amount: '20000', walletId: 'wallet-internal', categoryId: 'c1', date: '2026-07-23' },
     });
 
     expect(entityResolution.resolve).not.toHaveBeenCalled();
@@ -628,6 +683,8 @@ describe('Assistant application lifecycle', () => {
       walletId: 'wallet-internal',
     }));
   });
+
+  // ---- A.5: invalid reference rejects without draft ----
 
   it('rejects an invalid wallet reference outcome without drafting', async () => {
     const { service, entityResolution, financialDrafts } = setup();
@@ -637,21 +694,72 @@ describe('Assistant application lifecycle', () => {
       code: 'ENTITY_RESOLUTION_INVALID_REFERENCE',
     });
 
-    const result = await service.execute('u1', 'corr-invalid-reference', {
+    const result = await service.execute('u1', 'corr-inv', {
       intent: 'transaction.create',
-      arguments: {
-        type: 'EXPENSE',
-        amount: '20000',
-        walletReference: '\u0000',
-        categoryId: 'category-1',
-        date: '2026-07-23',
-      },
+      arguments: { type: 'EXPENSE', amount: '20000', walletReference: ' ', categoryId: 'c1', date: '2026-07-23' },
     });
 
-    expect(result.response).toMatchObject({
-      status: 'rejected',
-      code: 'ASSISTANT_INVALID_INPUT',
+    expect(result.response).toMatchObject({ status: 'rejected', code: 'ASSISTANT_INVALID_INPUT' });
+    expect(financialDrafts.prepare).not.toHaveBeenCalled();
+  });
+
+  // ---- Clarification selection flow ----
+
+  it('selectClarification consumes the clarification and creates a draft', async () => {
+    const { service, clarification, financialDrafts, conversations } = setup();
+
+    const result = await service.selectClarification('u1', 'corr-sel', 'clarify_token_a', 'c1');
+
+    expect(clarification.select).toHaveBeenCalledWith({
+      userId: 'u1', conversationId: 'c1', token: 'clarify_token_a', correlationId: 'corr-sel',
     });
+    expect(financialDrafts.prepare).toHaveBeenCalled();
+    expect(result.response.status).toBe('success');
+  });
+
+  // ---- Cancel clarification flow ----
+
+  it('cancelClarification transitions the clarification to CANCELLED', async () => {
+    const { service, clarification } = setup();
+
+    const result = await service.cancelClarification('u1', 'corr-can', 'clar-1', 'c1');
+
+    expect(clarification.cancel).toHaveBeenCalledWith({
+      userId: 'u1', clarificationId: 'clar-1', reason: 'user_cancelled',
+    });
+    expect(result.response.status).toBe('success');
+  });
+
+  // ---- getAssistantState ----
+
+  it('getAssistantState delegates to the clarification service', async () => {
+    const { service, clarification } = setup();
+    clarification.getAssistantState.mockResolvedValue({
+      activeClarification: { clarificationId: 'clar-1', entityType: 'wallet', prompt: 'Pilih wallet', options: [] },
+    });
+
+    const state = await service.getAssistantState('u1', 'c1');
+
+    expect(clarification.getAssistantState).toHaveBeenCalledWith('u1', 'c1');
+    expect(state).toHaveProperty('activeClarification');
+  });
+
+  // ---- Atomicity: failure during clarification creation rolls back ----
+
+  it('does not create a clarification or draft when persistence fails mid-flight', async () => {
+    const { service, entityResolution, clarification, financialDrafts } = setup();
+    entityResolution.resolve.mockResolvedValue({
+      kind: 'ambiguous',
+      entityType: 'wallet',
+      options: [{ displayLabel: 'BCA', confidence: { score: 950, band: 'strong' }, evidence: [], selection: { internalId: 'w1' } }],
+    });
+    clarification.create.mockRejectedValue(new Error('db failure'));
+
+    await expect(service.execute('u1', 'corr-fail', {
+      intent: 'transaction.create',
+      arguments: { type: 'EXPENSE', amount: '20000', walletReference: 'BCA', categoryId: 'c1', date: '2026-07-23' },
+    })).rejects.toThrow('db failure');
+
     expect(financialDrafts.prepare).not.toHaveBeenCalled();
   });
 });

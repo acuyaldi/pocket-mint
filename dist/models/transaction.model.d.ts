@@ -37,4 +37,3 @@ export interface ListTransactionQuery {
     year?: string;
     limit?: string;
 }
-//# sourceMappingURL=transaction.model.d.ts.map

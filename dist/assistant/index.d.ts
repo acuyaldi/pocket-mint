@@ -19,6 +19,9 @@ export { validateAssistantPlan } from './provider-plan';
 export { AssistantProviderError } from './provider-types';
 export * from './entity-resolution';
 export * from './persistence';
+export { createClarificationService } from './clarification.service';
+export type { ClarificationService } from './clarification.service';
+export type { CanonicalContext, ClarificationOptionToken, ClarificationProjection, TerminalClarification, SafeDraftMetadata, AssistantStateProjection, CreateClarificationInput, SelectClarificationInput, SelectClarificationResult, CancelClarificationInput, ClarificationAdvanceResult, } from './clarification.types';
 export type { ToolId, Capability, RiskLevel, ConfirmationPolicy, IdempotencyPolicy, ToolExecutionStatus, ToolContract, ExecutionContext, PolicyResult, AssistantCanonicalRequest, AssistantCanonicalResponse, AssistantSuccessResponse, AssistantClarificationResponse, AssistantRejectedResponse, AssistantErrorResponse, ToolExecutionResult, } from './types';
 export type { ToolHandler, HandlerRegistry } from './executor';
 export type { AssistantConversationService } from './conversation.service';
@@ -26,4 +29,3 @@ export type { AssistantContext, AssistantContextLimits, ConversationContext, Dra
 export type * from './conversation.types';
 export type * from './provider-types';
 export type { AssistantProviderRuntime, AssistantProviderMessageInput, AssistantProviderRuntimeResult } from './provider-runtime';
-//# sourceMappingURL=index.d.ts.map

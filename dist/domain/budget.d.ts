@@ -22,4 +22,3 @@ export interface BudgetUsage {
  * APPROACHING boundary.
  */
 export declare function computeBudgetUsage(amount: Prisma.Decimal, spent: Prisma.Decimal, isArchived: boolean): BudgetUsage;
-//# sourceMappingURL=budget.d.ts.map

@@ -38,4 +38,3 @@ export interface TrendBucket {
  * (a period with no transactions still returns a full zero-filled series).
  */
 export declare function generateTrendBuckets(range: ReportingRange, granularity: TrendGranularity, zone: string): TrendBucket[];
-//# sourceMappingURL=analyticsPeriod.d.ts.map

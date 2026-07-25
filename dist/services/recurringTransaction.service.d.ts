@@ -11,4 +11,3 @@ export declare const recurringTransactionService: {
     updateRecurringTransaction: (input: UpdateRecurringTransactionInput) => Promise<RecurringTransactionWithRelations>;
     deleteRecurringTransaction: (input: DeleteRecurringTransactionInput) => Promise<DeleteRecurringTransactionResult>;
 };
-//# sourceMappingURL=recurringTransaction.service.d.ts.map

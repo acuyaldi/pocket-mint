@@ -9,6 +9,7 @@ import { createAssistantApplicationService } from '../../src/assistant/applicati
 import { createAssistantFinancialDraftService } from '../../src/assistant/financial-draft.service';
 import { createAssistantProviderAuditService } from '../../src/assistant/provider-audit.service';
 import { createAssistantProviderRuntime } from '../../src/assistant/provider-runtime';
+import { createClarificationService } from '../../src/assistant/clarification.service';
 import { createTransactionService } from '../../src/services/transaction.service';
 import { ToolRegistry } from '../../src/assistant/registry';
 import { monthlySpendingSummary, transactionCreate } from '../../src/assistant/tools';
@@ -105,6 +106,7 @@ describe.skipIf(!url)('Assistant provider runtime (disposable PostgreSQL)', () =
       handlerRegistry: new Map([[monthlySpendingSummary.id, handleMonthlySpendingSummary as never]]),
       financialDrafts: drafts,
       entityResolution: createEntityResolutionService(entityResolvers),
+      clarification: createClarificationService(resources!.prisma),
     });
     const prepareSpy = vi.spyOn(application, 'prepareProviderExecution');
     const provider = {
@@ -310,8 +312,7 @@ describe.skipIf(!url)('Assistant provider runtime (disposable PostgreSQL)', () =
         type: 'EXPENSE',
         amount: '12500.50',
         walletReference: wallet.name,
-        merchantReference: merchant.merchantName,
-        categoryReference: category.name,
+        categoryId: category.id,
         date: '2026-07-23',
         description: 'Lunch',
       },
@@ -330,7 +331,6 @@ describe.skipIf(!url)('Assistant provider runtime (disposable PostgreSQL)', () =
       preview: { wallet: wallet.name },
     });
     expect(prepared.body.data.data.preview).toMatchObject({
-      merchant: merchant.merchantName,
       description: 'Lunch',
     });
     expect(prepared.body.data.data.preview).not.toHaveProperty('walletId');
@@ -375,8 +375,7 @@ describe.skipIf(!url)('Assistant provider runtime (disposable PostgreSQL)', () =
         type: 'EXPENSE',
         amount: '20000',
         walletReference: 'BCA',
-        merchantReference: merchant.merchantName,
-        categoryReference: category.name,
+        categoryId: category.id,
         date: '2026-07-23',
       },
       clarification: null,
@@ -390,12 +389,14 @@ describe.skipIf(!url)('Assistant provider runtime (disposable PostgreSQL)', () =
     expect(response.status).toBe(200);
     expect(response.body.data).toMatchObject({
       status: 'clarification_required',
-      data: { kind: 'ambiguous' },
+      data: { kind: 'ambiguous', entityType: 'wallet' },
     });
-    expect(response.body.data.data.options).toHaveLength(2);
-    expect(response.body.data.data.options.map(
-      (option: { displayLabel: string; discriminator?: string }) => ({
-        displayLabel: option.displayLabel,
+    // Options are nested inside data.clarification
+    const options = response.body.data.data.clarification?.options ?? [];
+    expect(options).toHaveLength(2);
+    expect(options.map(
+      (option: { label: string; discriminator?: string }) => ({
+        displayLabel: option.label,
         discriminator: option.discriminator,
       }),
     )).toEqual(expect.arrayContaining([
@@ -430,8 +431,7 @@ describe.skipIf(!url)('Assistant provider runtime (disposable PostgreSQL)', () =
         type: 'EXPENSE',
         amount: '20000',
         walletReference: 'Dormant BCA',
-        merchantReference: merchant.merchantName,
-        categoryReference: category.name,
+        categoryId: category.id,
         date: '2026-07-23',
       },
       clarification: null,
@@ -458,9 +458,9 @@ describe.skipIf(!url)('Assistant provider runtime (disposable PostgreSQL)', () =
     const owner = await fixture(`ownership-owner-${foreignKind}`);
     const other = await fixture(`ownership-other-${foreignKind}`);
     const walletReference = foreignKind === 'wallet' ? other.wallet.name : owner.wallet.name;
-    const categoryReference = foreignKind === 'category'
-      ? other.category.name
-      : owner.category.name;
+    const categoryId = foreignKind === 'category'
+      ? other.category.id
+      : owner.category.id;
     const generate = vi.fn().mockResolvedValue(modelResponse({
       kind: 'intent',
       intent: 'transaction.create',
@@ -468,8 +468,7 @@ describe.skipIf(!url)('Assistant provider runtime (disposable PostgreSQL)', () =
         type: 'EXPENSE',
         amount: '1000',
         walletReference,
-        merchantReference: owner.merchant.merchantName,
-        categoryReference,
+        categoryId,
         date: '2026-07-23',
       },
       clarification: null,
@@ -477,11 +476,17 @@ describe.skipIf(!url)('Assistant provider runtime (disposable PostgreSQL)', () =
     }));
     const { server } = setup(generate);
     const response = await request(server).post('/messages').set('x-test-user', owner.user.id).send({ message: 'prepare' });
-    expect(response.status).toBe(200);
-    expect(response.body.data).toMatchObject({
-      status: 'clarification_required',
-      data: { kind: 'not_found', entityType: foreignKind },
-    });
+    // Using a foreign walletReference triggers wallet resolution → not_found clarification.
+    // Using a foreign categoryId triggers financial draft ownership check → 404 rejection.
+    if (foreignKind === 'wallet') {
+      expect(response.status).toBe(200);
+      expect(response.body.data).toMatchObject({
+        status: 'clarification_required',
+        data: { kind: 'not_found', entityType: foreignKind },
+      });
+    } else {
+      expect(response.status).toBe(404);
+    }
     expect(await resources!.prisma.assistantFinancialDraft.count({ where: { userId: owner.user.id } })).toBe(0);
     expect(await resources!.prisma.transaction.count({ where: { userId: owner.user.id } })).toBe(0);
   });

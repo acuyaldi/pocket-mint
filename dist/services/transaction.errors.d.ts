@@ -5,4 +5,3 @@ export declare class TransactionError extends Error {
     readonly isOperational = true;
     constructor(message: string, statusCode: number, code: string);
 }
-//# sourceMappingURL=transaction.errors.d.ts.map

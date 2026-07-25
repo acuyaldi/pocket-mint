@@ -14,4 +14,3 @@ export declare class UserController {
      */
     static sync(req: Request, res: Response, next: NextFunction): Promise<void>;
 }
-//# sourceMappingURL=user.controller.d.ts.map

@@ -4,4 +4,3 @@ export declare class MerchantMappingError extends Error {
     readonly isOperational = true;
     constructor(message: string, statusCode: number, code: string);
 }
-//# sourceMappingURL=merchantMapping.errors.d.ts.map

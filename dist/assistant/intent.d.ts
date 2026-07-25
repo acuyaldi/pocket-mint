@@ -14,4 +14,3 @@ export interface ResolvedIntent {
  *   gate, not the resolver.
  */
 export declare function resolveIntent(request: AssistantCanonicalRequest): ResolvedIntent;
-//# sourceMappingURL=intent.d.ts.map

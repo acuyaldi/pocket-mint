@@ -8,4 +8,3 @@ import type { CategorySuggestion, SuggestionInput } from './types';
  * Returns empty array when no keywords match.
  */
 export declare function generateSuggestions(input: SuggestionInput): CategorySuggestion[];
-//# sourceMappingURL=suggestionEngine.d.ts.map

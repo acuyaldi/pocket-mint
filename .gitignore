@@ -22,3 +22,4 @@ yarn-error.log*
 
 # Local database backups (never committed — may contain PII/financial data)
 backups/
+*.d.ts.map

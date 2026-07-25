@@ -30,7 +30,7 @@ export {
 } from './merchant-resolver';
 export {
   createCategoryResolver,
-  createCategoryTransactionCreateConstraints,
+  categoryConstraintsForType,
+  CATEGORY_TRANSACTION_CREATE_CONSTRAINTS,
 } from './category-resolver';
-export type { CategoryTransactionType } from './category-resolver';
 export * from './types';

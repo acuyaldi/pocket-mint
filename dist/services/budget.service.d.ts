@@ -12,4 +12,3 @@ export declare const budgetService: {
     archiveBudget: (input: ArchiveBudgetInput) => Promise<BudgetRecord>;
     restoreBudget: (input: RestoreBudgetInput) => Promise<BudgetRecord>;
 };
-//# sourceMappingURL=budget.service.d.ts.map

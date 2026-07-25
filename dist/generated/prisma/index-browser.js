@@ -238,6 +238,35 @@ exports.Prisma.AssistantProviderExecutionScalarFieldEnum = {
   cachedInputTokens: 'cachedInputTokens'
 };
 
+exports.Prisma.ClarificationRequestScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  conversationId: 'conversationId',
+  originatingTurnId: 'originatingTurnId',
+  executionId: 'executionId',
+  parentId: 'parentId',
+  entityType: 'entityType',
+  status: 'status',
+  trustedContext: 'trustedContext',
+  prompt: 'prompt',
+  terminalCode: 'terminalCode',
+  restartRequired: 'restartRequired',
+  consumedAt: 'consumedAt',
+  cancelledAt: 'cancelledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ClarificationOptionScalarFieldEnum = {
+  id: 'id',
+  requestId: 'requestId',
+  tokenDigest: 'tokenDigest',
+  displayLabel: 'displayLabel',
+  discriminator: 'discriminator',
+  candidateId: 'candidateId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.WalletScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -387,6 +416,10 @@ exports.Prisma.NullableJsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -463,6 +496,13 @@ exports.AssistantProviderExecutionStatus = exports.$Enums.AssistantProviderExecu
   FAILED: 'FAILED'
 };
 
+exports.AssistantClarificationStatus = exports.$Enums.AssistantClarificationStatus = {
+  PENDING: 'PENDING',
+  CONSUMED: 'CONSUMED',
+  CANCELLED: 'CANCELLED',
+  STALE: 'STALE'
+};
+
 exports.WalletType = exports.$Enums.WalletType = {
   CASH: 'CASH',
   BANK: 'BANK',
@@ -520,6 +560,8 @@ exports.Prisma.ModelName = {
   AssistantIdempotencyRecord: 'AssistantIdempotencyRecord',
   AssistantToolExecution: 'AssistantToolExecution',
   AssistantProviderExecution: 'AssistantProviderExecution',
+  ClarificationRequest: 'ClarificationRequest',
+  ClarificationOption: 'ClarificationOption',
   Wallet: 'Wallet',
   Category: 'Category',
   MerchantMapping: 'MerchantMapping',

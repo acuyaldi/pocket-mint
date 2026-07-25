@@ -10,7 +10,5 @@ export { EntityResolverRegistry } from './registry';
 export { createEntityResolutionService, toPublicEntityResolutionResult, } from './service';
 export { createWalletResolver, WALLET_TRANSACTION_CREATE_CONSTRAINTS, } from './wallet-resolver';
 export { createMerchantResolver, MERCHANT_TRANSACTION_CREATE_CONSTRAINTS, } from './merchant-resolver';
-export { createCategoryResolver, createCategoryTransactionCreateConstraints, } from './category-resolver';
-export type { CategoryTransactionType } from './category-resolver';
+export { createCategoryResolver, categoryConstraintsForType, CATEGORY_TRANSACTION_CREATE_CONSTRAINTS, } from './category-resolver';
 export * from './types';
-//# sourceMappingURL=index.d.ts.map

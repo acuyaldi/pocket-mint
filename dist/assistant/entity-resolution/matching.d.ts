@@ -4,4 +4,3 @@ export declare function matchEntityCandidate(candidate: EntityCandidate, referen
 }): readonly EntityMatchEvidence[];
 export declare function normalizeEvidence(evidence: readonly EntityMatchEvidence[]): readonly EntityMatchEvidence[];
 export declare function confidenceFromEvidence(evidence: readonly EntityMatchEvidence[]): EntityConfidence;
-//# sourceMappingURL=matching.d.ts.map

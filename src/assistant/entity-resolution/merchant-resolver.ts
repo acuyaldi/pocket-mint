@@ -2,6 +2,7 @@ import type { PrismaClient } from '../../generated/prisma/client';
 import { createEntityCandidate } from './candidate';
 import { EntityResolutionError } from './errors';
 import { matchEntityCandidate } from './matching';
+import { normalizeEntityReference } from './normalization';
 import {
   ENTITY_RESOLUTION_LIMITS,
   type EntityResolver,
@@ -10,35 +11,36 @@ import {
 
 interface MerchantTransactionCreateConstraints extends TrustedEntityConstraints {
   readonly eligibleFor: 'transaction.create';
+  readonly ownerScoped: true;
 }
 
 export const MERCHANT_TRANSACTION_CREATE_CONSTRAINTS:
 Readonly<MerchantTransactionCreateConstraints> = Object.freeze({
   eligibleFor: 'transaction.create',
+  ownerScoped: true,
 });
 
 function isTransactionCreateConstraints(
   value: TrustedEntityConstraints | undefined,
 ): value is MerchantTransactionCreateConstraints {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
-  const keys = Object.keys(value);
-  return keys.length === 1
+  const keys = Object.keys(value).sort();
+  return keys.length === 2
     && keys[0] === 'eligibleFor'
-    && value.eligibleFor === 'transaction.create';
+    && keys[1] === 'ownerScoped'
+    && value.eligibleFor === 'transaction.create'
+    && value.ownerScoped === true;
 }
 
-function trustedNormalizedAlias(
-  normalizedMerchant: string,
-): readonly string[] {
-  if (
-    typeof normalizedMerchant !== 'string'
-    || normalizedMerchant.length === 0
-    || Buffer.byteLength(normalizedMerchant, 'utf8')
-      > ENTITY_RESOLUTION_LIMITS.aliasBytes
-  ) {
-    throw EntityResolutionError.configuration();
-  }
-  return Object.freeze([normalizedMerchant]);
+function aliasesFromMerchantName(name: string): readonly string[] {
+  const normalized = normalizeEntityReference(name);
+  if (!normalized.ok) return [];
+  const words = normalized.normalized.split(/\s+/).filter(Boolean);
+  const result = [...new Set([normalized.normalized, ...words])]
+    .filter((a) => a.length >= 2 && Buffer.byteLength(a, 'utf8') <= ENTITY_RESOLUTION_LIMITS.aliasBytes)
+    .sort()
+    .slice(0, ENTITY_RESOLUTION_LIMITS.aliasesPerCandidate);
+  return Object.freeze(result);
 }
 
 export function createMerchantResolver(
@@ -53,11 +55,7 @@ export function createMerchantResolver(
       }
       const mappings = await db.merchantMapping.findMany({
         where: { userId: authenticatedUserId },
-        select: {
-          id: true,
-          merchantName: true,
-          normalizedMerchant: true,
-        },
+        select: { id: true, merchantName: true, normalizedMerchant: true },
         take: ENTITY_RESOLUTION_LIMITS.candidates + 1,
       });
       return mappings.map((mapping) => createEntityCandidate({
@@ -65,7 +63,8 @@ export function createMerchantResolver(
         internalId: mapping.id,
         displayLabel: mapping.merchantName,
         canonicalLabel: mapping.merchantName,
-        aliases: trustedNormalizedAlias(mapping.normalizedMerchant),
+        aliases: aliasesFromMerchantName(mapping.merchantName),
+        discriminator: undefined,
         trustedMetadata: {
           normalizedMerchant: mapping.normalizedMerchant,
           eligibleFor: trustedConstraints.eligibleFor,
@@ -74,15 +73,14 @@ export function createMerchantResolver(
       }));
     },
     matchCandidate(input) {
-      const { candidate, reference, trustedConstraints } = input;
+      const { candidate, trustedConstraints } = input;
       if (
         !isTransactionCreateConstraints(trustedConstraints)
         || candidate.trustedMetadata.eligibleFor !== trustedConstraints.eligibleFor
-        || typeof candidate.trustedMetadata.normalizedMerchant !== 'string'
       ) {
         throw EntityResolutionError.configuration();
       }
-      return matchEntityCandidate(candidate, reference, { constrained: true });
+      return matchEntityCandidate(candidate, input.reference, { constrained: false });
     },
   };
   return Object.freeze(resolver);

@@ -68,4 +68,3 @@ export declare function createAssistantConversationService(db: PrismaClient): {
     }>;
 };
 export type AssistantConversationService = ReturnType<typeof createAssistantConversationService>;
-//# sourceMappingURL=conversation.service.d.ts.map

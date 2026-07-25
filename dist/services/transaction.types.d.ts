@@ -76,4 +76,3 @@ export type TransactionWithRelations = Prisma.TransactionGetPayload<{
 export interface DeleteTransactionResult {
     id: string;
 }
-//# sourceMappingURL=transaction.types.d.ts.map

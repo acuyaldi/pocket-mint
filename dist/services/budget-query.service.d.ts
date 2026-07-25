@@ -8,4 +8,3 @@ export declare const budgetQueryService: {
     getBudgetUsage: (input: GetBudgetUsageInput) => Promise<BudgetWithUsage>;
     listActiveBudgetUsage: (input: ListActiveBudgetUsageInput) => Promise<BudgetWithUsage[]>;
 };
-//# sourceMappingURL=budget-query.service.d.ts.map

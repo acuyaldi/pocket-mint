@@ -27,4 +27,3 @@ type WithAuth = {
  */
 export declare function getAuthenticatedUserId(req: WithAuth): string | undefined;
 export {};
-//# sourceMappingURL=authContext.d.ts.map

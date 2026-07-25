@@ -15,4 +15,3 @@ export interface ScoredMatch {
  * category name within each tier.
  */
 export declare function scoreMatches(matches: KeywordMatch[]): ScoredMatch[];
-//# sourceMappingURL=confidenceCalculator.d.ts.map

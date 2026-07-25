@@ -27,6 +27,21 @@ export { validateAssistantPlan } from './provider-plan';
 export { AssistantProviderError } from './provider-types';
 export * from './entity-resolution';
 export * from './persistence';
+export { createClarificationService } from './clarification.service';
+export type { ClarificationService } from './clarification.service';
+export type {
+  CanonicalContext,
+  ClarificationOptionToken,
+  ClarificationProjection,
+  TerminalClarification,
+  SafeDraftMetadata,
+  AssistantStateProjection,
+  CreateClarificationInput,
+  SelectClarificationInput,
+  SelectClarificationResult,
+  CancelClarificationInput,
+  ClarificationAdvanceResult,
+} from './clarification.types';
 
 export type {
   ToolId,

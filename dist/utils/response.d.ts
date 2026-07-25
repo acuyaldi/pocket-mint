@@ -6,4 +6,3 @@ export declare const sendSuccess: <T>(res: Response, data: T, message?: string, 
  * Messages passed here must be safe to expose (no internals/secrets).
  */
 export declare const sendError: (res: Response, message?: string, statusCode?: number, code?: string) => void;
-//# sourceMappingURL=response.d.ts.map

@@ -17,4 +17,3 @@ export declare function isOperationalError(err: unknown): err is OperationalErro
  * propagates to the central error handler unchanged.
  */
 export declare function forwardError(err: unknown, res: Response, next: NextFunction): void;
-//# sourceMappingURL=forwardError.d.ts.map

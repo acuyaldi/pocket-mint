@@ -91,4 +91,3 @@ export interface AnalyticsWalletBreakdownResult {
     wallets: AnalyticsWalletBreakdownItem[];
 }
 export type { TransactionType };
-//# sourceMappingURL=analytics-query.types.d.ts.map

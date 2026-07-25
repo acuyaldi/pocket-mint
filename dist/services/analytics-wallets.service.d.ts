@@ -6,4 +6,3 @@ export declare function createAnalyticsWalletsService(db: AnalyticsPrismaClient)
 export declare const analyticsWalletsService: {
     getWalletBreakdown: (input: AnalyticsPeriodQueryInput) => Promise<AnalyticsWalletBreakdownResult>;
 };
-//# sourceMappingURL=analytics-wallets.service.d.ts.map

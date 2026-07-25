@@ -1,1 +1,0 @@
-{"version":3,"file":"savingGoal.errors.d.ts","sourceRoot":"","sources":["../../src/services/savingGoal.errors.ts"],"names":[],"mappings":"AAQA,qBAAa,eAAgB,SAAQ,KAAK;IACxC,QAAQ,CAAC,UAAU,EAAE,MAAM,CAAC;IAC5B,QAAQ,CAAC,IAAI,EAAE,MAAM,CAAC;IACtB,QAAQ,CAAC,aAAa,QAAQ;gBAElB,OAAO,EAAE,MAAM,EAAE,UAAU,EAAE,MAAM,EAAE,IAAI,EAAE,MAAM;CAO9D"}

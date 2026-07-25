@@ -19,4 +19,3 @@ export declare function calculateNetWorth(wallets: WalletInput[]): {
     totalUtang: Prisma.Decimal;
     netWorth: Prisma.Decimal;
 };
-//# sourceMappingURL=financial.d.ts.map

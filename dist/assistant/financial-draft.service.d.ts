@@ -62,4 +62,3 @@ export declare function createAssistantFinancialDraftService(db: PrismaClient, t
     }>;
 };
 export type AssistantFinancialDraftService = ReturnType<typeof createAssistantFinancialDraftService>;
-//# sourceMappingURL=financial-draft.service.d.ts.map

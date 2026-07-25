@@ -36,4 +36,3 @@ export interface PrismaResources {
  * @param log         Prisma log configuration (preserves existing behavior).
  */
 export declare function createPrismaResources(databaseUrl: string | undefined, tuning?: PoolTuning, log?: Prisma.PrismaClientOptions['log']): PrismaResources;
-//# sourceMappingURL=prismaFactory.d.ts.map

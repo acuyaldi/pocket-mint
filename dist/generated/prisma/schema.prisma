@@ -41,6 +41,7 @@ model User {
   assistantFinancialDrafts      AssistantFinancialDraft[]
   assistantIdempotencyRecords   AssistantIdempotencyRecord[]
   assistantProviderExecutions   AssistantProviderExecution[]
+  clarificationRequests         ClarificationRequest[]
 
   @@map("users")
 }
@@ -100,6 +101,13 @@ enum AssistantFinancialDraftStatus {
   FAILED
 }
 
+enum AssistantClarificationStatus {
+  PENDING
+  CONSUMED
+  CANCELLED
+  STALE
+}
+
 model AssistantConversation {
   id             String                      @id @default(cuid())
   userId         String                      @map("user_id")
@@ -110,12 +118,13 @@ model AssistantConversation {
   lastActivityAt DateTime                    @default(now()) @map("last_activity_at")
   archivedAt     DateTime?                   @map("archived_at")
 
-  user               User                         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  turns              AssistantTurn[]
-  messages           AssistantMessage[]
-  toolExecutions     AssistantToolExecution[]
-  financialDrafts    AssistantFinancialDraft[]
-  providerExecutions AssistantProviderExecution[]
+  user                  User                         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  turns                 AssistantTurn[]
+  messages              AssistantMessage[]
+  toolExecutions        AssistantToolExecution[]
+  financialDrafts       AssistantFinancialDraft[]
+  providerExecutions    AssistantProviderExecution[]
+  clarificationRequests ClarificationRequest[]
 
   @@index([userId, lastActivityAt, id])
   @@index([userId, status, lastActivityAt])
@@ -135,11 +144,12 @@ model AssistantTurn {
   createdAt      DateTime            @default(now()) @map("created_at")
   updatedAt      DateTime            @updatedAt @map("updated_at")
 
-  conversation       AssistantConversation        @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  messages           AssistantMessage[]
-  toolExecutions     AssistantToolExecution[]
-  financialDrafts    AssistantFinancialDraft[]
-  providerExecutions AssistantProviderExecution[]
+  conversation          AssistantConversation        @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  messages              AssistantMessage[]
+  toolExecutions        AssistantToolExecution[]
+  financialDrafts       AssistantFinancialDraft[]
+  providerExecutions    AssistantProviderExecution[]
+  clarificationRequests ClarificationRequest[]
 
   @@index([conversationId, createdAt, id])
   @@index([status, startedAt])
@@ -272,6 +282,56 @@ model AssistantProviderExecution {
   @@index([conversationId, startedAt])
   @@index([turnId, startedAt])
   @@map("assistant_provider_executions")
+}
+
+// ─────────────────────────────────────────────
+// CLARIFICATION ENGINE  (Phase 22.5)
+// ─────────────────────────────────────────────
+model ClarificationRequest {
+  id                String                       @id @default(cuid())
+  userId            String                       @map("user_id")
+  conversationId    String                       @map("conversation_id")
+  originatingTurnId String                       @map("originating_turn_id")
+  executionId       String                       @unique @map("execution_id")
+  parentId          String?                      @map("parent_id")
+  entityType        String                       @map("entity_type")
+  status            AssistantClarificationStatus @default(PENDING)
+  trustedContext    Json                         @map("trusted_context")
+  prompt            String
+  terminalCode      String?                      @map("terminal_code")
+  restartRequired   Boolean                      @default(false) @map("restart_required")
+  consumedAt        DateTime?                    @map("consumed_at")
+  cancelledAt       DateTime?                    @map("cancelled_at")
+  createdAt         DateTime                     @default(now()) @map("created_at")
+  updatedAt         DateTime                     @updatedAt @map("updated_at")
+
+  user            User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversation    AssistantConversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  originatingTurn AssistantTurn          @relation(fields: [originatingTurnId], references: [id], onDelete: Cascade)
+  parent          ClarificationRequest?  @relation("ClarificationChain", fields: [parentId], references: [id], onDelete: SetNull)
+  children        ClarificationRequest[] @relation("ClarificationChain")
+  options         ClarificationOption[]
+
+  @@index([userId, status])
+  @@index([conversationId, createdAt])
+  @@index([parentId])
+  @@map("clarification_requests")
+}
+
+model ClarificationOption {
+  id            String   @id @default(cuid())
+  requestId     String   @map("request_id")
+  tokenDigest   String   @map("token_digest")
+  displayLabel  String   @map("display_label")
+  discriminator String?
+  candidateId   String   @map("candidate_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  request ClarificationRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  @@unique([requestId, tokenDigest])
+  @@index([requestId])
+  @@map("clarification_options")
 }
 
 // ─────────────────────────────────────────────

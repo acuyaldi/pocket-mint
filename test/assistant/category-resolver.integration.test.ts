@@ -3,8 +3,8 @@ import { createPrismaResources } from '../../src/lib/prismaFactory';
 import { assertTestDatabaseUrl } from '../../src/lib/assertTestDatabaseUrl';
 import {
   EntityResolverRegistry,
+  categoryConstraintsForType,
   createCategoryResolver,
-  createCategoryTransactionCreateConstraints,
   createEntityResolutionService,
 } from '../../src/assistant/entity-resolution';
 
@@ -60,7 +60,7 @@ function resolve(
       referenceText,
       source: 'provider_extracted',
     },
-    trustedConstraints: createCategoryTransactionCreateConstraints(transactionType),
+    trustedConstraints: categoryConstraintsForType(transactionType),
   });
 }
 

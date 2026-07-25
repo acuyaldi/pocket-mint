@@ -18,4 +18,3 @@ export declare class BudgetController {
         id: string;
     }>, res: Response, next: NextFunction): Promise<void>;
 }
-//# sourceMappingURL=budget.controller.d.ts.map

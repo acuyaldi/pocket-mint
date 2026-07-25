@@ -11,4 +11,3 @@ export interface KeywordMatch {
  * Matches are pre-grouped by category; the caller ranks them.
  */
 export declare function findMatches(normalized: string, tokens: string[], candidates: CategoryCandidate[]): KeywordMatch[];
-//# sourceMappingURL=keywordMatcher.d.ts.map

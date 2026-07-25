@@ -17,9 +17,9 @@ const TRANSACTION_KEYS = new Set([
     'amount',
     'walletId',
     'walletReference',
-    'merchantReference',
     'categoryId',
     'categoryReference',
+    'merchantReference',
     'date',
     'description',
 ]);
@@ -61,31 +61,14 @@ function validateTransactionCreateInput(input) {
     if (hasWalletReference
         && (typeof value.walletReference !== 'string'
             || !value.walletReference.trim()
-            || Buffer.byteLength(value.walletReference, 'utf8') > 256)) {
+            || value.walletReference.length > 256)) {
         throw errors_1.AssistantError.invalidInput('transaction.create', 'walletReference must be a non-empty bounded string');
     }
-    if (value.merchantReference !== undefined
-        && (typeof value.merchantReference !== 'string'
-            || !value.merchantReference.trim()
-            || Buffer.byteLength(value.merchantReference, 'utf8') > 256)) {
-        throw errors_1.AssistantError.invalidInput('transaction.create', 'merchantReference must be a non-empty bounded string');
-    }
-    const hasCategoryId = value.categoryId !== undefined;
-    const hasCategoryReference = value.categoryReference !== undefined;
-    if (hasCategoryId === hasCategoryReference) {
-        throw errors_1.AssistantError.invalidInput('transaction.create', 'exactly one of categoryId or categoryReference is required');
-    }
-    if (hasCategoryId
-        && (typeof value.categoryId !== 'string'
-            || !value.categoryId.trim()
-            || value.categoryId.length > 191)) {
-        throw errors_1.AssistantError.invalidInput('transaction.create', 'categoryId must be a non-empty bounded string');
-    }
-    if (hasCategoryReference
-        && (typeof value.categoryReference !== 'string'
-            || !value.categoryReference.trim()
-            || Buffer.byteLength(value.categoryReference, 'utf8') > 256)) {
-        throw errors_1.AssistantError.invalidInput('transaction.create', 'categoryReference must be a non-empty bounded string');
+    const hasCategoryRef = typeof value.categoryReference === 'string' && value.categoryReference.trim().length > 0;
+    const catId = value.categoryId;
+    const hasCategoryId = typeof catId === 'string' && catId.trim().length > 0 && catId.length <= 191;
+    if (!hasCategoryId && !hasCategoryRef) {
+        throw errors_1.AssistantError.invalidInput('transaction.create', 'categoryId or categoryReference is required');
     }
     if (typeof value.date !== 'string' || !isCalendarDay(value.date)) {
         throw errors_1.AssistantError.invalidInput('transaction.create', 'date must be a valid YYYY-MM-DD day');
@@ -93,22 +76,33 @@ function validateTransactionCreateInput(input) {
     if (value.description !== undefined && (typeof value.description !== 'string' || !value.description.trim() || value.description.length > 500)) {
         throw errors_1.AssistantError.invalidInput('transaction.create', 'description must be at most 500 characters');
     }
+    if (value.merchantReference !== undefined) {
+        if (typeof value.merchantReference !== 'string' || !value.merchantReference.trim()) {
+            throw errors_1.AssistantError.invalidInput('transaction.create', 'merchantReference must be a non-empty string');
+        }
+    }
+    if (value.categoryReference !== undefined) {
+        if (typeof value.categoryReference !== 'string' || !value.categoryReference.trim()) {
+            throw errors_1.AssistantError.invalidInput('transaction.create', 'categoryReference must be a non-empty string');
+        }
+    }
+    const ext = {};
+    if (value.merchantReference !== undefined) {
+        ext.merchantReference = value.merchantReference.trim();
+    }
+    if (value.categoryReference !== undefined) {
+        ext.categoryReference = value.categoryReference.trim();
+    }
     const common = {
         type: value.type,
         amount,
+        categoryId: (hasCategoryId ? value.categoryId : ''),
         date: value.date,
         ...(value.description === undefined ? {} : { description: value.description.trim() }),
-        ...(value.merchantReference === undefined
-            ? {}
-            : { merchantReference: value.merchantReference }),
     };
-    const wallet = hasWalletId
-        ? { walletId: value.walletId }
-        : { walletReference: value.walletReference };
-    const category = hasCategoryId
-        ? { categoryId: value.categoryId }
-        : { categoryReference: value.categoryReference };
-    return { ...common, ...wallet, ...category };
+    return hasWalletId
+        ? { ...common, walletId: value.walletId, ...ext }
+        : { ...common, walletReference: value.walletReference, ...ext };
 }
 // ---- Validation helpers ----------------------------------------------------
 const MONTH_RE = /^\d{4}-(0[1-9]|1[0-2])$/;
@@ -193,20 +187,19 @@ exports.transactionCreate = {
     timeoutMs: 10000,
     enabled: true,
     providerArguments: {
-        required: ['amount', 'categoryReference', 'date', 'merchantReference', 'type', 'walletReference'],
+        required: ['amount', 'categoryId', 'date', 'type', 'walletReference'],
         optional: ['description'],
         properties: {
             amount: { type: 'string', description: 'Positive decimal amount with at most two fraction digits.' },
-            categoryReference: { type: 'string', description: 'Textual category name from the user; never invent or supply a category identifier.' },
+            categoryId: { type: 'string', description: 'Category identifier supplied by the user; never invent one.' },
             date: { type: 'string', format: 'YYYY-MM-DD', description: 'Transaction calendar date.' },
             description: { type: 'string', description: 'Optional short transaction description.' },
-            merchantReference: { type: 'string', description: 'Textual merchant name from the user; never supply a merchant or mapping identifier.' },
             type: { type: 'string', enum: ['INCOME', 'EXPENSE'], description: 'Regular transaction type.' },
             walletReference: { type: 'string', description: 'Textual wallet name or alias from the user; never supply a wallet identifier.' },
         },
     },
     validateInput: validateTransactionCreateInput,
     validateOutput: validateTransactionCreateInput,
-    auditRedact: ['amount', 'description', 'walletId', 'walletReference', 'merchantReference', 'categoryId', 'categoryReference', 'date'],
+    auditRedact: ['amount', 'description', 'walletId', 'walletReference', 'categoryId', 'date'],
 };
 //# sourceMappingURL=tools.js.map

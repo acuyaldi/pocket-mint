@@ -66,4 +66,3 @@ export interface ConfirmReminderResult {
     notification: NotificationWithTemplate;
     transaction: TransactionWithRelations;
 }
-//# sourceMappingURL=notification.types.d.ts.map

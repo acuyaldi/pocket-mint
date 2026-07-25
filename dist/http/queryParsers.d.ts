@@ -22,4 +22,3 @@ export declare function scalarInt(value: QueryValue): number | undefined;
  * while safely collapsing an array/object shape first.
  */
 export declare function scalarBooleanTrue(value: QueryValue): boolean;
-//# sourceMappingURL=queryParsers.d.ts.map

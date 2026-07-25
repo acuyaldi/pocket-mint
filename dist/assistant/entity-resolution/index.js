@@ -14,7 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createCategoryTransactionCreateConstraints = exports.createCategoryResolver = exports.MERCHANT_TRANSACTION_CREATE_CONSTRAINTS = exports.createMerchantResolver = exports.WALLET_TRANSACTION_CREATE_CONSTRAINTS = exports.createWalletResolver = exports.toPublicEntityResolutionResult = exports.createEntityResolutionService = exports.EntityResolverRegistry = exports.parseEntityReferenceInput = exports.normalizeEntityReference = exports.normalizeEvidence = exports.matchEntityCandidate = exports.confidenceFromEvidence = exports.EntityResolutionError = exports.createEntityCandidate = void 0;
+exports.CATEGORY_TRANSACTION_CREATE_CONSTRAINTS = exports.categoryConstraintsForType = exports.createCategoryResolver = exports.MERCHANT_TRANSACTION_CREATE_CONSTRAINTS = exports.createMerchantResolver = exports.WALLET_TRANSACTION_CREATE_CONSTRAINTS = exports.createWalletResolver = exports.toPublicEntityResolutionResult = exports.createEntityResolutionService = exports.EntityResolverRegistry = exports.parseEntityReferenceInput = exports.normalizeEntityReference = exports.normalizeEvidence = exports.matchEntityCandidate = exports.confidenceFromEvidence = exports.EntityResolutionError = exports.createEntityCandidate = void 0;
 var candidate_1 = require("./candidate");
 Object.defineProperty(exports, "createEntityCandidate", { enumerable: true, get: function () { return candidate_1.createEntityCandidate; } });
 var errors_1 = require("./errors");
@@ -40,6 +40,7 @@ Object.defineProperty(exports, "createMerchantResolver", { enumerable: true, get
 Object.defineProperty(exports, "MERCHANT_TRANSACTION_CREATE_CONSTRAINTS", { enumerable: true, get: function () { return merchant_resolver_1.MERCHANT_TRANSACTION_CREATE_CONSTRAINTS; } });
 var category_resolver_1 = require("./category-resolver");
 Object.defineProperty(exports, "createCategoryResolver", { enumerable: true, get: function () { return category_resolver_1.createCategoryResolver; } });
-Object.defineProperty(exports, "createCategoryTransactionCreateConstraints", { enumerable: true, get: function () { return category_resolver_1.createCategoryTransactionCreateConstraints; } });
+Object.defineProperty(exports, "categoryConstraintsForType", { enumerable: true, get: function () { return category_resolver_1.categoryConstraintsForType; } });
+Object.defineProperty(exports, "CATEGORY_TRANSACTION_CREATE_CONSTRAINTS", { enumerable: true, get: function () { return category_resolver_1.CATEGORY_TRANSACTION_CREATE_CONSTRAINTS; } });
 __exportStar(require("./types"), exports);
 //# sourceMappingURL=index.js.map

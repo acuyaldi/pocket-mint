@@ -27,4 +27,3 @@ export interface GeminiAssistantProviderConfig {
 }
 export declare function createGeminiAssistantProvider(config: GeminiAssistantProviderConfig, injectedClient?: GeminiClientLike): AssistantModelProvider;
 export {};
-//# sourceMappingURL=gemini.provider.d.ts.map

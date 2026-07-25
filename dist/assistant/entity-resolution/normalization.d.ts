@@ -7,4 +7,3 @@ export type EntityReferenceNormalizationResult = ({
     readonly reason: EntityReferenceNormalizationFailure;
 };
 export declare function normalizeEntityReference(value: unknown): EntityReferenceNormalizationResult;
-//# sourceMappingURL=normalization.d.ts.map

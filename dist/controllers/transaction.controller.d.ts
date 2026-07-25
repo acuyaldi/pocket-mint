@@ -20,4 +20,3 @@ export declare class TransactionController {
         id: string;
     }>, res: Response, next: NextFunction): Promise<void>;
 }
-//# sourceMappingURL=transaction.controller.d.ts.map

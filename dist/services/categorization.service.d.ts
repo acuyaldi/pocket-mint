@@ -9,4 +9,3 @@ export declare const categorizationService: {
     getSuggestions: (userId: string, description: string, type: "INCOME" | "EXPENSE") => Promise<CategorySuggestion[]>;
 };
 export {};
-//# sourceMappingURL=categorization.service.d.ts.map

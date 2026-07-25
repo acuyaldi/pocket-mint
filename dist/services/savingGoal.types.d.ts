@@ -36,4 +36,3 @@ export interface GetSavingGoalInput {
     id: string;
 }
 export type SavingGoalRecord = Prisma.SavingGoalGetPayload<Record<string, never>>;
-//# sourceMappingURL=savingGoal.types.d.ts.map

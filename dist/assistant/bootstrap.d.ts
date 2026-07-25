@@ -137,12 +137,23 @@ export declare const assistantFinancialDraftService: {
     }>;
 };
 export declare const entityResolutionService: import("./entity-resolution").EntityResolutionService;
+export declare const clarificationService: {
+    create: (input: import("./clarification.types").CreateClarificationInput) => Promise<import("./clarification.types").ClarificationCreationProjection>;
+    select: (input: import("./clarification.types").SelectClarificationInput) => Promise<import("./clarification.types").SelectClarificationResult>;
+    cancel: (input: import("./clarification.types").CancelClarificationInput) => Promise<void>;
+    getAssistantState: (userId: string, conversationId: string) => Promise<import("./clarification.types").AssistantStateProjection>;
+    buildConsumedResult: (consumedClarificationId: string) => Pick<import("./clarification.types").ClarificationAdvanceResult, "consumedClarificationId">;
+    _digestToken: (token: string) => string;
+    _generateToken: () => string;
+};
 export declare const assistantApplicationService: {
     execute: (userId: string, correlationId: string, request: import("./types").AssistantCanonicalRequest) => Promise<import("./application.service").AssistantApplicationResult>;
     prepareProviderExecution: (input: import("./context.service").BuildAssistantExecutionContextInput) => Promise<import("./context.types").AssistantContext>;
+    selectClarification: (userId: string, correlationId: string, token: string, conversationId: string) => Promise<import("./application.service").AssistantApplicationResult>;
+    cancelClarification: (userId: string, correlationId: string, clarificationId: string, conversationId: string) => Promise<import("./application.service").AssistantApplicationResult>;
+    getAssistantState: (userId: string, conversationId: string) => Promise<import("./clarification.types").AssistantStateProjection>;
 };
 export declare const assistantProviderAuditService: import("./provider-runtime").AssistantProviderAudit;
 export declare const assistantProviderRuntime: {
     sendMessage: (userId: string, correlationId: string, input: import("./provider-runtime").AssistantProviderMessageInput) => Promise<import("./provider-runtime").AssistantProviderRuntimeResult>;
 } | undefined;
-//# sourceMappingURL=bootstrap.d.ts.map
