@@ -32,8 +32,12 @@ pg.Pool → PrismaPg → PrismaClient({ adapter })
 ## Generated Client Packaging
 
 - Generator output: `src/generated/prisma` (custom path — see `schema.prisma`).
-- `npm run build` = `prisma generate && tsc && node src/scripts/copy-prisma-client.cjs`,
-  which copies the client into `dist/generated/prisma`. `dist/` is committed.
+- `npm run build` runs `prisma generate`, strips whitespace from the generated
+  `.d.ts`, `tsc`, then `copy-prisma-client.cjs` copies the client into
+  `dist/generated/prisma`. This Prisma-generated output under
+  `src/generated/prisma` and `dist/generated/prisma` is committed and tracked
+  — this file owns that generated-artifact convention. (The rest of `dist/`
+  and its CI enforcement are owned by `deployment-operations.skill.md`.)
 - Verify packaging after build changes:
 
 ```bash
@@ -68,26 +72,36 @@ Never run against an unconfirmed database:
 
 Confirm the target first (`prisma migrate status`, read-only).
 
-## Baseline (reconstructed chain — `docs/prisma-migration-reconciliation.md`)
+## Migration State — Derive, Don't Assume
 
-```
-20260710000000_baseline                      (creates full schema, incl. users.password)
-20260711172700_remove_local_user_password    (destructive: DROP COLUMN password)
-20260711223000_add_transaction_to_wallet     (additive: to_wallet_id + index + FK)
-20260717000000_generalize_wallets_and_bills  (WalletType PAYLATER/LOAN split, wallet billing fields, installment kind/paid_terms/next_due_date)
-```
+The migration chain grows continuously; do not hardcode a migration count or
+enumerate the chain in this file — it will go stale. Before any migration
+work, derive the current state from repository evidence:
+
+- `prisma/migrations/` — list the directories directly (`ls prisma/migrations`)
+  to see the current chain and the most recent migration.
+- `prisma migrate status` (read-only) against the target database.
+- `prisma migrate diff` (read-only) for schema drift.
+- CI's migration replay (`deployment-operations.skill.md`) as the
+  ground-truth proof that the full chain applies cleanly from empty.
+
+The chain originally required a **reconstructed baseline** migration
+(`20260710000000_baseline`) because the two migrations that first created the
+schema on the live database were never committed to `prisma/migrations/`. That
+history, the baseline-reconciliation reasoning, and the original staging/
+production resolve procedure are documented in
+`docs/prisma-migration-reconciliation.md` — treat it as an accurate record of
+**how the baseline and the first few migrations were reconciled**, not as a
+current inventory of the full chain (re-verify its migration list against
+`prisma/migrations/` before relying on any count or "N migrations" claim in
+it).
 
 - **Existing legacy-schema DB** (staging/prod): inspect `migrate status` +
-  `migrate diff` first; proceed only if drift exactly matches the three expected
-  deltas. Then `migrate resolve --applied 20260710000000_baseline`
-  (metadata-only, no DDL) and `migrate deploy` for the three newer migrations.
-  Leave the legacy `_init`/`_rename` rows alone; **never hand-edit
-  `_prisma_migrations`**.
-- **Empty DB**: `prisma migrate deploy` applies the full chain (all four
-  migrations). Do **not** run `migrate resolve` there. Re-verified end-to-end on
-  a disposable PostgreSQL 18 instance 2026-07-18 (PM-STAB-004): empty `migrate
-  diff` against `schema.prisma`, full test suite green with 0 skips, backend
-  starts and serves `/health`.
+  `migrate diff` first; proceed only if drift matches the expected deltas for
+  that database's actual state. Leave the legacy `_init`/`_rename` rows alone;
+  **never hand-edit `_prisma_migrations`**.
+- **Empty DB**: `prisma migrate deploy` applies the full current chain. Do
+  **not** run `migrate resolve` there.
 
 ## Verification
 

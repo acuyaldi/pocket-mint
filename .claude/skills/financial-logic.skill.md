@@ -5,14 +5,31 @@ description: Use when working on wallets, transactions, transfers, installments,
 
 # Financial Logic — Pocket Mint Backend
 
-**Source of truth:** This document. It was reconciled 2026-07-18 against
-PD-001 (Approved), backend implementation, and 381 automated tests.
-When code, tests, and this document disagree, treat this document as the
-canonical rule — then verify whether the code or the document is wrong and
-flag the conflict. Do NOT silently "fix" code to match old documentation.
+**Source of truth:** This document, reconciled against PD-001 (Approved), the
+backend implementation, and the automated test suite. It covers financial
+invariants only — it does not track a fixed test count or a single
+reconciliation date, since both the implementation and the suite continue to
+grow. When code, tests, and this document disagree, verify against the
+current implementation and tests first, then flag the conflict rather than
+silently "fixing" code to match stale documentation.
 
 Hierarchy: **Approved PD** > **Tests that verify approved behavior** >
 **Backend implementation** > **This document** > UI wording.
+
+---
+
+## 0. Assistant-Originated Transactions
+
+- Assistant/LLM interpretation may prepare a **Pending Financial Draft**. A
+  draft is not a `Transaction` and causes no balance mutation.
+- No final financial `Transaction` may be created from Assistant output
+  without **explicit user confirmation** of that specific draft.
+- The confirmation path must call into the canonical transaction creation
+  service (`transaction.service.ts`) — it must never reimplement balance
+  mutation, credit-limit checks, or installment creation itself.
+- Assistant lifecycle mechanics (clarification, entity resolution, draft
+  expiry, confirmation endpoints) are owned by `assistant-core.skill.md`; this
+  file only owns the financial invariant above.
 
 ---
 

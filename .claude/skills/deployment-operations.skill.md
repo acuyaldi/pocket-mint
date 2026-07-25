@@ -54,16 +54,47 @@ deployed from.
 
 ## CI/CD
 
-- GitHub Actions (`.github/workflows/ci.yml`) runs on PR/push to `dev`:
-  `npm ci` → `prisma generate` → `tsc --noEmit` → `prisma validate` →
-  `vitest run` → `npm run build` → generated-client packaging check →
-  `git diff --exit-code` (committed `dist/` must match the build).
-- Never bypass failing CI (no force-merge, no skipping steps locally to "match").
-- PRs target `dev`. A release PR `dev → main` requires an explicit release
-  instruction from the user.
-- The workflow's branch filters are `dev`/`main` (fixed under PM-STAB-004;
-  the obsolete `master` filter was removed) — pushes/PRs to `main` now
-  trigger CI, so a release PR into `main` is gated the same as `dev`.
+GitHub Actions (`.github/workflows/ci.yml`) runs on PR/push to `dev` and
+`main`, against an ephemeral `postgres:18` service container. In order:
+
+1. Checkout, Node 22 setup (`actions/setup-node`, npm cache), `npm ci`.
+2. `npx prisma validate`.
+3. **Migration directory check**: `migration_lock.toml` exists and at least
+   one migration directory is present under `prisma/migrations/`.
+4. **Dangerous-command check**: greps `package.json`, `scripts`, `src`,
+   `Dockerfile*`, `railway.json`, `railway.toml`, `nixpacks.toml` for
+   `prisma migrate dev|reset` or `prisma db push` — fails the build if found.
+5. **Startup-migration check**: same grep for `prisma migrate deploy` —
+   fails the build if it appears in runtime/deploy config (migration deploy
+   must never run at app startup or build time).
+6. `npx tsc --noEmit`.
+7. `npx prisma migrate deploy` against the ephemeral Postgres (this **is**
+   the fresh-database migration replay — there is no separate migration job).
+8. Verifies `TEST_DATABASE_URL` is set (fails the build otherwise — integration
+   tests must not silently skip).
+9. `npx vitest run --reporter=default`.
+10. `npm run build`.
+11. **CRLF normalization**: strips `\r` from `src/generated/prisma/runtime/{client.d.ts,index-browser.d.ts}` and the `dist/` copies (Prisma ships these CRLF inside the npm package; the repo tracks them as LF).
+12. `git diff --check` then a clean-tree check (`git diff --quiet` and
+    `git status --porcelain` must both report nothing) — this is what enforces
+    that generated/build output (including `dist/`) matches what's committed.
+    There is no separate, standalone "packaging check" step in CI — the
+    generated-client packaging verification in
+    `prisma-database.skill.md` is a manual command an agent runs locally, not
+    a distinct CI job.
+
+Never bypass failing CI (no force-merge, no skipping steps locally to
+"match"). PRs target `dev`; a release PR `dev → main` requires an explicit
+release instruction from the user. Branch filters are `dev`/`main` — pushes/
+PRs to `main` trigger CI, so a release PR into `main` is gated the same as
+`dev`. `master` is not a CI branch filter and is not deployed from.
+
+### Manual rollout conventions vs. CI enforcement
+
+`prisma migrate status` / `prisma migrate diff` against staging or production
+are **manual, human-run conventions** (see `docs/prisma-migration-reconciliation.md`
+and `docs/deployment-runbook.md`) — CI only replays migrations against the
+disposable ephemeral database above. CI never touches staging or production.
 
 ## Migrations Against Shared Databases
 
@@ -73,6 +104,30 @@ deployed from.
   you are pointed at first.
 - Record commands in docs/runbooks with `<placeholders>`, never secret values.
 - Full procedure: `docs/deployment-runbook.md` §5–§9.
+
+## Tracked `dist/` Build Artifact
+
+- `dist/` is a committed, tracked build output. CI's clean-tree check (step
+  12 above) fails the build if `npm run build` produces any diff against what
+  is committed — so after any `src/` change, rerun `npm run build` and commit
+  the resulting `dist/` changes together with the source.
+- Prisma's generated client under `dist/generated/prisma` (and
+  `src/generated/prisma`) is also tracked, but its packaging convention and
+  verification command are owned by `prisma-database.skill.md` — this file
+  only owns the general "rebuild and commit `dist/`" rule and its CI
+  enforcement.
+
+## Deployment Stability Status
+
+- **PM-STAB-004** (CI branch filters / production migration reconciliation):
+  the code fix (branch filters, baseline reconciliation) has been executed
+  and verified against the real production database and a post-deploy
+  `/health` check — see `docs/prisma-migration-reconciliation.md` for the
+  verification record. Do not describe a *different, new* stability item as
+  resolved based on staging or disposable-DB verification alone; production
+  plus post-deploy smoke validation is the bar. This is the single canonical
+  status for PM-STAB-004 — other skills must cross-reference this section
+  rather than restate it.
 
 ## Cost-Conscious Defaults (<~10 users)
 

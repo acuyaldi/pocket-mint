@@ -18,6 +18,7 @@ repo root):
 - `.claude/skills/prisma-database.skill.md` — Prisma schema, migrations, generated client, pooling, DB deployment
 - `.claude/skills/backend-api.skill.md` — routes, controllers, DTOs, serializers, services
 - `.claude/skills/deployment-operations.skill.md` — Railway, Supabase envs, CI/CD, migration rollout, secrets
+- `.claude/skills/assistant-core.skill.md` — Assistant Core, entity resolution, Persistent Clarification Engine, Pending Financial Draft lifecycle
 
 Frontend-era skills were archived to `.claude/archive/frontend/` and are not
 part of the load order.

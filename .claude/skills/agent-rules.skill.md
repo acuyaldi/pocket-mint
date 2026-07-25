@@ -20,6 +20,7 @@ when the task touches that area**:
 3. `prisma-database.skill.md` — Prisma schema, migrations, generated client, pooling, DB deployment
 4. `backend-api.skill.md` — routes, controllers, request DTOs, serializers, services
 5. `deployment-operations.skill.md` — Railway, Supabase environments, CI/CD, migration rollout, secrets
+6. `assistant-core.skill.md` — Assistant Core, entity resolution, Persistent Clarification Engine, Pending Financial Draft lifecycle
 
 Do **not** load frontend UI skills. `.claude/archive/frontend/` is historical
 reference only, never part of the load order.
@@ -51,28 +52,11 @@ Never:
 
 ## Verification
 
-A backend task is done only when all of these pass:
-
-```bash
-npx tsc --noEmit
-npm run build
-npx vitest run
-npx prisma validate
-git diff --check
-git status
-```
-
-`dist/` is **committed** and CI fails on `git diff --exit-code` after a build —
-so after changing `src/`, rerun `npm run build` and commit the resulting `dist/`
-changes together with the source.
-
-When source or build packaging changes, additionally verify the generated
-Prisma client is packaged:
-
-```bash
-test -f dist/generated/prisma/client.js
-node -e "require('./dist/generated/prisma/client')"
-```
+A backend task is done only when it passes the checks CI actually enforces —
+typecheck, build, tests, `prisma validate`, and a clean tracked working tree
+after building. See `deployment-operations.skill.md` for the exact CI steps
+and `prisma-database.skill.md` for the Prisma-specific packaging check. Do not
+claim completion without running these and showing the output.
 
 ## Secrets
 
