@@ -15,12 +15,16 @@ export declare function createAssistantConversationService(db: PrismaClient): {
         policyDecision: string;
         redactedInput?: Prisma.InputJsonValue;
     }) => Promise<string>;
-    finalize: (input: FinalizeToolInput) => Promise<void>;
+    finalize: (input: FinalizeToolInput, options?: {
+        transaction?: Prisma.TransactionClient;
+    }) => Promise<void>;
     finalizeRejected: (input: BeginTurnResult & {
         content: string;
         safeErrorCode: string;
     }) => Promise<void>;
-    finalizeWithoutTool: (input: FinalizeWithoutToolInput) => Promise<void>;
+    finalizeWithoutTool: (input: FinalizeWithoutToolInput, options?: {
+        transaction?: Prisma.TransactionClient;
+    }) => Promise<void>;
     listOwnedConversations: (userId: string, page?: number, limit?: number) => Promise<Page<ConversationSummaryDto>>;
     getOwnedConversation: (userId: string, id: string, page?: number, limit?: number) => Promise<{
         conversation: {

@@ -30,15 +30,16 @@ function preview(input: TransactionCreateInput & {
 }
 
 export function createAssistantFinancialDraftService(db: PrismaClient, transactions: TransactionService, clock: () => Date = () => new Date()) {
-  async function prepare(input: TransactionCreateInput & { walletDisplayLabel?: string; merchantDisplayLabel?: string; userId: string; conversationId: string; turnId: string; executionId: string; now?: Date }) {
-    const wallet = await db.wallet.findFirst({ where: { id: input.walletId, userId: input.userId }, select: { id: true } });
-    const category = await db.category.findFirst({
+  async function prepare(input: TransactionCreateInput & { walletDisplayLabel?: string; merchantDisplayLabel?: string; userId: string; conversationId: string; turnId: string; executionId: string; now?: Date; transaction?: Prisma.TransactionClient }) {
+    const client = input.transaction ?? db;
+    const wallet = await client.wallet.findFirst({ where: { id: input.walletId, userId: input.userId }, select: { id: true } });
+    const category = await client.category.findFirst({
       where: { id: input.categoryId, userId: input.userId, type: input.type },
       select: { id: true, name: true },
     });
     if (!wallet || !category) throw AssistantError.draftNotFound();
     const now = input.now ?? new Date();
-    const row = await db.assistantFinancialDraft.create({ data: {
+    const row = await client.assistantFinancialDraft.create({ data: {
       userId: input.userId, conversationId: input.conversationId, originatingTurnId: input.turnId,
       originatingExecutionId: input.executionId, operation: 'transaction.create', transactionType: input.type,
       amount: new Prisma.Decimal(input.amount), walletId: input.walletId, categoryId: input.categoryId,

@@ -26,15 +26,16 @@ function preview(input, categoryName) {
 }
 function createAssistantFinancialDraftService(db, transactions, clock = () => new Date()) {
     async function prepare(input) {
-        const wallet = await db.wallet.findFirst({ where: { id: input.walletId, userId: input.userId }, select: { id: true } });
-        const category = await db.category.findFirst({
+        const client = input.transaction ?? db;
+        const wallet = await client.wallet.findFirst({ where: { id: input.walletId, userId: input.userId }, select: { id: true } });
+        const category = await client.category.findFirst({
             where: { id: input.categoryId, userId: input.userId, type: input.type },
             select: { id: true, name: true },
         });
         if (!wallet || !category)
             throw errors_1.AssistantError.draftNotFound();
         const now = input.now ?? new Date();
-        const row = await db.assistantFinancialDraft.create({ data: {
+        const row = await client.assistantFinancialDraft.create({ data: {
                 userId: input.userId, conversationId: input.conversationId, originatingTurnId: input.turnId,
                 originatingExecutionId: input.executionId, operation: 'transaction.create', transactionType: input.type,
                 amount: new client_1.Prisma.Decimal(input.amount), walletId: input.walletId, categoryId: input.categoryId,

@@ -63,9 +63,9 @@ function createAssistantConversationService(db) {
         const row = await db.assistantToolExecution.create({ data: { ...input, status: 'RUNNING' } });
         return row.id;
     }
-    async function finalize(input) {
+    async function finalize(input, options = {}) {
         (0, persistence_1.assertAssistantMessageLength)(input.assistantContent);
-        await db.$transaction(async (tx) => {
+        const work = async (tx) => {
             const now = new Date();
             await tx.assistantToolExecution.update({ where: { id: input.executionId }, data: {
                     status: input.status, completedAt: now, durationMs: input.durationMs, safeErrorCode: input.safeErrorCode,
@@ -79,7 +79,11 @@ function createAssistantConversationService(db) {
                     status: input.turnStatus, safeErrorCode: input.safeErrorCode, finishedAt: now,
                 } });
             await tx.assistantConversation.update({ where: { id: input.conversationId }, data: { lastActivityAt: now } });
-        });
+        };
+        if (options.transaction)
+            await work(options.transaction);
+        else
+            await db.$transaction(work);
     }
     async function finalizeRejected(input) {
         (0, persistence_1.assertAssistantMessageLength)(input.content);
@@ -90,9 +94,9 @@ function createAssistantConversationService(db) {
             await tx.assistantConversation.update({ where: { id: input.conversationId }, data: { lastActivityAt: now } });
         });
     }
-    async function finalizeWithoutTool(input) {
+    async function finalizeWithoutTool(input, options = {}) {
         (0, persistence_1.assertAssistantMessageLength)(input.assistantContent);
-        await db.$transaction(async (tx) => {
+        const work = async (tx) => {
             const now = new Date();
             await tx.assistantMessage.create({ data: {
                     conversationId: input.conversationId,
@@ -107,7 +111,11 @@ function createAssistantConversationService(db) {
                     finishedAt: now,
                 } });
             await tx.assistantConversation.update({ where: { id: input.conversationId }, data: { lastActivityAt: now } });
-        });
+        };
+        if (options.transaction)
+            await work(options.transaction);
+        else
+            await db.$transaction(work);
     }
     async function listOwnedConversations(userId, page, limit) {
         const p = pageArgs(page, limit);

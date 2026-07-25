@@ -13510,6 +13510,7 @@ export namespace Prisma {
     prompt: string | null
     terminalCode: string | null
     restartRequired: boolean | null
+    expiresAt: Date | null
     consumedAt: Date | null
     cancelledAt: Date | null
     createdAt: Date | null
@@ -13528,6 +13529,7 @@ export namespace Prisma {
     prompt: string | null
     terminalCode: string | null
     restartRequired: boolean | null
+    expiresAt: Date | null
     consumedAt: Date | null
     cancelledAt: Date | null
     createdAt: Date | null
@@ -13547,6 +13549,7 @@ export namespace Prisma {
     prompt: number
     terminalCode: number
     restartRequired: number
+    expiresAt: number
     consumedAt: number
     cancelledAt: number
     createdAt: number
@@ -13567,6 +13570,7 @@ export namespace Prisma {
     prompt?: true
     terminalCode?: true
     restartRequired?: true
+    expiresAt?: true
     consumedAt?: true
     cancelledAt?: true
     createdAt?: true
@@ -13585,6 +13589,7 @@ export namespace Prisma {
     prompt?: true
     terminalCode?: true
     restartRequired?: true
+    expiresAt?: true
     consumedAt?: true
     cancelledAt?: true
     createdAt?: true
@@ -13604,6 +13609,7 @@ export namespace Prisma {
     prompt?: true
     terminalCode?: true
     restartRequired?: true
+    expiresAt?: true
     consumedAt?: true
     cancelledAt?: true
     createdAt?: true
@@ -13696,6 +13702,7 @@ export namespace Prisma {
     prompt: string
     terminalCode: string | null
     restartRequired: boolean
+    expiresAt: Date
     consumedAt: Date | null
     cancelledAt: Date | null
     createdAt: Date
@@ -13732,6 +13739,7 @@ export namespace Prisma {
     prompt?: boolean
     terminalCode?: boolean
     restartRequired?: boolean
+    expiresAt?: boolean
     consumedAt?: boolean
     cancelledAt?: boolean
     createdAt?: boolean
@@ -13758,6 +13766,7 @@ export namespace Prisma {
     prompt?: boolean
     terminalCode?: boolean
     restartRequired?: boolean
+    expiresAt?: boolean
     consumedAt?: boolean
     cancelledAt?: boolean
     createdAt?: boolean
@@ -13781,6 +13790,7 @@ export namespace Prisma {
     prompt?: boolean
     terminalCode?: boolean
     restartRequired?: boolean
+    expiresAt?: boolean
     consumedAt?: boolean
     cancelledAt?: boolean
     createdAt?: boolean
@@ -13804,13 +13814,14 @@ export namespace Prisma {
     prompt?: boolean
     terminalCode?: boolean
     restartRequired?: boolean
+    expiresAt?: boolean
     consumedAt?: boolean
     cancelledAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ClarificationRequestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "conversationId" | "originatingTurnId" | "executionId" | "parentId" | "entityType" | "status" | "trustedContext" | "prompt" | "terminalCode" | "restartRequired" | "consumedAt" | "cancelledAt" | "createdAt" | "updatedAt", ExtArgs["result"]["clarificationRequest"]>
+  export type ClarificationRequestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "conversationId" | "originatingTurnId" | "executionId" | "parentId" | "entityType" | "status" | "trustedContext" | "prompt" | "terminalCode" | "restartRequired" | "expiresAt" | "consumedAt" | "cancelledAt" | "createdAt" | "updatedAt", ExtArgs["result"]["clarificationRequest"]>
   export type ClarificationRequestInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     conversation?: boolean | AssistantConversationDefaultArgs<ExtArgs>
@@ -13856,6 +13867,7 @@ export namespace Prisma {
       prompt: string
       terminalCode: string | null
       restartRequired: boolean
+      expiresAt: Date
       consumedAt: Date | null
       cancelledAt: Date | null
       createdAt: Date
@@ -14301,6 +14313,7 @@ export namespace Prisma {
     readonly prompt: FieldRef<"ClarificationRequest", 'String'>
     readonly terminalCode: FieldRef<"ClarificationRequest", 'String'>
     readonly restartRequired: FieldRef<"ClarificationRequest", 'Boolean'>
+    readonly expiresAt: FieldRef<"ClarificationRequest", 'DateTime'>
     readonly consumedAt: FieldRef<"ClarificationRequest", 'DateTime'>
     readonly cancelledAt: FieldRef<"ClarificationRequest", 'DateTime'>
     readonly createdAt: FieldRef<"ClarificationRequest", 'DateTime'>
@@ -27406,6 +27419,7 @@ export namespace Prisma {
     prompt: 'prompt',
     terminalCode: 'terminalCode',
     restartRequired: 'restartRequired',
+    expiresAt: 'expiresAt',
     consumedAt: 'consumedAt',
     cancelledAt: 'cancelledAt',
     createdAt: 'createdAt',
@@ -28817,6 +28831,7 @@ export namespace Prisma {
     prompt?: StringFilter<"ClarificationRequest"> | string
     terminalCode?: StringNullableFilter<"ClarificationRequest"> | string | null
     restartRequired?: BoolFilter<"ClarificationRequest"> | boolean
+    expiresAt?: DateTimeFilter<"ClarificationRequest"> | Date | string
     consumedAt?: DateTimeNullableFilter<"ClarificationRequest"> | Date | string | null
     cancelledAt?: DateTimeNullableFilter<"ClarificationRequest"> | Date | string | null
     createdAt?: DateTimeFilter<"ClarificationRequest"> | Date | string
@@ -28842,6 +28857,7 @@ export namespace Prisma {
     prompt?: SortOrder
     terminalCode?: SortOrderInput | SortOrder
     restartRequired?: SortOrder
+    expiresAt?: SortOrder
     consumedAt?: SortOrderInput | SortOrder
     cancelledAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -28870,6 +28886,7 @@ export namespace Prisma {
     prompt?: StringFilter<"ClarificationRequest"> | string
     terminalCode?: StringNullableFilter<"ClarificationRequest"> | string | null
     restartRequired?: BoolFilter<"ClarificationRequest"> | boolean
+    expiresAt?: DateTimeFilter<"ClarificationRequest"> | Date | string
     consumedAt?: DateTimeNullableFilter<"ClarificationRequest"> | Date | string | null
     cancelledAt?: DateTimeNullableFilter<"ClarificationRequest"> | Date | string | null
     createdAt?: DateTimeFilter<"ClarificationRequest"> | Date | string
@@ -28895,6 +28912,7 @@ export namespace Prisma {
     prompt?: SortOrder
     terminalCode?: SortOrderInput | SortOrder
     restartRequired?: SortOrder
+    expiresAt?: SortOrder
     consumedAt?: SortOrderInput | SortOrder
     cancelledAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -28920,6 +28938,7 @@ export namespace Prisma {
     prompt?: StringWithAggregatesFilter<"ClarificationRequest"> | string
     terminalCode?: StringNullableWithAggregatesFilter<"ClarificationRequest"> | string | null
     restartRequired?: BoolWithAggregatesFilter<"ClarificationRequest"> | boolean
+    expiresAt?: DateTimeWithAggregatesFilter<"ClarificationRequest"> | Date | string
     consumedAt?: DateTimeNullableWithAggregatesFilter<"ClarificationRequest"> | Date | string | null
     cancelledAt?: DateTimeNullableWithAggregatesFilter<"ClarificationRequest"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ClarificationRequest"> | Date | string
@@ -30838,6 +30857,7 @@ export namespace Prisma {
     prompt: string
     terminalCode?: string | null
     restartRequired?: boolean
+    expiresAt: Date | string
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
@@ -30863,6 +30883,7 @@ export namespace Prisma {
     prompt: string
     terminalCode?: string | null
     restartRequired?: boolean
+    expiresAt: Date | string
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
@@ -30880,6 +30901,7 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
     restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30905,6 +30927,7 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
     restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30926,6 +30949,7 @@ export namespace Prisma {
     prompt: string
     terminalCode?: string | null
     restartRequired?: boolean
+    expiresAt: Date | string
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
@@ -30941,6 +30965,7 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
     restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30960,6 +30985,7 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
     restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33085,6 +33111,7 @@ export namespace Prisma {
     prompt?: SortOrder
     terminalCode?: SortOrder
     restartRequired?: SortOrder
+    expiresAt?: SortOrder
     consumedAt?: SortOrder
     cancelledAt?: SortOrder
     createdAt?: SortOrder
@@ -33103,6 +33130,7 @@ export namespace Prisma {
     prompt?: SortOrder
     terminalCode?: SortOrder
     restartRequired?: SortOrder
+    expiresAt?: SortOrder
     consumedAt?: SortOrder
     cancelledAt?: SortOrder
     createdAt?: SortOrder
@@ -33121,6 +33149,7 @@ export namespace Prisma {
     prompt?: SortOrder
     terminalCode?: SortOrder
     restartRequired?: SortOrder
+    expiresAt?: SortOrder
     consumedAt?: SortOrder
     cancelledAt?: SortOrder
     createdAt?: SortOrder
@@ -37537,6 +37566,7 @@ export namespace Prisma {
     prompt: string
     terminalCode?: string | null
     restartRequired?: boolean
+    expiresAt: Date | string
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
@@ -37560,6 +37590,7 @@ export namespace Prisma {
     prompt: string
     terminalCode?: string | null
     restartRequired?: boolean
+    expiresAt: Date | string
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
@@ -38029,6 +38060,7 @@ export namespace Prisma {
     prompt?: StringFilter<"ClarificationRequest"> | string
     terminalCode?: StringNullableFilter<"ClarificationRequest"> | string | null
     restartRequired?: BoolFilter<"ClarificationRequest"> | boolean
+    expiresAt?: DateTimeFilter<"ClarificationRequest"> | Date | string
     consumedAt?: DateTimeNullableFilter<"ClarificationRequest"> | Date | string | null
     cancelledAt?: DateTimeNullableFilter<"ClarificationRequest"> | Date | string | null
     createdAt?: DateTimeFilter<"ClarificationRequest"> | Date | string
@@ -38321,6 +38353,7 @@ export namespace Prisma {
     prompt: string
     terminalCode?: string | null
     restartRequired?: boolean
+    expiresAt: Date | string
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
@@ -38344,6 +38377,7 @@ export namespace Prisma {
     prompt: string
     terminalCode?: string | null
     restartRequired?: boolean
+    expiresAt: Date | string
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
@@ -38793,6 +38827,7 @@ export namespace Prisma {
     prompt: string
     terminalCode?: string | null
     restartRequired?: boolean
+    expiresAt: Date | string
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
@@ -38816,6 +38851,7 @@ export namespace Prisma {
     prompt: string
     terminalCode?: string | null
     restartRequired?: boolean
+    expiresAt: Date | string
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
@@ -40591,6 +40627,7 @@ export namespace Prisma {
     prompt: string
     terminalCode?: string | null
     restartRequired?: boolean
+    expiresAt: Date | string
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
@@ -40615,6 +40652,7 @@ export namespace Prisma {
     prompt: string
     terminalCode?: string | null
     restartRequired?: boolean
+    expiresAt: Date | string
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
@@ -40636,6 +40674,7 @@ export namespace Prisma {
     prompt: string
     terminalCode?: string | null
     restartRequired?: boolean
+    expiresAt: Date | string
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
@@ -40659,6 +40698,7 @@ export namespace Prisma {
     prompt: string
     terminalCode?: string | null
     restartRequired?: boolean
+    expiresAt: Date | string
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
@@ -40868,6 +40908,7 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
     restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40892,6 +40933,7 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
     restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40953,6 +40995,7 @@ export namespace Prisma {
     prompt: string
     terminalCode?: string | null
     restartRequired?: boolean
+    expiresAt: Date | string
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
@@ -40977,6 +41020,7 @@ export namespace Prisma {
     prompt: string
     terminalCode?: string | null
     restartRequired?: boolean
+    expiresAt: Date | string
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
@@ -41009,6 +41053,7 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
     restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41033,6 +41078,7 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
     restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44062,6 +44108,7 @@ export namespace Prisma {
     prompt: string
     terminalCode?: string | null
     restartRequired?: boolean
+    expiresAt: Date | string
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
@@ -44656,6 +44703,7 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
     restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44679,6 +44727,7 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
     restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44699,6 +44748,7 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
     restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44800,6 +44850,7 @@ export namespace Prisma {
     prompt: string
     terminalCode?: string | null
     restartRequired?: boolean
+    expiresAt: Date | string
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
@@ -45078,6 +45129,7 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
     restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -45101,6 +45153,7 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
     restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -45121,6 +45174,7 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
     restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -45209,6 +45263,7 @@ export namespace Prisma {
     prompt: string
     terminalCode?: string | null
     restartRequired?: boolean
+    expiresAt: Date | string
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
@@ -45438,6 +45493,7 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
     restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -45461,6 +45517,7 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
     restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -45481,6 +45538,7 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
     restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -45535,6 +45593,7 @@ export namespace Prisma {
     prompt: string
     terminalCode?: string | null
     restartRequired?: boolean
+    expiresAt: Date | string
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
@@ -45559,6 +45618,7 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
     restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -45582,6 +45642,7 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
     restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -45602,6 +45663,7 @@ export namespace Prisma {
     prompt?: StringFieldUpdateOperationsInput | string
     terminalCode?: NullableStringFieldUpdateOperationsInput | string | null
     restartRequired?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

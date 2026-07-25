@@ -61,7 +61,7 @@ export interface ClarificationCreationProjection {
   readonly entityType: EntityType;
   readonly prompt: string;
   readonly options: readonly ClarificationOptionToken[];
-  readonly expiresAt?: string;
+  readonly expiresAt: string;
 }
 
 /** Safe public projection of a clarification request — no tokens. */
@@ -70,7 +70,7 @@ export interface ClarificationProjection {
   readonly entityType: EntityType;
   readonly prompt: string;
   readonly options: readonly SafeClarificationOption[];
-  readonly expiresAt?: string;
+  readonly expiresAt: string;
 }
 
 /** Safe terminal clarification summary. */
@@ -117,6 +117,8 @@ export interface SelectClarificationInput {
   readonly conversationId: string;
   readonly token: string;
   readonly correlationId: string;
+  /** When provided (HTTP route scoping), the request must match this id exactly. */
+  readonly clarificationId?: string;
 }
 
 export interface SelectClarificationResult {
@@ -134,6 +136,8 @@ export interface CancelClarificationInput {
   readonly userId: string;
   readonly clarificationId: string;
   readonly reason: string;
+  /** When provided (HTTP route scoping), the request must match this id exactly. */
+  readonly conversationId?: string;
 }
 
 /** Result after a successful selection that advances the sequential flow. */

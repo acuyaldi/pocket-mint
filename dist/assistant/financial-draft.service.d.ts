@@ -1,4 +1,4 @@
-import { type PrismaClient } from '../generated/prisma/client';
+import { Prisma, type PrismaClient } from '../generated/prisma/client';
 import type { TransactionService } from '../services/transaction.service';
 import type { TransactionCreateInput } from './tools';
 export declare function createAssistantFinancialDraftService(db: PrismaClient, transactions: TransactionService, clock?: () => Date): {
@@ -10,6 +10,7 @@ export declare function createAssistantFinancialDraftService(db: PrismaClient, t
         turnId: string;
         executionId: string;
         now?: Date;
+        transaction?: Prisma.TransactionClient;
     }) => Promise<{
         draftId: string;
         status: import("@/generated/prisma").$Enums.AssistantFinancialDraftStatus;

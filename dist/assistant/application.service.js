@@ -34,7 +34,7 @@ function createAssistantApplicationService(deps) {
             resumeAt: new Date().toISOString(),
         };
     }
-    async function resolveEntity(userId, entityType, referenceText, transactionType) {
+    async function resolveEntity(userId, entityType, referenceText, transactionType, transaction) {
         if (!deps.entityResolution) {
             // Gracefully skip resolution when not wired (e.g. direct-ID only paths)
             return { kind: 'not_found', entityType, normalizedReference: referenceText };
@@ -52,6 +52,7 @@ function createAssistantApplicationService(deps) {
                 source: 'provider_extracted',
             },
             trustedConstraints: constraints,
+            ...(transaction ? { transaction } : {}),
         });
     }
     // ---- Clarification creation helper ---------------------------------------
@@ -73,7 +74,7 @@ function createAssistantApplicationService(deps) {
                 discriminator: opt.discriminator,
                 candidateId: opt.selection.internalId,
             })),
-        });
+        }, ...(params.transaction ? [{ transaction: params.transaction }] : []));
     }
     function clarificationResponse(turn, executionId, correlationId, startedAt, projection, entityType) {
         return {
@@ -267,7 +268,7 @@ function createAssistantApplicationService(deps) {
         return finalizeTransactionDraft(userId, correlationId, turn, executionId, startedAt, transactionInput, walletData, merchantData, categoryData);
     }
     // ---- Finalize transaction draft -------------------------------------------
-    async function finalizeTransactionDraft(userId, correlationId, turn, executionId, startedAt, transactionInput, walletData, _merchantData, categoryData) {
+    async function finalizeTransactionDraft(userId, correlationId, turn, executionId, startedAt, transactionInput, walletData, _merchantData, categoryData, transaction) {
         if (!deps.financialDrafts)
             throw new Error('Financial draft service is not configured');
         const walletId = walletData?.internalId ?? transactionInput.walletId;
@@ -287,16 +288,24 @@ function createAssistantApplicationService(deps) {
                 userId,
                 ...turn,
                 executionId,
+                ...(transaction ? { transaction } : {}),
             });
             await deps.conversations.finalize({
                 executionId, ...turn, status: 'SUCCEEDED', turnStatus: 'SUCCEEDED',
                 assistantContent: draft.renderedText, assistantSource: 'DETERMINISTIC_RENDERER',
                 durationMs: Date.now() - startedAt,
                 outputSummary: { draftId: draft.draftId, operation: 'transaction.create', status: 'PENDING_CONFIRMATION' },
-            });
+            }, { transaction });
             return { httpStatus: 200, response: { status: 'success', renderedText: draft.renderedText, data: draft, correlationId, ...turn } };
         }
         catch (error) {
+            if (transaction) {
+                // Inside the caller's transaction (the select/claim flow): propagate
+                // so the whole transaction — including the clarification claim —
+                // rolls back. The caller's own catch records the failure once,
+                // after rollback, against a fresh connection.
+                throw error;
+            }
             const operational = error instanceof errors_1.AssistantError ? error : { message: 'Assistant draft preparation failed', statusCode: 500, code: 'ASSISTANT_DRAFT_PREPARATION_FAILED' };
             await deps.conversations.finalize({
                 executionId, ...turn, status: 'FAILED', turnStatus: 'FAILED',
@@ -307,11 +316,12 @@ function createAssistantApplicationService(deps) {
         }
     }
     // ---- Clarification selection (sequential continuation) --------------------
-    async function selectClarification(userId, correlationId, token, conversationId) {
+    async function selectClarification(userId, correlationId, token, conversationId, clarificationId) {
         if (!deps.clarification)
             throw new Error('Clarification service is not configured');
         if (!deps.financialDrafts)
             throw new Error('Financial draft service is not configured');
+        const clarification = deps.clarification;
         const startedAt = Date.now();
         const locale = 'id-ID';
         const turn = await deps.conversations.beginTurn({
@@ -329,60 +339,70 @@ function createAssistantApplicationService(deps) {
             redactedInput: { operation: 'clarification.select' },
         });
         try {
-            const result = await deps.clarification.select({
-                userId, conversationId, token, correlationId,
-            });
-            const ctx = result.trustedContext;
-            const walletData = result.entityType === 'wallet'
-                ? { internalId: result.selectedCandidateId, displayLabel: result.selectedDisplayLabel }
-                : (ctx.wallet ? { internalId: ctx.wallet.internalId, displayLabel: ctx.wallet.displayLabel } : undefined);
-            const merchantData = result.entityType === 'merchant'
-                ? { internalId: result.selectedCandidateId, displayLabel: result.selectedDisplayLabel }
-                : (ctx.merchant ? { internalId: ctx.merchant.internalId, displayLabel: ctx.merchant.displayLabel } : undefined);
-            const categoryData = result.entityType === 'category'
-                ? { internalId: result.selectedCandidateId, displayLabel: result.selectedDisplayLabel, categoryType: ctx.type }
-                : undefined;
-            const txInput = buildTransactionInput(ctx, walletData);
-            const nextEntity = result.entityType === 'wallet' ? 'merchant'
-                : result.entityType === 'merchant' ? 'category'
-                    : null;
-            // After wallet: try resolving merchant (from merchantReference, or description)
-            if (nextEntity === 'merchant') {
-                const ref = ctx.merchantReference ?? ctx.description ?? '';
-                if (ref) {
-                    const mr = await resolveEntity(userId, 'merchant', ref);
-                    if (mr.kind === 'ambiguous') {
-                        const projection = await createEntityClarification({
-                            userId, conversationId, turnId: turn.turnId,
-                            executionId, entityType: 'merchant',
-                            trustedContext: buildCanonicalContext(txInput, walletData),
-                            resolution: mr,
-                            parentClarificationId: result.clarificationId,
-                        });
-                        await deps.conversations.finalize({
-                            executionId, ...turn, status: 'SUCCEEDED', turnStatus: 'CLARIFICATION_REQUIRED',
-                            assistantContent: projection.prompt, assistantSource: 'DETERMINISTIC_RENDERER',
-                            durationMs: Date.now() - startedAt,
-                            outputSummary: { operation: 'transaction.create', merchantResolution: 'ambiguous', clarificationId: projection.clarificationId },
-                        });
-                        return clarificationResponse(turn, executionId, correlationId, startedAt, projection, 'merchant');
+            // The clarification claim (PENDING -> CONSUMED) and everything it
+            // unlocks — child clarification creation or draft creation, and the
+            // Assistant lifecycle write that finalizes this turn — commit or roll
+            // back together. A failure anywhere in this block leaves the parent
+            // clarification PENDING (its token still usable) with no partial
+            // child/draft/lifecycle state, so the caller can safely retry.
+            return await clarification.runInTransaction(async (tx) => {
+                const result = await clarification.select({
+                    userId, conversationId, token, correlationId,
+                    ...(clarificationId ? { clarificationId } : {}),
+                }, { transaction: tx });
+                const ctx = result.trustedContext;
+                const walletData = result.entityType === 'wallet'
+                    ? { internalId: result.selectedCandidateId, displayLabel: result.selectedDisplayLabel }
+                    : (ctx.wallet ? { internalId: ctx.wallet.internalId, displayLabel: ctx.wallet.displayLabel } : undefined);
+                const merchantData = result.entityType === 'merchant'
+                    ? { internalId: result.selectedCandidateId, displayLabel: result.selectedDisplayLabel }
+                    : (ctx.merchant ? { internalId: ctx.merchant.internalId, displayLabel: ctx.merchant.displayLabel } : undefined);
+                const categoryData = result.entityType === 'category'
+                    ? { internalId: result.selectedCandidateId, displayLabel: result.selectedDisplayLabel, categoryType: ctx.type }
+                    : undefined;
+                const txInput = buildTransactionInput(ctx, walletData);
+                const nextEntity = result.entityType === 'wallet' ? 'merchant'
+                    : result.entityType === 'merchant' ? 'category'
+                        : null;
+                // After wallet: try resolving merchant (from merchantReference, or description)
+                if (nextEntity === 'merchant') {
+                    const ref = ctx.merchantReference ?? ctx.description ?? '';
+                    if (ref) {
+                        const mr = await resolveEntity(userId, 'merchant', ref, undefined, tx);
+                        if (mr.kind === 'ambiguous') {
+                            const projection = await createEntityClarification({
+                                userId, conversationId, turnId: turn.turnId,
+                                executionId, entityType: 'merchant',
+                                trustedContext: buildCanonicalContext(txInput, walletData),
+                                resolution: mr,
+                                parentClarificationId: result.clarificationId,
+                                transaction: tx,
+                            });
+                            await deps.conversations.finalize({
+                                executionId, ...turn, status: 'SUCCEEDED', turnStatus: 'CLARIFICATION_REQUIRED',
+                                assistantContent: projection.prompt, assistantSource: 'DETERMINISTIC_RENDERER',
+                                durationMs: Date.now() - startedAt,
+                                outputSummary: { operation: 'transaction.create', merchantResolution: 'ambiguous', clarificationId: projection.clarificationId },
+                            }, { transaction: tx });
+                            return clarificationResponse(turn, executionId, correlationId, startedAt, projection, 'merchant');
+                        }
+                        // resolved or not_found: continue to category
+                        if (mr.kind === 'resolved') {
+                            return continueToCategory(userId, correlationId, turn, executionId, startedAt, txInput, walletData, { internalId: mr.entity.internalId, displayLabel: mr.displayLabel }, undefined, tx);
+                        }
+                        // not_found: free-form merchant, continue to category
+                        return continueToCategory(userId, correlationId, turn, executionId, startedAt, txInput, walletData, undefined, undefined, tx);
                     }
-                    // resolved or not_found: continue to category
-                    if (mr.kind === 'resolved') {
-                        return continueToCategory(userId, correlationId, turn, executionId, startedAt, txInput, walletData, { internalId: mr.entity.internalId, displayLabel: mr.displayLabel });
-                    }
-                    // not_found: free-form merchant, continue to category
-                    return continueToCategory(userId, correlationId, turn, executionId, startedAt, txInput, walletData, undefined);
+                    // no merchant reference: skip to category
+                    return continueToCategory(userId, correlationId, turn, executionId, startedAt, txInput, walletData, undefined, undefined, tx);
                 }
-                // no merchant reference: skip to category
-                return continueToCategory(userId, correlationId, turn, executionId, startedAt, txInput, walletData, undefined);
-            }
-            // After merchant: resolve category
-            if (nextEntity === 'category') {
-                return continueToCategory(userId, correlationId, turn, executionId, startedAt, txInput, walletData, merchantData, result.clarificationId);
-            }
-            // After category or no more entities: create draft
-            return finalizeTransactionDraft(userId, correlationId, turn, executionId, startedAt, txInput, walletData, merchantData, categoryData);
+                // After merchant: resolve category
+                if (nextEntity === 'category') {
+                    return continueToCategory(userId, correlationId, turn, executionId, startedAt, txInput, walletData, merchantData, result.clarificationId, tx);
+                }
+                // After category or no more entities: create draft
+                return finalizeTransactionDraft(userId, correlationId, turn, executionId, startedAt, txInput, walletData, merchantData, categoryData, tx);
+            });
         }
         catch (error) {
             const operational = error instanceof errors_1.AssistantError ? error : { message: 'Clarification selection failed', statusCode: 500, code: 'ASSISTANT_CLARIFICATION_FAILED' };
@@ -395,12 +415,12 @@ function createAssistantApplicationService(deps) {
         }
     }
     // ---- Continue to category after merchant resolution -----------------------
-    async function continueToCategory(userId, correlationId, turn, executionId, startedAt, txInput, walletData, merchantData, parentClarificationId) {
+    async function continueToCategory(userId, correlationId, turn, executionId, startedAt, txInput, walletData, merchantData, parentClarificationId, transaction) {
         // Only resolve category if categoryReference is explicitly provided.
         // Otherwise, use the direct categoryId from the input context.
         const categoryRef = txInput.categoryReference;
         if (categoryRef) {
-            const cr = await resolveEntity(userId, 'category', categoryRef, txInput.type);
+            const cr = await resolveEntity(userId, 'category', categoryRef, txInput.type, transaction);
             if (cr.kind === 'ambiguous') {
                 const projection = await createEntityClarification({
                     userId, conversationId: turn.conversationId, turnId: turn.turnId,
@@ -408,17 +428,18 @@ function createAssistantApplicationService(deps) {
                     trustedContext: buildCanonicalContext(txInput, walletData, merchantData),
                     resolution: cr,
                     parentClarificationId,
+                    transaction,
                 });
                 await deps.conversations.finalize({
                     executionId, ...turn, status: 'SUCCEEDED', turnStatus: 'CLARIFICATION_REQUIRED',
                     assistantContent: projection.prompt, assistantSource: 'DETERMINISTIC_RENDERER',
                     durationMs: Date.now() - startedAt,
                     outputSummary: { operation: 'transaction.create', categoryResolution: 'ambiguous', clarificationId: projection.clarificationId },
-                });
+                }, { transaction });
                 return clarificationResponse(turn, executionId, correlationId, startedAt, projection, 'category');
             }
             if (cr.kind === 'resolved') {
-                return finalizeTransactionDraft(userId, correlationId, turn, executionId, startedAt, txInput, walletData, merchantData, { internalId: cr.entity.internalId, displayLabel: cr.displayLabel, categoryType: txInput.type });
+                return finalizeTransactionDraft(userId, correlationId, turn, executionId, startedAt, txInput, walletData, merchantData, { internalId: cr.entity.internalId, displayLabel: cr.displayLabel, categoryType: txInput.type }, transaction);
             }
             if (cr.kind === 'not_found') {
                 const message = renderCategoryNotFound(cr);
@@ -427,12 +448,12 @@ function createAssistantApplicationService(deps) {
                     assistantContent: message, assistantSource: 'DETERMINISTIC_RENDERER',
                     durationMs: Date.now() - startedAt,
                     outputSummary: { operation: 'transaction.create', categoryResolution: 'not_found' },
-                });
+                }, { transaction });
                 return { httpStatus: 200, response: { status: 'clarification_required', message, data: (0, entity_resolution_1.toPublicEntityResolutionResult)(cr), correlationId, ...turn } };
             }
         }
         // No category reference: use direct categoryId from input → draft
-        return finalizeTransactionDraft(userId, correlationId, turn, executionId, startedAt, txInput, walletData, merchantData, undefined);
+        return finalizeTransactionDraft(userId, correlationId, turn, executionId, startedAt, txInput, walletData, merchantData, undefined, transaction);
     }
     // ---- Helper: reconstruct TransactionCreateToolInput from context ----------
     function buildTransactionInput(ctx, walletData) {
@@ -467,7 +488,7 @@ function createAssistantApplicationService(deps) {
         });
         await deps.conversations.markTurnRunning(turn.turnId);
         try {
-            await deps.clarification.cancel({ userId, clarificationId, reason: 'user_cancelled' });
+            await deps.clarification.cancel({ userId, clarificationId, conversationId, reason: 'user_cancelled' });
             const message = 'Klarifikasi dibatalkan. Silakan mulai ulang pembuatan transaksi.';
             await deps.conversations.finalizeWithoutTool({
                 ...turn,

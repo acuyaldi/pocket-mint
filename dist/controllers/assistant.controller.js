@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cancelAssistantFinancialDraft = exports.confirmAssistantFinancialDraft = exports.archiveAssistantConversation = exports.getAssistantConversation = exports.listAssistantConversations = exports.assistantMessages = exports.assistantExecute = void 0;
+exports.cancelAssistantClarification = exports.selectAssistantClarification = exports.cancelAssistantFinancialDraft = exports.confirmAssistantFinancialDraft = exports.archiveAssistantConversation = exports.getAssistantConversation = exports.listAssistantConversations = exports.assistantMessages = exports.assistantExecute = void 0;
 exports.createAssistantControllers = createAssistantControllers;
 const authContext_1 = require("../http/authContext");
 const forwardError_1 = require("../http/forwardError");
@@ -33,6 +33,16 @@ const intQuery = (value) => {
     return Number(text);
 };
 const routeId = (value) => Array.isArray(value) ? value[0] : value;
+/** Strict body for clarification selection — exactly one key: a non-empty, non-whitespace string token. */
+function selectClarificationRequest(body) {
+    if (typeof body !== 'object' || body === null || Array.isArray(body))
+        return false;
+    const value = body;
+    const keys = Object.keys(value);
+    if (keys.length !== 1 || keys[0] !== 'optionToken')
+        return false;
+    return typeof value.optionToken === 'string' && value.optionToken.trim().length > 0;
+}
 function createAssistantControllers(application, conversations, drafts, providerRuntime) {
     async function execute(req, res, next) {
         try {
@@ -136,7 +146,44 @@ function createAssistantControllers(application, conversations, drafts, provider
             (0, forwardError_1.forwardError)(error, res, next);
         }
     }
-    return { execute, messages, list, get, archive, confirmDraft, cancelDraft };
+    async function selectClarification(req, res, next) {
+        try {
+            const userId = (0, authContext_1.getAuthenticatedUserId)(req);
+            if (!userId)
+                return (0, response_1.sendError)(res, 'Unauthorized', 401);
+            if (!selectClarificationRequest(req.body)) {
+                return (0, response_1.sendError)(res, 'Request body must include a non-empty string "optionToken" and no other fields', 400, 'BAD_REQUEST');
+            }
+            const conversationId = routeId(req.params.conversationId);
+            const clarificationId = routeId(req.params.clarificationId);
+            const result = await application.selectClarification(userId, req.correlationId, req.body.optionToken, conversationId, clarificationId);
+            if (result.response.status === 'error' || result.response.status === 'rejected') {
+                return void res.status(result.httpStatus).json({ success: false, error: { ...result.response, statusCode: result.httpStatus } });
+            }
+            (0, response_1.sendSuccess)(res, result.response, 'Clarification processed');
+        }
+        catch (error) {
+            (0, forwardError_1.forwardError)(error, res, next);
+        }
+    }
+    async function cancelClarification(req, res, next) {
+        try {
+            const userId = (0, authContext_1.getAuthenticatedUserId)(req);
+            if (!userId)
+                return (0, response_1.sendError)(res, 'Unauthorized', 401);
+            const conversationId = routeId(req.params.conversationId);
+            const clarificationId = routeId(req.params.clarificationId);
+            const result = await application.cancelClarification(userId, req.correlationId, clarificationId, conversationId);
+            if (result.response.status === 'error' || result.response.status === 'rejected') {
+                return void res.status(result.httpStatus).json({ success: false, error: { ...result.response, statusCode: result.httpStatus } });
+            }
+            (0, response_1.sendSuccess)(res, result.response, 'Clarification cancelled');
+        }
+        catch (error) {
+            (0, forwardError_1.forwardError)(error, res, next);
+        }
+    }
+    return { execute, messages, list, get, archive, confirmDraft, cancelDraft, selectClarification, cancelClarification };
 }
 const controllers = createAssistantControllers(bootstrap_1.assistantApplicationService, bootstrap_1.assistantConversationService, bootstrap_1.assistantFinancialDraftService, bootstrap_1.assistantProviderRuntime);
 exports.assistantExecute = controllers.execute;
@@ -146,4 +193,6 @@ exports.getAssistantConversation = controllers.get;
 exports.archiveAssistantConversation = controllers.archive;
 exports.confirmAssistantFinancialDraft = controllers.confirmDraft;
 exports.cancelAssistantFinancialDraft = controllers.cancelDraft;
+exports.selectAssistantClarification = controllers.selectClarification;
+exports.cancelAssistantClarification = controllers.cancelClarification;
 //# sourceMappingURL=assistant.controller.js.map

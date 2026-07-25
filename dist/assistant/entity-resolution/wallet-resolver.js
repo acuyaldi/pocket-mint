@@ -41,7 +41,8 @@ function createWalletResolver(db) {
             if (!isTransactionCreateConstraints(trustedConstraints)) {
                 throw errors_1.EntityResolutionError.configuration();
             }
-            const wallets = await db.wallet.findMany({
+            const client = scope.transaction ?? db;
+            const wallets = await client.wallet.findMany({
                 where: { userId: authenticatedUserId, isArchived: false },
                 select: {
                     id: true,

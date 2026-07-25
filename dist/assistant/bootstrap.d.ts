@@ -21,12 +21,16 @@ export declare const assistantConversationService: {
         policyDecision: string;
         redactedInput?: import("@/generated/prisma/runtime/client").InputJsonValue;
     }) => Promise<string>;
-    finalize: (input: import("./conversation.types").FinalizeToolInput) => Promise<void>;
+    finalize: (input: import("./conversation.types").FinalizeToolInput, options?: {
+        transaction?: import("@/generated/prisma").Prisma.TransactionClient;
+    }) => Promise<void>;
     finalizeRejected: (input: import("./conversation.types").BeginTurnResult & {
         content: string;
         safeErrorCode: string;
     }) => Promise<void>;
-    finalizeWithoutTool: (input: import("./conversation.types").FinalizeWithoutToolInput) => Promise<void>;
+    finalizeWithoutTool: (input: import("./conversation.types").FinalizeWithoutToolInput, options?: {
+        transaction?: import("@/generated/prisma").Prisma.TransactionClient;
+    }) => Promise<void>;
     listOwnedConversations: (userId: string, page?: number, limit?: number) => Promise<import("./conversation.types").Page<import("./conversation.types").ConversationSummaryDto>>;
     getOwnedConversation: (userId: string, id: string, page?: number, limit?: number) => Promise<{
         conversation: {
@@ -85,6 +89,7 @@ export declare const assistantFinancialDraftService: {
         turnId: string;
         executionId: string;
         now?: Date;
+        transaction?: import("@/generated/prisma").Prisma.TransactionClient;
     }) => Promise<{
         draftId: string;
         status: import("@/generated/prisma").$Enums.AssistantFinancialDraftStatus;
@@ -138,18 +143,19 @@ export declare const assistantFinancialDraftService: {
 };
 export declare const entityResolutionService: import("./entity-resolution").EntityResolutionService;
 export declare const clarificationService: {
-    create: (input: import("./clarification.types").CreateClarificationInput) => Promise<import("./clarification.types").ClarificationCreationProjection>;
-    select: (input: import("./clarification.types").SelectClarificationInput) => Promise<import("./clarification.types").SelectClarificationResult>;
-    cancel: (input: import("./clarification.types").CancelClarificationInput) => Promise<void>;
+    create: (input: import("./clarification.types").CreateClarificationInput, options?: import("./clarification.service").TransactionOption) => Promise<import("./clarification.types").ClarificationCreationProjection>;
+    select: (input: import("./clarification.types").SelectClarificationInput, options?: import("./clarification.service").TransactionOption) => Promise<import("./clarification.types").SelectClarificationResult>;
+    cancel: (input: import("./clarification.types").CancelClarificationInput, options?: import("./clarification.service").TransactionOption) => Promise<void>;
     getAssistantState: (userId: string, conversationId: string) => Promise<import("./clarification.types").AssistantStateProjection>;
     buildConsumedResult: (consumedClarificationId: string) => Pick<import("./clarification.types").ClarificationAdvanceResult, "consumedClarificationId">;
+    runInTransaction: <T>(work: (tx: import("./clarification.service").TransactionClient) => Promise<T>, existing?: import("./clarification.service").TransactionClient) => Promise<T>;
     _digestToken: (token: string) => string;
     _generateToken: () => string;
 };
 export declare const assistantApplicationService: {
     execute: (userId: string, correlationId: string, request: import("./types").AssistantCanonicalRequest) => Promise<import("./application.service").AssistantApplicationResult>;
     prepareProviderExecution: (input: import("./context.service").BuildAssistantExecutionContextInput) => Promise<import("./context.types").AssistantContext>;
-    selectClarification: (userId: string, correlationId: string, token: string, conversationId: string) => Promise<import("./application.service").AssistantApplicationResult>;
+    selectClarification: (userId: string, correlationId: string, token: string, conversationId: string, clarificationId?: string) => Promise<import("./application.service").AssistantApplicationResult>;
     cancelClarification: (userId: string, correlationId: string, clarificationId: string, conversationId: string) => Promise<import("./application.service").AssistantApplicationResult>;
     getAssistantState: (userId: string, conversationId: string) => Promise<import("./clarification.types").AssistantStateProjection>;
 };
