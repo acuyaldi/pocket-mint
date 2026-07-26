@@ -54,6 +54,7 @@ const integrationTests = [
   'test/assistant/provider-runtime.integration.test.ts',
   'test/assistant/clarification-sequential.integration.test.ts',
   'test/assistant/clarification-http.integration.test.ts',
+  'test/assistant/recovery-state-http.integration.test.ts',
   'test/assistant/clarification-expiry.integration.test.ts',
   'test/assistant/entity-resolution-transaction.integration.test.ts',
 ];

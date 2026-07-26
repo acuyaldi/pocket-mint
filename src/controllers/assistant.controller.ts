@@ -102,6 +102,18 @@ export function createAssistantControllers(
     } catch (error) { forwardError(error, res, next); }
   }
 
+  async function recoveryState(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = getAuthenticatedUserId(req);
+      if (!userId) return sendError(res, 'Unauthorized', 401);
+      const conversationId = routeId(req.params.conversationId);
+      // getAssistantState only filters by {conversationId, userId} in its queries — it
+      // does not verify the conversation exists, so a bad id would silently look like
+      // "no active workflow" instead of 404. Verify ownership first, same as `get`.
+      await conversations.assertOwned(userId, conversationId);
+      sendSuccess(res, await application.getAssistantState(userId, conversationId));
+    } catch (error) { forwardError(error, res, next); }
+  }
   async function archive(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const userId = getAuthenticatedUserId(req);
@@ -155,7 +167,7 @@ export function createAssistantControllers(
       sendSuccess(res, result.response, 'Clarification cancelled');
     } catch (error) { forwardError(error, res, next); }
   }
-  return { execute, messages, list, get, archive, confirmDraft, cancelDraft, selectClarification, cancelClarification };
+  return { execute, messages, list, get, recoveryState, archive, confirmDraft, cancelDraft, selectClarification, cancelClarification };
 }
 
 const controllers = createAssistantControllers(assistantApplicationService, assistantConversationService, assistantFinancialDraftService, assistantProviderRuntime);
@@ -163,6 +175,7 @@ export const assistantExecute = controllers.execute;
 export const assistantMessages = controllers.messages;
 export const listAssistantConversations = controllers.list;
 export const getAssistantConversation = controllers.get;
+export const getAssistantRecoveryState = controllers.recoveryState;
 export const archiveAssistantConversation = controllers.archive;
 export const confirmAssistantFinancialDraft = controllers.confirmDraft;
 export const cancelAssistantFinancialDraft = controllers.cancelDraft;
