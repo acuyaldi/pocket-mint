@@ -67,12 +67,12 @@ export declare const assistantConversationService: {
             intent: string;
             finishedAt: Date | null;
             toolExecutions: {
+                durationMs: number | null;
                 id: string;
                 status: import("@/generated/prisma").$Enums.AssistantToolExecutionStatus;
                 correlationId: string;
                 startedAt: Date;
                 completedAt: Date | null;
-                durationMs: number | null;
                 safeErrorCode: string | null;
                 toolId: string;
                 capability: string;
@@ -125,11 +125,14 @@ export declare const assistantFinancialDraftService: {
         renderedText: string;
     }>;
     confirm: (userId: string, draftId: string, keyValue: unknown, correlationId: string) => Promise<{
+        idempotencyOutcome: "replay";
         draftId: string;
         status: "COMMITTED";
         transactionId: string;
         conversationId: string;
         renderedText: string;
+        readonly error?: undefined;
+        turnId?: undefined;
     } | {
         draftId: string;
         status: "COMMITTED";
@@ -137,6 +140,7 @@ export declare const assistantFinancialDraftService: {
         conversationId: string;
         turnId: string;
         renderedText: string;
+        idempotencyOutcome: "new";
         readonly error?: undefined;
     }>;
     cancel: (userId: string, draftId: string, correlationId: string) => Promise<{

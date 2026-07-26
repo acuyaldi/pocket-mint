@@ -9,6 +9,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.logger = void 0;
 exports.redact = redact;
+exports.logEvent = logEvent;
+exports.startTimer = startTimer;
 // ---------------- redaction ----------------
 const REDACTED = '[REDACTED]';
 const MAX_DEPTH = 6;
@@ -94,4 +96,18 @@ exports.logger = {
     warn: (message, meta) => emit('warn', message, meta),
     error: (message, meta) => emit('error', message, meta),
 };
+/**
+ * Emit a canonical Assistant lifecycle event. Fields are passed through
+ * `redact()` like any other log call (defense in depth), but the real
+ * safety mechanism is the `AssistantLogEvent` type itself — it only accepts
+ * bounded operational metadata, never free-form request/response content.
+ */
+function logEvent(level, fields) {
+    emit(level, fields.event, { ...fields });
+}
+/** Monotonic-enough millisecond timer for lifecycle-stage durations. */
+function startTimer() {
+    const startedAt = Date.now();
+    return () => Date.now() - startedAt;
+}
 //# sourceMappingURL=logger.js.map

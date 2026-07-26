@@ -13,12 +13,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AssistantError = void 0;
 class AssistantError extends Error {
-    constructor(message, statusCode, code) {
+    constructor(message, statusCode, code, detail) {
         super(message);
         this.isOperational = true;
         this.name = 'AssistantError';
         this.statusCode = statusCode;
         this.code = code;
+        this.detail = detail;
         Object.setPrototypeOf(this, AssistantError.prototype);
     }
     // -- Factory methods -------------------------------------------------------
@@ -80,7 +81,7 @@ class AssistantError extends Error {
         return new AssistantError('Financial draft not found', 404, 'ASSISTANT_DRAFT_NOT_FOUND');
     }
     static draftConflict(status) {
-        return new AssistantError(`Financial draft cannot perform this operation from ${status}`, 409, 'ASSISTANT_DRAFT_CONFLICT');
+        return new AssistantError(`Financial draft cannot perform this operation from ${status}`, 409, 'ASSISTANT_DRAFT_CONFLICT', status);
     }
     static idempotencyConflict() {
         return new AssistantError('Idempotency key is already bound to another operation', 409, 'ASSISTANT_IDEMPOTENCY_CONFLICT');

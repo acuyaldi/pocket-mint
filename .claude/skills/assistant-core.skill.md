@@ -253,7 +253,58 @@ mutating routes additionally run `mutationLimiter`:
 
 This file does not restate their detailed rules.
 
-## 12. Prohibited Regressions
+## 13. Observability
+
+Structured logging lives in `src/utils/logger.ts`; the Assistant-specific
+addition is `logEvent(level, fields: AssistantLogEvent)` — a typed wrapper
+that only accepts the canonical bounded fields (`event`, `requestId`,
+`operation`, `stage`, `outcome`, `durationMs`, `httpStatus`, `errorCategory`,
+`retryable`, `idempotentReplay`, `idempotencyOutcome`, `provider`, `tool`,
+booleans like `draftCreated`/`hasPendingDraft`, etc.) — the compiler rejects
+anything else, so it's structurally impossible to pass message text, draft
+payloads, or tokens through it. `redact()` remains a runtime backstop under
+every log call, including plain `logger.*` calls.
+
+Error classification: `src/utils/errorCategory.ts#categorizeError(err)` maps
+`AssistantError`/`AssistantProviderError` codes (and generic HTTP-status/
+Prisma-code errors) to a bounded `ErrorCategory` — never derived from the raw
+exception message. `AssistantError.draftConflict(status)` carries `status` in
+a structured `detail` field specifically so `categorizeError` can distinguish
+`EXPIRED` (→ `'expired'`) from other conflict statuses (→ `'conflict'`)
+without parsing the human-readable message.
+
+Canonical event taxonomy (fired at the HTTP controller boundary in
+`assistant.controller.ts`, plus the provider/tool boundaries where they're
+already isolated):
+
+- `assistant.message.received/completed/failed` — one per `/execute` or
+  `/messages` call.
+- `assistant.provider.started/completed/failed` — around the Gemini call in
+  `provider-runtime.ts`.
+- `assistant.tool.completed/failed` — from `executor.ts`'s `logExecution`.
+- `assistant.draft.confirmed/cancelled` — from `confirmDraft`/`cancelDraft`;
+  `confirmed` carries `idempotencyOutcome: 'new'|'replay'` (or a thrown
+  `errorCategory: 'idempotency'|'expired'` for conflict/expiry) — never the
+  idempotency key.
+- `assistant.clarification.selected/cancelled` — carries `chainedClarification`
+  and `draftCreated` booleans, never option labels/tokens.
+- `assistant.recovery.requested/resolved/unresolved` — carries only
+  `hasActiveClarification`/`hasPendingDraft`/`hasTerminalClarification`
+  booleans, never the recovered content.
+
+There is deliberately no `assistant.clarification.created`/`.expired` or
+`assistant.tool.selected` event — those transitions are already visible via
+the booleans/outcomes on the events above; adding a second event for the same
+transition was judged not to add operational value (see
+`docs/observability-runbook.md` in this repo, and ADR 013 in
+`pocket-mint-docs`, for the full rationale).
+
+Do not log `conversationId`, `turnId`, or any user identifier in a new
+observability event — only `requestId` (the correlation ID). No safe
+pseudonymous-identifier policy exists yet for those; inventing one is out of
+scope for a logging change.
+
+## 14. Prohibited Regressions
 
 - Bypassing explicit user confirmation before a draft becomes a `Transaction`.
 - Creating a `Transaction` directly from provider/LLM interpretation output.

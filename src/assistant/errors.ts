@@ -14,12 +14,15 @@ export class AssistantError extends Error {
   readonly statusCode: number;
   readonly code: string;
   readonly isOperational = true;
+  /** Optional bounded, non-sensitive detail (e.g. a draft status) for observability categorization — never user content. */
+  readonly detail?: string;
 
-  private constructor(message: string, statusCode: number, code: string) {
+  private constructor(message: string, statusCode: number, code: string, detail?: string) {
     super(message);
     this.name = 'AssistantError';
     this.statusCode = statusCode;
     this.code = code;
+    this.detail = detail;
     Object.setPrototypeOf(this, AssistantError.prototype);
   }
 
@@ -142,7 +145,7 @@ export class AssistantError extends Error {
   }
 
   static draftConflict(status: string): AssistantError {
-    return new AssistantError(`Financial draft cannot perform this operation from ${status}`, 409, 'ASSISTANT_DRAFT_CONFLICT');
+    return new AssistantError(`Financial draft cannot perform this operation from ${status}`, 409, 'ASSISTANT_DRAFT_CONFLICT', status);
   }
 
   static idempotencyConflict(): AssistantError {

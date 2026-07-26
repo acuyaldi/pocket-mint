@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { randomUUID } from 'crypto';
 import { isProduction } from '../config';
 import { logger } from '../utils/logger';
+import { categorizeError } from '../utils/errorCategory';
 
 /**
  * An error that carries an intended HTTP status. Errors with a status < 500 are
@@ -63,6 +64,7 @@ export const errorHandler = (
     requestId,
     statusCode,
     code,
+    errorCategory: categorizeError(err),
     message: err.message,
     ...(isProduction ? {} : { stack: err.stack }),
   });

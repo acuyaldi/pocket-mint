@@ -36,11 +36,14 @@ export declare function createAssistantFinancialDraftService(db: PrismaClient, t
         renderedText: string;
     }>;
     confirm: (userId: string, draftId: string, keyValue: unknown, correlationId: string) => Promise<{
+        idempotencyOutcome: "replay";
         draftId: string;
         status: "COMMITTED";
         transactionId: string;
         conversationId: string;
         renderedText: string;
+        readonly error?: undefined;
+        turnId?: undefined;
     } | {
         draftId: string;
         status: "COMMITTED";
@@ -48,6 +51,7 @@ export declare function createAssistantFinancialDraftService(db: PrismaClient, t
         conversationId: string;
         turnId: string;
         renderedText: string;
+        idempotencyOutcome: "new";
         readonly error?: undefined;
     }>;
     cancel: (userId: string, draftId: string, correlationId: string) => Promise<{

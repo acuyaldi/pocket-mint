@@ -5,6 +5,7 @@ exports.codeForStatus = codeForStatus;
 const crypto_1 = require("crypto");
 const config_1 = require("../config");
 const logger_1 = require("../utils/logger");
+const errorCategory_1 = require("../utils/errorCategory");
 /** Stable machine-readable code per status; the client can branch on this. */
 const CODE_BY_STATUS = {
     400: 'BAD_REQUEST',
@@ -46,6 +47,7 @@ const errorHandler = (err, _req, res, next) => {
         requestId,
         statusCode,
         code,
+        errorCategory: (0, errorCategory_1.categorizeError)(err),
         message: err.message,
         ...(config_1.isProduction ? {} : { stack: err.stack }),
     });

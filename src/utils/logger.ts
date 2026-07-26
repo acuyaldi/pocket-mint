@@ -93,3 +93,75 @@ export const logger = {
   warn: (message: string, meta?: Record<string, unknown>) => emit('warn', message, meta),
   error: (message: string, meta?: Record<string, unknown>) => emit('error', message, meta),
 };
+
+// ---------------- Assistant observability event ----------------
+
+/** Bounded error classification — see `src/utils/errorCategory.ts`. */
+export type ErrorCategory =
+  | 'authentication'
+  | 'authorization'
+  | 'validation'
+  | 'not_found'
+  | 'conflict'
+  | 'expired'
+  | 'already_consumed'
+  | 'idempotency'
+  | 'provider_timeout'
+  | 'provider_rate_limit'
+  | 'provider_unavailable'
+  | 'provider_invalid_response'
+  | 'policy_rejected'
+  | 'tool_failure'
+  | 'database'
+  | 'network'
+  | 'internal';
+
+export type IdempotencyOutcome = 'new' | 'replay' | 'conflict' | 'expired';
+
+/**
+ * Canonical, allowlisted field set for Assistant lifecycle events. Deliberately
+ * a closed interface (no index signature) so a caller cannot pass through
+ * message text, draft payloads, tokens, or other sensitive content by
+ * accident — only these operational fields compile.
+ */
+export interface AssistantLogEvent {
+  readonly event: string;
+  readonly requestId?: string;
+  readonly operation?: string;
+  readonly stage?: string;
+  readonly outcome?: string;
+  readonly durationMs?: number;
+  readonly httpStatus?: number;
+  readonly errorCategory?: ErrorCategory;
+  readonly retryable?: boolean;
+  readonly idempotentReplay?: boolean;
+  readonly idempotencyOutcome?: IdempotencyOutcome;
+  readonly provider?: string;
+  readonly model?: string;
+  readonly tool?: string;
+  readonly environment?: string;
+  readonly service?: string;
+  readonly clarificationRequired?: boolean;
+  readonly draftCreated?: boolean;
+  readonly optionCount?: number;
+  readonly chainedClarification?: boolean;
+  readonly hasActiveClarification?: boolean;
+  readonly hasPendingDraft?: boolean;
+  readonly hasTerminalClarification?: boolean;
+}
+
+/**
+ * Emit a canonical Assistant lifecycle event. Fields are passed through
+ * `redact()` like any other log call (defense in depth), but the real
+ * safety mechanism is the `AssistantLogEvent` type itself — it only accepts
+ * bounded operational metadata, never free-form request/response content.
+ */
+export function logEvent(level: Level, fields: AssistantLogEvent): void {
+  emit(level, fields.event, { ...fields });
+}
+
+/** Monotonic-enough millisecond timer for lifecycle-stage durations. */
+export function startTimer(): () => number {
+  const startedAt = Date.now();
+  return () => Date.now() - startedAt;
+}
