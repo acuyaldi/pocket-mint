@@ -534,7 +534,7 @@ describe('Assistant application lifecycle', () => {
     expect(financialDrafts.prepare).not.toHaveBeenCalled();
   });
 
-  it('never forwards merchantReference or mapping identity on the internal wallet path', async () => {
+  it('forwards the resolved merchant display label but never the raw reference or its internal mapping id', async () => {
     const { service, financialDrafts } = setup();
 
     await service.execute('u1', 'corr-internal-merchant', {
@@ -551,10 +551,12 @@ describe('Assistant application lifecycle', () => {
 
     expect(financialDrafts.prepare).toHaveBeenCalledWith(expect.objectContaining({
       walletId: 'wallet-internal',
+      merchantDisplayLabel: 'Starbucks',
     }));
     const prepared = financialDrafts.prepare.mock.calls[0][0];
+    // The safe display label is forwarded (it's what the draft preview renders),
+    // but the raw user-supplied reference text and the mapping's internal id never are.
     expect(prepared).not.toHaveProperty('merchantReference');
-    expect(prepared).not.toHaveProperty('merchantDisplayLabel');
     expect(JSON.stringify(prepared)).not.toContain('mapping-secret');
   });
 

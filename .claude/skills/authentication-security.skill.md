@@ -52,7 +52,8 @@ description: Use when working on authentication, JWT verification, users/sync, m
 
 - Exact origin allowlist from `CORS_ALLOWED_ORIGINS`; empty in production is a
   fatal startup error. No wildcard, ever.
-- Allowed headers: `Authorization`, `Content-Type` only. Do not re-advertise
+- Allowed headers: `Authorization`, `Content-Type`, `Idempotency-Key` only
+  (the last is required by the draft-confirm endpoint). Do not re-advertise
   retired identity headers.
 - `credentials: false` (Bearer header auth, not cookies).
 

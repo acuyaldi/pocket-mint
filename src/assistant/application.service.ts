@@ -369,7 +369,7 @@ export function createAssistantApplicationService(deps: {
     startedAt: number,
     transactionInput: TransactionCreateToolInput,
     walletData?: ResolvedWallet,
-    _merchantData?: ResolvedMerchant,
+    merchantData?: ResolvedMerchant,
     categoryData?: ResolvedCategory,
     transaction?: TxClient,
   ): Promise<AssistantApplicationResult> {
@@ -390,6 +390,7 @@ export function createAssistantApplicationService(deps: {
       const draft = await deps.financialDrafts.prepare({
         ...draftInput,
         ...(walletData === undefined ? {} : { walletDisplayLabel: walletData.displayLabel }),
+        ...(merchantData === undefined ? {} : { merchantDisplayLabel: merchantData.displayLabel }),
         userId,
         ...turn,
         executionId,

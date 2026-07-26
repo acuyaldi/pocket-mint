@@ -268,7 +268,7 @@ function createAssistantApplicationService(deps) {
         return finalizeTransactionDraft(userId, correlationId, turn, executionId, startedAt, transactionInput, walletData, merchantData, categoryData);
     }
     // ---- Finalize transaction draft -------------------------------------------
-    async function finalizeTransactionDraft(userId, correlationId, turn, executionId, startedAt, transactionInput, walletData, _merchantData, categoryData, transaction) {
+    async function finalizeTransactionDraft(userId, correlationId, turn, executionId, startedAt, transactionInput, walletData, merchantData, categoryData, transaction) {
         if (!deps.financialDrafts)
             throw new Error('Financial draft service is not configured');
         const walletId = walletData?.internalId ?? transactionInput.walletId;
@@ -285,6 +285,7 @@ function createAssistantApplicationService(deps) {
             const draft = await deps.financialDrafts.prepare({
                 ...draftInput,
                 ...(walletData === undefined ? {} : { walletDisplayLabel: walletData.displayLabel }),
+                ...(merchantData === undefined ? {} : { merchantDisplayLabel: merchantData.displayLabel }),
                 userId,
                 ...turn,
                 executionId,
