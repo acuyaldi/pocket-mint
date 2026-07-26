@@ -114,10 +114,20 @@ export type ChannelLinkToken = $Result.DefaultSelection<Prisma.$ChannelLinkToken
  */
 export type ChannelConnection = $Result.DefaultSelection<Prisma.$ChannelConnectionPayload>
 /**
- * Model ChannelUpdateDedup
+ * Model ChannelInboundJob
  *
  */
-export type ChannelUpdateDedup = $Result.DefaultSelection<Prisma.$ChannelUpdateDedupPayload>
+export type ChannelInboundJob = $Result.DefaultSelection<Prisma.$ChannelInboundJobPayload>
+/**
+ * Model ChannelOutboundDelivery
+ *
+ */
+export type ChannelOutboundDelivery = $Result.DefaultSelection<Prisma.$ChannelOutboundDeliveryPayload>
+/**
+ * Model ChannelAssistantOperation
+ *
+ */
+export type ChannelAssistantOperation = $Result.DefaultSelection<Prisma.$ChannelAssistantOperationPayload>
 /**
  * Model Budget
  *
@@ -309,6 +319,28 @@ export const ChannelConnectionStatus: {
 
 export type ChannelConnectionStatus = (typeof ChannelConnectionStatus)[keyof typeof ChannelConnectionStatus]
 
+
+export const ChannelJobStatus: {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED_RETRYABLE: 'FAILED_RETRYABLE',
+  FAILED_TERMINAL: 'FAILED_TERMINAL'
+};
+
+export type ChannelJobStatus = (typeof ChannelJobStatus)[keyof typeof ChannelJobStatus]
+
+
+export const ChannelDeliveryStatus: {
+  PENDING: 'PENDING',
+  SENDING: 'SENDING',
+  SENT: 'SENT',
+  FAILED_RETRYABLE: 'FAILED_RETRYABLE',
+  FAILED_TERMINAL: 'FAILED_TERMINAL'
+};
+
+export type ChannelDeliveryStatus = (typeof ChannelDeliveryStatus)[keyof typeof ChannelDeliveryStatus]
+
 }
 
 export type AssistantConversationStatus = $Enums.AssistantConversationStatus
@@ -386,6 +418,14 @@ export const ChannelProvider: typeof $Enums.ChannelProvider
 export type ChannelConnectionStatus = $Enums.ChannelConnectionStatus
 
 export const ChannelConnectionStatus: typeof $Enums.ChannelConnectionStatus
+
+export type ChannelJobStatus = $Enums.ChannelJobStatus
+
+export const ChannelJobStatus: typeof $Enums.ChannelJobStatus
+
+export type ChannelDeliveryStatus = $Enums.ChannelDeliveryStatus
+
+export const ChannelDeliveryStatus: typeof $Enums.ChannelDeliveryStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -709,14 +749,34 @@ export class PrismaClient<
   get channelConnection(): Prisma.ChannelConnectionDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.channelUpdateDedup`: Exposes CRUD operations for the **ChannelUpdateDedup** model.
+   * `prisma.channelInboundJob`: Exposes CRUD operations for the **ChannelInboundJob** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more ChannelUpdateDedups
-    * const channelUpdateDedups = await prisma.channelUpdateDedup.findMany()
+    * // Fetch zero or more ChannelInboundJobs
+    * const channelInboundJobs = await prisma.channelInboundJob.findMany()
     * ```
     */
-  get channelUpdateDedup(): Prisma.ChannelUpdateDedupDelegate<ExtArgs, ClientOptions>;
+  get channelInboundJob(): Prisma.ChannelInboundJobDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.channelOutboundDelivery`: Exposes CRUD operations for the **ChannelOutboundDelivery** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ChannelOutboundDeliveries
+    * const channelOutboundDeliveries = await prisma.channelOutboundDelivery.findMany()
+    * ```
+    */
+  get channelOutboundDelivery(): Prisma.ChannelOutboundDeliveryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.channelAssistantOperation`: Exposes CRUD operations for the **ChannelAssistantOperation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ChannelAssistantOperations
+    * const channelAssistantOperations = await prisma.channelAssistantOperation.findMany()
+    * ```
+    */
+  get channelAssistantOperation(): Prisma.ChannelAssistantOperationDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.budget`: Exposes CRUD operations for the **Budget** model.
@@ -1181,7 +1241,9 @@ export namespace Prisma {
     SavingGoal: 'SavingGoal',
     ChannelLinkToken: 'ChannelLinkToken',
     ChannelConnection: 'ChannelConnection',
-    ChannelUpdateDedup: 'ChannelUpdateDedup',
+    ChannelInboundJob: 'ChannelInboundJob',
+    ChannelOutboundDelivery: 'ChannelOutboundDelivery',
+    ChannelAssistantOperation: 'ChannelAssistantOperation',
     Budget: 'Budget'
   };
 
@@ -1198,7 +1260,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "assistantConversation" | "assistantTurn" | "assistantMessage" | "assistantFinancialDraft" | "assistantIdempotencyRecord" | "assistantToolExecution" | "assistantProviderExecution" | "clarificationRequest" | "clarificationOption" | "wallet" | "category" | "merchantMapping" | "transaction" | "installment" | "recurringTransactionTemplate" | "recurringReminderEvent" | "savingGoal" | "channelLinkToken" | "channelConnection" | "channelUpdateDedup" | "budget"
+      modelProps: "user" | "assistantConversation" | "assistantTurn" | "assistantMessage" | "assistantFinancialDraft" | "assistantIdempotencyRecord" | "assistantToolExecution" | "assistantProviderExecution" | "clarificationRequest" | "clarificationOption" | "wallet" | "category" | "merchantMapping" | "transaction" | "installment" | "recurringTransactionTemplate" | "recurringReminderEvent" | "savingGoal" | "channelLinkToken" | "channelConnection" | "channelInboundJob" | "channelOutboundDelivery" | "channelAssistantOperation" | "budget"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2682,77 +2744,225 @@ export namespace Prisma {
           }
         }
       }
-      ChannelUpdateDedup: {
-        payload: Prisma.$ChannelUpdateDedupPayload<ExtArgs>
-        fields: Prisma.ChannelUpdateDedupFieldRefs
+      ChannelInboundJob: {
+        payload: Prisma.$ChannelInboundJobPayload<ExtArgs>
+        fields: Prisma.ChannelInboundJobFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.ChannelUpdateDedupFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload> | null
+            args: Prisma.ChannelInboundJobFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelInboundJobPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.ChannelUpdateDedupFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload>
+            args: Prisma.ChannelInboundJobFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelInboundJobPayload>
           }
           findFirst: {
-            args: Prisma.ChannelUpdateDedupFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload> | null
+            args: Prisma.ChannelInboundJobFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelInboundJobPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.ChannelUpdateDedupFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload>
+            args: Prisma.ChannelInboundJobFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelInboundJobPayload>
           }
           findMany: {
-            args: Prisma.ChannelUpdateDedupFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload>[]
+            args: Prisma.ChannelInboundJobFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelInboundJobPayload>[]
           }
           create: {
-            args: Prisma.ChannelUpdateDedupCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload>
+            args: Prisma.ChannelInboundJobCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelInboundJobPayload>
           }
           createMany: {
-            args: Prisma.ChannelUpdateDedupCreateManyArgs<ExtArgs>
+            args: Prisma.ChannelInboundJobCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.ChannelUpdateDedupCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload>[]
+            args: Prisma.ChannelInboundJobCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelInboundJobPayload>[]
           }
           delete: {
-            args: Prisma.ChannelUpdateDedupDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload>
+            args: Prisma.ChannelInboundJobDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelInboundJobPayload>
           }
           update: {
-            args: Prisma.ChannelUpdateDedupUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload>
+            args: Prisma.ChannelInboundJobUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelInboundJobPayload>
           }
           deleteMany: {
-            args: Prisma.ChannelUpdateDedupDeleteManyArgs<ExtArgs>
+            args: Prisma.ChannelInboundJobDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.ChannelUpdateDedupUpdateManyArgs<ExtArgs>
+            args: Prisma.ChannelInboundJobUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.ChannelUpdateDedupUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload>[]
+            args: Prisma.ChannelInboundJobUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelInboundJobPayload>[]
           }
           upsert: {
-            args: Prisma.ChannelUpdateDedupUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload>
+            args: Prisma.ChannelInboundJobUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelInboundJobPayload>
           }
           aggregate: {
-            args: Prisma.ChannelUpdateDedupAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateChannelUpdateDedup>
+            args: Prisma.ChannelInboundJobAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateChannelInboundJob>
           }
           groupBy: {
-            args: Prisma.ChannelUpdateDedupGroupByArgs<ExtArgs>
-            result: $Utils.Optional<ChannelUpdateDedupGroupByOutputType>[]
+            args: Prisma.ChannelInboundJobGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ChannelInboundJobGroupByOutputType>[]
           }
           count: {
-            args: Prisma.ChannelUpdateDedupCountArgs<ExtArgs>
-            result: $Utils.Optional<ChannelUpdateDedupCountAggregateOutputType> | number
+            args: Prisma.ChannelInboundJobCountArgs<ExtArgs>
+            result: $Utils.Optional<ChannelInboundJobCountAggregateOutputType> | number
+          }
+        }
+      }
+      ChannelOutboundDelivery: {
+        payload: Prisma.$ChannelOutboundDeliveryPayload<ExtArgs>
+        fields: Prisma.ChannelOutboundDeliveryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ChannelOutboundDeliveryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelOutboundDeliveryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ChannelOutboundDeliveryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelOutboundDeliveryPayload>
+          }
+          findFirst: {
+            args: Prisma.ChannelOutboundDeliveryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelOutboundDeliveryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ChannelOutboundDeliveryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelOutboundDeliveryPayload>
+          }
+          findMany: {
+            args: Prisma.ChannelOutboundDeliveryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelOutboundDeliveryPayload>[]
+          }
+          create: {
+            args: Prisma.ChannelOutboundDeliveryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelOutboundDeliveryPayload>
+          }
+          createMany: {
+            args: Prisma.ChannelOutboundDeliveryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ChannelOutboundDeliveryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelOutboundDeliveryPayload>[]
+          }
+          delete: {
+            args: Prisma.ChannelOutboundDeliveryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelOutboundDeliveryPayload>
+          }
+          update: {
+            args: Prisma.ChannelOutboundDeliveryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelOutboundDeliveryPayload>
+          }
+          deleteMany: {
+            args: Prisma.ChannelOutboundDeliveryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ChannelOutboundDeliveryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ChannelOutboundDeliveryUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelOutboundDeliveryPayload>[]
+          }
+          upsert: {
+            args: Prisma.ChannelOutboundDeliveryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelOutboundDeliveryPayload>
+          }
+          aggregate: {
+            args: Prisma.ChannelOutboundDeliveryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateChannelOutboundDelivery>
+          }
+          groupBy: {
+            args: Prisma.ChannelOutboundDeliveryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ChannelOutboundDeliveryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ChannelOutboundDeliveryCountArgs<ExtArgs>
+            result: $Utils.Optional<ChannelOutboundDeliveryCountAggregateOutputType> | number
+          }
+        }
+      }
+      ChannelAssistantOperation: {
+        payload: Prisma.$ChannelAssistantOperationPayload<ExtArgs>
+        fields: Prisma.ChannelAssistantOperationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ChannelAssistantOperationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelAssistantOperationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ChannelAssistantOperationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelAssistantOperationPayload>
+          }
+          findFirst: {
+            args: Prisma.ChannelAssistantOperationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelAssistantOperationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ChannelAssistantOperationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelAssistantOperationPayload>
+          }
+          findMany: {
+            args: Prisma.ChannelAssistantOperationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelAssistantOperationPayload>[]
+          }
+          create: {
+            args: Prisma.ChannelAssistantOperationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelAssistantOperationPayload>
+          }
+          createMany: {
+            args: Prisma.ChannelAssistantOperationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ChannelAssistantOperationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelAssistantOperationPayload>[]
+          }
+          delete: {
+            args: Prisma.ChannelAssistantOperationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelAssistantOperationPayload>
+          }
+          update: {
+            args: Prisma.ChannelAssistantOperationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelAssistantOperationPayload>
+          }
+          deleteMany: {
+            args: Prisma.ChannelAssistantOperationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ChannelAssistantOperationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ChannelAssistantOperationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelAssistantOperationPayload>[]
+          }
+          upsert: {
+            args: Prisma.ChannelAssistantOperationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelAssistantOperationPayload>
+          }
+          aggregate: {
+            args: Prisma.ChannelAssistantOperationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateChannelAssistantOperation>
+          }
+          groupBy: {
+            args: Prisma.ChannelAssistantOperationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ChannelAssistantOperationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ChannelAssistantOperationCountArgs<ExtArgs>
+            result: $Utils.Optional<ChannelAssistantOperationCountAggregateOutputType> | number
           }
         }
       }
@@ -2958,7 +3168,9 @@ export namespace Prisma {
     savingGoal?: SavingGoalOmit
     channelLinkToken?: ChannelLinkTokenOmit
     channelConnection?: ChannelConnectionOmit
-    channelUpdateDedup?: ChannelUpdateDedupOmit
+    channelInboundJob?: ChannelInboundJobOmit
+    channelOutboundDelivery?: ChannelOutboundDeliveryOmit
+    channelAssistantOperation?: ChannelAssistantOperationOmit
     budget?: BudgetOmit
   }
 
@@ -3630,6 +3842,37 @@ export namespace Prisma {
    */
   export type RecurringTransactionTemplateCountOutputTypeCountReminderEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RecurringReminderEventWhereInput
+  }
+
+
+  /**
+   * Count Type ChannelConnectionCountOutputType
+   */
+
+  export type ChannelConnectionCountOutputType = {
+    inboundJobs: number
+  }
+
+  export type ChannelConnectionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    inboundJobs?: boolean | ChannelConnectionCountOutputTypeCountInboundJobsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ChannelConnectionCountOutputType without action
+   */
+  export type ChannelConnectionCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelConnectionCountOutputType
+     */
+    select?: ChannelConnectionCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ChannelConnectionCountOutputType without action
+   */
+  export type ChannelConnectionCountOutputTypeCountInboundJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelInboundJobWhereInput
   }
 
 
@@ -27821,6 +28064,8 @@ export namespace Prisma {
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     conversation?: boolean | ChannelConnection$conversationArgs<ExtArgs>
+    inboundJobs?: boolean | ChannelConnection$inboundJobsArgs<ExtArgs>
+    _count?: boolean | ChannelConnectionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["channelConnection"]>
 
   export type ChannelConnectionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -27870,6 +28115,8 @@ export namespace Prisma {
   export type ChannelConnectionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     conversation?: boolean | ChannelConnection$conversationArgs<ExtArgs>
+    inboundJobs?: boolean | ChannelConnection$inboundJobsArgs<ExtArgs>
+    _count?: boolean | ChannelConnectionCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ChannelConnectionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -27885,6 +28132,7 @@ export namespace Prisma {
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
       conversation: Prisma.$AssistantConversationPayload<ExtArgs> | null
+      inboundJobs: Prisma.$ChannelInboundJobPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -28293,6 +28541,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     conversation<T extends ChannelConnection$conversationArgs<ExtArgs> = {}>(args?: Subset<T, ChannelConnection$conversationArgs<ExtArgs>>): Prisma__AssistantConversationClient<$Result.GetResult<Prisma.$AssistantConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    inboundJobs<T extends ChannelConnection$inboundJobsArgs<ExtArgs> = {}>(args?: Subset<T, ChannelConnection$inboundJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelInboundJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -28752,6 +29001,30 @@ export namespace Prisma {
   }
 
   /**
+   * ChannelConnection.inboundJobs
+   */
+  export type ChannelConnection$inboundJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelInboundJob
+     */
+    select?: ChannelInboundJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelInboundJob
+     */
+    omit?: ChannelInboundJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInboundJobInclude<ExtArgs> | null
+    where?: ChannelInboundJobWhereInput
+    orderBy?: ChannelInboundJobOrderByWithRelationInput | ChannelInboundJobOrderByWithRelationInput[]
+    cursor?: ChannelInboundJobWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ChannelInboundJobScalarFieldEnum | ChannelInboundJobScalarFieldEnum[]
+  }
+
+  /**
    * ChannelConnection without action
    */
   export type ChannelConnectionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -28771,324 +29044,543 @@ export namespace Prisma {
 
 
   /**
-   * Model ChannelUpdateDedup
+   * Model ChannelInboundJob
    */
 
-  export type AggregateChannelUpdateDedup = {
-    _count: ChannelUpdateDedupCountAggregateOutputType | null
-    _min: ChannelUpdateDedupMinAggregateOutputType | null
-    _max: ChannelUpdateDedupMaxAggregateOutputType | null
+  export type AggregateChannelInboundJob = {
+    _count: ChannelInboundJobCountAggregateOutputType | null
+    _avg: ChannelInboundJobAvgAggregateOutputType | null
+    _sum: ChannelInboundJobSumAggregateOutputType | null
+    _min: ChannelInboundJobMinAggregateOutputType | null
+    _max: ChannelInboundJobMaxAggregateOutputType | null
   }
 
-  export type ChannelUpdateDedupMinAggregateOutputType = {
+  export type ChannelInboundJobAvgAggregateOutputType = {
+    attempt: number | null
+  }
+
+  export type ChannelInboundJobSumAggregateOutputType = {
+    attempt: number | null
+  }
+
+  export type ChannelInboundJobMinAggregateOutputType = {
     id: string | null
     provider: $Enums.ChannelProvider | null
     externalUpdateId: string | null
+    channelConnectionId: string | null
+    externalSenderId: string | null
+    externalChatId: string | null
+    text: string | null
+    status: $Enums.ChannelJobStatus | null
+    attempt: number | null
+    availableAt: Date | null
+    leaseOwner: string | null
+    leaseExpiresAt: Date | null
+    processingStartedAt: Date | null
+    completedAt: Date | null
+    assistantTurnId: string | null
+    errorCategory: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
-  export type ChannelUpdateDedupMaxAggregateOutputType = {
+  export type ChannelInboundJobMaxAggregateOutputType = {
     id: string | null
     provider: $Enums.ChannelProvider | null
     externalUpdateId: string | null
+    channelConnectionId: string | null
+    externalSenderId: string | null
+    externalChatId: string | null
+    text: string | null
+    status: $Enums.ChannelJobStatus | null
+    attempt: number | null
+    availableAt: Date | null
+    leaseOwner: string | null
+    leaseExpiresAt: Date | null
+    processingStartedAt: Date | null
+    completedAt: Date | null
+    assistantTurnId: string | null
+    errorCategory: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
-  export type ChannelUpdateDedupCountAggregateOutputType = {
+  export type ChannelInboundJobCountAggregateOutputType = {
     id: number
     provider: number
     externalUpdateId: number
+    channelConnectionId: number
+    externalSenderId: number
+    externalChatId: number
+    text: number
+    status: number
+    attempt: number
+    availableAt: number
+    leaseOwner: number
+    leaseExpiresAt: number
+    processingStartedAt: number
+    completedAt: number
+    assistantTurnId: number
+    errorCategory: number
     createdAt: number
+    updatedAt: number
     _all: number
   }
 
 
-  export type ChannelUpdateDedupMinAggregateInputType = {
-    id?: true
-    provider?: true
-    externalUpdateId?: true
-    createdAt?: true
+  export type ChannelInboundJobAvgAggregateInputType = {
+    attempt?: true
   }
 
-  export type ChannelUpdateDedupMaxAggregateInputType = {
-    id?: true
-    provider?: true
-    externalUpdateId?: true
-    createdAt?: true
+  export type ChannelInboundJobSumAggregateInputType = {
+    attempt?: true
   }
 
-  export type ChannelUpdateDedupCountAggregateInputType = {
+  export type ChannelInboundJobMinAggregateInputType = {
     id?: true
     provider?: true
     externalUpdateId?: true
+    channelConnectionId?: true
+    externalSenderId?: true
+    externalChatId?: true
+    text?: true
+    status?: true
+    attempt?: true
+    availableAt?: true
+    leaseOwner?: true
+    leaseExpiresAt?: true
+    processingStartedAt?: true
+    completedAt?: true
+    assistantTurnId?: true
+    errorCategory?: true
     createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ChannelInboundJobMaxAggregateInputType = {
+    id?: true
+    provider?: true
+    externalUpdateId?: true
+    channelConnectionId?: true
+    externalSenderId?: true
+    externalChatId?: true
+    text?: true
+    status?: true
+    attempt?: true
+    availableAt?: true
+    leaseOwner?: true
+    leaseExpiresAt?: true
+    processingStartedAt?: true
+    completedAt?: true
+    assistantTurnId?: true
+    errorCategory?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ChannelInboundJobCountAggregateInputType = {
+    id?: true
+    provider?: true
+    externalUpdateId?: true
+    channelConnectionId?: true
+    externalSenderId?: true
+    externalChatId?: true
+    text?: true
+    status?: true
+    attempt?: true
+    availableAt?: true
+    leaseOwner?: true
+    leaseExpiresAt?: true
+    processingStartedAt?: true
+    completedAt?: true
+    assistantTurnId?: true
+    errorCategory?: true
+    createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
-  export type ChannelUpdateDedupAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ChannelInboundJobAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which ChannelUpdateDedup to aggregate.
+     * Filter which ChannelInboundJob to aggregate.
      */
-    where?: ChannelUpdateDedupWhereInput
+    where?: ChannelInboundJobWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      *
-     * Determine the order of ChannelUpdateDedups to fetch.
+     * Determine the order of ChannelInboundJobs to fetch.
      */
-    orderBy?: ChannelUpdateDedupOrderByWithRelationInput | ChannelUpdateDedupOrderByWithRelationInput[]
+    orderBy?: ChannelInboundJobOrderByWithRelationInput | ChannelInboundJobOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      *
      * Sets the start position
      */
-    cursor?: ChannelUpdateDedupWhereUniqueInput
+    cursor?: ChannelInboundJobWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      *
-     * Take `±n` ChannelUpdateDedups from the position of the cursor.
+     * Take `±n` ChannelInboundJobs from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      *
-     * Skip the first `n` ChannelUpdateDedups.
+     * Skip the first `n` ChannelInboundJobs.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      *
-     * Count returned ChannelUpdateDedups
+     * Count returned ChannelInboundJobs
     **/
-    _count?: true | ChannelUpdateDedupCountAggregateInputType
+    _count?: true | ChannelInboundJobCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: ChannelInboundJobAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: ChannelInboundJobSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      *
      * Select which fields to find the minimum value
     **/
-    _min?: ChannelUpdateDedupMinAggregateInputType
+    _min?: ChannelInboundJobMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      *
      * Select which fields to find the maximum value
     **/
-    _max?: ChannelUpdateDedupMaxAggregateInputType
+    _max?: ChannelInboundJobMaxAggregateInputType
   }
 
-  export type GetChannelUpdateDedupAggregateType<T extends ChannelUpdateDedupAggregateArgs> = {
-        [P in keyof T & keyof AggregateChannelUpdateDedup]: P extends '_count' | 'count'
+  export type GetChannelInboundJobAggregateType<T extends ChannelInboundJobAggregateArgs> = {
+        [P in keyof T & keyof AggregateChannelInboundJob]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateChannelUpdateDedup[P]>
-      : GetScalarType<T[P], AggregateChannelUpdateDedup[P]>
+        : GetScalarType<T[P], AggregateChannelInboundJob[P]>
+      : GetScalarType<T[P], AggregateChannelInboundJob[P]>
   }
 
 
 
 
-  export type ChannelUpdateDedupGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ChannelUpdateDedupWhereInput
-    orderBy?: ChannelUpdateDedupOrderByWithAggregationInput | ChannelUpdateDedupOrderByWithAggregationInput[]
-    by: ChannelUpdateDedupScalarFieldEnum[] | ChannelUpdateDedupScalarFieldEnum
-    having?: ChannelUpdateDedupScalarWhereWithAggregatesInput
+  export type ChannelInboundJobGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelInboundJobWhereInput
+    orderBy?: ChannelInboundJobOrderByWithAggregationInput | ChannelInboundJobOrderByWithAggregationInput[]
+    by: ChannelInboundJobScalarFieldEnum[] | ChannelInboundJobScalarFieldEnum
+    having?: ChannelInboundJobScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: ChannelUpdateDedupCountAggregateInputType | true
-    _min?: ChannelUpdateDedupMinAggregateInputType
-    _max?: ChannelUpdateDedupMaxAggregateInputType
+    _count?: ChannelInboundJobCountAggregateInputType | true
+    _avg?: ChannelInboundJobAvgAggregateInputType
+    _sum?: ChannelInboundJobSumAggregateInputType
+    _min?: ChannelInboundJobMinAggregateInputType
+    _max?: ChannelInboundJobMaxAggregateInputType
   }
 
-  export type ChannelUpdateDedupGroupByOutputType = {
+  export type ChannelInboundJobGroupByOutputType = {
     id: string
     provider: $Enums.ChannelProvider
     externalUpdateId: string
+    channelConnectionId: string | null
+    externalSenderId: string
+    externalChatId: string
+    text: string
+    status: $Enums.ChannelJobStatus
+    attempt: number
+    availableAt: Date
+    leaseOwner: string | null
+    leaseExpiresAt: Date | null
+    processingStartedAt: Date | null
+    completedAt: Date | null
+    assistantTurnId: string | null
+    errorCategory: string | null
     createdAt: Date
-    _count: ChannelUpdateDedupCountAggregateOutputType | null
-    _min: ChannelUpdateDedupMinAggregateOutputType | null
-    _max: ChannelUpdateDedupMaxAggregateOutputType | null
+    updatedAt: Date
+    _count: ChannelInboundJobCountAggregateOutputType | null
+    _avg: ChannelInboundJobAvgAggregateOutputType | null
+    _sum: ChannelInboundJobSumAggregateOutputType | null
+    _min: ChannelInboundJobMinAggregateOutputType | null
+    _max: ChannelInboundJobMaxAggregateOutputType | null
   }
 
-  type GetChannelUpdateDedupGroupByPayload<T extends ChannelUpdateDedupGroupByArgs> = Prisma.PrismaPromise<
+  type GetChannelInboundJobGroupByPayload<T extends ChannelInboundJobGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<ChannelUpdateDedupGroupByOutputType, T['by']> &
+      PickEnumerable<ChannelInboundJobGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof ChannelUpdateDedupGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof ChannelInboundJobGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], ChannelUpdateDedupGroupByOutputType[P]>
-            : GetScalarType<T[P], ChannelUpdateDedupGroupByOutputType[P]>
+              : GetScalarType<T[P], ChannelInboundJobGroupByOutputType[P]>
+            : GetScalarType<T[P], ChannelInboundJobGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type ChannelUpdateDedupSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type ChannelInboundJobSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     provider?: boolean
     externalUpdateId?: boolean
+    channelConnectionId?: boolean
+    externalSenderId?: boolean
+    externalChatId?: boolean
+    text?: boolean
+    status?: boolean
+    attempt?: boolean
+    availableAt?: boolean
+    leaseOwner?: boolean
+    leaseExpiresAt?: boolean
+    processingStartedAt?: boolean
+    completedAt?: boolean
+    assistantTurnId?: boolean
+    errorCategory?: boolean
     createdAt?: boolean
-  }, ExtArgs["result"]["channelUpdateDedup"]>
+    updatedAt?: boolean
+    connection?: boolean | ChannelInboundJob$connectionArgs<ExtArgs>
+    delivery?: boolean | ChannelInboundJob$deliveryArgs<ExtArgs>
+  }, ExtArgs["result"]["channelInboundJob"]>
 
-  export type ChannelUpdateDedupSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type ChannelInboundJobSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     provider?: boolean
     externalUpdateId?: boolean
+    channelConnectionId?: boolean
+    externalSenderId?: boolean
+    externalChatId?: boolean
+    text?: boolean
+    status?: boolean
+    attempt?: boolean
+    availableAt?: boolean
+    leaseOwner?: boolean
+    leaseExpiresAt?: boolean
+    processingStartedAt?: boolean
+    completedAt?: boolean
+    assistantTurnId?: boolean
+    errorCategory?: boolean
     createdAt?: boolean
-  }, ExtArgs["result"]["channelUpdateDedup"]>
+    updatedAt?: boolean
+    connection?: boolean | ChannelInboundJob$connectionArgs<ExtArgs>
+  }, ExtArgs["result"]["channelInboundJob"]>
 
-  export type ChannelUpdateDedupSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type ChannelInboundJobSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     provider?: boolean
     externalUpdateId?: boolean
+    channelConnectionId?: boolean
+    externalSenderId?: boolean
+    externalChatId?: boolean
+    text?: boolean
+    status?: boolean
+    attempt?: boolean
+    availableAt?: boolean
+    leaseOwner?: boolean
+    leaseExpiresAt?: boolean
+    processingStartedAt?: boolean
+    completedAt?: boolean
+    assistantTurnId?: boolean
+    errorCategory?: boolean
     createdAt?: boolean
-  }, ExtArgs["result"]["channelUpdateDedup"]>
+    updatedAt?: boolean
+    connection?: boolean | ChannelInboundJob$connectionArgs<ExtArgs>
+  }, ExtArgs["result"]["channelInboundJob"]>
 
-  export type ChannelUpdateDedupSelectScalar = {
+  export type ChannelInboundJobSelectScalar = {
     id?: boolean
     provider?: boolean
     externalUpdateId?: boolean
+    channelConnectionId?: boolean
+    externalSenderId?: boolean
+    externalChatId?: boolean
+    text?: boolean
+    status?: boolean
+    attempt?: boolean
+    availableAt?: boolean
+    leaseOwner?: boolean
+    leaseExpiresAt?: boolean
+    processingStartedAt?: boolean
+    completedAt?: boolean
+    assistantTurnId?: boolean
+    errorCategory?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type ChannelUpdateDedupOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "provider" | "externalUpdateId" | "createdAt", ExtArgs["result"]["channelUpdateDedup"]>
+  export type ChannelInboundJobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "provider" | "externalUpdateId" | "channelConnectionId" | "externalSenderId" | "externalChatId" | "text" | "status" | "attempt" | "availableAt" | "leaseOwner" | "leaseExpiresAt" | "processingStartedAt" | "completedAt" | "assistantTurnId" | "errorCategory" | "createdAt" | "updatedAt", ExtArgs["result"]["channelInboundJob"]>
+  export type ChannelInboundJobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    connection?: boolean | ChannelInboundJob$connectionArgs<ExtArgs>
+    delivery?: boolean | ChannelInboundJob$deliveryArgs<ExtArgs>
+  }
+  export type ChannelInboundJobIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    connection?: boolean | ChannelInboundJob$connectionArgs<ExtArgs>
+  }
+  export type ChannelInboundJobIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    connection?: boolean | ChannelInboundJob$connectionArgs<ExtArgs>
+  }
 
-  export type $ChannelUpdateDedupPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "ChannelUpdateDedup"
-    objects: {}
+  export type $ChannelInboundJobPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ChannelInboundJob"
+    objects: {
+      connection: Prisma.$ChannelConnectionPayload<ExtArgs> | null
+      delivery: Prisma.$ChannelOutboundDeliveryPayload<ExtArgs> | null
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       provider: $Enums.ChannelProvider
       externalUpdateId: string
+      channelConnectionId: string | null
+      externalSenderId: string
+      externalChatId: string
+      text: string
+      status: $Enums.ChannelJobStatus
+      attempt: number
+      availableAt: Date
+      leaseOwner: string | null
+      leaseExpiresAt: Date | null
+      processingStartedAt: Date | null
+      completedAt: Date | null
+      assistantTurnId: string | null
+      errorCategory: string | null
       createdAt: Date
-    }, ExtArgs["result"]["channelUpdateDedup"]>
+      updatedAt: Date
+    }, ExtArgs["result"]["channelInboundJob"]>
     composites: {}
   }
 
-  type ChannelUpdateDedupGetPayload<S extends boolean | null | undefined | ChannelUpdateDedupDefaultArgs> = $Result.GetResult<Prisma.$ChannelUpdateDedupPayload, S>
+  type ChannelInboundJobGetPayload<S extends boolean | null | undefined | ChannelInboundJobDefaultArgs> = $Result.GetResult<Prisma.$ChannelInboundJobPayload, S>
 
-  type ChannelUpdateDedupCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<ChannelUpdateDedupFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: ChannelUpdateDedupCountAggregateInputType | true
+  type ChannelInboundJobCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ChannelInboundJobFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ChannelInboundJobCountAggregateInputType | true
     }
 
-  export interface ChannelUpdateDedupDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ChannelUpdateDedup'], meta: { name: 'ChannelUpdateDedup' } }
+  export interface ChannelInboundJobDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ChannelInboundJob'], meta: { name: 'ChannelInboundJob' } }
     /**
-     * Find zero or one ChannelUpdateDedup that matches the filter.
-     * @param {ChannelUpdateDedupFindUniqueArgs} args - Arguments to find a ChannelUpdateDedup
+     * Find zero or one ChannelInboundJob that matches the filter.
+     * @param {ChannelInboundJobFindUniqueArgs} args - Arguments to find a ChannelInboundJob
      * @example
-     * // Get one ChannelUpdateDedup
-     * const channelUpdateDedup = await prisma.channelUpdateDedup.findUnique({
+     * // Get one ChannelInboundJob
+     * const channelInboundJob = await prisma.channelInboundJob.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends ChannelUpdateDedupFindUniqueArgs>(args: SelectSubset<T, ChannelUpdateDedupFindUniqueArgs<ExtArgs>>): Prisma__ChannelUpdateDedupClient<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends ChannelInboundJobFindUniqueArgs>(args: SelectSubset<T, ChannelInboundJobFindUniqueArgs<ExtArgs>>): Prisma__ChannelInboundJobClient<$Result.GetResult<Prisma.$ChannelInboundJobPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one ChannelUpdateDedup that matches the filter or throw an error with `error.code='P2025'`
+     * Find one ChannelInboundJob that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {ChannelUpdateDedupFindUniqueOrThrowArgs} args - Arguments to find a ChannelUpdateDedup
+     * @param {ChannelInboundJobFindUniqueOrThrowArgs} args - Arguments to find a ChannelInboundJob
      * @example
-     * // Get one ChannelUpdateDedup
-     * const channelUpdateDedup = await prisma.channelUpdateDedup.findUniqueOrThrow({
+     * // Get one ChannelInboundJob
+     * const channelInboundJob = await prisma.channelInboundJob.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends ChannelUpdateDedupFindUniqueOrThrowArgs>(args: SelectSubset<T, ChannelUpdateDedupFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ChannelUpdateDedupClient<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends ChannelInboundJobFindUniqueOrThrowArgs>(args: SelectSubset<T, ChannelInboundJobFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ChannelInboundJobClient<$Result.GetResult<Prisma.$ChannelInboundJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first ChannelUpdateDedup that matches the filter.
+     * Find the first ChannelInboundJob that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ChannelUpdateDedupFindFirstArgs} args - Arguments to find a ChannelUpdateDedup
+     * @param {ChannelInboundJobFindFirstArgs} args - Arguments to find a ChannelInboundJob
      * @example
-     * // Get one ChannelUpdateDedup
-     * const channelUpdateDedup = await prisma.channelUpdateDedup.findFirst({
+     * // Get one ChannelInboundJob
+     * const channelInboundJob = await prisma.channelInboundJob.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends ChannelUpdateDedupFindFirstArgs>(args?: SelectSubset<T, ChannelUpdateDedupFindFirstArgs<ExtArgs>>): Prisma__ChannelUpdateDedupClient<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends ChannelInboundJobFindFirstArgs>(args?: SelectSubset<T, ChannelInboundJobFindFirstArgs<ExtArgs>>): Prisma__ChannelInboundJobClient<$Result.GetResult<Prisma.$ChannelInboundJobPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first ChannelUpdateDedup that matches the filter or
+     * Find the first ChannelInboundJob that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ChannelUpdateDedupFindFirstOrThrowArgs} args - Arguments to find a ChannelUpdateDedup
+     * @param {ChannelInboundJobFindFirstOrThrowArgs} args - Arguments to find a ChannelInboundJob
      * @example
-     * // Get one ChannelUpdateDedup
-     * const channelUpdateDedup = await prisma.channelUpdateDedup.findFirstOrThrow({
+     * // Get one ChannelInboundJob
+     * const channelInboundJob = await prisma.channelInboundJob.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends ChannelUpdateDedupFindFirstOrThrowArgs>(args?: SelectSubset<T, ChannelUpdateDedupFindFirstOrThrowArgs<ExtArgs>>): Prisma__ChannelUpdateDedupClient<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends ChannelInboundJobFindFirstOrThrowArgs>(args?: SelectSubset<T, ChannelInboundJobFindFirstOrThrowArgs<ExtArgs>>): Prisma__ChannelInboundJobClient<$Result.GetResult<Prisma.$ChannelInboundJobPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more ChannelUpdateDedups that matches the filter.
+     * Find zero or more ChannelInboundJobs that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ChannelUpdateDedupFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {ChannelInboundJobFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all ChannelUpdateDedups
-     * const channelUpdateDedups = await prisma.channelUpdateDedup.findMany()
+     * // Get all ChannelInboundJobs
+     * const channelInboundJobs = await prisma.channelInboundJob.findMany()
      *
-     * // Get first 10 ChannelUpdateDedups
-     * const channelUpdateDedups = await prisma.channelUpdateDedup.findMany({ take: 10 })
+     * // Get first 10 ChannelInboundJobs
+     * const channelInboundJobs = await prisma.channelInboundJob.findMany({ take: 10 })
      *
      * // Only select the `id`
-     * const channelUpdateDedupWithIdOnly = await prisma.channelUpdateDedup.findMany({ select: { id: true } })
+     * const channelInboundJobWithIdOnly = await prisma.channelInboundJob.findMany({ select: { id: true } })
      *
      */
-    findMany<T extends ChannelUpdateDedupFindManyArgs>(args?: SelectSubset<T, ChannelUpdateDedupFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends ChannelInboundJobFindManyArgs>(args?: SelectSubset<T, ChannelInboundJobFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelInboundJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a ChannelUpdateDedup.
-     * @param {ChannelUpdateDedupCreateArgs} args - Arguments to create a ChannelUpdateDedup.
+     * Create a ChannelInboundJob.
+     * @param {ChannelInboundJobCreateArgs} args - Arguments to create a ChannelInboundJob.
      * @example
-     * // Create one ChannelUpdateDedup
-     * const ChannelUpdateDedup = await prisma.channelUpdateDedup.create({
+     * // Create one ChannelInboundJob
+     * const ChannelInboundJob = await prisma.channelInboundJob.create({
      *   data: {
-     *     // ... data to create a ChannelUpdateDedup
+     *     // ... data to create a ChannelInboundJob
      *   }
      * })
      *
      */
-    create<T extends ChannelUpdateDedupCreateArgs>(args: SelectSubset<T, ChannelUpdateDedupCreateArgs<ExtArgs>>): Prisma__ChannelUpdateDedupClient<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends ChannelInboundJobCreateArgs>(args: SelectSubset<T, ChannelInboundJobCreateArgs<ExtArgs>>): Prisma__ChannelInboundJobClient<$Result.GetResult<Prisma.$ChannelInboundJobPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many ChannelUpdateDedups.
-     * @param {ChannelUpdateDedupCreateManyArgs} args - Arguments to create many ChannelUpdateDedups.
+     * Create many ChannelInboundJobs.
+     * @param {ChannelInboundJobCreateManyArgs} args - Arguments to create many ChannelInboundJobs.
      * @example
-     * // Create many ChannelUpdateDedups
-     * const channelUpdateDedup = await prisma.channelUpdateDedup.createMany({
+     * // Create many ChannelInboundJobs
+     * const channelInboundJob = await prisma.channelInboundJob.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *
      */
-    createMany<T extends ChannelUpdateDedupCreateManyArgs>(args?: SelectSubset<T, ChannelUpdateDedupCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends ChannelInboundJobCreateManyArgs>(args?: SelectSubset<T, ChannelInboundJobCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many ChannelUpdateDedups and returns the data saved in the database.
-     * @param {ChannelUpdateDedupCreateManyAndReturnArgs} args - Arguments to create many ChannelUpdateDedups.
+     * Create many ChannelInboundJobs and returns the data saved in the database.
+     * @param {ChannelInboundJobCreateManyAndReturnArgs} args - Arguments to create many ChannelInboundJobs.
      * @example
-     * // Create many ChannelUpdateDedups
-     * const channelUpdateDedup = await prisma.channelUpdateDedup.createManyAndReturn({
+     * // Create many ChannelInboundJobs
+     * const channelInboundJob = await prisma.channelInboundJob.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *
-     * // Create many ChannelUpdateDedups and only return the `id`
-     * const channelUpdateDedupWithIdOnly = await prisma.channelUpdateDedup.createManyAndReturn({
+     * // Create many ChannelInboundJobs and only return the `id`
+     * const channelInboundJobWithIdOnly = await prisma.channelInboundJob.createManyAndReturn({
      *   select: { id: true },
      *   data: [
      *     // ... provide data here
@@ -29098,28 +29590,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      *
      */
-    createManyAndReturn<T extends ChannelUpdateDedupCreateManyAndReturnArgs>(args?: SelectSubset<T, ChannelUpdateDedupCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends ChannelInboundJobCreateManyAndReturnArgs>(args?: SelectSubset<T, ChannelInboundJobCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelInboundJobPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Delete a ChannelUpdateDedup.
-     * @param {ChannelUpdateDedupDeleteArgs} args - Arguments to delete one ChannelUpdateDedup.
+     * Delete a ChannelInboundJob.
+     * @param {ChannelInboundJobDeleteArgs} args - Arguments to delete one ChannelInboundJob.
      * @example
-     * // Delete one ChannelUpdateDedup
-     * const ChannelUpdateDedup = await prisma.channelUpdateDedup.delete({
+     * // Delete one ChannelInboundJob
+     * const ChannelInboundJob = await prisma.channelInboundJob.delete({
      *   where: {
-     *     // ... filter to delete one ChannelUpdateDedup
+     *     // ... filter to delete one ChannelInboundJob
      *   }
      * })
      *
      */
-    delete<T extends ChannelUpdateDedupDeleteArgs>(args: SelectSubset<T, ChannelUpdateDedupDeleteArgs<ExtArgs>>): Prisma__ChannelUpdateDedupClient<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends ChannelInboundJobDeleteArgs>(args: SelectSubset<T, ChannelInboundJobDeleteArgs<ExtArgs>>): Prisma__ChannelInboundJobClient<$Result.GetResult<Prisma.$ChannelInboundJobPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one ChannelUpdateDedup.
-     * @param {ChannelUpdateDedupUpdateArgs} args - Arguments to update one ChannelUpdateDedup.
+     * Update one ChannelInboundJob.
+     * @param {ChannelInboundJobUpdateArgs} args - Arguments to update one ChannelInboundJob.
      * @example
-     * // Update one ChannelUpdateDedup
-     * const channelUpdateDedup = await prisma.channelUpdateDedup.update({
+     * // Update one ChannelInboundJob
+     * const channelInboundJob = await prisma.channelInboundJob.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -29129,30 +29621,30 @@ export namespace Prisma {
      * })
      *
      */
-    update<T extends ChannelUpdateDedupUpdateArgs>(args: SelectSubset<T, ChannelUpdateDedupUpdateArgs<ExtArgs>>): Prisma__ChannelUpdateDedupClient<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends ChannelInboundJobUpdateArgs>(args: SelectSubset<T, ChannelInboundJobUpdateArgs<ExtArgs>>): Prisma__ChannelInboundJobClient<$Result.GetResult<Prisma.$ChannelInboundJobPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more ChannelUpdateDedups.
-     * @param {ChannelUpdateDedupDeleteManyArgs} args - Arguments to filter ChannelUpdateDedups to delete.
+     * Delete zero or more ChannelInboundJobs.
+     * @param {ChannelInboundJobDeleteManyArgs} args - Arguments to filter ChannelInboundJobs to delete.
      * @example
-     * // Delete a few ChannelUpdateDedups
-     * const { count } = await prisma.channelUpdateDedup.deleteMany({
+     * // Delete a few ChannelInboundJobs
+     * const { count } = await prisma.channelInboundJob.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      *
      */
-    deleteMany<T extends ChannelUpdateDedupDeleteManyArgs>(args?: SelectSubset<T, ChannelUpdateDedupDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends ChannelInboundJobDeleteManyArgs>(args?: SelectSubset<T, ChannelInboundJobDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more ChannelUpdateDedups.
+     * Update zero or more ChannelInboundJobs.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ChannelUpdateDedupUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {ChannelInboundJobUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many ChannelUpdateDedups
-     * const channelUpdateDedup = await prisma.channelUpdateDedup.updateMany({
+     * // Update many ChannelInboundJobs
+     * const channelInboundJob = await prisma.channelInboundJob.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -29162,14 +29654,14 @@ export namespace Prisma {
      * })
      *
      */
-    updateMany<T extends ChannelUpdateDedupUpdateManyArgs>(args: SelectSubset<T, ChannelUpdateDedupUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends ChannelInboundJobUpdateManyArgs>(args: SelectSubset<T, ChannelInboundJobUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more ChannelUpdateDedups and returns the data updated in the database.
-     * @param {ChannelUpdateDedupUpdateManyAndReturnArgs} args - Arguments to update many ChannelUpdateDedups.
+     * Update zero or more ChannelInboundJobs and returns the data updated in the database.
+     * @param {ChannelInboundJobUpdateManyAndReturnArgs} args - Arguments to update many ChannelInboundJobs.
      * @example
-     * // Update many ChannelUpdateDedups
-     * const channelUpdateDedup = await prisma.channelUpdateDedup.updateManyAndReturn({
+     * // Update many ChannelInboundJobs
+     * const channelInboundJob = await prisma.channelInboundJob.updateManyAndReturn({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -29178,8 +29670,8 @@ export namespace Prisma {
      *   ]
      * })
      *
-     * // Update zero or more ChannelUpdateDedups and only return the `id`
-     * const channelUpdateDedupWithIdOnly = await prisma.channelUpdateDedup.updateManyAndReturn({
+     * // Update zero or more ChannelInboundJobs and only return the `id`
+     * const channelInboundJobWithIdOnly = await prisma.channelInboundJob.updateManyAndReturn({
      *   select: { id: true },
      *   where: {
      *     // ... provide filter here
@@ -29192,56 +29684,56 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      *
      */
-    updateManyAndReturn<T extends ChannelUpdateDedupUpdateManyAndReturnArgs>(args: SelectSubset<T, ChannelUpdateDedupUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends ChannelInboundJobUpdateManyAndReturnArgs>(args: SelectSubset<T, ChannelInboundJobUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelInboundJobPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Create or update one ChannelUpdateDedup.
-     * @param {ChannelUpdateDedupUpsertArgs} args - Arguments to update or create a ChannelUpdateDedup.
+     * Create or update one ChannelInboundJob.
+     * @param {ChannelInboundJobUpsertArgs} args - Arguments to update or create a ChannelInboundJob.
      * @example
-     * // Update or create a ChannelUpdateDedup
-     * const channelUpdateDedup = await prisma.channelUpdateDedup.upsert({
+     * // Update or create a ChannelInboundJob
+     * const channelInboundJob = await prisma.channelInboundJob.upsert({
      *   create: {
-     *     // ... data to create a ChannelUpdateDedup
+     *     // ... data to create a ChannelInboundJob
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the ChannelUpdateDedup we want to update
+     *     // ... the filter for the ChannelInboundJob we want to update
      *   }
      * })
      */
-    upsert<T extends ChannelUpdateDedupUpsertArgs>(args: SelectSubset<T, ChannelUpdateDedupUpsertArgs<ExtArgs>>): Prisma__ChannelUpdateDedupClient<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends ChannelInboundJobUpsertArgs>(args: SelectSubset<T, ChannelInboundJobUpsertArgs<ExtArgs>>): Prisma__ChannelInboundJobClient<$Result.GetResult<Prisma.$ChannelInboundJobPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of ChannelUpdateDedups.
+     * Count the number of ChannelInboundJobs.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ChannelUpdateDedupCountArgs} args - Arguments to filter ChannelUpdateDedups to count.
+     * @param {ChannelInboundJobCountArgs} args - Arguments to filter ChannelInboundJobs to count.
      * @example
-     * // Count the number of ChannelUpdateDedups
-     * const count = await prisma.channelUpdateDedup.count({
+     * // Count the number of ChannelInboundJobs
+     * const count = await prisma.channelInboundJob.count({
      *   where: {
-     *     // ... the filter for the ChannelUpdateDedups we want to count
+     *     // ... the filter for the ChannelInboundJobs we want to count
      *   }
      * })
     **/
-    count<T extends ChannelUpdateDedupCountArgs>(
-      args?: Subset<T, ChannelUpdateDedupCountArgs>,
+    count<T extends ChannelInboundJobCountArgs>(
+      args?: Subset<T, ChannelInboundJobCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], ChannelUpdateDedupCountAggregateOutputType>
+          : GetScalarType<T['select'], ChannelInboundJobCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a ChannelUpdateDedup.
+     * Allows you to perform aggregations operations on a ChannelInboundJob.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ChannelUpdateDedupAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {ChannelInboundJobAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -29261,13 +29753,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends ChannelUpdateDedupAggregateArgs>(args: Subset<T, ChannelUpdateDedupAggregateArgs>): Prisma.PrismaPromise<GetChannelUpdateDedupAggregateType<T>>
+    aggregate<T extends ChannelInboundJobAggregateArgs>(args: Subset<T, ChannelInboundJobAggregateArgs>): Prisma.PrismaPromise<GetChannelInboundJobAggregateType<T>>
 
     /**
-     * Group by ChannelUpdateDedup.
+     * Group by ChannelInboundJob.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ChannelUpdateDedupGroupByArgs} args - Group by arguments.
+     * @param {ChannelInboundJobGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -29282,14 +29774,14 @@ export namespace Prisma {
      *
     **/
     groupBy<
-      T extends ChannelUpdateDedupGroupByArgs,
+      T extends ChannelInboundJobGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: ChannelUpdateDedupGroupByArgs['orderBy'] }
-        : { orderBy?: ChannelUpdateDedupGroupByArgs['orderBy'] },
+        ? { orderBy: ChannelInboundJobGroupByArgs['orderBy'] }
+        : { orderBy?: ChannelInboundJobGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -29338,20 +29830,2360 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, ChannelUpdateDedupGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetChannelUpdateDedupGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, ChannelInboundJobGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetChannelInboundJobGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the ChannelUpdateDedup model
+   * Fields of the ChannelInboundJob model
    */
-  readonly fields: ChannelUpdateDedupFieldRefs;
+  readonly fields: ChannelInboundJobFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for ChannelUpdateDedup.
+   * The delegate class that acts as a "Promise-like" for ChannelInboundJob.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__ChannelUpdateDedupClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__ChannelInboundJobClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    connection<T extends ChannelInboundJob$connectionArgs<ExtArgs> = {}>(args?: Subset<T, ChannelInboundJob$connectionArgs<ExtArgs>>): Prisma__ChannelConnectionClient<$Result.GetResult<Prisma.$ChannelConnectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    delivery<T extends ChannelInboundJob$deliveryArgs<ExtArgs> = {}>(args?: Subset<T, ChannelInboundJob$deliveryArgs<ExtArgs>>): Prisma__ChannelOutboundDeliveryClient<$Result.GetResult<Prisma.$ChannelOutboundDeliveryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ChannelInboundJob model
+   */
+  interface ChannelInboundJobFieldRefs {
+    readonly id: FieldRef<"ChannelInboundJob", 'String'>
+    readonly provider: FieldRef<"ChannelInboundJob", 'ChannelProvider'>
+    readonly externalUpdateId: FieldRef<"ChannelInboundJob", 'String'>
+    readonly channelConnectionId: FieldRef<"ChannelInboundJob", 'String'>
+    readonly externalSenderId: FieldRef<"ChannelInboundJob", 'String'>
+    readonly externalChatId: FieldRef<"ChannelInboundJob", 'String'>
+    readonly text: FieldRef<"ChannelInboundJob", 'String'>
+    readonly status: FieldRef<"ChannelInboundJob", 'ChannelJobStatus'>
+    readonly attempt: FieldRef<"ChannelInboundJob", 'Int'>
+    readonly availableAt: FieldRef<"ChannelInboundJob", 'DateTime'>
+    readonly leaseOwner: FieldRef<"ChannelInboundJob", 'String'>
+    readonly leaseExpiresAt: FieldRef<"ChannelInboundJob", 'DateTime'>
+    readonly processingStartedAt: FieldRef<"ChannelInboundJob", 'DateTime'>
+    readonly completedAt: FieldRef<"ChannelInboundJob", 'DateTime'>
+    readonly assistantTurnId: FieldRef<"ChannelInboundJob", 'String'>
+    readonly errorCategory: FieldRef<"ChannelInboundJob", 'String'>
+    readonly createdAt: FieldRef<"ChannelInboundJob", 'DateTime'>
+    readonly updatedAt: FieldRef<"ChannelInboundJob", 'DateTime'>
+  }
+
+
+  // Custom InputTypes
+  /**
+   * ChannelInboundJob findUnique
+   */
+  export type ChannelInboundJobFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelInboundJob
+     */
+    select?: ChannelInboundJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelInboundJob
+     */
+    omit?: ChannelInboundJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInboundJobInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelInboundJob to fetch.
+     */
+    where: ChannelInboundJobWhereUniqueInput
+  }
+
+  /**
+   * ChannelInboundJob findUniqueOrThrow
+   */
+  export type ChannelInboundJobFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelInboundJob
+     */
+    select?: ChannelInboundJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelInboundJob
+     */
+    omit?: ChannelInboundJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInboundJobInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelInboundJob to fetch.
+     */
+    where: ChannelInboundJobWhereUniqueInput
+  }
+
+  /**
+   * ChannelInboundJob findFirst
+   */
+  export type ChannelInboundJobFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelInboundJob
+     */
+    select?: ChannelInboundJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelInboundJob
+     */
+    omit?: ChannelInboundJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInboundJobInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelInboundJob to fetch.
+     */
+    where?: ChannelInboundJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelInboundJobs to fetch.
+     */
+    orderBy?: ChannelInboundJobOrderByWithRelationInput | ChannelInboundJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ChannelInboundJobs.
+     */
+    cursor?: ChannelInboundJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelInboundJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelInboundJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ChannelInboundJobs.
+     */
+    distinct?: ChannelInboundJobScalarFieldEnum | ChannelInboundJobScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelInboundJob findFirstOrThrow
+   */
+  export type ChannelInboundJobFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelInboundJob
+     */
+    select?: ChannelInboundJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelInboundJob
+     */
+    omit?: ChannelInboundJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInboundJobInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelInboundJob to fetch.
+     */
+    where?: ChannelInboundJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelInboundJobs to fetch.
+     */
+    orderBy?: ChannelInboundJobOrderByWithRelationInput | ChannelInboundJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ChannelInboundJobs.
+     */
+    cursor?: ChannelInboundJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelInboundJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelInboundJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ChannelInboundJobs.
+     */
+    distinct?: ChannelInboundJobScalarFieldEnum | ChannelInboundJobScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelInboundJob findMany
+   */
+  export type ChannelInboundJobFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelInboundJob
+     */
+    select?: ChannelInboundJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelInboundJob
+     */
+    omit?: ChannelInboundJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInboundJobInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelInboundJobs to fetch.
+     */
+    where?: ChannelInboundJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelInboundJobs to fetch.
+     */
+    orderBy?: ChannelInboundJobOrderByWithRelationInput | ChannelInboundJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing ChannelInboundJobs.
+     */
+    cursor?: ChannelInboundJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelInboundJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelInboundJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ChannelInboundJobs.
+     */
+    distinct?: ChannelInboundJobScalarFieldEnum | ChannelInboundJobScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelInboundJob create
+   */
+  export type ChannelInboundJobCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelInboundJob
+     */
+    select?: ChannelInboundJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelInboundJob
+     */
+    omit?: ChannelInboundJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInboundJobInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ChannelInboundJob.
+     */
+    data: XOR<ChannelInboundJobCreateInput, ChannelInboundJobUncheckedCreateInput>
+  }
+
+  /**
+   * ChannelInboundJob createMany
+   */
+  export type ChannelInboundJobCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ChannelInboundJobs.
+     */
+    data: ChannelInboundJobCreateManyInput | ChannelInboundJobCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ChannelInboundJob createManyAndReturn
+   */
+  export type ChannelInboundJobCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelInboundJob
+     */
+    select?: ChannelInboundJobSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelInboundJob
+     */
+    omit?: ChannelInboundJobOmit<ExtArgs> | null
+    /**
+     * The data used to create many ChannelInboundJobs.
+     */
+    data: ChannelInboundJobCreateManyInput | ChannelInboundJobCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInboundJobIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ChannelInboundJob update
+   */
+  export type ChannelInboundJobUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelInboundJob
+     */
+    select?: ChannelInboundJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelInboundJob
+     */
+    omit?: ChannelInboundJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInboundJobInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ChannelInboundJob.
+     */
+    data: XOR<ChannelInboundJobUpdateInput, ChannelInboundJobUncheckedUpdateInput>
+    /**
+     * Choose, which ChannelInboundJob to update.
+     */
+    where: ChannelInboundJobWhereUniqueInput
+  }
+
+  /**
+   * ChannelInboundJob updateMany
+   */
+  export type ChannelInboundJobUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ChannelInboundJobs.
+     */
+    data: XOR<ChannelInboundJobUpdateManyMutationInput, ChannelInboundJobUncheckedUpdateManyInput>
+    /**
+     * Filter which ChannelInboundJobs to update
+     */
+    where?: ChannelInboundJobWhereInput
+    /**
+     * Limit how many ChannelInboundJobs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ChannelInboundJob updateManyAndReturn
+   */
+  export type ChannelInboundJobUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelInboundJob
+     */
+    select?: ChannelInboundJobSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelInboundJob
+     */
+    omit?: ChannelInboundJobOmit<ExtArgs> | null
+    /**
+     * The data used to update ChannelInboundJobs.
+     */
+    data: XOR<ChannelInboundJobUpdateManyMutationInput, ChannelInboundJobUncheckedUpdateManyInput>
+    /**
+     * Filter which ChannelInboundJobs to update
+     */
+    where?: ChannelInboundJobWhereInput
+    /**
+     * Limit how many ChannelInboundJobs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInboundJobIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ChannelInboundJob upsert
+   */
+  export type ChannelInboundJobUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelInboundJob
+     */
+    select?: ChannelInboundJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelInboundJob
+     */
+    omit?: ChannelInboundJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInboundJobInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ChannelInboundJob to update in case it exists.
+     */
+    where: ChannelInboundJobWhereUniqueInput
+    /**
+     * In case the ChannelInboundJob found by the `where` argument doesn't exist, create a new ChannelInboundJob with this data.
+     */
+    create: XOR<ChannelInboundJobCreateInput, ChannelInboundJobUncheckedCreateInput>
+    /**
+     * In case the ChannelInboundJob was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ChannelInboundJobUpdateInput, ChannelInboundJobUncheckedUpdateInput>
+  }
+
+  /**
+   * ChannelInboundJob delete
+   */
+  export type ChannelInboundJobDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelInboundJob
+     */
+    select?: ChannelInboundJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelInboundJob
+     */
+    omit?: ChannelInboundJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInboundJobInclude<ExtArgs> | null
+    /**
+     * Filter which ChannelInboundJob to delete.
+     */
+    where: ChannelInboundJobWhereUniqueInput
+  }
+
+  /**
+   * ChannelInboundJob deleteMany
+   */
+  export type ChannelInboundJobDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChannelInboundJobs to delete
+     */
+    where?: ChannelInboundJobWhereInput
+    /**
+     * Limit how many ChannelInboundJobs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ChannelInboundJob.connection
+   */
+  export type ChannelInboundJob$connectionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelConnection
+     */
+    select?: ChannelConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelConnection
+     */
+    omit?: ChannelConnectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelConnectionInclude<ExtArgs> | null
+    where?: ChannelConnectionWhereInput
+  }
+
+  /**
+   * ChannelInboundJob.delivery
+   */
+  export type ChannelInboundJob$deliveryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelOutboundDelivery
+     */
+    select?: ChannelOutboundDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelOutboundDelivery
+     */
+    omit?: ChannelOutboundDeliveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelOutboundDeliveryInclude<ExtArgs> | null
+    where?: ChannelOutboundDeliveryWhereInput
+  }
+
+  /**
+   * ChannelInboundJob without action
+   */
+  export type ChannelInboundJobDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelInboundJob
+     */
+    select?: ChannelInboundJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelInboundJob
+     */
+    omit?: ChannelInboundJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelInboundJobInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ChannelOutboundDelivery
+   */
+
+  export type AggregateChannelOutboundDelivery = {
+    _count: ChannelOutboundDeliveryCountAggregateOutputType | null
+    _avg: ChannelOutboundDeliveryAvgAggregateOutputType | null
+    _sum: ChannelOutboundDeliverySumAggregateOutputType | null
+    _min: ChannelOutboundDeliveryMinAggregateOutputType | null
+    _max: ChannelOutboundDeliveryMaxAggregateOutputType | null
+  }
+
+  export type ChannelOutboundDeliveryAvgAggregateOutputType = {
+    attempt: number | null
+  }
+
+  export type ChannelOutboundDeliverySumAggregateOutputType = {
+    attempt: number | null
+  }
+
+  export type ChannelOutboundDeliveryMinAggregateOutputType = {
+    id: string | null
+    inboundJobId: string | null
+    provider: $Enums.ChannelProvider | null
+    destinationChatId: string | null
+    renderedText: string | null
+    status: $Enums.ChannelDeliveryStatus | null
+    attempt: number | null
+    availableAt: Date | null
+    leaseOwner: string | null
+    leaseExpiresAt: Date | null
+    providerMessageId: string | null
+    sentAt: Date | null
+    errorCategory: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ChannelOutboundDeliveryMaxAggregateOutputType = {
+    id: string | null
+    inboundJobId: string | null
+    provider: $Enums.ChannelProvider | null
+    destinationChatId: string | null
+    renderedText: string | null
+    status: $Enums.ChannelDeliveryStatus | null
+    attempt: number | null
+    availableAt: Date | null
+    leaseOwner: string | null
+    leaseExpiresAt: Date | null
+    providerMessageId: string | null
+    sentAt: Date | null
+    errorCategory: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ChannelOutboundDeliveryCountAggregateOutputType = {
+    id: number
+    inboundJobId: number
+    provider: number
+    destinationChatId: number
+    renderedText: number
+    status: number
+    attempt: number
+    availableAt: number
+    leaseOwner: number
+    leaseExpiresAt: number
+    providerMessageId: number
+    sentAt: number
+    errorCategory: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ChannelOutboundDeliveryAvgAggregateInputType = {
+    attempt?: true
+  }
+
+  export type ChannelOutboundDeliverySumAggregateInputType = {
+    attempt?: true
+  }
+
+  export type ChannelOutboundDeliveryMinAggregateInputType = {
+    id?: true
+    inboundJobId?: true
+    provider?: true
+    destinationChatId?: true
+    renderedText?: true
+    status?: true
+    attempt?: true
+    availableAt?: true
+    leaseOwner?: true
+    leaseExpiresAt?: true
+    providerMessageId?: true
+    sentAt?: true
+    errorCategory?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ChannelOutboundDeliveryMaxAggregateInputType = {
+    id?: true
+    inboundJobId?: true
+    provider?: true
+    destinationChatId?: true
+    renderedText?: true
+    status?: true
+    attempt?: true
+    availableAt?: true
+    leaseOwner?: true
+    leaseExpiresAt?: true
+    providerMessageId?: true
+    sentAt?: true
+    errorCategory?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ChannelOutboundDeliveryCountAggregateInputType = {
+    id?: true
+    inboundJobId?: true
+    provider?: true
+    destinationChatId?: true
+    renderedText?: true
+    status?: true
+    attempt?: true
+    availableAt?: true
+    leaseOwner?: true
+    leaseExpiresAt?: true
+    providerMessageId?: true
+    sentAt?: true
+    errorCategory?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ChannelOutboundDeliveryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChannelOutboundDelivery to aggregate.
+     */
+    where?: ChannelOutboundDeliveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelOutboundDeliveries to fetch.
+     */
+    orderBy?: ChannelOutboundDeliveryOrderByWithRelationInput | ChannelOutboundDeliveryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: ChannelOutboundDeliveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelOutboundDeliveries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelOutboundDeliveries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned ChannelOutboundDeliveries
+    **/
+    _count?: true | ChannelOutboundDeliveryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: ChannelOutboundDeliveryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: ChannelOutboundDeliverySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: ChannelOutboundDeliveryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: ChannelOutboundDeliveryMaxAggregateInputType
+  }
+
+  export type GetChannelOutboundDeliveryAggregateType<T extends ChannelOutboundDeliveryAggregateArgs> = {
+        [P in keyof T & keyof AggregateChannelOutboundDelivery]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateChannelOutboundDelivery[P]>
+      : GetScalarType<T[P], AggregateChannelOutboundDelivery[P]>
+  }
+
+
+
+
+  export type ChannelOutboundDeliveryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelOutboundDeliveryWhereInput
+    orderBy?: ChannelOutboundDeliveryOrderByWithAggregationInput | ChannelOutboundDeliveryOrderByWithAggregationInput[]
+    by: ChannelOutboundDeliveryScalarFieldEnum[] | ChannelOutboundDeliveryScalarFieldEnum
+    having?: ChannelOutboundDeliveryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ChannelOutboundDeliveryCountAggregateInputType | true
+    _avg?: ChannelOutboundDeliveryAvgAggregateInputType
+    _sum?: ChannelOutboundDeliverySumAggregateInputType
+    _min?: ChannelOutboundDeliveryMinAggregateInputType
+    _max?: ChannelOutboundDeliveryMaxAggregateInputType
+  }
+
+  export type ChannelOutboundDeliveryGroupByOutputType = {
+    id: string
+    inboundJobId: string
+    provider: $Enums.ChannelProvider
+    destinationChatId: string
+    renderedText: string
+    status: $Enums.ChannelDeliveryStatus
+    attempt: number
+    availableAt: Date
+    leaseOwner: string | null
+    leaseExpiresAt: Date | null
+    providerMessageId: string | null
+    sentAt: Date | null
+    errorCategory: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: ChannelOutboundDeliveryCountAggregateOutputType | null
+    _avg: ChannelOutboundDeliveryAvgAggregateOutputType | null
+    _sum: ChannelOutboundDeliverySumAggregateOutputType | null
+    _min: ChannelOutboundDeliveryMinAggregateOutputType | null
+    _max: ChannelOutboundDeliveryMaxAggregateOutputType | null
+  }
+
+  type GetChannelOutboundDeliveryGroupByPayload<T extends ChannelOutboundDeliveryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ChannelOutboundDeliveryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ChannelOutboundDeliveryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ChannelOutboundDeliveryGroupByOutputType[P]>
+            : GetScalarType<T[P], ChannelOutboundDeliveryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ChannelOutboundDeliverySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    inboundJobId?: boolean
+    provider?: boolean
+    destinationChatId?: boolean
+    renderedText?: boolean
+    status?: boolean
+    attempt?: boolean
+    availableAt?: boolean
+    leaseOwner?: boolean
+    leaseExpiresAt?: boolean
+    providerMessageId?: boolean
+    sentAt?: boolean
+    errorCategory?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    inboundJob?: boolean | ChannelInboundJobDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["channelOutboundDelivery"]>
+
+  export type ChannelOutboundDeliverySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    inboundJobId?: boolean
+    provider?: boolean
+    destinationChatId?: boolean
+    renderedText?: boolean
+    status?: boolean
+    attempt?: boolean
+    availableAt?: boolean
+    leaseOwner?: boolean
+    leaseExpiresAt?: boolean
+    providerMessageId?: boolean
+    sentAt?: boolean
+    errorCategory?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    inboundJob?: boolean | ChannelInboundJobDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["channelOutboundDelivery"]>
+
+  export type ChannelOutboundDeliverySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    inboundJobId?: boolean
+    provider?: boolean
+    destinationChatId?: boolean
+    renderedText?: boolean
+    status?: boolean
+    attempt?: boolean
+    availableAt?: boolean
+    leaseOwner?: boolean
+    leaseExpiresAt?: boolean
+    providerMessageId?: boolean
+    sentAt?: boolean
+    errorCategory?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    inboundJob?: boolean | ChannelInboundJobDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["channelOutboundDelivery"]>
+
+  export type ChannelOutboundDeliverySelectScalar = {
+    id?: boolean
+    inboundJobId?: boolean
+    provider?: boolean
+    destinationChatId?: boolean
+    renderedText?: boolean
+    status?: boolean
+    attempt?: boolean
+    availableAt?: boolean
+    leaseOwner?: boolean
+    leaseExpiresAt?: boolean
+    providerMessageId?: boolean
+    sentAt?: boolean
+    errorCategory?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ChannelOutboundDeliveryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "inboundJobId" | "provider" | "destinationChatId" | "renderedText" | "status" | "attempt" | "availableAt" | "leaseOwner" | "leaseExpiresAt" | "providerMessageId" | "sentAt" | "errorCategory" | "createdAt" | "updatedAt", ExtArgs["result"]["channelOutboundDelivery"]>
+  export type ChannelOutboundDeliveryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    inboundJob?: boolean | ChannelInboundJobDefaultArgs<ExtArgs>
+  }
+  export type ChannelOutboundDeliveryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    inboundJob?: boolean | ChannelInboundJobDefaultArgs<ExtArgs>
+  }
+  export type ChannelOutboundDeliveryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    inboundJob?: boolean | ChannelInboundJobDefaultArgs<ExtArgs>
+  }
+
+  export type $ChannelOutboundDeliveryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ChannelOutboundDelivery"
+    objects: {
+      inboundJob: Prisma.$ChannelInboundJobPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      inboundJobId: string
+      provider: $Enums.ChannelProvider
+      destinationChatId: string
+      renderedText: string
+      status: $Enums.ChannelDeliveryStatus
+      attempt: number
+      availableAt: Date
+      leaseOwner: string | null
+      leaseExpiresAt: Date | null
+      providerMessageId: string | null
+      sentAt: Date | null
+      errorCategory: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["channelOutboundDelivery"]>
+    composites: {}
+  }
+
+  type ChannelOutboundDeliveryGetPayload<S extends boolean | null | undefined | ChannelOutboundDeliveryDefaultArgs> = $Result.GetResult<Prisma.$ChannelOutboundDeliveryPayload, S>
+
+  type ChannelOutboundDeliveryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ChannelOutboundDeliveryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ChannelOutboundDeliveryCountAggregateInputType | true
+    }
+
+  export interface ChannelOutboundDeliveryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ChannelOutboundDelivery'], meta: { name: 'ChannelOutboundDelivery' } }
+    /**
+     * Find zero or one ChannelOutboundDelivery that matches the filter.
+     * @param {ChannelOutboundDeliveryFindUniqueArgs} args - Arguments to find a ChannelOutboundDelivery
+     * @example
+     * // Get one ChannelOutboundDelivery
+     * const channelOutboundDelivery = await prisma.channelOutboundDelivery.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ChannelOutboundDeliveryFindUniqueArgs>(args: SelectSubset<T, ChannelOutboundDeliveryFindUniqueArgs<ExtArgs>>): Prisma__ChannelOutboundDeliveryClient<$Result.GetResult<Prisma.$ChannelOutboundDeliveryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ChannelOutboundDelivery that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ChannelOutboundDeliveryFindUniqueOrThrowArgs} args - Arguments to find a ChannelOutboundDelivery
+     * @example
+     * // Get one ChannelOutboundDelivery
+     * const channelOutboundDelivery = await prisma.channelOutboundDelivery.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ChannelOutboundDeliveryFindUniqueOrThrowArgs>(args: SelectSubset<T, ChannelOutboundDeliveryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ChannelOutboundDeliveryClient<$Result.GetResult<Prisma.$ChannelOutboundDeliveryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ChannelOutboundDelivery that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelOutboundDeliveryFindFirstArgs} args - Arguments to find a ChannelOutboundDelivery
+     * @example
+     * // Get one ChannelOutboundDelivery
+     * const channelOutboundDelivery = await prisma.channelOutboundDelivery.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ChannelOutboundDeliveryFindFirstArgs>(args?: SelectSubset<T, ChannelOutboundDeliveryFindFirstArgs<ExtArgs>>): Prisma__ChannelOutboundDeliveryClient<$Result.GetResult<Prisma.$ChannelOutboundDeliveryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ChannelOutboundDelivery that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelOutboundDeliveryFindFirstOrThrowArgs} args - Arguments to find a ChannelOutboundDelivery
+     * @example
+     * // Get one ChannelOutboundDelivery
+     * const channelOutboundDelivery = await prisma.channelOutboundDelivery.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ChannelOutboundDeliveryFindFirstOrThrowArgs>(args?: SelectSubset<T, ChannelOutboundDeliveryFindFirstOrThrowArgs<ExtArgs>>): Prisma__ChannelOutboundDeliveryClient<$Result.GetResult<Prisma.$ChannelOutboundDeliveryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ChannelOutboundDeliveries that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelOutboundDeliveryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ChannelOutboundDeliveries
+     * const channelOutboundDeliveries = await prisma.channelOutboundDelivery.findMany()
+     *
+     * // Get first 10 ChannelOutboundDeliveries
+     * const channelOutboundDeliveries = await prisma.channelOutboundDelivery.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const channelOutboundDeliveryWithIdOnly = await prisma.channelOutboundDelivery.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends ChannelOutboundDeliveryFindManyArgs>(args?: SelectSubset<T, ChannelOutboundDeliveryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelOutboundDeliveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ChannelOutboundDelivery.
+     * @param {ChannelOutboundDeliveryCreateArgs} args - Arguments to create a ChannelOutboundDelivery.
+     * @example
+     * // Create one ChannelOutboundDelivery
+     * const ChannelOutboundDelivery = await prisma.channelOutboundDelivery.create({
+     *   data: {
+     *     // ... data to create a ChannelOutboundDelivery
+     *   }
+     * })
+     *
+     */
+    create<T extends ChannelOutboundDeliveryCreateArgs>(args: SelectSubset<T, ChannelOutboundDeliveryCreateArgs<ExtArgs>>): Prisma__ChannelOutboundDeliveryClient<$Result.GetResult<Prisma.$ChannelOutboundDeliveryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ChannelOutboundDeliveries.
+     * @param {ChannelOutboundDeliveryCreateManyArgs} args - Arguments to create many ChannelOutboundDeliveries.
+     * @example
+     * // Create many ChannelOutboundDeliveries
+     * const channelOutboundDelivery = await prisma.channelOutboundDelivery.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends ChannelOutboundDeliveryCreateManyArgs>(args?: SelectSubset<T, ChannelOutboundDeliveryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ChannelOutboundDeliveries and returns the data saved in the database.
+     * @param {ChannelOutboundDeliveryCreateManyAndReturnArgs} args - Arguments to create many ChannelOutboundDeliveries.
+     * @example
+     * // Create many ChannelOutboundDeliveries
+     * const channelOutboundDelivery = await prisma.channelOutboundDelivery.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many ChannelOutboundDeliveries and only return the `id`
+     * const channelOutboundDeliveryWithIdOnly = await prisma.channelOutboundDelivery.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends ChannelOutboundDeliveryCreateManyAndReturnArgs>(args?: SelectSubset<T, ChannelOutboundDeliveryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelOutboundDeliveryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ChannelOutboundDelivery.
+     * @param {ChannelOutboundDeliveryDeleteArgs} args - Arguments to delete one ChannelOutboundDelivery.
+     * @example
+     * // Delete one ChannelOutboundDelivery
+     * const ChannelOutboundDelivery = await prisma.channelOutboundDelivery.delete({
+     *   where: {
+     *     // ... filter to delete one ChannelOutboundDelivery
+     *   }
+     * })
+     *
+     */
+    delete<T extends ChannelOutboundDeliveryDeleteArgs>(args: SelectSubset<T, ChannelOutboundDeliveryDeleteArgs<ExtArgs>>): Prisma__ChannelOutboundDeliveryClient<$Result.GetResult<Prisma.$ChannelOutboundDeliveryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ChannelOutboundDelivery.
+     * @param {ChannelOutboundDeliveryUpdateArgs} args - Arguments to update one ChannelOutboundDelivery.
+     * @example
+     * // Update one ChannelOutboundDelivery
+     * const channelOutboundDelivery = await prisma.channelOutboundDelivery.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends ChannelOutboundDeliveryUpdateArgs>(args: SelectSubset<T, ChannelOutboundDeliveryUpdateArgs<ExtArgs>>): Prisma__ChannelOutboundDeliveryClient<$Result.GetResult<Prisma.$ChannelOutboundDeliveryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ChannelOutboundDeliveries.
+     * @param {ChannelOutboundDeliveryDeleteManyArgs} args - Arguments to filter ChannelOutboundDeliveries to delete.
+     * @example
+     * // Delete a few ChannelOutboundDeliveries
+     * const { count } = await prisma.channelOutboundDelivery.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends ChannelOutboundDeliveryDeleteManyArgs>(args?: SelectSubset<T, ChannelOutboundDeliveryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ChannelOutboundDeliveries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelOutboundDeliveryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ChannelOutboundDeliveries
+     * const channelOutboundDelivery = await prisma.channelOutboundDelivery.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends ChannelOutboundDeliveryUpdateManyArgs>(args: SelectSubset<T, ChannelOutboundDeliveryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ChannelOutboundDeliveries and returns the data updated in the database.
+     * @param {ChannelOutboundDeliveryUpdateManyAndReturnArgs} args - Arguments to update many ChannelOutboundDeliveries.
+     * @example
+     * // Update many ChannelOutboundDeliveries
+     * const channelOutboundDelivery = await prisma.channelOutboundDelivery.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more ChannelOutboundDeliveries and only return the `id`
+     * const channelOutboundDeliveryWithIdOnly = await prisma.channelOutboundDelivery.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends ChannelOutboundDeliveryUpdateManyAndReturnArgs>(args: SelectSubset<T, ChannelOutboundDeliveryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelOutboundDeliveryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ChannelOutboundDelivery.
+     * @param {ChannelOutboundDeliveryUpsertArgs} args - Arguments to update or create a ChannelOutboundDelivery.
+     * @example
+     * // Update or create a ChannelOutboundDelivery
+     * const channelOutboundDelivery = await prisma.channelOutboundDelivery.upsert({
+     *   create: {
+     *     // ... data to create a ChannelOutboundDelivery
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ChannelOutboundDelivery we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ChannelOutboundDeliveryUpsertArgs>(args: SelectSubset<T, ChannelOutboundDeliveryUpsertArgs<ExtArgs>>): Prisma__ChannelOutboundDeliveryClient<$Result.GetResult<Prisma.$ChannelOutboundDeliveryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ChannelOutboundDeliveries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelOutboundDeliveryCountArgs} args - Arguments to filter ChannelOutboundDeliveries to count.
+     * @example
+     * // Count the number of ChannelOutboundDeliveries
+     * const count = await prisma.channelOutboundDelivery.count({
+     *   where: {
+     *     // ... the filter for the ChannelOutboundDeliveries we want to count
+     *   }
+     * })
+    **/
+    count<T extends ChannelOutboundDeliveryCountArgs>(
+      args?: Subset<T, ChannelOutboundDeliveryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ChannelOutboundDeliveryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ChannelOutboundDelivery.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelOutboundDeliveryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ChannelOutboundDeliveryAggregateArgs>(args: Subset<T, ChannelOutboundDeliveryAggregateArgs>): Prisma.PrismaPromise<GetChannelOutboundDeliveryAggregateType<T>>
+
+    /**
+     * Group by ChannelOutboundDelivery.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelOutboundDeliveryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<
+      T extends ChannelOutboundDeliveryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ChannelOutboundDeliveryGroupByArgs['orderBy'] }
+        : { orderBy?: ChannelOutboundDeliveryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ChannelOutboundDeliveryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetChannelOutboundDeliveryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ChannelOutboundDelivery model
+   */
+  readonly fields: ChannelOutboundDeliveryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ChannelOutboundDelivery.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ChannelOutboundDeliveryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    inboundJob<T extends ChannelInboundJobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ChannelInboundJobDefaultArgs<ExtArgs>>): Prisma__ChannelInboundJobClient<$Result.GetResult<Prisma.$ChannelInboundJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ChannelOutboundDelivery model
+   */
+  interface ChannelOutboundDeliveryFieldRefs {
+    readonly id: FieldRef<"ChannelOutboundDelivery", 'String'>
+    readonly inboundJobId: FieldRef<"ChannelOutboundDelivery", 'String'>
+    readonly provider: FieldRef<"ChannelOutboundDelivery", 'ChannelProvider'>
+    readonly destinationChatId: FieldRef<"ChannelOutboundDelivery", 'String'>
+    readonly renderedText: FieldRef<"ChannelOutboundDelivery", 'String'>
+    readonly status: FieldRef<"ChannelOutboundDelivery", 'ChannelDeliveryStatus'>
+    readonly attempt: FieldRef<"ChannelOutboundDelivery", 'Int'>
+    readonly availableAt: FieldRef<"ChannelOutboundDelivery", 'DateTime'>
+    readonly leaseOwner: FieldRef<"ChannelOutboundDelivery", 'String'>
+    readonly leaseExpiresAt: FieldRef<"ChannelOutboundDelivery", 'DateTime'>
+    readonly providerMessageId: FieldRef<"ChannelOutboundDelivery", 'String'>
+    readonly sentAt: FieldRef<"ChannelOutboundDelivery", 'DateTime'>
+    readonly errorCategory: FieldRef<"ChannelOutboundDelivery", 'String'>
+    readonly createdAt: FieldRef<"ChannelOutboundDelivery", 'DateTime'>
+    readonly updatedAt: FieldRef<"ChannelOutboundDelivery", 'DateTime'>
+  }
+
+
+  // Custom InputTypes
+  /**
+   * ChannelOutboundDelivery findUnique
+   */
+  export type ChannelOutboundDeliveryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelOutboundDelivery
+     */
+    select?: ChannelOutboundDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelOutboundDelivery
+     */
+    omit?: ChannelOutboundDeliveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelOutboundDeliveryInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelOutboundDelivery to fetch.
+     */
+    where: ChannelOutboundDeliveryWhereUniqueInput
+  }
+
+  /**
+   * ChannelOutboundDelivery findUniqueOrThrow
+   */
+  export type ChannelOutboundDeliveryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelOutboundDelivery
+     */
+    select?: ChannelOutboundDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelOutboundDelivery
+     */
+    omit?: ChannelOutboundDeliveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelOutboundDeliveryInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelOutboundDelivery to fetch.
+     */
+    where: ChannelOutboundDeliveryWhereUniqueInput
+  }
+
+  /**
+   * ChannelOutboundDelivery findFirst
+   */
+  export type ChannelOutboundDeliveryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelOutboundDelivery
+     */
+    select?: ChannelOutboundDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelOutboundDelivery
+     */
+    omit?: ChannelOutboundDeliveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelOutboundDeliveryInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelOutboundDelivery to fetch.
+     */
+    where?: ChannelOutboundDeliveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelOutboundDeliveries to fetch.
+     */
+    orderBy?: ChannelOutboundDeliveryOrderByWithRelationInput | ChannelOutboundDeliveryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ChannelOutboundDeliveries.
+     */
+    cursor?: ChannelOutboundDeliveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelOutboundDeliveries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelOutboundDeliveries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ChannelOutboundDeliveries.
+     */
+    distinct?: ChannelOutboundDeliveryScalarFieldEnum | ChannelOutboundDeliveryScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelOutboundDelivery findFirstOrThrow
+   */
+  export type ChannelOutboundDeliveryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelOutboundDelivery
+     */
+    select?: ChannelOutboundDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelOutboundDelivery
+     */
+    omit?: ChannelOutboundDeliveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelOutboundDeliveryInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelOutboundDelivery to fetch.
+     */
+    where?: ChannelOutboundDeliveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelOutboundDeliveries to fetch.
+     */
+    orderBy?: ChannelOutboundDeliveryOrderByWithRelationInput | ChannelOutboundDeliveryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ChannelOutboundDeliveries.
+     */
+    cursor?: ChannelOutboundDeliveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelOutboundDeliveries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelOutboundDeliveries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ChannelOutboundDeliveries.
+     */
+    distinct?: ChannelOutboundDeliveryScalarFieldEnum | ChannelOutboundDeliveryScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelOutboundDelivery findMany
+   */
+  export type ChannelOutboundDeliveryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelOutboundDelivery
+     */
+    select?: ChannelOutboundDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelOutboundDelivery
+     */
+    omit?: ChannelOutboundDeliveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelOutboundDeliveryInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelOutboundDeliveries to fetch.
+     */
+    where?: ChannelOutboundDeliveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelOutboundDeliveries to fetch.
+     */
+    orderBy?: ChannelOutboundDeliveryOrderByWithRelationInput | ChannelOutboundDeliveryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing ChannelOutboundDeliveries.
+     */
+    cursor?: ChannelOutboundDeliveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelOutboundDeliveries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelOutboundDeliveries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ChannelOutboundDeliveries.
+     */
+    distinct?: ChannelOutboundDeliveryScalarFieldEnum | ChannelOutboundDeliveryScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelOutboundDelivery create
+   */
+  export type ChannelOutboundDeliveryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelOutboundDelivery
+     */
+    select?: ChannelOutboundDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelOutboundDelivery
+     */
+    omit?: ChannelOutboundDeliveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelOutboundDeliveryInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ChannelOutboundDelivery.
+     */
+    data: XOR<ChannelOutboundDeliveryCreateInput, ChannelOutboundDeliveryUncheckedCreateInput>
+  }
+
+  /**
+   * ChannelOutboundDelivery createMany
+   */
+  export type ChannelOutboundDeliveryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ChannelOutboundDeliveries.
+     */
+    data: ChannelOutboundDeliveryCreateManyInput | ChannelOutboundDeliveryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ChannelOutboundDelivery createManyAndReturn
+   */
+  export type ChannelOutboundDeliveryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelOutboundDelivery
+     */
+    select?: ChannelOutboundDeliverySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelOutboundDelivery
+     */
+    omit?: ChannelOutboundDeliveryOmit<ExtArgs> | null
+    /**
+     * The data used to create many ChannelOutboundDeliveries.
+     */
+    data: ChannelOutboundDeliveryCreateManyInput | ChannelOutboundDeliveryCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelOutboundDeliveryIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ChannelOutboundDelivery update
+   */
+  export type ChannelOutboundDeliveryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelOutboundDelivery
+     */
+    select?: ChannelOutboundDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelOutboundDelivery
+     */
+    omit?: ChannelOutboundDeliveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelOutboundDeliveryInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ChannelOutboundDelivery.
+     */
+    data: XOR<ChannelOutboundDeliveryUpdateInput, ChannelOutboundDeliveryUncheckedUpdateInput>
+    /**
+     * Choose, which ChannelOutboundDelivery to update.
+     */
+    where: ChannelOutboundDeliveryWhereUniqueInput
+  }
+
+  /**
+   * ChannelOutboundDelivery updateMany
+   */
+  export type ChannelOutboundDeliveryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ChannelOutboundDeliveries.
+     */
+    data: XOR<ChannelOutboundDeliveryUpdateManyMutationInput, ChannelOutboundDeliveryUncheckedUpdateManyInput>
+    /**
+     * Filter which ChannelOutboundDeliveries to update
+     */
+    where?: ChannelOutboundDeliveryWhereInput
+    /**
+     * Limit how many ChannelOutboundDeliveries to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ChannelOutboundDelivery updateManyAndReturn
+   */
+  export type ChannelOutboundDeliveryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelOutboundDelivery
+     */
+    select?: ChannelOutboundDeliverySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelOutboundDelivery
+     */
+    omit?: ChannelOutboundDeliveryOmit<ExtArgs> | null
+    /**
+     * The data used to update ChannelOutboundDeliveries.
+     */
+    data: XOR<ChannelOutboundDeliveryUpdateManyMutationInput, ChannelOutboundDeliveryUncheckedUpdateManyInput>
+    /**
+     * Filter which ChannelOutboundDeliveries to update
+     */
+    where?: ChannelOutboundDeliveryWhereInput
+    /**
+     * Limit how many ChannelOutboundDeliveries to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelOutboundDeliveryIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ChannelOutboundDelivery upsert
+   */
+  export type ChannelOutboundDeliveryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelOutboundDelivery
+     */
+    select?: ChannelOutboundDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelOutboundDelivery
+     */
+    omit?: ChannelOutboundDeliveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelOutboundDeliveryInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ChannelOutboundDelivery to update in case it exists.
+     */
+    where: ChannelOutboundDeliveryWhereUniqueInput
+    /**
+     * In case the ChannelOutboundDelivery found by the `where` argument doesn't exist, create a new ChannelOutboundDelivery with this data.
+     */
+    create: XOR<ChannelOutboundDeliveryCreateInput, ChannelOutboundDeliveryUncheckedCreateInput>
+    /**
+     * In case the ChannelOutboundDelivery was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ChannelOutboundDeliveryUpdateInput, ChannelOutboundDeliveryUncheckedUpdateInput>
+  }
+
+  /**
+   * ChannelOutboundDelivery delete
+   */
+  export type ChannelOutboundDeliveryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelOutboundDelivery
+     */
+    select?: ChannelOutboundDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelOutboundDelivery
+     */
+    omit?: ChannelOutboundDeliveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelOutboundDeliveryInclude<ExtArgs> | null
+    /**
+     * Filter which ChannelOutboundDelivery to delete.
+     */
+    where: ChannelOutboundDeliveryWhereUniqueInput
+  }
+
+  /**
+   * ChannelOutboundDelivery deleteMany
+   */
+  export type ChannelOutboundDeliveryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChannelOutboundDeliveries to delete
+     */
+    where?: ChannelOutboundDeliveryWhereInput
+    /**
+     * Limit how many ChannelOutboundDeliveries to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ChannelOutboundDelivery without action
+   */
+  export type ChannelOutboundDeliveryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelOutboundDelivery
+     */
+    select?: ChannelOutboundDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelOutboundDelivery
+     */
+    omit?: ChannelOutboundDeliveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelOutboundDeliveryInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ChannelAssistantOperation
+   */
+
+  export type AggregateChannelAssistantOperation = {
+    _count: ChannelAssistantOperationCountAggregateOutputType | null
+    _min: ChannelAssistantOperationMinAggregateOutputType | null
+    _max: ChannelAssistantOperationMaxAggregateOutputType | null
+  }
+
+  export type ChannelAssistantOperationMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    turnId: string | null
+    renderedText: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ChannelAssistantOperationMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    turnId: string | null
+    renderedText: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ChannelAssistantOperationCountAggregateOutputType = {
+    id: number
+    userId: number
+    turnId: number
+    renderedText: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ChannelAssistantOperationMinAggregateInputType = {
+    id?: true
+    userId?: true
+    turnId?: true
+    renderedText?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ChannelAssistantOperationMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    turnId?: true
+    renderedText?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ChannelAssistantOperationCountAggregateInputType = {
+    id?: true
+    userId?: true
+    turnId?: true
+    renderedText?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ChannelAssistantOperationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChannelAssistantOperation to aggregate.
+     */
+    where?: ChannelAssistantOperationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelAssistantOperations to fetch.
+     */
+    orderBy?: ChannelAssistantOperationOrderByWithRelationInput | ChannelAssistantOperationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: ChannelAssistantOperationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelAssistantOperations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelAssistantOperations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned ChannelAssistantOperations
+    **/
+    _count?: true | ChannelAssistantOperationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: ChannelAssistantOperationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: ChannelAssistantOperationMaxAggregateInputType
+  }
+
+  export type GetChannelAssistantOperationAggregateType<T extends ChannelAssistantOperationAggregateArgs> = {
+        [P in keyof T & keyof AggregateChannelAssistantOperation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateChannelAssistantOperation[P]>
+      : GetScalarType<T[P], AggregateChannelAssistantOperation[P]>
+  }
+
+
+
+
+  export type ChannelAssistantOperationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelAssistantOperationWhereInput
+    orderBy?: ChannelAssistantOperationOrderByWithAggregationInput | ChannelAssistantOperationOrderByWithAggregationInput[]
+    by: ChannelAssistantOperationScalarFieldEnum[] | ChannelAssistantOperationScalarFieldEnum
+    having?: ChannelAssistantOperationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ChannelAssistantOperationCountAggregateInputType | true
+    _min?: ChannelAssistantOperationMinAggregateInputType
+    _max?: ChannelAssistantOperationMaxAggregateInputType
+  }
+
+  export type ChannelAssistantOperationGroupByOutputType = {
+    id: string
+    userId: string
+    turnId: string | null
+    renderedText: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: ChannelAssistantOperationCountAggregateOutputType | null
+    _min: ChannelAssistantOperationMinAggregateOutputType | null
+    _max: ChannelAssistantOperationMaxAggregateOutputType | null
+  }
+
+  type GetChannelAssistantOperationGroupByPayload<T extends ChannelAssistantOperationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ChannelAssistantOperationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ChannelAssistantOperationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ChannelAssistantOperationGroupByOutputType[P]>
+            : GetScalarType<T[P], ChannelAssistantOperationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ChannelAssistantOperationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    turnId?: boolean
+    renderedText?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["channelAssistantOperation"]>
+
+  export type ChannelAssistantOperationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    turnId?: boolean
+    renderedText?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["channelAssistantOperation"]>
+
+  export type ChannelAssistantOperationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    turnId?: boolean
+    renderedText?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["channelAssistantOperation"]>
+
+  export type ChannelAssistantOperationSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    turnId?: boolean
+    renderedText?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ChannelAssistantOperationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "turnId" | "renderedText" | "createdAt" | "updatedAt", ExtArgs["result"]["channelAssistantOperation"]>
+
+  export type $ChannelAssistantOperationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ChannelAssistantOperation"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      turnId: string | null
+      renderedText: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["channelAssistantOperation"]>
+    composites: {}
+  }
+
+  type ChannelAssistantOperationGetPayload<S extends boolean | null | undefined | ChannelAssistantOperationDefaultArgs> = $Result.GetResult<Prisma.$ChannelAssistantOperationPayload, S>
+
+  type ChannelAssistantOperationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ChannelAssistantOperationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ChannelAssistantOperationCountAggregateInputType | true
+    }
+
+  export interface ChannelAssistantOperationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ChannelAssistantOperation'], meta: { name: 'ChannelAssistantOperation' } }
+    /**
+     * Find zero or one ChannelAssistantOperation that matches the filter.
+     * @param {ChannelAssistantOperationFindUniqueArgs} args - Arguments to find a ChannelAssistantOperation
+     * @example
+     * // Get one ChannelAssistantOperation
+     * const channelAssistantOperation = await prisma.channelAssistantOperation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ChannelAssistantOperationFindUniqueArgs>(args: SelectSubset<T, ChannelAssistantOperationFindUniqueArgs<ExtArgs>>): Prisma__ChannelAssistantOperationClient<$Result.GetResult<Prisma.$ChannelAssistantOperationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ChannelAssistantOperation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ChannelAssistantOperationFindUniqueOrThrowArgs} args - Arguments to find a ChannelAssistantOperation
+     * @example
+     * // Get one ChannelAssistantOperation
+     * const channelAssistantOperation = await prisma.channelAssistantOperation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ChannelAssistantOperationFindUniqueOrThrowArgs>(args: SelectSubset<T, ChannelAssistantOperationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ChannelAssistantOperationClient<$Result.GetResult<Prisma.$ChannelAssistantOperationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ChannelAssistantOperation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelAssistantOperationFindFirstArgs} args - Arguments to find a ChannelAssistantOperation
+     * @example
+     * // Get one ChannelAssistantOperation
+     * const channelAssistantOperation = await prisma.channelAssistantOperation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ChannelAssistantOperationFindFirstArgs>(args?: SelectSubset<T, ChannelAssistantOperationFindFirstArgs<ExtArgs>>): Prisma__ChannelAssistantOperationClient<$Result.GetResult<Prisma.$ChannelAssistantOperationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ChannelAssistantOperation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelAssistantOperationFindFirstOrThrowArgs} args - Arguments to find a ChannelAssistantOperation
+     * @example
+     * // Get one ChannelAssistantOperation
+     * const channelAssistantOperation = await prisma.channelAssistantOperation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ChannelAssistantOperationFindFirstOrThrowArgs>(args?: SelectSubset<T, ChannelAssistantOperationFindFirstOrThrowArgs<ExtArgs>>): Prisma__ChannelAssistantOperationClient<$Result.GetResult<Prisma.$ChannelAssistantOperationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ChannelAssistantOperations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelAssistantOperationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ChannelAssistantOperations
+     * const channelAssistantOperations = await prisma.channelAssistantOperation.findMany()
+     *
+     * // Get first 10 ChannelAssistantOperations
+     * const channelAssistantOperations = await prisma.channelAssistantOperation.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const channelAssistantOperationWithIdOnly = await prisma.channelAssistantOperation.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends ChannelAssistantOperationFindManyArgs>(args?: SelectSubset<T, ChannelAssistantOperationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelAssistantOperationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ChannelAssistantOperation.
+     * @param {ChannelAssistantOperationCreateArgs} args - Arguments to create a ChannelAssistantOperation.
+     * @example
+     * // Create one ChannelAssistantOperation
+     * const ChannelAssistantOperation = await prisma.channelAssistantOperation.create({
+     *   data: {
+     *     // ... data to create a ChannelAssistantOperation
+     *   }
+     * })
+     *
+     */
+    create<T extends ChannelAssistantOperationCreateArgs>(args: SelectSubset<T, ChannelAssistantOperationCreateArgs<ExtArgs>>): Prisma__ChannelAssistantOperationClient<$Result.GetResult<Prisma.$ChannelAssistantOperationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ChannelAssistantOperations.
+     * @param {ChannelAssistantOperationCreateManyArgs} args - Arguments to create many ChannelAssistantOperations.
+     * @example
+     * // Create many ChannelAssistantOperations
+     * const channelAssistantOperation = await prisma.channelAssistantOperation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends ChannelAssistantOperationCreateManyArgs>(args?: SelectSubset<T, ChannelAssistantOperationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ChannelAssistantOperations and returns the data saved in the database.
+     * @param {ChannelAssistantOperationCreateManyAndReturnArgs} args - Arguments to create many ChannelAssistantOperations.
+     * @example
+     * // Create many ChannelAssistantOperations
+     * const channelAssistantOperation = await prisma.channelAssistantOperation.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many ChannelAssistantOperations and only return the `id`
+     * const channelAssistantOperationWithIdOnly = await prisma.channelAssistantOperation.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends ChannelAssistantOperationCreateManyAndReturnArgs>(args?: SelectSubset<T, ChannelAssistantOperationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelAssistantOperationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ChannelAssistantOperation.
+     * @param {ChannelAssistantOperationDeleteArgs} args - Arguments to delete one ChannelAssistantOperation.
+     * @example
+     * // Delete one ChannelAssistantOperation
+     * const ChannelAssistantOperation = await prisma.channelAssistantOperation.delete({
+     *   where: {
+     *     // ... filter to delete one ChannelAssistantOperation
+     *   }
+     * })
+     *
+     */
+    delete<T extends ChannelAssistantOperationDeleteArgs>(args: SelectSubset<T, ChannelAssistantOperationDeleteArgs<ExtArgs>>): Prisma__ChannelAssistantOperationClient<$Result.GetResult<Prisma.$ChannelAssistantOperationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ChannelAssistantOperation.
+     * @param {ChannelAssistantOperationUpdateArgs} args - Arguments to update one ChannelAssistantOperation.
+     * @example
+     * // Update one ChannelAssistantOperation
+     * const channelAssistantOperation = await prisma.channelAssistantOperation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends ChannelAssistantOperationUpdateArgs>(args: SelectSubset<T, ChannelAssistantOperationUpdateArgs<ExtArgs>>): Prisma__ChannelAssistantOperationClient<$Result.GetResult<Prisma.$ChannelAssistantOperationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ChannelAssistantOperations.
+     * @param {ChannelAssistantOperationDeleteManyArgs} args - Arguments to filter ChannelAssistantOperations to delete.
+     * @example
+     * // Delete a few ChannelAssistantOperations
+     * const { count } = await prisma.channelAssistantOperation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends ChannelAssistantOperationDeleteManyArgs>(args?: SelectSubset<T, ChannelAssistantOperationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ChannelAssistantOperations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelAssistantOperationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ChannelAssistantOperations
+     * const channelAssistantOperation = await prisma.channelAssistantOperation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends ChannelAssistantOperationUpdateManyArgs>(args: SelectSubset<T, ChannelAssistantOperationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ChannelAssistantOperations and returns the data updated in the database.
+     * @param {ChannelAssistantOperationUpdateManyAndReturnArgs} args - Arguments to update many ChannelAssistantOperations.
+     * @example
+     * // Update many ChannelAssistantOperations
+     * const channelAssistantOperation = await prisma.channelAssistantOperation.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more ChannelAssistantOperations and only return the `id`
+     * const channelAssistantOperationWithIdOnly = await prisma.channelAssistantOperation.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends ChannelAssistantOperationUpdateManyAndReturnArgs>(args: SelectSubset<T, ChannelAssistantOperationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelAssistantOperationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ChannelAssistantOperation.
+     * @param {ChannelAssistantOperationUpsertArgs} args - Arguments to update or create a ChannelAssistantOperation.
+     * @example
+     * // Update or create a ChannelAssistantOperation
+     * const channelAssistantOperation = await prisma.channelAssistantOperation.upsert({
+     *   create: {
+     *     // ... data to create a ChannelAssistantOperation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ChannelAssistantOperation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ChannelAssistantOperationUpsertArgs>(args: SelectSubset<T, ChannelAssistantOperationUpsertArgs<ExtArgs>>): Prisma__ChannelAssistantOperationClient<$Result.GetResult<Prisma.$ChannelAssistantOperationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ChannelAssistantOperations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelAssistantOperationCountArgs} args - Arguments to filter ChannelAssistantOperations to count.
+     * @example
+     * // Count the number of ChannelAssistantOperations
+     * const count = await prisma.channelAssistantOperation.count({
+     *   where: {
+     *     // ... the filter for the ChannelAssistantOperations we want to count
+     *   }
+     * })
+    **/
+    count<T extends ChannelAssistantOperationCountArgs>(
+      args?: Subset<T, ChannelAssistantOperationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ChannelAssistantOperationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ChannelAssistantOperation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelAssistantOperationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ChannelAssistantOperationAggregateArgs>(args: Subset<T, ChannelAssistantOperationAggregateArgs>): Prisma.PrismaPromise<GetChannelAssistantOperationAggregateType<T>>
+
+    /**
+     * Group by ChannelAssistantOperation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelAssistantOperationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<
+      T extends ChannelAssistantOperationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ChannelAssistantOperationGroupByArgs['orderBy'] }
+        : { orderBy?: ChannelAssistantOperationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ChannelAssistantOperationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetChannelAssistantOperationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ChannelAssistantOperation model
+   */
+  readonly fields: ChannelAssistantOperationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ChannelAssistantOperation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ChannelAssistantOperationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -29379,381 +32211,383 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the ChannelUpdateDedup model
+   * Fields of the ChannelAssistantOperation model
    */
-  interface ChannelUpdateDedupFieldRefs {
-    readonly id: FieldRef<"ChannelUpdateDedup", 'String'>
-    readonly provider: FieldRef<"ChannelUpdateDedup", 'ChannelProvider'>
-    readonly externalUpdateId: FieldRef<"ChannelUpdateDedup", 'String'>
-    readonly createdAt: FieldRef<"ChannelUpdateDedup", 'DateTime'>
+  interface ChannelAssistantOperationFieldRefs {
+    readonly id: FieldRef<"ChannelAssistantOperation", 'String'>
+    readonly userId: FieldRef<"ChannelAssistantOperation", 'String'>
+    readonly turnId: FieldRef<"ChannelAssistantOperation", 'String'>
+    readonly renderedText: FieldRef<"ChannelAssistantOperation", 'String'>
+    readonly createdAt: FieldRef<"ChannelAssistantOperation", 'DateTime'>
+    readonly updatedAt: FieldRef<"ChannelAssistantOperation", 'DateTime'>
   }
 
 
   // Custom InputTypes
   /**
-   * ChannelUpdateDedup findUnique
+   * ChannelAssistantOperation findUnique
    */
-  export type ChannelUpdateDedupFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ChannelAssistantOperationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ChannelUpdateDedup
+     * Select specific fields to fetch from the ChannelAssistantOperation
      */
-    select?: ChannelUpdateDedupSelect<ExtArgs> | null
+    select?: ChannelAssistantOperationSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ChannelUpdateDedup
+     * Omit specific fields from the ChannelAssistantOperation
      */
-    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    omit?: ChannelAssistantOperationOmit<ExtArgs> | null
     /**
-     * Filter, which ChannelUpdateDedup to fetch.
+     * Filter, which ChannelAssistantOperation to fetch.
      */
-    where: ChannelUpdateDedupWhereUniqueInput
+    where: ChannelAssistantOperationWhereUniqueInput
   }
 
   /**
-   * ChannelUpdateDedup findUniqueOrThrow
+   * ChannelAssistantOperation findUniqueOrThrow
    */
-  export type ChannelUpdateDedupFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ChannelAssistantOperationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ChannelUpdateDedup
+     * Select specific fields to fetch from the ChannelAssistantOperation
      */
-    select?: ChannelUpdateDedupSelect<ExtArgs> | null
+    select?: ChannelAssistantOperationSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ChannelUpdateDedup
+     * Omit specific fields from the ChannelAssistantOperation
      */
-    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    omit?: ChannelAssistantOperationOmit<ExtArgs> | null
     /**
-     * Filter, which ChannelUpdateDedup to fetch.
+     * Filter, which ChannelAssistantOperation to fetch.
      */
-    where: ChannelUpdateDedupWhereUniqueInput
+    where: ChannelAssistantOperationWhereUniqueInput
   }
 
   /**
-   * ChannelUpdateDedup findFirst
+   * ChannelAssistantOperation findFirst
    */
-  export type ChannelUpdateDedupFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ChannelAssistantOperationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ChannelUpdateDedup
+     * Select specific fields to fetch from the ChannelAssistantOperation
      */
-    select?: ChannelUpdateDedupSelect<ExtArgs> | null
+    select?: ChannelAssistantOperationSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ChannelUpdateDedup
+     * Omit specific fields from the ChannelAssistantOperation
      */
-    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    omit?: ChannelAssistantOperationOmit<ExtArgs> | null
     /**
-     * Filter, which ChannelUpdateDedup to fetch.
+     * Filter, which ChannelAssistantOperation to fetch.
      */
-    where?: ChannelUpdateDedupWhereInput
+    where?: ChannelAssistantOperationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      *
-     * Determine the order of ChannelUpdateDedups to fetch.
+     * Determine the order of ChannelAssistantOperations to fetch.
      */
-    orderBy?: ChannelUpdateDedupOrderByWithRelationInput | ChannelUpdateDedupOrderByWithRelationInput[]
+    orderBy?: ChannelAssistantOperationOrderByWithRelationInput | ChannelAssistantOperationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      *
-     * Sets the position for searching for ChannelUpdateDedups.
+     * Sets the position for searching for ChannelAssistantOperations.
      */
-    cursor?: ChannelUpdateDedupWhereUniqueInput
+    cursor?: ChannelAssistantOperationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      *
-     * Take `±n` ChannelUpdateDedups from the position of the cursor.
+     * Take `±n` ChannelAssistantOperations from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      *
-     * Skip the first `n` ChannelUpdateDedups.
+     * Skip the first `n` ChannelAssistantOperations.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      *
-     * Filter by unique combinations of ChannelUpdateDedups.
+     * Filter by unique combinations of ChannelAssistantOperations.
      */
-    distinct?: ChannelUpdateDedupScalarFieldEnum | ChannelUpdateDedupScalarFieldEnum[]
+    distinct?: ChannelAssistantOperationScalarFieldEnum | ChannelAssistantOperationScalarFieldEnum[]
   }
 
   /**
-   * ChannelUpdateDedup findFirstOrThrow
+   * ChannelAssistantOperation findFirstOrThrow
    */
-  export type ChannelUpdateDedupFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ChannelAssistantOperationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ChannelUpdateDedup
+     * Select specific fields to fetch from the ChannelAssistantOperation
      */
-    select?: ChannelUpdateDedupSelect<ExtArgs> | null
+    select?: ChannelAssistantOperationSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ChannelUpdateDedup
+     * Omit specific fields from the ChannelAssistantOperation
      */
-    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    omit?: ChannelAssistantOperationOmit<ExtArgs> | null
     /**
-     * Filter, which ChannelUpdateDedup to fetch.
+     * Filter, which ChannelAssistantOperation to fetch.
      */
-    where?: ChannelUpdateDedupWhereInput
+    where?: ChannelAssistantOperationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      *
-     * Determine the order of ChannelUpdateDedups to fetch.
+     * Determine the order of ChannelAssistantOperations to fetch.
      */
-    orderBy?: ChannelUpdateDedupOrderByWithRelationInput | ChannelUpdateDedupOrderByWithRelationInput[]
+    orderBy?: ChannelAssistantOperationOrderByWithRelationInput | ChannelAssistantOperationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      *
-     * Sets the position for searching for ChannelUpdateDedups.
+     * Sets the position for searching for ChannelAssistantOperations.
      */
-    cursor?: ChannelUpdateDedupWhereUniqueInput
+    cursor?: ChannelAssistantOperationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      *
-     * Take `±n` ChannelUpdateDedups from the position of the cursor.
+     * Take `±n` ChannelAssistantOperations from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      *
-     * Skip the first `n` ChannelUpdateDedups.
+     * Skip the first `n` ChannelAssistantOperations.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      *
-     * Filter by unique combinations of ChannelUpdateDedups.
+     * Filter by unique combinations of ChannelAssistantOperations.
      */
-    distinct?: ChannelUpdateDedupScalarFieldEnum | ChannelUpdateDedupScalarFieldEnum[]
+    distinct?: ChannelAssistantOperationScalarFieldEnum | ChannelAssistantOperationScalarFieldEnum[]
   }
 
   /**
-   * ChannelUpdateDedup findMany
+   * ChannelAssistantOperation findMany
    */
-  export type ChannelUpdateDedupFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ChannelAssistantOperationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ChannelUpdateDedup
+     * Select specific fields to fetch from the ChannelAssistantOperation
      */
-    select?: ChannelUpdateDedupSelect<ExtArgs> | null
+    select?: ChannelAssistantOperationSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ChannelUpdateDedup
+     * Omit specific fields from the ChannelAssistantOperation
      */
-    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    omit?: ChannelAssistantOperationOmit<ExtArgs> | null
     /**
-     * Filter, which ChannelUpdateDedups to fetch.
+     * Filter, which ChannelAssistantOperations to fetch.
      */
-    where?: ChannelUpdateDedupWhereInput
+    where?: ChannelAssistantOperationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      *
-     * Determine the order of ChannelUpdateDedups to fetch.
+     * Determine the order of ChannelAssistantOperations to fetch.
      */
-    orderBy?: ChannelUpdateDedupOrderByWithRelationInput | ChannelUpdateDedupOrderByWithRelationInput[]
+    orderBy?: ChannelAssistantOperationOrderByWithRelationInput | ChannelAssistantOperationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      *
-     * Sets the position for listing ChannelUpdateDedups.
+     * Sets the position for listing ChannelAssistantOperations.
      */
-    cursor?: ChannelUpdateDedupWhereUniqueInput
+    cursor?: ChannelAssistantOperationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      *
-     * Take `±n` ChannelUpdateDedups from the position of the cursor.
+     * Take `±n` ChannelAssistantOperations from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      *
-     * Skip the first `n` ChannelUpdateDedups.
+     * Skip the first `n` ChannelAssistantOperations.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      *
-     * Filter by unique combinations of ChannelUpdateDedups.
+     * Filter by unique combinations of ChannelAssistantOperations.
      */
-    distinct?: ChannelUpdateDedupScalarFieldEnum | ChannelUpdateDedupScalarFieldEnum[]
+    distinct?: ChannelAssistantOperationScalarFieldEnum | ChannelAssistantOperationScalarFieldEnum[]
   }
 
   /**
-   * ChannelUpdateDedup create
+   * ChannelAssistantOperation create
    */
-  export type ChannelUpdateDedupCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ChannelAssistantOperationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ChannelUpdateDedup
+     * Select specific fields to fetch from the ChannelAssistantOperation
      */
-    select?: ChannelUpdateDedupSelect<ExtArgs> | null
+    select?: ChannelAssistantOperationSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ChannelUpdateDedup
+     * Omit specific fields from the ChannelAssistantOperation
      */
-    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    omit?: ChannelAssistantOperationOmit<ExtArgs> | null
     /**
-     * The data needed to create a ChannelUpdateDedup.
+     * The data needed to create a ChannelAssistantOperation.
      */
-    data: XOR<ChannelUpdateDedupCreateInput, ChannelUpdateDedupUncheckedCreateInput>
+    data: XOR<ChannelAssistantOperationCreateInput, ChannelAssistantOperationUncheckedCreateInput>
   }
 
   /**
-   * ChannelUpdateDedup createMany
+   * ChannelAssistantOperation createMany
    */
-  export type ChannelUpdateDedupCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ChannelAssistantOperationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many ChannelUpdateDedups.
+     * The data used to create many ChannelAssistantOperations.
      */
-    data: ChannelUpdateDedupCreateManyInput | ChannelUpdateDedupCreateManyInput[]
+    data: ChannelAssistantOperationCreateManyInput | ChannelAssistantOperationCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * ChannelUpdateDedup createManyAndReturn
+   * ChannelAssistantOperation createManyAndReturn
    */
-  export type ChannelUpdateDedupCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ChannelAssistantOperationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ChannelUpdateDedup
+     * Select specific fields to fetch from the ChannelAssistantOperation
      */
-    select?: ChannelUpdateDedupSelectCreateManyAndReturn<ExtArgs> | null
+    select?: ChannelAssistantOperationSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the ChannelUpdateDedup
+     * Omit specific fields from the ChannelAssistantOperation
      */
-    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    omit?: ChannelAssistantOperationOmit<ExtArgs> | null
     /**
-     * The data used to create many ChannelUpdateDedups.
+     * The data used to create many ChannelAssistantOperations.
      */
-    data: ChannelUpdateDedupCreateManyInput | ChannelUpdateDedupCreateManyInput[]
+    data: ChannelAssistantOperationCreateManyInput | ChannelAssistantOperationCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * ChannelUpdateDedup update
+   * ChannelAssistantOperation update
    */
-  export type ChannelUpdateDedupUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ChannelAssistantOperationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ChannelUpdateDedup
+     * Select specific fields to fetch from the ChannelAssistantOperation
      */
-    select?: ChannelUpdateDedupSelect<ExtArgs> | null
+    select?: ChannelAssistantOperationSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ChannelUpdateDedup
+     * Omit specific fields from the ChannelAssistantOperation
      */
-    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    omit?: ChannelAssistantOperationOmit<ExtArgs> | null
     /**
-     * The data needed to update a ChannelUpdateDedup.
+     * The data needed to update a ChannelAssistantOperation.
      */
-    data: XOR<ChannelUpdateDedupUpdateInput, ChannelUpdateDedupUncheckedUpdateInput>
+    data: XOR<ChannelAssistantOperationUpdateInput, ChannelAssistantOperationUncheckedUpdateInput>
     /**
-     * Choose, which ChannelUpdateDedup to update.
+     * Choose, which ChannelAssistantOperation to update.
      */
-    where: ChannelUpdateDedupWhereUniqueInput
+    where: ChannelAssistantOperationWhereUniqueInput
   }
 
   /**
-   * ChannelUpdateDedup updateMany
+   * ChannelAssistantOperation updateMany
    */
-  export type ChannelUpdateDedupUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ChannelAssistantOperationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update ChannelUpdateDedups.
+     * The data used to update ChannelAssistantOperations.
      */
-    data: XOR<ChannelUpdateDedupUpdateManyMutationInput, ChannelUpdateDedupUncheckedUpdateManyInput>
+    data: XOR<ChannelAssistantOperationUpdateManyMutationInput, ChannelAssistantOperationUncheckedUpdateManyInput>
     /**
-     * Filter which ChannelUpdateDedups to update
+     * Filter which ChannelAssistantOperations to update
      */
-    where?: ChannelUpdateDedupWhereInput
+    where?: ChannelAssistantOperationWhereInput
     /**
-     * Limit how many ChannelUpdateDedups to update.
+     * Limit how many ChannelAssistantOperations to update.
      */
     limit?: number
   }
 
   /**
-   * ChannelUpdateDedup updateManyAndReturn
+   * ChannelAssistantOperation updateManyAndReturn
    */
-  export type ChannelUpdateDedupUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ChannelAssistantOperationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ChannelUpdateDedup
+     * Select specific fields to fetch from the ChannelAssistantOperation
      */
-    select?: ChannelUpdateDedupSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: ChannelAssistantOperationSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the ChannelUpdateDedup
+     * Omit specific fields from the ChannelAssistantOperation
      */
-    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    omit?: ChannelAssistantOperationOmit<ExtArgs> | null
     /**
-     * The data used to update ChannelUpdateDedups.
+     * The data used to update ChannelAssistantOperations.
      */
-    data: XOR<ChannelUpdateDedupUpdateManyMutationInput, ChannelUpdateDedupUncheckedUpdateManyInput>
+    data: XOR<ChannelAssistantOperationUpdateManyMutationInput, ChannelAssistantOperationUncheckedUpdateManyInput>
     /**
-     * Filter which ChannelUpdateDedups to update
+     * Filter which ChannelAssistantOperations to update
      */
-    where?: ChannelUpdateDedupWhereInput
+    where?: ChannelAssistantOperationWhereInput
     /**
-     * Limit how many ChannelUpdateDedups to update.
+     * Limit how many ChannelAssistantOperations to update.
      */
     limit?: number
   }
 
   /**
-   * ChannelUpdateDedup upsert
+   * ChannelAssistantOperation upsert
    */
-  export type ChannelUpdateDedupUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ChannelAssistantOperationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ChannelUpdateDedup
+     * Select specific fields to fetch from the ChannelAssistantOperation
      */
-    select?: ChannelUpdateDedupSelect<ExtArgs> | null
+    select?: ChannelAssistantOperationSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ChannelUpdateDedup
+     * Omit specific fields from the ChannelAssistantOperation
      */
-    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    omit?: ChannelAssistantOperationOmit<ExtArgs> | null
     /**
-     * The filter to search for the ChannelUpdateDedup to update in case it exists.
+     * The filter to search for the ChannelAssistantOperation to update in case it exists.
      */
-    where: ChannelUpdateDedupWhereUniqueInput
+    where: ChannelAssistantOperationWhereUniqueInput
     /**
-     * In case the ChannelUpdateDedup found by the `where` argument doesn't exist, create a new ChannelUpdateDedup with this data.
+     * In case the ChannelAssistantOperation found by the `where` argument doesn't exist, create a new ChannelAssistantOperation with this data.
      */
-    create: XOR<ChannelUpdateDedupCreateInput, ChannelUpdateDedupUncheckedCreateInput>
+    create: XOR<ChannelAssistantOperationCreateInput, ChannelAssistantOperationUncheckedCreateInput>
     /**
-     * In case the ChannelUpdateDedup was found with the provided `where` argument, update it with this data.
+     * In case the ChannelAssistantOperation was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<ChannelUpdateDedupUpdateInput, ChannelUpdateDedupUncheckedUpdateInput>
+    update: XOR<ChannelAssistantOperationUpdateInput, ChannelAssistantOperationUncheckedUpdateInput>
   }
 
   /**
-   * ChannelUpdateDedup delete
+   * ChannelAssistantOperation delete
    */
-  export type ChannelUpdateDedupDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ChannelAssistantOperationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ChannelUpdateDedup
+     * Select specific fields to fetch from the ChannelAssistantOperation
      */
-    select?: ChannelUpdateDedupSelect<ExtArgs> | null
+    select?: ChannelAssistantOperationSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ChannelUpdateDedup
+     * Omit specific fields from the ChannelAssistantOperation
      */
-    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    omit?: ChannelAssistantOperationOmit<ExtArgs> | null
     /**
-     * Filter which ChannelUpdateDedup to delete.
+     * Filter which ChannelAssistantOperation to delete.
      */
-    where: ChannelUpdateDedupWhereUniqueInput
+    where: ChannelAssistantOperationWhereUniqueInput
   }
 
   /**
-   * ChannelUpdateDedup deleteMany
+   * ChannelAssistantOperation deleteMany
    */
-  export type ChannelUpdateDedupDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ChannelAssistantOperationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which ChannelUpdateDedups to delete
+     * Filter which ChannelAssistantOperations to delete
      */
-    where?: ChannelUpdateDedupWhereInput
+    where?: ChannelAssistantOperationWhereInput
     /**
-     * Limit how many ChannelUpdateDedups to delete.
+     * Limit how many ChannelAssistantOperations to delete.
      */
     limit?: number
   }
 
   /**
-   * ChannelUpdateDedup without action
+   * ChannelAssistantOperation without action
    */
-  export type ChannelUpdateDedupDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ChannelAssistantOperationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ChannelUpdateDedup
+     * Select specific fields to fetch from the ChannelAssistantOperation
      */
-    select?: ChannelUpdateDedupSelect<ExtArgs> | null
+    select?: ChannelAssistantOperationSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ChannelUpdateDedup
+     * Omit specific fields from the ChannelAssistantOperation
      */
-    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    omit?: ChannelAssistantOperationOmit<ExtArgs> | null
   }
 
 
@@ -31262,14 +34096,61 @@ export namespace Prisma {
   export type ChannelConnectionScalarFieldEnum = (typeof ChannelConnectionScalarFieldEnum)[keyof typeof ChannelConnectionScalarFieldEnum]
 
 
-  export const ChannelUpdateDedupScalarFieldEnum: {
+  export const ChannelInboundJobScalarFieldEnum: {
     id: 'id',
     provider: 'provider',
     externalUpdateId: 'externalUpdateId',
-    createdAt: 'createdAt'
+    channelConnectionId: 'channelConnectionId',
+    externalSenderId: 'externalSenderId',
+    externalChatId: 'externalChatId',
+    text: 'text',
+    status: 'status',
+    attempt: 'attempt',
+    availableAt: 'availableAt',
+    leaseOwner: 'leaseOwner',
+    leaseExpiresAt: 'leaseExpiresAt',
+    processingStartedAt: 'processingStartedAt',
+    completedAt: 'completedAt',
+    assistantTurnId: 'assistantTurnId',
+    errorCategory: 'errorCategory',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
-  export type ChannelUpdateDedupScalarFieldEnum = (typeof ChannelUpdateDedupScalarFieldEnum)[keyof typeof ChannelUpdateDedupScalarFieldEnum]
+  export type ChannelInboundJobScalarFieldEnum = (typeof ChannelInboundJobScalarFieldEnum)[keyof typeof ChannelInboundJobScalarFieldEnum]
+
+
+  export const ChannelOutboundDeliveryScalarFieldEnum: {
+    id: 'id',
+    inboundJobId: 'inboundJobId',
+    provider: 'provider',
+    destinationChatId: 'destinationChatId',
+    renderedText: 'renderedText',
+    status: 'status',
+    attempt: 'attempt',
+    availableAt: 'availableAt',
+    leaseOwner: 'leaseOwner',
+    leaseExpiresAt: 'leaseExpiresAt',
+    providerMessageId: 'providerMessageId',
+    sentAt: 'sentAt',
+    errorCategory: 'errorCategory',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ChannelOutboundDeliveryScalarFieldEnum = (typeof ChannelOutboundDeliveryScalarFieldEnum)[keyof typeof ChannelOutboundDeliveryScalarFieldEnum]
+
+
+  export const ChannelAssistantOperationScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    turnId: 'turnId',
+    renderedText: 'renderedText',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ChannelAssistantOperationScalarFieldEnum = (typeof ChannelAssistantOperationScalarFieldEnum)[keyof typeof ChannelAssistantOperationScalarFieldEnum]
 
 
   export const BudgetScalarFieldEnum: {
@@ -31678,6 +34559,34 @@ export namespace Prisma {
    * Reference to a field of type 'ChannelConnectionStatus[]'
    */
   export type ListEnumChannelConnectionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChannelConnectionStatus[]'>
+
+
+
+  /**
+   * Reference to a field of type 'ChannelJobStatus'
+   */
+  export type EnumChannelJobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChannelJobStatus'>
+
+
+
+  /**
+   * Reference to a field of type 'ChannelJobStatus[]'
+   */
+  export type ListEnumChannelJobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChannelJobStatus[]'>
+
+
+
+  /**
+   * Reference to a field of type 'ChannelDeliveryStatus'
+   */
+  export type EnumChannelDeliveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChannelDeliveryStatus'>
+
+
+
+  /**
+   * Reference to a field of type 'ChannelDeliveryStatus[]'
+   */
+  export type ListEnumChannelDeliveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChannelDeliveryStatus[]'>
 
 
 
@@ -33660,6 +36569,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"ChannelConnection"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     conversation?: XOR<AssistantConversationNullableScalarRelationFilter, AssistantConversationWhereInput> | null
+    inboundJobs?: ChannelInboundJobListRelationFilter
   }
 
   export type ChannelConnectionOrderByWithRelationInput = {
@@ -33675,6 +36585,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
     conversation?: AssistantConversationOrderByWithRelationInput
+    inboundJobs?: ChannelInboundJobOrderByRelationAggregateInput
   }
 
   export type ChannelConnectionWhereUniqueInput = Prisma.AtLeast<{
@@ -33695,6 +36606,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"ChannelConnection"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     conversation?: XOR<AssistantConversationNullableScalarRelationFilter, AssistantConversationWhereInput> | null
+    inboundJobs?: ChannelInboundJobListRelationFilter
   }, "id" | "provider_externalUserId" | "userId_provider">
 
   export type ChannelConnectionOrderByWithAggregationInput = {
@@ -33729,52 +36641,294 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"ChannelConnection"> | Date | string
   }
 
-  export type ChannelUpdateDedupWhereInput = {
-    AND?: ChannelUpdateDedupWhereInput | ChannelUpdateDedupWhereInput[]
-    OR?: ChannelUpdateDedupWhereInput[]
-    NOT?: ChannelUpdateDedupWhereInput | ChannelUpdateDedupWhereInput[]
-    id?: StringFilter<"ChannelUpdateDedup"> | string
-    provider?: EnumChannelProviderFilter<"ChannelUpdateDedup"> | $Enums.ChannelProvider
-    externalUpdateId?: StringFilter<"ChannelUpdateDedup"> | string
-    createdAt?: DateTimeFilter<"ChannelUpdateDedup"> | Date | string
+  export type ChannelInboundJobWhereInput = {
+    AND?: ChannelInboundJobWhereInput | ChannelInboundJobWhereInput[]
+    OR?: ChannelInboundJobWhereInput[]
+    NOT?: ChannelInboundJobWhereInput | ChannelInboundJobWhereInput[]
+    id?: StringFilter<"ChannelInboundJob"> | string
+    provider?: EnumChannelProviderFilter<"ChannelInboundJob"> | $Enums.ChannelProvider
+    externalUpdateId?: StringFilter<"ChannelInboundJob"> | string
+    channelConnectionId?: StringNullableFilter<"ChannelInboundJob"> | string | null
+    externalSenderId?: StringFilter<"ChannelInboundJob"> | string
+    externalChatId?: StringFilter<"ChannelInboundJob"> | string
+    text?: StringFilter<"ChannelInboundJob"> | string
+    status?: EnumChannelJobStatusFilter<"ChannelInboundJob"> | $Enums.ChannelJobStatus
+    attempt?: IntFilter<"ChannelInboundJob"> | number
+    availableAt?: DateTimeFilter<"ChannelInboundJob"> | Date | string
+    leaseOwner?: StringNullableFilter<"ChannelInboundJob"> | string | null
+    leaseExpiresAt?: DateTimeNullableFilter<"ChannelInboundJob"> | Date | string | null
+    processingStartedAt?: DateTimeNullableFilter<"ChannelInboundJob"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"ChannelInboundJob"> | Date | string | null
+    assistantTurnId?: StringNullableFilter<"ChannelInboundJob"> | string | null
+    errorCategory?: StringNullableFilter<"ChannelInboundJob"> | string | null
+    createdAt?: DateTimeFilter<"ChannelInboundJob"> | Date | string
+    updatedAt?: DateTimeFilter<"ChannelInboundJob"> | Date | string
+    connection?: XOR<ChannelConnectionNullableScalarRelationFilter, ChannelConnectionWhereInput> | null
+    delivery?: XOR<ChannelOutboundDeliveryNullableScalarRelationFilter, ChannelOutboundDeliveryWhereInput> | null
   }
 
-  export type ChannelUpdateDedupOrderByWithRelationInput = {
+  export type ChannelInboundJobOrderByWithRelationInput = {
     id?: SortOrder
     provider?: SortOrder
     externalUpdateId?: SortOrder
+    channelConnectionId?: SortOrderInput | SortOrder
+    externalSenderId?: SortOrder
+    externalChatId?: SortOrder
+    text?: SortOrder
+    status?: SortOrder
+    attempt?: SortOrder
+    availableAt?: SortOrder
+    leaseOwner?: SortOrderInput | SortOrder
+    leaseExpiresAt?: SortOrderInput | SortOrder
+    processingStartedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    assistantTurnId?: SortOrderInput | SortOrder
+    errorCategory?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    connection?: ChannelConnectionOrderByWithRelationInput
+    delivery?: ChannelOutboundDeliveryOrderByWithRelationInput
   }
 
-  export type ChannelUpdateDedupWhereUniqueInput = Prisma.AtLeast<{
+  export type ChannelInboundJobWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    provider_externalUpdateId?: ChannelUpdateDedupProviderExternalUpdateIdCompoundUniqueInput
-    AND?: ChannelUpdateDedupWhereInput | ChannelUpdateDedupWhereInput[]
-    OR?: ChannelUpdateDedupWhereInput[]
-    NOT?: ChannelUpdateDedupWhereInput | ChannelUpdateDedupWhereInput[]
-    provider?: EnumChannelProviderFilter<"ChannelUpdateDedup"> | $Enums.ChannelProvider
-    externalUpdateId?: StringFilter<"ChannelUpdateDedup"> | string
-    createdAt?: DateTimeFilter<"ChannelUpdateDedup"> | Date | string
-  }, "id" | "provider_externalUpdateId">
+    assistantTurnId?: string
+    provider_externalUpdateId?: ChannelInboundJobProviderExternalUpdateIdCompoundUniqueInput
+    AND?: ChannelInboundJobWhereInput | ChannelInboundJobWhereInput[]
+    OR?: ChannelInboundJobWhereInput[]
+    NOT?: ChannelInboundJobWhereInput | ChannelInboundJobWhereInput[]
+    provider?: EnumChannelProviderFilter<"ChannelInboundJob"> | $Enums.ChannelProvider
+    externalUpdateId?: StringFilter<"ChannelInboundJob"> | string
+    channelConnectionId?: StringNullableFilter<"ChannelInboundJob"> | string | null
+    externalSenderId?: StringFilter<"ChannelInboundJob"> | string
+    externalChatId?: StringFilter<"ChannelInboundJob"> | string
+    text?: StringFilter<"ChannelInboundJob"> | string
+    status?: EnumChannelJobStatusFilter<"ChannelInboundJob"> | $Enums.ChannelJobStatus
+    attempt?: IntFilter<"ChannelInboundJob"> | number
+    availableAt?: DateTimeFilter<"ChannelInboundJob"> | Date | string
+    leaseOwner?: StringNullableFilter<"ChannelInboundJob"> | string | null
+    leaseExpiresAt?: DateTimeNullableFilter<"ChannelInboundJob"> | Date | string | null
+    processingStartedAt?: DateTimeNullableFilter<"ChannelInboundJob"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"ChannelInboundJob"> | Date | string | null
+    errorCategory?: StringNullableFilter<"ChannelInboundJob"> | string | null
+    createdAt?: DateTimeFilter<"ChannelInboundJob"> | Date | string
+    updatedAt?: DateTimeFilter<"ChannelInboundJob"> | Date | string
+    connection?: XOR<ChannelConnectionNullableScalarRelationFilter, ChannelConnectionWhereInput> | null
+    delivery?: XOR<ChannelOutboundDeliveryNullableScalarRelationFilter, ChannelOutboundDeliveryWhereInput> | null
+  }, "id" | "assistantTurnId" | "provider_externalUpdateId">
 
-  export type ChannelUpdateDedupOrderByWithAggregationInput = {
+  export type ChannelInboundJobOrderByWithAggregationInput = {
     id?: SortOrder
     provider?: SortOrder
     externalUpdateId?: SortOrder
+    channelConnectionId?: SortOrderInput | SortOrder
+    externalSenderId?: SortOrder
+    externalChatId?: SortOrder
+    text?: SortOrder
+    status?: SortOrder
+    attempt?: SortOrder
+    availableAt?: SortOrder
+    leaseOwner?: SortOrderInput | SortOrder
+    leaseExpiresAt?: SortOrderInput | SortOrder
+    processingStartedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    assistantTurnId?: SortOrderInput | SortOrder
+    errorCategory?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    _count?: ChannelUpdateDedupCountOrderByAggregateInput
-    _max?: ChannelUpdateDedupMaxOrderByAggregateInput
-    _min?: ChannelUpdateDedupMinOrderByAggregateInput
+    updatedAt?: SortOrder
+    _count?: ChannelInboundJobCountOrderByAggregateInput
+    _avg?: ChannelInboundJobAvgOrderByAggregateInput
+    _max?: ChannelInboundJobMaxOrderByAggregateInput
+    _min?: ChannelInboundJobMinOrderByAggregateInput
+    _sum?: ChannelInboundJobSumOrderByAggregateInput
   }
 
-  export type ChannelUpdateDedupScalarWhereWithAggregatesInput = {
-    AND?: ChannelUpdateDedupScalarWhereWithAggregatesInput | ChannelUpdateDedupScalarWhereWithAggregatesInput[]
-    OR?: ChannelUpdateDedupScalarWhereWithAggregatesInput[]
-    NOT?: ChannelUpdateDedupScalarWhereWithAggregatesInput | ChannelUpdateDedupScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"ChannelUpdateDedup"> | string
-    provider?: EnumChannelProviderWithAggregatesFilter<"ChannelUpdateDedup"> | $Enums.ChannelProvider
-    externalUpdateId?: StringWithAggregatesFilter<"ChannelUpdateDedup"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"ChannelUpdateDedup"> | Date | string
+  export type ChannelInboundJobScalarWhereWithAggregatesInput = {
+    AND?: ChannelInboundJobScalarWhereWithAggregatesInput | ChannelInboundJobScalarWhereWithAggregatesInput[]
+    OR?: ChannelInboundJobScalarWhereWithAggregatesInput[]
+    NOT?: ChannelInboundJobScalarWhereWithAggregatesInput | ChannelInboundJobScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ChannelInboundJob"> | string
+    provider?: EnumChannelProviderWithAggregatesFilter<"ChannelInboundJob"> | $Enums.ChannelProvider
+    externalUpdateId?: StringWithAggregatesFilter<"ChannelInboundJob"> | string
+    channelConnectionId?: StringNullableWithAggregatesFilter<"ChannelInboundJob"> | string | null
+    externalSenderId?: StringWithAggregatesFilter<"ChannelInboundJob"> | string
+    externalChatId?: StringWithAggregatesFilter<"ChannelInboundJob"> | string
+    text?: StringWithAggregatesFilter<"ChannelInboundJob"> | string
+    status?: EnumChannelJobStatusWithAggregatesFilter<"ChannelInboundJob"> | $Enums.ChannelJobStatus
+    attempt?: IntWithAggregatesFilter<"ChannelInboundJob"> | number
+    availableAt?: DateTimeWithAggregatesFilter<"ChannelInboundJob"> | Date | string
+    leaseOwner?: StringNullableWithAggregatesFilter<"ChannelInboundJob"> | string | null
+    leaseExpiresAt?: DateTimeNullableWithAggregatesFilter<"ChannelInboundJob"> | Date | string | null
+    processingStartedAt?: DateTimeNullableWithAggregatesFilter<"ChannelInboundJob"> | Date | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"ChannelInboundJob"> | Date | string | null
+    assistantTurnId?: StringNullableWithAggregatesFilter<"ChannelInboundJob"> | string | null
+    errorCategory?: StringNullableWithAggregatesFilter<"ChannelInboundJob"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ChannelInboundJob"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ChannelInboundJob"> | Date | string
+  }
+
+  export type ChannelOutboundDeliveryWhereInput = {
+    AND?: ChannelOutboundDeliveryWhereInput | ChannelOutboundDeliveryWhereInput[]
+    OR?: ChannelOutboundDeliveryWhereInput[]
+    NOT?: ChannelOutboundDeliveryWhereInput | ChannelOutboundDeliveryWhereInput[]
+    id?: StringFilter<"ChannelOutboundDelivery"> | string
+    inboundJobId?: StringFilter<"ChannelOutboundDelivery"> | string
+    provider?: EnumChannelProviderFilter<"ChannelOutboundDelivery"> | $Enums.ChannelProvider
+    destinationChatId?: StringFilter<"ChannelOutboundDelivery"> | string
+    renderedText?: StringFilter<"ChannelOutboundDelivery"> | string
+    status?: EnumChannelDeliveryStatusFilter<"ChannelOutboundDelivery"> | $Enums.ChannelDeliveryStatus
+    attempt?: IntFilter<"ChannelOutboundDelivery"> | number
+    availableAt?: DateTimeFilter<"ChannelOutboundDelivery"> | Date | string
+    leaseOwner?: StringNullableFilter<"ChannelOutboundDelivery"> | string | null
+    leaseExpiresAt?: DateTimeNullableFilter<"ChannelOutboundDelivery"> | Date | string | null
+    providerMessageId?: StringNullableFilter<"ChannelOutboundDelivery"> | string | null
+    sentAt?: DateTimeNullableFilter<"ChannelOutboundDelivery"> | Date | string | null
+    errorCategory?: StringNullableFilter<"ChannelOutboundDelivery"> | string | null
+    createdAt?: DateTimeFilter<"ChannelOutboundDelivery"> | Date | string
+    updatedAt?: DateTimeFilter<"ChannelOutboundDelivery"> | Date | string
+    inboundJob?: XOR<ChannelInboundJobScalarRelationFilter, ChannelInboundJobWhereInput>
+  }
+
+  export type ChannelOutboundDeliveryOrderByWithRelationInput = {
+    id?: SortOrder
+    inboundJobId?: SortOrder
+    provider?: SortOrder
+    destinationChatId?: SortOrder
+    renderedText?: SortOrder
+    status?: SortOrder
+    attempt?: SortOrder
+    availableAt?: SortOrder
+    leaseOwner?: SortOrderInput | SortOrder
+    leaseExpiresAt?: SortOrderInput | SortOrder
+    providerMessageId?: SortOrderInput | SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    errorCategory?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    inboundJob?: ChannelInboundJobOrderByWithRelationInput
+  }
+
+  export type ChannelOutboundDeliveryWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    inboundJobId?: string
+    AND?: ChannelOutboundDeliveryWhereInput | ChannelOutboundDeliveryWhereInput[]
+    OR?: ChannelOutboundDeliveryWhereInput[]
+    NOT?: ChannelOutboundDeliveryWhereInput | ChannelOutboundDeliveryWhereInput[]
+    provider?: EnumChannelProviderFilter<"ChannelOutboundDelivery"> | $Enums.ChannelProvider
+    destinationChatId?: StringFilter<"ChannelOutboundDelivery"> | string
+    renderedText?: StringFilter<"ChannelOutboundDelivery"> | string
+    status?: EnumChannelDeliveryStatusFilter<"ChannelOutboundDelivery"> | $Enums.ChannelDeliveryStatus
+    attempt?: IntFilter<"ChannelOutboundDelivery"> | number
+    availableAt?: DateTimeFilter<"ChannelOutboundDelivery"> | Date | string
+    leaseOwner?: StringNullableFilter<"ChannelOutboundDelivery"> | string | null
+    leaseExpiresAt?: DateTimeNullableFilter<"ChannelOutboundDelivery"> | Date | string | null
+    providerMessageId?: StringNullableFilter<"ChannelOutboundDelivery"> | string | null
+    sentAt?: DateTimeNullableFilter<"ChannelOutboundDelivery"> | Date | string | null
+    errorCategory?: StringNullableFilter<"ChannelOutboundDelivery"> | string | null
+    createdAt?: DateTimeFilter<"ChannelOutboundDelivery"> | Date | string
+    updatedAt?: DateTimeFilter<"ChannelOutboundDelivery"> | Date | string
+    inboundJob?: XOR<ChannelInboundJobScalarRelationFilter, ChannelInboundJobWhereInput>
+  }, "id" | "inboundJobId">
+
+  export type ChannelOutboundDeliveryOrderByWithAggregationInput = {
+    id?: SortOrder
+    inboundJobId?: SortOrder
+    provider?: SortOrder
+    destinationChatId?: SortOrder
+    renderedText?: SortOrder
+    status?: SortOrder
+    attempt?: SortOrder
+    availableAt?: SortOrder
+    leaseOwner?: SortOrderInput | SortOrder
+    leaseExpiresAt?: SortOrderInput | SortOrder
+    providerMessageId?: SortOrderInput | SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    errorCategory?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ChannelOutboundDeliveryCountOrderByAggregateInput
+    _avg?: ChannelOutboundDeliveryAvgOrderByAggregateInput
+    _max?: ChannelOutboundDeliveryMaxOrderByAggregateInput
+    _min?: ChannelOutboundDeliveryMinOrderByAggregateInput
+    _sum?: ChannelOutboundDeliverySumOrderByAggregateInput
+  }
+
+  export type ChannelOutboundDeliveryScalarWhereWithAggregatesInput = {
+    AND?: ChannelOutboundDeliveryScalarWhereWithAggregatesInput | ChannelOutboundDeliveryScalarWhereWithAggregatesInput[]
+    OR?: ChannelOutboundDeliveryScalarWhereWithAggregatesInput[]
+    NOT?: ChannelOutboundDeliveryScalarWhereWithAggregatesInput | ChannelOutboundDeliveryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ChannelOutboundDelivery"> | string
+    inboundJobId?: StringWithAggregatesFilter<"ChannelOutboundDelivery"> | string
+    provider?: EnumChannelProviderWithAggregatesFilter<"ChannelOutboundDelivery"> | $Enums.ChannelProvider
+    destinationChatId?: StringWithAggregatesFilter<"ChannelOutboundDelivery"> | string
+    renderedText?: StringWithAggregatesFilter<"ChannelOutboundDelivery"> | string
+    status?: EnumChannelDeliveryStatusWithAggregatesFilter<"ChannelOutboundDelivery"> | $Enums.ChannelDeliveryStatus
+    attempt?: IntWithAggregatesFilter<"ChannelOutboundDelivery"> | number
+    availableAt?: DateTimeWithAggregatesFilter<"ChannelOutboundDelivery"> | Date | string
+    leaseOwner?: StringNullableWithAggregatesFilter<"ChannelOutboundDelivery"> | string | null
+    leaseExpiresAt?: DateTimeNullableWithAggregatesFilter<"ChannelOutboundDelivery"> | Date | string | null
+    providerMessageId?: StringNullableWithAggregatesFilter<"ChannelOutboundDelivery"> | string | null
+    sentAt?: DateTimeNullableWithAggregatesFilter<"ChannelOutboundDelivery"> | Date | string | null
+    errorCategory?: StringNullableWithAggregatesFilter<"ChannelOutboundDelivery"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ChannelOutboundDelivery"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ChannelOutboundDelivery"> | Date | string
+  }
+
+  export type ChannelAssistantOperationWhereInput = {
+    AND?: ChannelAssistantOperationWhereInput | ChannelAssistantOperationWhereInput[]
+    OR?: ChannelAssistantOperationWhereInput[]
+    NOT?: ChannelAssistantOperationWhereInput | ChannelAssistantOperationWhereInput[]
+    id?: StringFilter<"ChannelAssistantOperation"> | string
+    userId?: StringFilter<"ChannelAssistantOperation"> | string
+    turnId?: StringNullableFilter<"ChannelAssistantOperation"> | string | null
+    renderedText?: StringNullableFilter<"ChannelAssistantOperation"> | string | null
+    createdAt?: DateTimeFilter<"ChannelAssistantOperation"> | Date | string
+    updatedAt?: DateTimeFilter<"ChannelAssistantOperation"> | Date | string
+  }
+
+  export type ChannelAssistantOperationOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    turnId?: SortOrderInput | SortOrder
+    renderedText?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ChannelAssistantOperationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ChannelAssistantOperationWhereInput | ChannelAssistantOperationWhereInput[]
+    OR?: ChannelAssistantOperationWhereInput[]
+    NOT?: ChannelAssistantOperationWhereInput | ChannelAssistantOperationWhereInput[]
+    userId?: StringFilter<"ChannelAssistantOperation"> | string
+    turnId?: StringNullableFilter<"ChannelAssistantOperation"> | string | null
+    renderedText?: StringNullableFilter<"ChannelAssistantOperation"> | string | null
+    createdAt?: DateTimeFilter<"ChannelAssistantOperation"> | Date | string
+    updatedAt?: DateTimeFilter<"ChannelAssistantOperation"> | Date | string
+  }, "id">
+
+  export type ChannelAssistantOperationOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    turnId?: SortOrderInput | SortOrder
+    renderedText?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ChannelAssistantOperationCountOrderByAggregateInput
+    _max?: ChannelAssistantOperationMaxOrderByAggregateInput
+    _min?: ChannelAssistantOperationMinOrderByAggregateInput
+  }
+
+  export type ChannelAssistantOperationScalarWhereWithAggregatesInput = {
+    AND?: ChannelAssistantOperationScalarWhereWithAggregatesInput | ChannelAssistantOperationScalarWhereWithAggregatesInput[]
+    OR?: ChannelAssistantOperationScalarWhereWithAggregatesInput[]
+    NOT?: ChannelAssistantOperationScalarWhereWithAggregatesInput | ChannelAssistantOperationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ChannelAssistantOperation"> | string
+    userId?: StringWithAggregatesFilter<"ChannelAssistantOperation"> | string
+    turnId?: StringNullableWithAggregatesFilter<"ChannelAssistantOperation"> | string | null
+    renderedText?: StringNullableWithAggregatesFilter<"ChannelAssistantOperation"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ChannelAssistantOperation"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ChannelAssistantOperation"> | Date | string
   }
 
   export type BudgetWhereInput = {
@@ -36007,6 +39161,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutChannelConnectionsInput
     conversation?: AssistantConversationCreateNestedOneWithoutChannelConnectionsInput
+    inboundJobs?: ChannelInboundJobCreateNestedManyWithoutConnectionInput
   }
 
   export type ChannelConnectionUncheckedCreateInput = {
@@ -36020,6 +39175,7 @@ export namespace Prisma {
     linkedAt?: Date | string
     revokedAt?: Date | string | null
     updatedAt?: Date | string
+    inboundJobs?: ChannelInboundJobUncheckedCreateNestedManyWithoutConnectionInput
   }
 
   export type ChannelConnectionUpdateInput = {
@@ -36033,6 +39189,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutChannelConnectionsNestedInput
     conversation?: AssistantConversationUpdateOneWithoutChannelConnectionsNestedInput
+    inboundJobs?: ChannelInboundJobUpdateManyWithoutConnectionNestedInput
   }
 
   export type ChannelConnectionUncheckedUpdateInput = {
@@ -36046,6 +39203,7 @@ export namespace Prisma {
     linkedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    inboundJobs?: ChannelInboundJobUncheckedUpdateManyWithoutConnectionNestedInput
   }
 
   export type ChannelConnectionCreateManyInput = {
@@ -36085,53 +39243,342 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ChannelUpdateDedupCreateInput = {
+  export type ChannelInboundJobCreateInput = {
     id?: string
     provider: $Enums.ChannelProvider
     externalUpdateId: string
+    externalSenderId: string
+    externalChatId: string
+    text: string
+    status?: $Enums.ChannelJobStatus
+    attempt?: number
+    availableAt?: Date | string
+    leaseOwner?: string | null
+    leaseExpiresAt?: Date | string | null
+    processingStartedAt?: Date | string | null
+    completedAt?: Date | string | null
+    assistantTurnId?: string | null
+    errorCategory?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    connection?: ChannelConnectionCreateNestedOneWithoutInboundJobsInput
+    delivery?: ChannelOutboundDeliveryCreateNestedOneWithoutInboundJobInput
   }
 
-  export type ChannelUpdateDedupUncheckedCreateInput = {
+  export type ChannelInboundJobUncheckedCreateInput = {
     id?: string
     provider: $Enums.ChannelProvider
     externalUpdateId: string
+    channelConnectionId?: string | null
+    externalSenderId: string
+    externalChatId: string
+    text: string
+    status?: $Enums.ChannelJobStatus
+    attempt?: number
+    availableAt?: Date | string
+    leaseOwner?: string | null
+    leaseExpiresAt?: Date | string | null
+    processingStartedAt?: Date | string | null
+    completedAt?: Date | string | null
+    assistantTurnId?: string | null
+    errorCategory?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    delivery?: ChannelOutboundDeliveryUncheckedCreateNestedOneWithoutInboundJobInput
   }
 
-  export type ChannelUpdateDedupUpdateInput = {
+  export type ChannelInboundJobUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
     externalUpdateId?: StringFieldUpdateOperationsInput | string
+    externalSenderId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelJobStatusFieldUpdateOperationsInput | $Enums.ChannelJobStatus
+    attempt?: IntFieldUpdateOperationsInput | number
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    leaseOwner?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processingStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    assistantTurnId?: NullableStringFieldUpdateOperationsInput | string | null
+    errorCategory?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    connection?: ChannelConnectionUpdateOneWithoutInboundJobsNestedInput
+    delivery?: ChannelOutboundDeliveryUpdateOneWithoutInboundJobNestedInput
   }
 
-  export type ChannelUpdateDedupUncheckedUpdateInput = {
+  export type ChannelInboundJobUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
     externalUpdateId?: StringFieldUpdateOperationsInput | string
+    channelConnectionId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSenderId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelJobStatusFieldUpdateOperationsInput | $Enums.ChannelJobStatus
+    attempt?: IntFieldUpdateOperationsInput | number
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    leaseOwner?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processingStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    assistantTurnId?: NullableStringFieldUpdateOperationsInput | string | null
+    errorCategory?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    delivery?: ChannelOutboundDeliveryUncheckedUpdateOneWithoutInboundJobNestedInput
   }
 
-  export type ChannelUpdateDedupCreateManyInput = {
+  export type ChannelInboundJobCreateManyInput = {
     id?: string
     provider: $Enums.ChannelProvider
     externalUpdateId: string
+    channelConnectionId?: string | null
+    externalSenderId: string
+    externalChatId: string
+    text: string
+    status?: $Enums.ChannelJobStatus
+    attempt?: number
+    availableAt?: Date | string
+    leaseOwner?: string | null
+    leaseExpiresAt?: Date | string | null
+    processingStartedAt?: Date | string | null
+    completedAt?: Date | string | null
+    assistantTurnId?: string | null
+    errorCategory?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
-  export type ChannelUpdateDedupUpdateManyMutationInput = {
+  export type ChannelInboundJobUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
     externalUpdateId?: StringFieldUpdateOperationsInput | string
+    externalSenderId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelJobStatusFieldUpdateOperationsInput | $Enums.ChannelJobStatus
+    attempt?: IntFieldUpdateOperationsInput | number
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    leaseOwner?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processingStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    assistantTurnId?: NullableStringFieldUpdateOperationsInput | string | null
+    errorCategory?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ChannelUpdateDedupUncheckedUpdateManyInput = {
+  export type ChannelInboundJobUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
     externalUpdateId?: StringFieldUpdateOperationsInput | string
+    channelConnectionId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSenderId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelJobStatusFieldUpdateOperationsInput | $Enums.ChannelJobStatus
+    attempt?: IntFieldUpdateOperationsInput | number
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    leaseOwner?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processingStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    assistantTurnId?: NullableStringFieldUpdateOperationsInput | string | null
+    errorCategory?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelOutboundDeliveryCreateInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    destinationChatId: string
+    renderedText: string
+    status?: $Enums.ChannelDeliveryStatus
+    attempt?: number
+    availableAt?: Date | string
+    leaseOwner?: string | null
+    leaseExpiresAt?: Date | string | null
+    providerMessageId?: string | null
+    sentAt?: Date | string | null
+    errorCategory?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    inboundJob: ChannelInboundJobCreateNestedOneWithoutDeliveryInput
+  }
+
+  export type ChannelOutboundDeliveryUncheckedCreateInput = {
+    id?: string
+    inboundJobId: string
+    provider: $Enums.ChannelProvider
+    destinationChatId: string
+    renderedText: string
+    status?: $Enums.ChannelDeliveryStatus
+    attempt?: number
+    availableAt?: Date | string
+    leaseOwner?: string | null
+    leaseExpiresAt?: Date | string | null
+    providerMessageId?: string | null
+    sentAt?: Date | string | null
+    errorCategory?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ChannelOutboundDeliveryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    destinationChatId?: StringFieldUpdateOperationsInput | string
+    renderedText?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelDeliveryStatusFieldUpdateOperationsInput | $Enums.ChannelDeliveryStatus
+    attempt?: IntFieldUpdateOperationsInput | number
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    leaseOwner?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    inboundJob?: ChannelInboundJobUpdateOneRequiredWithoutDeliveryNestedInput
+  }
+
+  export type ChannelOutboundDeliveryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inboundJobId?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    destinationChatId?: StringFieldUpdateOperationsInput | string
+    renderedText?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelDeliveryStatusFieldUpdateOperationsInput | $Enums.ChannelDeliveryStatus
+    attempt?: IntFieldUpdateOperationsInput | number
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    leaseOwner?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelOutboundDeliveryCreateManyInput = {
+    id?: string
+    inboundJobId: string
+    provider: $Enums.ChannelProvider
+    destinationChatId: string
+    renderedText: string
+    status?: $Enums.ChannelDeliveryStatus
+    attempt?: number
+    availableAt?: Date | string
+    leaseOwner?: string | null
+    leaseExpiresAt?: Date | string | null
+    providerMessageId?: string | null
+    sentAt?: Date | string | null
+    errorCategory?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ChannelOutboundDeliveryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    destinationChatId?: StringFieldUpdateOperationsInput | string
+    renderedText?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelDeliveryStatusFieldUpdateOperationsInput | $Enums.ChannelDeliveryStatus
+    attempt?: IntFieldUpdateOperationsInput | number
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    leaseOwner?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelOutboundDeliveryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inboundJobId?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    destinationChatId?: StringFieldUpdateOperationsInput | string
+    renderedText?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelDeliveryStatusFieldUpdateOperationsInput | $Enums.ChannelDeliveryStatus
+    attempt?: IntFieldUpdateOperationsInput | number
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    leaseOwner?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelAssistantOperationCreateInput = {
+    id: string
+    userId: string
+    turnId?: string | null
+    renderedText?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ChannelAssistantOperationUncheckedCreateInput = {
+    id: string
+    userId: string
+    turnId?: string | null
+    renderedText?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ChannelAssistantOperationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    turnId?: NullableStringFieldUpdateOperationsInput | string | null
+    renderedText?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelAssistantOperationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    turnId?: NullableStringFieldUpdateOperationsInput | string | null
+    renderedText?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelAssistantOperationCreateManyInput = {
+    id: string
+    userId: string
+    turnId?: string | null
+    renderedText?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ChannelAssistantOperationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    turnId?: NullableStringFieldUpdateOperationsInput | string | null
+    renderedText?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelAssistantOperationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    turnId?: NullableStringFieldUpdateOperationsInput | string | null
+    renderedText?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type BudgetCreateInput = {
@@ -38156,6 +41603,16 @@ export namespace Prisma {
     isNot?: AssistantConversationWhereInput | null
   }
 
+  export type ChannelInboundJobListRelationFilter = {
+    every?: ChannelInboundJobWhereInput
+    some?: ChannelInboundJobWhereInput
+    none?: ChannelInboundJobWhereInput
+  }
+
+  export type ChannelInboundJobOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type ChannelConnectionProviderExternalUserIdCompoundUniqueInput = {
     provider: $Enums.ChannelProvider
     externalUserId: string
@@ -38215,30 +41672,218 @@ export namespace Prisma {
     _max?: NestedEnumChannelConnectionStatusFilter<$PrismaModel>
   }
 
-  export type ChannelUpdateDedupProviderExternalUpdateIdCompoundUniqueInput = {
+  export type EnumChannelJobStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChannelJobStatus | EnumChannelJobStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ChannelJobStatus[] | ListEnumChannelJobStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChannelJobStatus[] | ListEnumChannelJobStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumChannelJobStatusFilter<$PrismaModel> | $Enums.ChannelJobStatus
+  }
+
+  export type ChannelConnectionNullableScalarRelationFilter = {
+    is?: ChannelConnectionWhereInput | null
+    isNot?: ChannelConnectionWhereInput | null
+  }
+
+  export type ChannelOutboundDeliveryNullableScalarRelationFilter = {
+    is?: ChannelOutboundDeliveryWhereInput | null
+    isNot?: ChannelOutboundDeliveryWhereInput | null
+  }
+
+  export type ChannelInboundJobProviderExternalUpdateIdCompoundUniqueInput = {
     provider: $Enums.ChannelProvider
     externalUpdateId: string
   }
 
-  export type ChannelUpdateDedupCountOrderByAggregateInput = {
+  export type ChannelInboundJobCountOrderByAggregateInput = {
     id?: SortOrder
     provider?: SortOrder
     externalUpdateId?: SortOrder
+    channelConnectionId?: SortOrder
+    externalSenderId?: SortOrder
+    externalChatId?: SortOrder
+    text?: SortOrder
+    status?: SortOrder
+    attempt?: SortOrder
+    availableAt?: SortOrder
+    leaseOwner?: SortOrder
+    leaseExpiresAt?: SortOrder
+    processingStartedAt?: SortOrder
+    completedAt?: SortOrder
+    assistantTurnId?: SortOrder
+    errorCategory?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
-  export type ChannelUpdateDedupMaxOrderByAggregateInput = {
-    id?: SortOrder
-    provider?: SortOrder
-    externalUpdateId?: SortOrder
-    createdAt?: SortOrder
+  export type ChannelInboundJobAvgOrderByAggregateInput = {
+    attempt?: SortOrder
   }
 
-  export type ChannelUpdateDedupMinOrderByAggregateInput = {
+  export type ChannelInboundJobMaxOrderByAggregateInput = {
     id?: SortOrder
     provider?: SortOrder
     externalUpdateId?: SortOrder
+    channelConnectionId?: SortOrder
+    externalSenderId?: SortOrder
+    externalChatId?: SortOrder
+    text?: SortOrder
+    status?: SortOrder
+    attempt?: SortOrder
+    availableAt?: SortOrder
+    leaseOwner?: SortOrder
+    leaseExpiresAt?: SortOrder
+    processingStartedAt?: SortOrder
+    completedAt?: SortOrder
+    assistantTurnId?: SortOrder
+    errorCategory?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ChannelInboundJobMinOrderByAggregateInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    externalUpdateId?: SortOrder
+    channelConnectionId?: SortOrder
+    externalSenderId?: SortOrder
+    externalChatId?: SortOrder
+    text?: SortOrder
+    status?: SortOrder
+    attempt?: SortOrder
+    availableAt?: SortOrder
+    leaseOwner?: SortOrder
+    leaseExpiresAt?: SortOrder
+    processingStartedAt?: SortOrder
+    completedAt?: SortOrder
+    assistantTurnId?: SortOrder
+    errorCategory?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ChannelInboundJobSumOrderByAggregateInput = {
+    attempt?: SortOrder
+  }
+
+  export type EnumChannelJobStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChannelJobStatus | EnumChannelJobStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ChannelJobStatus[] | ListEnumChannelJobStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChannelJobStatus[] | ListEnumChannelJobStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumChannelJobStatusWithAggregatesFilter<$PrismaModel> | $Enums.ChannelJobStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumChannelJobStatusFilter<$PrismaModel>
+    _max?: NestedEnumChannelJobStatusFilter<$PrismaModel>
+  }
+
+  export type EnumChannelDeliveryStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChannelDeliveryStatus | EnumChannelDeliveryStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ChannelDeliveryStatus[] | ListEnumChannelDeliveryStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChannelDeliveryStatus[] | ListEnumChannelDeliveryStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumChannelDeliveryStatusFilter<$PrismaModel> | $Enums.ChannelDeliveryStatus
+  }
+
+  export type ChannelInboundJobScalarRelationFilter = {
+    is?: ChannelInboundJobWhereInput
+    isNot?: ChannelInboundJobWhereInput
+  }
+
+  export type ChannelOutboundDeliveryCountOrderByAggregateInput = {
+    id?: SortOrder
+    inboundJobId?: SortOrder
+    provider?: SortOrder
+    destinationChatId?: SortOrder
+    renderedText?: SortOrder
+    status?: SortOrder
+    attempt?: SortOrder
+    availableAt?: SortOrder
+    leaseOwner?: SortOrder
+    leaseExpiresAt?: SortOrder
+    providerMessageId?: SortOrder
+    sentAt?: SortOrder
+    errorCategory?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ChannelOutboundDeliveryAvgOrderByAggregateInput = {
+    attempt?: SortOrder
+  }
+
+  export type ChannelOutboundDeliveryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    inboundJobId?: SortOrder
+    provider?: SortOrder
+    destinationChatId?: SortOrder
+    renderedText?: SortOrder
+    status?: SortOrder
+    attempt?: SortOrder
+    availableAt?: SortOrder
+    leaseOwner?: SortOrder
+    leaseExpiresAt?: SortOrder
+    providerMessageId?: SortOrder
+    sentAt?: SortOrder
+    errorCategory?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ChannelOutboundDeliveryMinOrderByAggregateInput = {
+    id?: SortOrder
+    inboundJobId?: SortOrder
+    provider?: SortOrder
+    destinationChatId?: SortOrder
+    renderedText?: SortOrder
+    status?: SortOrder
+    attempt?: SortOrder
+    availableAt?: SortOrder
+    leaseOwner?: SortOrder
+    leaseExpiresAt?: SortOrder
+    providerMessageId?: SortOrder
+    sentAt?: SortOrder
+    errorCategory?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ChannelOutboundDeliverySumOrderByAggregateInput = {
+    attempt?: SortOrder
+  }
+
+  export type EnumChannelDeliveryStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChannelDeliveryStatus | EnumChannelDeliveryStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ChannelDeliveryStatus[] | ListEnumChannelDeliveryStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChannelDeliveryStatus[] | ListEnumChannelDeliveryStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumChannelDeliveryStatusWithAggregatesFilter<$PrismaModel> | $Enums.ChannelDeliveryStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumChannelDeliveryStatusFilter<$PrismaModel>
+    _max?: NestedEnumChannelDeliveryStatusFilter<$PrismaModel>
+  }
+
+  export type ChannelAssistantOperationCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    turnId?: SortOrder
+    renderedText?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ChannelAssistantOperationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    turnId?: SortOrder
+    renderedText?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ChannelAssistantOperationMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    turnId?: SortOrder
+    renderedText?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type BudgetUserIdCategoryIdCompoundUniqueInput = {
@@ -40876,6 +44521,20 @@ export namespace Prisma {
     connect?: AssistantConversationWhereUniqueInput
   }
 
+  export type ChannelInboundJobCreateNestedManyWithoutConnectionInput = {
+    create?: XOR<ChannelInboundJobCreateWithoutConnectionInput, ChannelInboundJobUncheckedCreateWithoutConnectionInput> | ChannelInboundJobCreateWithoutConnectionInput[] | ChannelInboundJobUncheckedCreateWithoutConnectionInput[]
+    connectOrCreate?: ChannelInboundJobCreateOrConnectWithoutConnectionInput | ChannelInboundJobCreateOrConnectWithoutConnectionInput[]
+    createMany?: ChannelInboundJobCreateManyConnectionInputEnvelope
+    connect?: ChannelInboundJobWhereUniqueInput | ChannelInboundJobWhereUniqueInput[]
+  }
+
+  export type ChannelInboundJobUncheckedCreateNestedManyWithoutConnectionInput = {
+    create?: XOR<ChannelInboundJobCreateWithoutConnectionInput, ChannelInboundJobUncheckedCreateWithoutConnectionInput> | ChannelInboundJobCreateWithoutConnectionInput[] | ChannelInboundJobUncheckedCreateWithoutConnectionInput[]
+    connectOrCreate?: ChannelInboundJobCreateOrConnectWithoutConnectionInput | ChannelInboundJobCreateOrConnectWithoutConnectionInput[]
+    createMany?: ChannelInboundJobCreateManyConnectionInputEnvelope
+    connect?: ChannelInboundJobWhereUniqueInput | ChannelInboundJobWhereUniqueInput[]
+  }
+
   export type EnumChannelConnectionStatusFieldUpdateOperationsInput = {
     set?: $Enums.ChannelConnectionStatus
   }
@@ -40896,6 +44555,104 @@ export namespace Prisma {
     delete?: AssistantConversationWhereInput | boolean
     connect?: AssistantConversationWhereUniqueInput
     update?: XOR<XOR<AssistantConversationUpdateToOneWithWhereWithoutChannelConnectionsInput, AssistantConversationUpdateWithoutChannelConnectionsInput>, AssistantConversationUncheckedUpdateWithoutChannelConnectionsInput>
+  }
+
+  export type ChannelInboundJobUpdateManyWithoutConnectionNestedInput = {
+    create?: XOR<ChannelInboundJobCreateWithoutConnectionInput, ChannelInboundJobUncheckedCreateWithoutConnectionInput> | ChannelInboundJobCreateWithoutConnectionInput[] | ChannelInboundJobUncheckedCreateWithoutConnectionInput[]
+    connectOrCreate?: ChannelInboundJobCreateOrConnectWithoutConnectionInput | ChannelInboundJobCreateOrConnectWithoutConnectionInput[]
+    upsert?: ChannelInboundJobUpsertWithWhereUniqueWithoutConnectionInput | ChannelInboundJobUpsertWithWhereUniqueWithoutConnectionInput[]
+    createMany?: ChannelInboundJobCreateManyConnectionInputEnvelope
+    set?: ChannelInboundJobWhereUniqueInput | ChannelInboundJobWhereUniqueInput[]
+    disconnect?: ChannelInboundJobWhereUniqueInput | ChannelInboundJobWhereUniqueInput[]
+    delete?: ChannelInboundJobWhereUniqueInput | ChannelInboundJobWhereUniqueInput[]
+    connect?: ChannelInboundJobWhereUniqueInput | ChannelInboundJobWhereUniqueInput[]
+    update?: ChannelInboundJobUpdateWithWhereUniqueWithoutConnectionInput | ChannelInboundJobUpdateWithWhereUniqueWithoutConnectionInput[]
+    updateMany?: ChannelInboundJobUpdateManyWithWhereWithoutConnectionInput | ChannelInboundJobUpdateManyWithWhereWithoutConnectionInput[]
+    deleteMany?: ChannelInboundJobScalarWhereInput | ChannelInboundJobScalarWhereInput[]
+  }
+
+  export type ChannelInboundJobUncheckedUpdateManyWithoutConnectionNestedInput = {
+    create?: XOR<ChannelInboundJobCreateWithoutConnectionInput, ChannelInboundJobUncheckedCreateWithoutConnectionInput> | ChannelInboundJobCreateWithoutConnectionInput[] | ChannelInboundJobUncheckedCreateWithoutConnectionInput[]
+    connectOrCreate?: ChannelInboundJobCreateOrConnectWithoutConnectionInput | ChannelInboundJobCreateOrConnectWithoutConnectionInput[]
+    upsert?: ChannelInboundJobUpsertWithWhereUniqueWithoutConnectionInput | ChannelInboundJobUpsertWithWhereUniqueWithoutConnectionInput[]
+    createMany?: ChannelInboundJobCreateManyConnectionInputEnvelope
+    set?: ChannelInboundJobWhereUniqueInput | ChannelInboundJobWhereUniqueInput[]
+    disconnect?: ChannelInboundJobWhereUniqueInput | ChannelInboundJobWhereUniqueInput[]
+    delete?: ChannelInboundJobWhereUniqueInput | ChannelInboundJobWhereUniqueInput[]
+    connect?: ChannelInboundJobWhereUniqueInput | ChannelInboundJobWhereUniqueInput[]
+    update?: ChannelInboundJobUpdateWithWhereUniqueWithoutConnectionInput | ChannelInboundJobUpdateWithWhereUniqueWithoutConnectionInput[]
+    updateMany?: ChannelInboundJobUpdateManyWithWhereWithoutConnectionInput | ChannelInboundJobUpdateManyWithWhereWithoutConnectionInput[]
+    deleteMany?: ChannelInboundJobScalarWhereInput | ChannelInboundJobScalarWhereInput[]
+  }
+
+  export type ChannelConnectionCreateNestedOneWithoutInboundJobsInput = {
+    create?: XOR<ChannelConnectionCreateWithoutInboundJobsInput, ChannelConnectionUncheckedCreateWithoutInboundJobsInput>
+    connectOrCreate?: ChannelConnectionCreateOrConnectWithoutInboundJobsInput
+    connect?: ChannelConnectionWhereUniqueInput
+  }
+
+  export type ChannelOutboundDeliveryCreateNestedOneWithoutInboundJobInput = {
+    create?: XOR<ChannelOutboundDeliveryCreateWithoutInboundJobInput, ChannelOutboundDeliveryUncheckedCreateWithoutInboundJobInput>
+    connectOrCreate?: ChannelOutboundDeliveryCreateOrConnectWithoutInboundJobInput
+    connect?: ChannelOutboundDeliveryWhereUniqueInput
+  }
+
+  export type ChannelOutboundDeliveryUncheckedCreateNestedOneWithoutInboundJobInput = {
+    create?: XOR<ChannelOutboundDeliveryCreateWithoutInboundJobInput, ChannelOutboundDeliveryUncheckedCreateWithoutInboundJobInput>
+    connectOrCreate?: ChannelOutboundDeliveryCreateOrConnectWithoutInboundJobInput
+    connect?: ChannelOutboundDeliveryWhereUniqueInput
+  }
+
+  export type EnumChannelJobStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ChannelJobStatus
+  }
+
+  export type ChannelConnectionUpdateOneWithoutInboundJobsNestedInput = {
+    create?: XOR<ChannelConnectionCreateWithoutInboundJobsInput, ChannelConnectionUncheckedCreateWithoutInboundJobsInput>
+    connectOrCreate?: ChannelConnectionCreateOrConnectWithoutInboundJobsInput
+    upsert?: ChannelConnectionUpsertWithoutInboundJobsInput
+    disconnect?: ChannelConnectionWhereInput | boolean
+    delete?: ChannelConnectionWhereInput | boolean
+    connect?: ChannelConnectionWhereUniqueInput
+    update?: XOR<XOR<ChannelConnectionUpdateToOneWithWhereWithoutInboundJobsInput, ChannelConnectionUpdateWithoutInboundJobsInput>, ChannelConnectionUncheckedUpdateWithoutInboundJobsInput>
+  }
+
+  export type ChannelOutboundDeliveryUpdateOneWithoutInboundJobNestedInput = {
+    create?: XOR<ChannelOutboundDeliveryCreateWithoutInboundJobInput, ChannelOutboundDeliveryUncheckedCreateWithoutInboundJobInput>
+    connectOrCreate?: ChannelOutboundDeliveryCreateOrConnectWithoutInboundJobInput
+    upsert?: ChannelOutboundDeliveryUpsertWithoutInboundJobInput
+    disconnect?: ChannelOutboundDeliveryWhereInput | boolean
+    delete?: ChannelOutboundDeliveryWhereInput | boolean
+    connect?: ChannelOutboundDeliveryWhereUniqueInput
+    update?: XOR<XOR<ChannelOutboundDeliveryUpdateToOneWithWhereWithoutInboundJobInput, ChannelOutboundDeliveryUpdateWithoutInboundJobInput>, ChannelOutboundDeliveryUncheckedUpdateWithoutInboundJobInput>
+  }
+
+  export type ChannelOutboundDeliveryUncheckedUpdateOneWithoutInboundJobNestedInput = {
+    create?: XOR<ChannelOutboundDeliveryCreateWithoutInboundJobInput, ChannelOutboundDeliveryUncheckedCreateWithoutInboundJobInput>
+    connectOrCreate?: ChannelOutboundDeliveryCreateOrConnectWithoutInboundJobInput
+    upsert?: ChannelOutboundDeliveryUpsertWithoutInboundJobInput
+    disconnect?: ChannelOutboundDeliveryWhereInput | boolean
+    delete?: ChannelOutboundDeliveryWhereInput | boolean
+    connect?: ChannelOutboundDeliveryWhereUniqueInput
+    update?: XOR<XOR<ChannelOutboundDeliveryUpdateToOneWithWhereWithoutInboundJobInput, ChannelOutboundDeliveryUpdateWithoutInboundJobInput>, ChannelOutboundDeliveryUncheckedUpdateWithoutInboundJobInput>
+  }
+
+  export type ChannelInboundJobCreateNestedOneWithoutDeliveryInput = {
+    create?: XOR<ChannelInboundJobCreateWithoutDeliveryInput, ChannelInboundJobUncheckedCreateWithoutDeliveryInput>
+    connectOrCreate?: ChannelInboundJobCreateOrConnectWithoutDeliveryInput
+    connect?: ChannelInboundJobWhereUniqueInput
+  }
+
+  export type EnumChannelDeliveryStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ChannelDeliveryStatus
+  }
+
+  export type ChannelInboundJobUpdateOneRequiredWithoutDeliveryNestedInput = {
+    create?: XOR<ChannelInboundJobCreateWithoutDeliveryInput, ChannelInboundJobUncheckedCreateWithoutDeliveryInput>
+    connectOrCreate?: ChannelInboundJobCreateOrConnectWithoutDeliveryInput
+    upsert?: ChannelInboundJobUpsertWithoutDeliveryInput
+    connect?: ChannelInboundJobWhereUniqueInput
+    update?: XOR<XOR<ChannelInboundJobUpdateToOneWithWhereWithoutDeliveryInput, ChannelInboundJobUpdateWithoutDeliveryInput>, ChannelInboundJobUncheckedUpdateWithoutDeliveryInput>
   }
 
   export type UserCreateNestedOneWithoutBudgetsInput = {
@@ -41550,6 +45307,40 @@ export namespace Prisma {
     _max?: NestedEnumChannelConnectionStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumChannelJobStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChannelJobStatus | EnumChannelJobStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ChannelJobStatus[] | ListEnumChannelJobStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChannelJobStatus[] | ListEnumChannelJobStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumChannelJobStatusFilter<$PrismaModel> | $Enums.ChannelJobStatus
+  }
+
+  export type NestedEnumChannelJobStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChannelJobStatus | EnumChannelJobStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ChannelJobStatus[] | ListEnumChannelJobStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChannelJobStatus[] | ListEnumChannelJobStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumChannelJobStatusWithAggregatesFilter<$PrismaModel> | $Enums.ChannelJobStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumChannelJobStatusFilter<$PrismaModel>
+    _max?: NestedEnumChannelJobStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumChannelDeliveryStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChannelDeliveryStatus | EnumChannelDeliveryStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ChannelDeliveryStatus[] | ListEnumChannelDeliveryStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChannelDeliveryStatus[] | ListEnumChannelDeliveryStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumChannelDeliveryStatusFilter<$PrismaModel> | $Enums.ChannelDeliveryStatus
+  }
+
+  export type NestedEnumChannelDeliveryStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChannelDeliveryStatus | EnumChannelDeliveryStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ChannelDeliveryStatus[] | ListEnumChannelDeliveryStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChannelDeliveryStatus[] | ListEnumChannelDeliveryStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumChannelDeliveryStatusWithAggregatesFilter<$PrismaModel> | $Enums.ChannelDeliveryStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumChannelDeliveryStatusFilter<$PrismaModel>
+    _max?: NestedEnumChannelDeliveryStatusFilter<$PrismaModel>
+  }
+
   export type WalletCreateWithoutUserInput = {
     id?: string
     name: string
@@ -42162,6 +45953,7 @@ export namespace Prisma {
     revokedAt?: Date | string | null
     updatedAt?: Date | string
     conversation?: AssistantConversationCreateNestedOneWithoutChannelConnectionsInput
+    inboundJobs?: ChannelInboundJobCreateNestedManyWithoutConnectionInput
   }
 
   export type ChannelConnectionUncheckedCreateWithoutUserInput = {
@@ -42174,6 +45966,7 @@ export namespace Prisma {
     linkedAt?: Date | string
     revokedAt?: Date | string | null
     updatedAt?: Date | string
+    inboundJobs?: ChannelInboundJobUncheckedCreateNestedManyWithoutConnectionInput
   }
 
   export type ChannelConnectionCreateOrConnectWithoutUserInput = {
@@ -43048,6 +46841,7 @@ export namespace Prisma {
     revokedAt?: Date | string | null
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutChannelConnectionsInput
+    inboundJobs?: ChannelInboundJobCreateNestedManyWithoutConnectionInput
   }
 
   export type ChannelConnectionUncheckedCreateWithoutConversationInput = {
@@ -43060,6 +46854,7 @@ export namespace Prisma {
     linkedAt?: Date | string
     revokedAt?: Date | string | null
     updatedAt?: Date | string
+    inboundJobs?: ChannelInboundJobUncheckedCreateNestedManyWithoutConnectionInput
   }
 
   export type ChannelConnectionCreateOrConnectWithoutConversationInput = {
@@ -48751,6 +52546,58 @@ export namespace Prisma {
     create: XOR<AssistantConversationCreateWithoutChannelConnectionsInput, AssistantConversationUncheckedCreateWithoutChannelConnectionsInput>
   }
 
+  export type ChannelInboundJobCreateWithoutConnectionInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    externalUpdateId: string
+    externalSenderId: string
+    externalChatId: string
+    text: string
+    status?: $Enums.ChannelJobStatus
+    attempt?: number
+    availableAt?: Date | string
+    leaseOwner?: string | null
+    leaseExpiresAt?: Date | string | null
+    processingStartedAt?: Date | string | null
+    completedAt?: Date | string | null
+    assistantTurnId?: string | null
+    errorCategory?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    delivery?: ChannelOutboundDeliveryCreateNestedOneWithoutInboundJobInput
+  }
+
+  export type ChannelInboundJobUncheckedCreateWithoutConnectionInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    externalUpdateId: string
+    externalSenderId: string
+    externalChatId: string
+    text: string
+    status?: $Enums.ChannelJobStatus
+    attempt?: number
+    availableAt?: Date | string
+    leaseOwner?: string | null
+    leaseExpiresAt?: Date | string | null
+    processingStartedAt?: Date | string | null
+    completedAt?: Date | string | null
+    assistantTurnId?: string | null
+    errorCategory?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    delivery?: ChannelOutboundDeliveryUncheckedCreateNestedOneWithoutInboundJobInput
+  }
+
+  export type ChannelInboundJobCreateOrConnectWithoutConnectionInput = {
+    where: ChannelInboundJobWhereUniqueInput
+    create: XOR<ChannelInboundJobCreateWithoutConnectionInput, ChannelInboundJobUncheckedCreateWithoutConnectionInput>
+  }
+
+  export type ChannelInboundJobCreateManyConnectionInputEnvelope = {
+    data: ChannelInboundJobCreateManyConnectionInput | ChannelInboundJobCreateManyConnectionInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutChannelConnectionsInput = {
     update: XOR<UserUpdateWithoutChannelConnectionsInput, UserUncheckedUpdateWithoutChannelConnectionsInput>
     create: XOR<UserCreateWithoutChannelConnectionsInput, UserUncheckedCreateWithoutChannelConnectionsInput>
@@ -48851,6 +52698,298 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutConversationNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type ChannelInboundJobUpsertWithWhereUniqueWithoutConnectionInput = {
+    where: ChannelInboundJobWhereUniqueInput
+    update: XOR<ChannelInboundJobUpdateWithoutConnectionInput, ChannelInboundJobUncheckedUpdateWithoutConnectionInput>
+    create: XOR<ChannelInboundJobCreateWithoutConnectionInput, ChannelInboundJobUncheckedCreateWithoutConnectionInput>
+  }
+
+  export type ChannelInboundJobUpdateWithWhereUniqueWithoutConnectionInput = {
+    where: ChannelInboundJobWhereUniqueInput
+    data: XOR<ChannelInboundJobUpdateWithoutConnectionInput, ChannelInboundJobUncheckedUpdateWithoutConnectionInput>
+  }
+
+  export type ChannelInboundJobUpdateManyWithWhereWithoutConnectionInput = {
+    where: ChannelInboundJobScalarWhereInput
+    data: XOR<ChannelInboundJobUpdateManyMutationInput, ChannelInboundJobUncheckedUpdateManyWithoutConnectionInput>
+  }
+
+  export type ChannelInboundJobScalarWhereInput = {
+    AND?: ChannelInboundJobScalarWhereInput | ChannelInboundJobScalarWhereInput[]
+    OR?: ChannelInboundJobScalarWhereInput[]
+    NOT?: ChannelInboundJobScalarWhereInput | ChannelInboundJobScalarWhereInput[]
+    id?: StringFilter<"ChannelInboundJob"> | string
+    provider?: EnumChannelProviderFilter<"ChannelInboundJob"> | $Enums.ChannelProvider
+    externalUpdateId?: StringFilter<"ChannelInboundJob"> | string
+    channelConnectionId?: StringNullableFilter<"ChannelInboundJob"> | string | null
+    externalSenderId?: StringFilter<"ChannelInboundJob"> | string
+    externalChatId?: StringFilter<"ChannelInboundJob"> | string
+    text?: StringFilter<"ChannelInboundJob"> | string
+    status?: EnumChannelJobStatusFilter<"ChannelInboundJob"> | $Enums.ChannelJobStatus
+    attempt?: IntFilter<"ChannelInboundJob"> | number
+    availableAt?: DateTimeFilter<"ChannelInboundJob"> | Date | string
+    leaseOwner?: StringNullableFilter<"ChannelInboundJob"> | string | null
+    leaseExpiresAt?: DateTimeNullableFilter<"ChannelInboundJob"> | Date | string | null
+    processingStartedAt?: DateTimeNullableFilter<"ChannelInboundJob"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"ChannelInboundJob"> | Date | string | null
+    assistantTurnId?: StringNullableFilter<"ChannelInboundJob"> | string | null
+    errorCategory?: StringNullableFilter<"ChannelInboundJob"> | string | null
+    createdAt?: DateTimeFilter<"ChannelInboundJob"> | Date | string
+    updatedAt?: DateTimeFilter<"ChannelInboundJob"> | Date | string
+  }
+
+  export type ChannelConnectionCreateWithoutInboundJobsInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    externalUserId: string
+    externalChatId: string
+    status?: $Enums.ChannelConnectionStatus
+    linkedAt?: Date | string
+    revokedAt?: Date | string | null
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutChannelConnectionsInput
+    conversation?: AssistantConversationCreateNestedOneWithoutChannelConnectionsInput
+  }
+
+  export type ChannelConnectionUncheckedCreateWithoutInboundJobsInput = {
+    id?: string
+    userId: string
+    provider: $Enums.ChannelProvider
+    externalUserId: string
+    externalChatId: string
+    conversationId?: string | null
+    status?: $Enums.ChannelConnectionStatus
+    linkedAt?: Date | string
+    revokedAt?: Date | string | null
+    updatedAt?: Date | string
+  }
+
+  export type ChannelConnectionCreateOrConnectWithoutInboundJobsInput = {
+    where: ChannelConnectionWhereUniqueInput
+    create: XOR<ChannelConnectionCreateWithoutInboundJobsInput, ChannelConnectionUncheckedCreateWithoutInboundJobsInput>
+  }
+
+  export type ChannelOutboundDeliveryCreateWithoutInboundJobInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    destinationChatId: string
+    renderedText: string
+    status?: $Enums.ChannelDeliveryStatus
+    attempt?: number
+    availableAt?: Date | string
+    leaseOwner?: string | null
+    leaseExpiresAt?: Date | string | null
+    providerMessageId?: string | null
+    sentAt?: Date | string | null
+    errorCategory?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ChannelOutboundDeliveryUncheckedCreateWithoutInboundJobInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    destinationChatId: string
+    renderedText: string
+    status?: $Enums.ChannelDeliveryStatus
+    attempt?: number
+    availableAt?: Date | string
+    leaseOwner?: string | null
+    leaseExpiresAt?: Date | string | null
+    providerMessageId?: string | null
+    sentAt?: Date | string | null
+    errorCategory?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ChannelOutboundDeliveryCreateOrConnectWithoutInboundJobInput = {
+    where: ChannelOutboundDeliveryWhereUniqueInput
+    create: XOR<ChannelOutboundDeliveryCreateWithoutInboundJobInput, ChannelOutboundDeliveryUncheckedCreateWithoutInboundJobInput>
+  }
+
+  export type ChannelConnectionUpsertWithoutInboundJobsInput = {
+    update: XOR<ChannelConnectionUpdateWithoutInboundJobsInput, ChannelConnectionUncheckedUpdateWithoutInboundJobsInput>
+    create: XOR<ChannelConnectionCreateWithoutInboundJobsInput, ChannelConnectionUncheckedCreateWithoutInboundJobsInput>
+    where?: ChannelConnectionWhereInput
+  }
+
+  export type ChannelConnectionUpdateToOneWithWhereWithoutInboundJobsInput = {
+    where?: ChannelConnectionWhereInput
+    data: XOR<ChannelConnectionUpdateWithoutInboundJobsInput, ChannelConnectionUncheckedUpdateWithoutInboundJobsInput>
+  }
+
+  export type ChannelConnectionUpdateWithoutInboundJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUserId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelConnectionStatusFieldUpdateOperationsInput | $Enums.ChannelConnectionStatus
+    linkedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutChannelConnectionsNestedInput
+    conversation?: AssistantConversationUpdateOneWithoutChannelConnectionsNestedInput
+  }
+
+  export type ChannelConnectionUncheckedUpdateWithoutInboundJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUserId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumChannelConnectionStatusFieldUpdateOperationsInput | $Enums.ChannelConnectionStatus
+    linkedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelOutboundDeliveryUpsertWithoutInboundJobInput = {
+    update: XOR<ChannelOutboundDeliveryUpdateWithoutInboundJobInput, ChannelOutboundDeliveryUncheckedUpdateWithoutInboundJobInput>
+    create: XOR<ChannelOutboundDeliveryCreateWithoutInboundJobInput, ChannelOutboundDeliveryUncheckedCreateWithoutInboundJobInput>
+    where?: ChannelOutboundDeliveryWhereInput
+  }
+
+  export type ChannelOutboundDeliveryUpdateToOneWithWhereWithoutInboundJobInput = {
+    where?: ChannelOutboundDeliveryWhereInput
+    data: XOR<ChannelOutboundDeliveryUpdateWithoutInboundJobInput, ChannelOutboundDeliveryUncheckedUpdateWithoutInboundJobInput>
+  }
+
+  export type ChannelOutboundDeliveryUpdateWithoutInboundJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    destinationChatId?: StringFieldUpdateOperationsInput | string
+    renderedText?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelDeliveryStatusFieldUpdateOperationsInput | $Enums.ChannelDeliveryStatus
+    attempt?: IntFieldUpdateOperationsInput | number
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    leaseOwner?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelOutboundDeliveryUncheckedUpdateWithoutInboundJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    destinationChatId?: StringFieldUpdateOperationsInput | string
+    renderedText?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelDeliveryStatusFieldUpdateOperationsInput | $Enums.ChannelDeliveryStatus
+    attempt?: IntFieldUpdateOperationsInput | number
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    leaseOwner?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelInboundJobCreateWithoutDeliveryInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    externalUpdateId: string
+    externalSenderId: string
+    externalChatId: string
+    text: string
+    status?: $Enums.ChannelJobStatus
+    attempt?: number
+    availableAt?: Date | string
+    leaseOwner?: string | null
+    leaseExpiresAt?: Date | string | null
+    processingStartedAt?: Date | string | null
+    completedAt?: Date | string | null
+    assistantTurnId?: string | null
+    errorCategory?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    connection?: ChannelConnectionCreateNestedOneWithoutInboundJobsInput
+  }
+
+  export type ChannelInboundJobUncheckedCreateWithoutDeliveryInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    externalUpdateId: string
+    channelConnectionId?: string | null
+    externalSenderId: string
+    externalChatId: string
+    text: string
+    status?: $Enums.ChannelJobStatus
+    attempt?: number
+    availableAt?: Date | string
+    leaseOwner?: string | null
+    leaseExpiresAt?: Date | string | null
+    processingStartedAt?: Date | string | null
+    completedAt?: Date | string | null
+    assistantTurnId?: string | null
+    errorCategory?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ChannelInboundJobCreateOrConnectWithoutDeliveryInput = {
+    where: ChannelInboundJobWhereUniqueInput
+    create: XOR<ChannelInboundJobCreateWithoutDeliveryInput, ChannelInboundJobUncheckedCreateWithoutDeliveryInput>
+  }
+
+  export type ChannelInboundJobUpsertWithoutDeliveryInput = {
+    update: XOR<ChannelInboundJobUpdateWithoutDeliveryInput, ChannelInboundJobUncheckedUpdateWithoutDeliveryInput>
+    create: XOR<ChannelInboundJobCreateWithoutDeliveryInput, ChannelInboundJobUncheckedCreateWithoutDeliveryInput>
+    where?: ChannelInboundJobWhereInput
+  }
+
+  export type ChannelInboundJobUpdateToOneWithWhereWithoutDeliveryInput = {
+    where?: ChannelInboundJobWhereInput
+    data: XOR<ChannelInboundJobUpdateWithoutDeliveryInput, ChannelInboundJobUncheckedUpdateWithoutDeliveryInput>
+  }
+
+  export type ChannelInboundJobUpdateWithoutDeliveryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUpdateId?: StringFieldUpdateOperationsInput | string
+    externalSenderId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelJobStatusFieldUpdateOperationsInput | $Enums.ChannelJobStatus
+    attempt?: IntFieldUpdateOperationsInput | number
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    leaseOwner?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processingStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    assistantTurnId?: NullableStringFieldUpdateOperationsInput | string | null
+    errorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    connection?: ChannelConnectionUpdateOneWithoutInboundJobsNestedInput
+  }
+
+  export type ChannelInboundJobUncheckedUpdateWithoutDeliveryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUpdateId?: StringFieldUpdateOperationsInput | string
+    channelConnectionId?: NullableStringFieldUpdateOperationsInput | string | null
+    externalSenderId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelJobStatusFieldUpdateOperationsInput | $Enums.ChannelJobStatus
+    attempt?: IntFieldUpdateOperationsInput | number
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    leaseOwner?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processingStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    assistantTurnId?: NullableStringFieldUpdateOperationsInput | string | null
+    errorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserCreateWithoutBudgetsInput = {
@@ -49931,6 +54070,7 @@ export namespace Prisma {
     revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversation?: AssistantConversationUpdateOneWithoutChannelConnectionsNestedInput
+    inboundJobs?: ChannelInboundJobUpdateManyWithoutConnectionNestedInput
   }
 
   export type ChannelConnectionUncheckedUpdateWithoutUserInput = {
@@ -49943,6 +54083,7 @@ export namespace Prisma {
     linkedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    inboundJobs?: ChannelInboundJobUncheckedUpdateManyWithoutConnectionNestedInput
   }
 
   export type ChannelConnectionUncheckedUpdateManyWithoutUserInput = {
@@ -50405,6 +54546,7 @@ export namespace Prisma {
     revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutChannelConnectionsNestedInput
+    inboundJobs?: ChannelInboundJobUpdateManyWithoutConnectionNestedInput
   }
 
   export type ChannelConnectionUncheckedUpdateWithoutConversationInput = {
@@ -50417,6 +54559,7 @@ export namespace Prisma {
     linkedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    inboundJobs?: ChannelInboundJobUncheckedUpdateManyWithoutConnectionNestedInput
   }
 
   export type ChannelConnectionUncheckedUpdateManyWithoutConversationInput = {
@@ -51677,6 +55820,88 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     generatedTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelInboundJobCreateManyConnectionInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    externalUpdateId: string
+    externalSenderId: string
+    externalChatId: string
+    text: string
+    status?: $Enums.ChannelJobStatus
+    attempt?: number
+    availableAt?: Date | string
+    leaseOwner?: string | null
+    leaseExpiresAt?: Date | string | null
+    processingStartedAt?: Date | string | null
+    completedAt?: Date | string | null
+    assistantTurnId?: string | null
+    errorCategory?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ChannelInboundJobUpdateWithoutConnectionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUpdateId?: StringFieldUpdateOperationsInput | string
+    externalSenderId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelJobStatusFieldUpdateOperationsInput | $Enums.ChannelJobStatus
+    attempt?: IntFieldUpdateOperationsInput | number
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    leaseOwner?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processingStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    assistantTurnId?: NullableStringFieldUpdateOperationsInput | string | null
+    errorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    delivery?: ChannelOutboundDeliveryUpdateOneWithoutInboundJobNestedInput
+  }
+
+  export type ChannelInboundJobUncheckedUpdateWithoutConnectionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUpdateId?: StringFieldUpdateOperationsInput | string
+    externalSenderId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelJobStatusFieldUpdateOperationsInput | $Enums.ChannelJobStatus
+    attempt?: IntFieldUpdateOperationsInput | number
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    leaseOwner?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processingStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    assistantTurnId?: NullableStringFieldUpdateOperationsInput | string | null
+    errorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    delivery?: ChannelOutboundDeliveryUncheckedUpdateOneWithoutInboundJobNestedInput
+  }
+
+  export type ChannelInboundJobUncheckedUpdateManyWithoutConnectionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUpdateId?: StringFieldUpdateOperationsInput | string
+    externalSenderId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelJobStatusFieldUpdateOperationsInput | $Enums.ChannelJobStatus
+    attempt?: IntFieldUpdateOperationsInput | number
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    leaseOwner?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processingStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    assistantTurnId?: NullableStringFieldUpdateOperationsInput | string | null
+    errorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

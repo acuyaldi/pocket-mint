@@ -43,6 +43,7 @@ export declare const databaseConfig: {
 };
 export declare const assistantProviderConfig: import("./assistant-provider").AssistantProviderConfig;
 export declare const telegramConfig: import("../telegram/config").TelegramConfig;
+export declare const channelWorkerConfig: import("../channels/workerConfig").ChannelWorkerConfig;
 export declare const trustProxy: number | boolean;
 /**
  * Rate-limiting configuration. NOTE: the default limiter store is in-memory and

@@ -710,24 +710,108 @@ model ChannelConnection {
 
   user         User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
   conversation AssistantConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+  inboundJobs  ChannelInboundJob[]
 
   @@unique([provider, externalUserId])
   @@unique([userId, provider])
   @@map("channel_connections")
 }
 
-// Authoritative dedup record for retried provider webhook deliveries (e.g.
-// Telegram's update_id). Rows older than the retention window are deleted
-// inline by the webhook handler — see src/telegram/dedup.ts.
-model ChannelUpdateDedup {
-  id               String          @id @default(cuid())
-  provider         ChannelProvider
-  externalUpdateId String          @map("external_update_id")
-  createdAt        DateTime        @default(now()) @map("created_at")
+// ─────────────────────────────────────────────
+// CHANNEL DURABLE PROCESSING  (Phase 26B — PD-015)
+// ─────────────────────────────────────────────
+// Postgres-backed inbox/outbox. ChannelInboundJob evolved in place from the
+// Phase 25 ChannelUpdateDedup table: the (provider, externalUpdateId) unique
+// constraint IS the dedup guarantee, now carrying full job lifecycle state
+// too, instead of a second parallel table. `text` is the bounded extracted
+// message body only — never the raw provider Update payload.
+enum ChannelJobStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED_RETRYABLE
+  FAILED_TERMINAL
+}
+
+enum ChannelDeliveryStatus {
+  PENDING
+  SENDING
+  SENT
+  FAILED_RETRYABLE
+  FAILED_TERMINAL
+}
+
+model ChannelInboundJob {
+  id                  String           @id @default(cuid())
+  provider            ChannelProvider
+  externalUpdateId    String           @map("external_update_id")
+  channelConnectionId String?          @map("channel_connection_id")
+  externalSenderId    String           @map("external_sender_id")
+  externalChatId      String           @map("external_chat_id")
+  text                String
+  status              ChannelJobStatus @default(PENDING)
+  attempt             Int              @default(0)
+  availableAt         DateTime         @default(now()) @map("available_at")
+  leaseOwner          String?          @map("lease_owner")
+  leaseExpiresAt      DateTime?        @map("lease_expires_at")
+  processingStartedAt DateTime?        @map("processing_started_at")
+  completedAt         DateTime?        @map("completed_at")
+  assistantTurnId     String?          @unique @map("assistant_turn_id")
+  errorCategory       String?          @map("error_category")
+  createdAt           DateTime         @default(now()) @map("created_at")
+  updatedAt           DateTime         @updatedAt @map("updated_at")
+
+  connection ChannelConnection?       @relation(fields: [channelConnectionId], references: [id], onDelete: SetNull)
+  delivery   ChannelOutboundDelivery?
 
   @@unique([provider, externalUpdateId])
-  @@index([createdAt])
-  @@map("channel_update_dedups")
+  @@index([status, availableAt])
+  @@index([status, leaseExpiresAt])
+  @@map("channel_inbound_jobs")
+}
+
+// One outbound Telegram reply per inbound job (current behavior always sends
+// exactly one reply — multi-part chunking is out of scope, see PD-015).
+model ChannelOutboundDelivery {
+  id                String                @id @default(cuid())
+  inboundJobId      String                @unique @map("inbound_job_id")
+  provider          ChannelProvider
+  destinationChatId String                @map("destination_chat_id")
+  renderedText      String                @map("rendered_text")
+  status            ChannelDeliveryStatus @default(PENDING)
+  attempt           Int                   @default(0)
+  availableAt       DateTime              @default(now()) @map("available_at")
+  leaseOwner        String?               @map("lease_owner")
+  leaseExpiresAt    DateTime?             @map("lease_expires_at")
+  providerMessageId String?               @map("provider_message_id")
+  sentAt            DateTime?             @map("sent_at")
+  errorCategory     String?               @map("error_category")
+  createdAt         DateTime              @default(now()) @map("created_at")
+  updatedAt         DateTime              @updatedAt @map("updated_at")
+
+  inboundJob ChannelInboundJob @relation(fields: [inboundJobId], references: [id], onDelete: Cascade)
+
+  @@index([status, availableAt])
+  @@index([status, leaseExpiresAt])
+  @@map("channel_outbound_deliveries")
+}
+
+// Operation-identity guard binding one inbound job to at most one Assistant
+// turn. `id` is the operation key itself (`channel:<provider>:<jobId>`), so
+// uniqueness is free via the primary key — this is what makes a reclaimed job
+// discover an already-completed Assistant turn instead of re-invoking it.
+model ChannelAssistantOperation {
+  id           String   @id
+  userId       String   @map("user_id")
+  turnId       String?  @map("turn_id")
+  // The already-rendered reply, captured at bind time so a reclaimed job can
+  // reconstruct the outbound delivery without reaching into Assistant
+  // persistence internals (turns/drafts/clarifications) to re-derive it.
+  renderedText String?  @map("rendered_text")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("channel_assistant_operations")
 }
 
 // ─────────────────────────────────────────────

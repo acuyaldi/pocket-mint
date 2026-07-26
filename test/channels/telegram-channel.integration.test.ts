@@ -1,4 +1,4 @@
-import { afterAll, afterEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, afterEach, describe, expect, it } from 'vitest';
 import express from 'express';
 import request from 'supertest';
 import { createPrismaResources } from '../../src/lib/prismaFactory';
@@ -24,12 +24,6 @@ describe.skipIf(!url)('Telegram channel foundation (disposable PostgreSQL)', () 
     return user;
   }
 
-  /** channel_connections.conversation_id is a real FK — canned Assistant responses in these tests must reference a real conversation. */
-  async function conversationFor(userId: string) {
-    const conversation = await resources!.prisma.assistantConversation.create({ data: { userId } });
-    return conversation.id;
-  }
-
   function linkApp(clock?: () => Date) {
     const linkTokens = createChannelLinkTokenService(resources!.prisma, clock);
     const connections = createChannelConnectionService(resources!.prisma);
@@ -45,14 +39,14 @@ describe.skipIf(!url)('Telegram channel foundation (disposable PostgreSQL)', () 
     return { server, linkTokens, connections };
   }
 
-  function fakeClient() {
-    return { sendMessage: vi.fn().mockResolvedValue({ ok: true }), setWebhook: vi.fn(), deleteWebhook: vi.fn() };
-  }
-
   const privateUpdate = (id: number, text: string, senderId: string, chatId = 'chat-1') => ({
     update_id: id,
     message: { chat: { id: chatId, type: 'private' }, from: { id: senderId }, text },
   });
+
+  /** update_id is globally unique (provider, externalUpdateId) regardless of sender — never reuse a literal across tests/runs. */
+  let updateIdCounter = 0;
+  const uniqueUpdateId = () => Date.now() * 1000 + (updateIdCounter++);
 
   it('creates a linking token via HTTP and stores only its digest', async () => {
     const user = await fixture('link-create');
@@ -118,78 +112,57 @@ describe.skipIf(!url)('Telegram channel foundation (disposable PostgreSQL)', () 
     expect(otherView.body.data.status).toBe('NONE');
   });
 
-  it('revoking a connection is idempotent and a revoked identity can no longer message the Assistant', async () => {
+  it('revoking a connection is idempotent, and the webhook still durably accepts a subsequent update (worker resolves the revocation, not the webhook)', async () => {
+    const uid = `revoke-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const user = await fixture('revoke');
     const { server, linkTokens, connections } = linkApp();
     const { token } = await linkTokens.createLinkToken(user.id, 'TELEGRAM');
-    await linkTokens.consumeLinkToken(token, 'TELEGRAM', 'tg-revoke', 'chat-revoke');
+    await linkTokens.consumeLinkToken(token, 'TELEGRAM', `tg-${uid}`, `chat-${uid}`);
     expect((await request(server).post('/telegram/revoke').set('x-test-user', user.id)).status).toBe(200);
     expect((await request(server).post('/telegram/revoke').set('x-test-user', user.id)).status).toBe(200); // idempotent
 
-    const client = fakeClient();
-    const service = createTelegramService({ db: resources!.prisma, linkTokens, connections, client: client as never });
-    await service.handleUpdate(privateUpdate(1, 'how much did I spend', 'tg-revoke', 'chat-revoke'), 'corr-revoke');
-    expect(client.sendMessage).toHaveBeenCalledWith('chat-revoke', expect.stringMatching(/not linked/i));
+    const service = createTelegramService({ db: resources!.prisma, connections });
+    await service.handleUpdate(privateUpdate(uniqueUpdateId(), 'how much did I spend', `tg-${uid}`, `chat-${uid}`), 'corr-revoke');
+    const job = await resources!.prisma.channelInboundJob.findFirstOrThrow({ where: { provider: 'TELEGRAM', externalSenderId: `tg-${uid}` } });
+    expect(job.channelConnectionId).toBeNull(); // revoked identity resolves to no active connection
+    expect(job.status).toBe('PENDING');
   });
 
-  it('claims a duplicate Telegram update exactly once under concurrency (no duplicate Assistant turn)', async () => {
+  it('a retried Telegram update_id durably persists exactly one job under concurrency', async () => {
+    const uid = `dedup-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const user = await fixture('dedup');
     const { linkTokens, connections } = linkApp();
     const { token } = await linkTokens.createLinkToken(user.id, 'TELEGRAM');
-    await linkTokens.consumeLinkToken(token, 'TELEGRAM', 'tg-dedup', 'chat-dedup');
+    await linkTokens.consumeLinkToken(token, 'TELEGRAM', `tg-${uid}`, `chat-${uid}`);
 
-    const client = fakeClient();
-    const conversationId = await conversationFor(user.id);
-    const runtime = { sendMessage: vi.fn().mockResolvedValue({ httpStatus: 200, response: { status: 'success', renderedText: 'ok', conversationId } }) };
-    const service = createTelegramService({ db: resources!.prisma, linkTokens, connections, client: client as never, assistantProviderRuntime: runtime as never });
-    const update = privateUpdate(99, 'how much did I spend', 'tg-dedup', 'chat-dedup');
+    const service = createTelegramService({ db: resources!.prisma, connections });
+    const update = privateUpdate(uniqueUpdateId(), 'how much did I spend', `tg-${uid}`, `chat-${uid}`);
     await Promise.all([
       service.handleUpdate(update, 'corr-dedup-1'),
       service.handleUpdate(update, 'corr-dedup-2'),
     ]);
-    expect(runtime.sendMessage).toHaveBeenCalledTimes(1);
-    expect(await resources!.prisma.channelUpdateDedup.count({ where: { provider: 'TELEGRAM', externalUpdateId: '99' } })).toBe(1);
+    expect(await resources!.prisma.channelInboundJob.count({ where: { provider: 'TELEGRAM', externalSenderId: `tg-${uid}` } })).toBe(1);
   });
 
-  it('/new clears the stored conversation so the next message starts fresh', async () => {
-    const user = await fixture('new-cmd');
+  it('persists only the bounded extracted text — never the raw Telegram update payload', async () => {
+    const uid = `no-raw-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const user = await fixture('no-raw');
     const { linkTokens, connections } = linkApp();
     const { token } = await linkTokens.createLinkToken(user.id, 'TELEGRAM');
-    const { connectionId } = await linkTokens.consumeLinkToken(token, 'TELEGRAM', 'tg-new', 'chat-new');
-    await connections.setCurrentConversation(connectionId, await conversationFor(user.id));
+    await linkTokens.consumeLinkToken(token, 'TELEGRAM', `tg-${uid}`, `chat-${uid}`);
 
-    const client = fakeClient();
-    const service = createTelegramService({ db: resources!.prisma, linkTokens, connections, client: client as never });
-    await service.handleUpdate(privateUpdate(2, '/new', 'tg-new', 'chat-new'), 'corr-new');
-    const connection = await resources!.prisma.channelConnection.findUniqueOrThrow({ where: { id: connectionId } });
-    expect(connection.conversationId).toBeNull();
+    const service = createTelegramService({ db: resources!.prisma, connections });
+    await service.handleUpdate(privateUpdate(uniqueUpdateId(), 'spend 50000 on food', `tg-${uid}`, `chat-${uid}`), 'corr-noraw');
+    const job = await resources!.prisma.channelInboundJob.findFirstOrThrow({ where: { provider: 'TELEGRAM', externalSenderId: `tg-${uid}` } });
+    expect(job.text).toBe('spend 50000 on food');
+    expect(Object.keys(job)).not.toContain('message');
+    expect(Object.keys(job)).not.toContain('rawUpdate');
   });
 
-  it('end-to-end: a linked user reaches the Assistant, and the resulting conversation is persisted on the connection', async () => {
-    const user = await fixture('e2e');
-    const { linkTokens, connections } = linkApp();
-    const { token } = await linkTokens.createLinkToken(user.id, 'TELEGRAM');
-    const { connectionId } = await linkTokens.consumeLinkToken(token, 'TELEGRAM', 'tg-e2e', 'chat-e2e');
-
-    const client = fakeClient();
-    const conversationId = await conversationFor(user.id);
-    const runtime = { sendMessage: vi.fn().mockResolvedValue({ httpStatus: 200, response: { status: 'success', renderedText: 'You spent 10000.', conversationId } }) };
-    const service = createTelegramService({ db: resources!.prisma, linkTokens, connections, client: client as never, assistantProviderRuntime: runtime as never });
-    await service.handleUpdate(privateUpdate(3, 'how much did I spend this month', 'tg-e2e', 'chat-e2e'), 'corr-e2e');
-
-    expect(runtime.sendMessage).toHaveBeenCalledWith(user.id, 'corr-e2e', { message: 'how much did I spend this month' });
-    expect(client.sendMessage).toHaveBeenCalledWith('chat-e2e', 'You spent 10000.');
-    const connection = await resources!.prisma.channelConnection.findUniqueOrThrow({ where: { id: connectionId } });
-    expect(connection.conversationId).toBe(conversationId);
-  });
-
-  it('rejects a group-chat update without ever touching a connection or the Assistant', async () => {
-    const { linkTokens, connections } = linkApp();
-    const client = fakeClient();
-    const runtime = { sendMessage: vi.fn() };
-    const service = createTelegramService({ db: resources!.prisma, linkTokens, connections, client: client as never, assistantProviderRuntime: runtime as never });
+  it('rejects a group-chat update without ever creating a job', async () => {
+    const { connections } = linkApp();
+    const service = createTelegramService({ db: resources!.prisma, connections });
     await service.handleUpdate({ update_id: 5, message: { chat: { id: 'g1', type: 'group' }, from: { id: 'tg-group' }, text: 'spend 50000' } }, 'corr-group');
-    expect(runtime.sendMessage).not.toHaveBeenCalled();
-    expect(client.sendMessage).not.toHaveBeenCalled();
+    expect(await resources!.prisma.channelInboundJob.count({ where: { externalUpdateId: '5' } })).toBe(0);
   });
 });

@@ -1,0 +1,60 @@
+import { describe, expect, it, vi } from 'vitest';
+import { processDelivery, type OutboundWorkerDeps } from '../../../src/channels/workers/outbound.worker';
+import type { ClaimedDelivery } from '../../../src/channels/workers/claim';
+
+function delivery(overrides: Partial<ClaimedDelivery> = {}): ClaimedDelivery {
+  return { id: 'del-1', inboundJobId: 'job-1', destinationChatId: 'chat-1', renderedText: 'hello', attempt: 1, ...overrides };
+}
+
+function buildDeps(overrides: Partial<OutboundWorkerDeps> = {}): OutboundWorkerDeps {
+  const updates: Array<Record<string, unknown>> = [];
+  return {
+    db: { channelOutboundDelivery: { update: vi.fn(async ({ data }: { data: Record<string, unknown> }) => { updates.push(data); return data; }) }, __updates: updates } as never,
+    client: { sendMessage: vi.fn(), setWebhook: vi.fn(), deleteWebhook: vi.fn() } as never,
+    config: { workersEnabled: true, inboundPollMs: 1, outboundPollMs: 1, batchSize: 10, leaseMs: 1000, maxAttemptsInbound: 5, maxAttemptsOutbound: 5, retentionDays: 7 },
+    owner: 'test-owner',
+    ...overrides,
+  };
+}
+
+describe('processDelivery', () => {
+  it('marks SENT on a successful send', async () => {
+    const client = { sendMessage: vi.fn().mockResolvedValue({ ok: true }), setWebhook: vi.fn(), deleteWebhook: vi.fn() };
+    const deps = buildDeps({ client: client as never });
+    await processDelivery(deps, delivery());
+    const updates = (deps.db as never as { __updates: Array<Record<string, unknown>> }).__updates;
+    expect(updates.at(-1)).toMatchObject({ status: 'SENT' });
+  });
+
+  it('schedules a retry for a retryable Telegram failure', async () => {
+    const client = { sendMessage: vi.fn().mockResolvedValue({ ok: false, category: 'provider_unavailable' }), setWebhook: vi.fn(), deleteWebhook: vi.fn() };
+    const deps = buildDeps({ client: client as never });
+    await processDelivery(deps, delivery({ attempt: 1 }));
+    const updates = (deps.db as never as { __updates: Array<Record<string, unknown>> }).__updates;
+    expect(updates.at(-1)).toMatchObject({ status: 'FAILED_RETRYABLE', errorCategory: 'provider_unavailable' });
+  });
+
+  it('goes terminal immediately for an invalid/malformed request', async () => {
+    const client = { sendMessage: vi.fn().mockResolvedValue({ ok: false, category: 'provider_invalid_response' }), setWebhook: vi.fn(), deleteWebhook: vi.fn() };
+    const deps = buildDeps({ client: client as never });
+    await processDelivery(deps, delivery({ attempt: 1 }));
+    const updates = (deps.db as never as { __updates: Array<Record<string, unknown>> }).__updates;
+    expect(updates.at(-1)).toMatchObject({ status: 'FAILED_TERMINAL', errorCategory: 'provider_invalid_response' });
+  });
+
+  it('goes terminal once retryable attempts are exhausted', async () => {
+    const client = { sendMessage: vi.fn().mockResolvedValue({ ok: false, category: 'provider_rate_limit' }), setWebhook: vi.fn(), deleteWebhook: vi.fn() };
+    const deps = buildDeps({ client: client as never });
+    await processDelivery(deps, delivery({ attempt: 5 }));
+    const updates = (deps.db as never as { __updates: Array<Record<string, unknown>> }).__updates;
+    expect(updates.at(-1)).toMatchObject({ status: 'FAILED_TERMINAL' });
+  });
+
+  it('never re-invokes the Assistant or any other service — delivery retry is delivery-only', async () => {
+    const client = { sendMessage: vi.fn().mockResolvedValue({ ok: false, category: 'provider_unavailable' }), setWebhook: vi.fn(), deleteWebhook: vi.fn() };
+    const deps = buildDeps({ client: client as never });
+    await processDelivery(deps, delivery());
+    expect(client.sendMessage).toHaveBeenCalledTimes(1);
+    expect(client.sendMessage).toHaveBeenCalledWith('chat-1', 'hello');
+  });
+});

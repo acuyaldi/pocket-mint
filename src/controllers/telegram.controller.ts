@@ -25,13 +25,13 @@ export function verifyTelegramWebhookSecret(req: Request, res: Response, next: N
 }
 
 /**
- * Processes the update SYNCHRONOUSLY before acknowledging — this repo has no
- * queue/background-job infrastructure (see docs/product/decisions/013), so a
- * "respond 200 then keep working" fire-and-forget promise would be lost on a
- * process restart mid-request. Telegram's update_id dedup (src/telegram/dedup.ts)
- * is the safety net if a retried delivery arrives after a slow response.
- * Always returns 200 for a handled update, including unsupported/ignored ones
- * — only the secret check above can 401.
+ * Persists the update as a durable ChannelInboundJob and acknowledges — never
+ * invokes the Assistant or Telegram delivery in the request path (see
+ * docs/product/decisions/015). `telegramService.handleUpdate` is awaited only
+ * long enough to durably accept the update (bounded DB writes); the inbound/
+ * outbound workers do the rest independently of webhook latency. Always
+ * returns 200 for a handled update, including unsupported/duplicate ones —
+ * only the secret check above can 401.
  */
 export async function telegramWebhook(req: Request, res: Response): Promise<void> {
   if (telegramService) {
