@@ -894,6 +894,38 @@ describe.skipIf(!url)('Clarification sequential flow (disposable PostgreSQL)', (
     expect(await db.assistantFinancialDraft.count({ where: { userId: user.id } })).toBe(0);
     expect(await db.transaction.count({ where: { userId: user.id } })).toBe(0);
   });
+
+  // ---- Regression: resolved merchant must reach the draft preview -------------
+
+  it('includes the resolved merchant display label in the draft preview and renderedText', async () => {
+    const { user, walletA, category, db } = await fixture('merchant-resolved');
+    await db.merchantMapping.create({
+      data: {
+        userId: user.id,
+        merchantName: 'Test Noodle Shop',
+        normalizedMerchant: 'test noodle shop',
+        categoryId: category.id,
+      },
+    });
+    const { application } = buildServices();
+
+    const result = await application.execute(user.id, 'corr-merchant', {
+      intent: 'transaction.create',
+      arguments: {
+        type: 'EXPENSE',
+        amount: '20000',
+        walletId: walletA.id,
+        categoryId: category.id,
+        merchantReference: 'test noodle shop',
+        date: '2026-07-24',
+      },
+    });
+
+    expect(result.response.status).toBe('success');
+    const data = result.response.data as any;
+    expect(data.preview.merchant).toBe('Test Noodle Shop');
+    expect(data.renderedText).toContain('Test Noodle Shop');
+  });
 });
 
 /** Recursively collect all object keys for safe-state assertions */
