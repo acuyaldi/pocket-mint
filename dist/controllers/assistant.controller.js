@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cancelAssistantClarification = exports.selectAssistantClarification = exports.cancelAssistantFinancialDraft = exports.confirmAssistantFinancialDraft = exports.archiveAssistantConversation = exports.getAssistantConversation = exports.listAssistantConversations = exports.assistantMessages = exports.assistantExecute = void 0;
+exports.cancelAssistantClarification = exports.selectAssistantClarification = exports.cancelAssistantFinancialDraft = exports.confirmAssistantFinancialDraft = exports.archiveAssistantConversation = exports.getAssistantRecoveryState = exports.getAssistantConversation = exports.listAssistantConversations = exports.assistantMessages = exports.assistantExecute = void 0;
 exports.createAssistantControllers = createAssistantControllers;
 const authContext_1 = require("../http/authContext");
 const forwardError_1 = require("../http/forwardError");
@@ -108,6 +108,22 @@ function createAssistantControllers(application, conversations, drafts, provider
             (0, forwardError_1.forwardError)(error, res, next);
         }
     }
+    async function recoveryState(req, res, next) {
+        try {
+            const userId = (0, authContext_1.getAuthenticatedUserId)(req);
+            if (!userId)
+                return (0, response_1.sendError)(res, 'Unauthorized', 401);
+            const conversationId = routeId(req.params.conversationId);
+            // getAssistantState only filters by {conversationId, userId} in its queries — it
+            // does not verify the conversation exists, so a bad id would silently look like
+            // "no active workflow" instead of 404. Verify ownership first, same as `get`.
+            await conversations.assertOwned(userId, conversationId);
+            (0, response_1.sendSuccess)(res, await application.getAssistantState(userId, conversationId));
+        }
+        catch (error) {
+            (0, forwardError_1.forwardError)(error, res, next);
+        }
+    }
     async function archive(req, res, next) {
         try {
             const userId = (0, authContext_1.getAuthenticatedUserId)(req);
@@ -183,13 +199,14 @@ function createAssistantControllers(application, conversations, drafts, provider
             (0, forwardError_1.forwardError)(error, res, next);
         }
     }
-    return { execute, messages, list, get, archive, confirmDraft, cancelDraft, selectClarification, cancelClarification };
+    return { execute, messages, list, get, recoveryState, archive, confirmDraft, cancelDraft, selectClarification, cancelClarification };
 }
 const controllers = createAssistantControllers(bootstrap_1.assistantApplicationService, bootstrap_1.assistantConversationService, bootstrap_1.assistantFinancialDraftService, bootstrap_1.assistantProviderRuntime);
 exports.assistantExecute = controllers.execute;
 exports.assistantMessages = controllers.messages;
 exports.listAssistantConversations = controllers.list;
 exports.getAssistantConversation = controllers.get;
+exports.getAssistantRecoveryState = controllers.recoveryState;
 exports.archiveAssistantConversation = controllers.archive;
 exports.confirmAssistantFinancialDraft = controllers.confirmDraft;
 exports.cancelAssistantFinancialDraft = controllers.cancelDraft;

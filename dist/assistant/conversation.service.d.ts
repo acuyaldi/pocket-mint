@@ -2,6 +2,16 @@ import type { PrismaClient, Prisma } from '../generated/prisma/client';
 import type { BeginTurnInput, BeginTurnResult, ConversationMessageDto, ConversationSummaryDto, FinalizeToolInput, FinalizeWithoutToolInput, Page } from './conversation.types';
 export declare function createAssistantConversationService(db: PrismaClient): {
     assertContinuable: (userId: string, id: string) => Promise<void>;
+    assertOwned: (userId: string, id: string) => Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        userId: string;
+        status: import("@/generated/prisma").$Enums.AssistantConversationStatus;
+        locale: string;
+        lastActivityAt: Date;
+        archivedAt: Date | null;
+    }>;
     establishConversation: (userId: string, conversationId: string | undefined, locale: string) => Promise<string>;
     beginTurn: (input: BeginTurnInput) => Promise<BeginTurnResult>;
     markTurnRunning: (turnId: string) => Promise<void>;

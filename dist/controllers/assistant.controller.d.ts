@@ -8,6 +8,7 @@ export declare function createAssistantControllers(application: AssistantApplica
     messages: (req: Request, res: Response, next: NextFunction) => Promise<void>;
     list: (req: Request, res: Response, next: NextFunction) => Promise<void>;
     get: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+    recoveryState: (req: Request, res: Response, next: NextFunction) => Promise<void>;
     archive: (req: Request, res: Response, next: NextFunction) => Promise<void>;
     confirmDraft: (req: Request, res: Response, next: NextFunction) => Promise<void>;
     cancelDraft: (req: Request, res: Response, next: NextFunction) => Promise<void>;
@@ -18,6 +19,7 @@ export declare const assistantExecute: (req: Request, res: Response, next: NextF
 export declare const assistantMessages: (req: Request, res: Response, next: NextFunction) => Promise<void>;
 export declare const listAssistantConversations: (req: Request, res: Response, next: NextFunction) => Promise<void>;
 export declare const getAssistantConversation: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+export declare const getAssistantRecoveryState: (req: Request, res: Response, next: NextFunction) => Promise<void>;
 export declare const archiveAssistantConversation: (req: Request, res: Response, next: NextFunction) => Promise<void>;
 export declare const confirmAssistantFinancialDraft: (req: Request, res: Response, next: NextFunction) => Promise<void>;
 export declare const cancelAssistantFinancialDraft: (req: Request, res: Response, next: NextFunction) => Promise<void>;
