@@ -104,6 +104,21 @@ export type RecurringReminderEvent = $Result.DefaultSelection<Prisma.$RecurringR
  */
 export type SavingGoal = $Result.DefaultSelection<Prisma.$SavingGoalPayload>
 /**
+ * Model ChannelLinkToken
+ *
+ */
+export type ChannelLinkToken = $Result.DefaultSelection<Prisma.$ChannelLinkTokenPayload>
+/**
+ * Model ChannelConnection
+ *
+ */
+export type ChannelConnection = $Result.DefaultSelection<Prisma.$ChannelConnectionPayload>
+/**
+ * Model ChannelUpdateDedup
+ *
+ */
+export type ChannelUpdateDedup = $Result.DefaultSelection<Prisma.$ChannelUpdateDedupPayload>
+/**
  * Model Budget
  *
  */
@@ -279,6 +294,21 @@ export const SavingGoalStatus: {
 
 export type SavingGoalStatus = (typeof SavingGoalStatus)[keyof typeof SavingGoalStatus]
 
+
+export const ChannelProvider: {
+  TELEGRAM: 'TELEGRAM'
+};
+
+export type ChannelProvider = (typeof ChannelProvider)[keyof typeof ChannelProvider]
+
+
+export const ChannelConnectionStatus: {
+  ACTIVE: 'ACTIVE',
+  REVOKED: 'REVOKED'
+};
+
+export type ChannelConnectionStatus = (typeof ChannelConnectionStatus)[keyof typeof ChannelConnectionStatus]
+
 }
 
 export type AssistantConversationStatus = $Enums.AssistantConversationStatus
@@ -348,6 +378,14 @@ export const RecurringAmountMode: typeof $Enums.RecurringAmountMode
 export type SavingGoalStatus = $Enums.SavingGoalStatus
 
 export const SavingGoalStatus: typeof $Enums.SavingGoalStatus
+
+export type ChannelProvider = $Enums.ChannelProvider
+
+export const ChannelProvider: typeof $Enums.ChannelProvider
+
+export type ChannelConnectionStatus = $Enums.ChannelConnectionStatus
+
+export const ChannelConnectionStatus: typeof $Enums.ChannelConnectionStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -649,6 +687,36 @@ export class PrismaClient<
     * ```
     */
   get savingGoal(): Prisma.SavingGoalDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.channelLinkToken`: Exposes CRUD operations for the **ChannelLinkToken** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ChannelLinkTokens
+    * const channelLinkTokens = await prisma.channelLinkToken.findMany()
+    * ```
+    */
+  get channelLinkToken(): Prisma.ChannelLinkTokenDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.channelConnection`: Exposes CRUD operations for the **ChannelConnection** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ChannelConnections
+    * const channelConnections = await prisma.channelConnection.findMany()
+    * ```
+    */
+  get channelConnection(): Prisma.ChannelConnectionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.channelUpdateDedup`: Exposes CRUD operations for the **ChannelUpdateDedup** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ChannelUpdateDedups
+    * const channelUpdateDedups = await prisma.channelUpdateDedup.findMany()
+    * ```
+    */
+  get channelUpdateDedup(): Prisma.ChannelUpdateDedupDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.budget`: Exposes CRUD operations for the **Budget** model.
@@ -1111,6 +1179,9 @@ export namespace Prisma {
     RecurringTransactionTemplate: 'RecurringTransactionTemplate',
     RecurringReminderEvent: 'RecurringReminderEvent',
     SavingGoal: 'SavingGoal',
+    ChannelLinkToken: 'ChannelLinkToken',
+    ChannelConnection: 'ChannelConnection',
+    ChannelUpdateDedup: 'ChannelUpdateDedup',
     Budget: 'Budget'
   };
 
@@ -1127,7 +1198,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "assistantConversation" | "assistantTurn" | "assistantMessage" | "assistantFinancialDraft" | "assistantIdempotencyRecord" | "assistantToolExecution" | "assistantProviderExecution" | "clarificationRequest" | "clarificationOption" | "wallet" | "category" | "merchantMapping" | "transaction" | "installment" | "recurringTransactionTemplate" | "recurringReminderEvent" | "savingGoal" | "budget"
+      modelProps: "user" | "assistantConversation" | "assistantTurn" | "assistantMessage" | "assistantFinancialDraft" | "assistantIdempotencyRecord" | "assistantToolExecution" | "assistantProviderExecution" | "clarificationRequest" | "clarificationOption" | "wallet" | "category" | "merchantMapping" | "transaction" | "installment" | "recurringTransactionTemplate" | "recurringReminderEvent" | "savingGoal" | "channelLinkToken" | "channelConnection" | "channelUpdateDedup" | "budget"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2463,6 +2534,228 @@ export namespace Prisma {
           }
         }
       }
+      ChannelLinkToken: {
+        payload: Prisma.$ChannelLinkTokenPayload<ExtArgs>
+        fields: Prisma.ChannelLinkTokenFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ChannelLinkTokenFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelLinkTokenPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ChannelLinkTokenFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelLinkTokenPayload>
+          }
+          findFirst: {
+            args: Prisma.ChannelLinkTokenFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelLinkTokenPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ChannelLinkTokenFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelLinkTokenPayload>
+          }
+          findMany: {
+            args: Prisma.ChannelLinkTokenFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelLinkTokenPayload>[]
+          }
+          create: {
+            args: Prisma.ChannelLinkTokenCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelLinkTokenPayload>
+          }
+          createMany: {
+            args: Prisma.ChannelLinkTokenCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ChannelLinkTokenCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelLinkTokenPayload>[]
+          }
+          delete: {
+            args: Prisma.ChannelLinkTokenDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelLinkTokenPayload>
+          }
+          update: {
+            args: Prisma.ChannelLinkTokenUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelLinkTokenPayload>
+          }
+          deleteMany: {
+            args: Prisma.ChannelLinkTokenDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ChannelLinkTokenUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ChannelLinkTokenUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelLinkTokenPayload>[]
+          }
+          upsert: {
+            args: Prisma.ChannelLinkTokenUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelLinkTokenPayload>
+          }
+          aggregate: {
+            args: Prisma.ChannelLinkTokenAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateChannelLinkToken>
+          }
+          groupBy: {
+            args: Prisma.ChannelLinkTokenGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ChannelLinkTokenGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ChannelLinkTokenCountArgs<ExtArgs>
+            result: $Utils.Optional<ChannelLinkTokenCountAggregateOutputType> | number
+          }
+        }
+      }
+      ChannelConnection: {
+        payload: Prisma.$ChannelConnectionPayload<ExtArgs>
+        fields: Prisma.ChannelConnectionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ChannelConnectionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelConnectionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ChannelConnectionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelConnectionPayload>
+          }
+          findFirst: {
+            args: Prisma.ChannelConnectionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelConnectionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ChannelConnectionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelConnectionPayload>
+          }
+          findMany: {
+            args: Prisma.ChannelConnectionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelConnectionPayload>[]
+          }
+          create: {
+            args: Prisma.ChannelConnectionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelConnectionPayload>
+          }
+          createMany: {
+            args: Prisma.ChannelConnectionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ChannelConnectionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelConnectionPayload>[]
+          }
+          delete: {
+            args: Prisma.ChannelConnectionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelConnectionPayload>
+          }
+          update: {
+            args: Prisma.ChannelConnectionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelConnectionPayload>
+          }
+          deleteMany: {
+            args: Prisma.ChannelConnectionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ChannelConnectionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ChannelConnectionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelConnectionPayload>[]
+          }
+          upsert: {
+            args: Prisma.ChannelConnectionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelConnectionPayload>
+          }
+          aggregate: {
+            args: Prisma.ChannelConnectionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateChannelConnection>
+          }
+          groupBy: {
+            args: Prisma.ChannelConnectionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ChannelConnectionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ChannelConnectionCountArgs<ExtArgs>
+            result: $Utils.Optional<ChannelConnectionCountAggregateOutputType> | number
+          }
+        }
+      }
+      ChannelUpdateDedup: {
+        payload: Prisma.$ChannelUpdateDedupPayload<ExtArgs>
+        fields: Prisma.ChannelUpdateDedupFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ChannelUpdateDedupFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ChannelUpdateDedupFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload>
+          }
+          findFirst: {
+            args: Prisma.ChannelUpdateDedupFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ChannelUpdateDedupFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload>
+          }
+          findMany: {
+            args: Prisma.ChannelUpdateDedupFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload>[]
+          }
+          create: {
+            args: Prisma.ChannelUpdateDedupCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload>
+          }
+          createMany: {
+            args: Prisma.ChannelUpdateDedupCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ChannelUpdateDedupCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload>[]
+          }
+          delete: {
+            args: Prisma.ChannelUpdateDedupDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload>
+          }
+          update: {
+            args: Prisma.ChannelUpdateDedupUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload>
+          }
+          deleteMany: {
+            args: Prisma.ChannelUpdateDedupDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ChannelUpdateDedupUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ChannelUpdateDedupUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload>[]
+          }
+          upsert: {
+            args: Prisma.ChannelUpdateDedupUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ChannelUpdateDedupPayload>
+          }
+          aggregate: {
+            args: Prisma.ChannelUpdateDedupAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateChannelUpdateDedup>
+          }
+          groupBy: {
+            args: Prisma.ChannelUpdateDedupGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ChannelUpdateDedupGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ChannelUpdateDedupCountArgs<ExtArgs>
+            result: $Utils.Optional<ChannelUpdateDedupCountAggregateOutputType> | number
+          }
+        }
+      }
       Budget: {
         payload: Prisma.$BudgetPayload<ExtArgs>
         fields: Prisma.BudgetFieldRefs
@@ -2663,6 +2956,9 @@ export namespace Prisma {
     recurringTransactionTemplate?: RecurringTransactionTemplateOmit
     recurringReminderEvent?: RecurringReminderEventOmit
     savingGoal?: SavingGoalOmit
+    channelLinkToken?: ChannelLinkTokenOmit
+    channelConnection?: ChannelConnectionOmit
+    channelUpdateDedup?: ChannelUpdateDedupOmit
     budget?: BudgetOmit
   }
 
@@ -2757,6 +3053,8 @@ export namespace Prisma {
     assistantIdempotencyRecords: number
     assistantProviderExecutions: number
     clarificationRequests: number
+    channelLinkTokens: number
+    channelConnections: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2773,6 +3071,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: boolean | UserCountOutputTypeCountAssistantIdempotencyRecordsArgs
     assistantProviderExecutions?: boolean | UserCountOutputTypeCountAssistantProviderExecutionsArgs
     clarificationRequests?: boolean | UserCountOutputTypeCountClarificationRequestsArgs
+    channelLinkTokens?: boolean | UserCountOutputTypeCountChannelLinkTokensArgs
+    channelConnections?: boolean | UserCountOutputTypeCountChannelConnectionsArgs
   }
 
   // Custom InputTypes
@@ -2877,6 +3177,20 @@ export namespace Prisma {
     where?: ClarificationRequestWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountChannelLinkTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelLinkTokenWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountChannelConnectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelConnectionWhereInput
+  }
+
 
   /**
    * Count Type AssistantConversationCountOutputType
@@ -2889,6 +3203,7 @@ export namespace Prisma {
     financialDrafts: number
     providerExecutions: number
     clarificationRequests: number
+    channelConnections: number
   }
 
   export type AssistantConversationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2898,6 +3213,7 @@ export namespace Prisma {
     financialDrafts?: boolean | AssistantConversationCountOutputTypeCountFinancialDraftsArgs
     providerExecutions?: boolean | AssistantConversationCountOutputTypeCountProviderExecutionsArgs
     clarificationRequests?: boolean | AssistantConversationCountOutputTypeCountClarificationRequestsArgs
+    channelConnections?: boolean | AssistantConversationCountOutputTypeCountChannelConnectionsArgs
   }
 
   // Custom InputTypes
@@ -2951,6 +3267,13 @@ export namespace Prisma {
    */
   export type AssistantConversationCountOutputTypeCountClarificationRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ClarificationRequestWhereInput
+  }
+
+  /**
+   * AssistantConversationCountOutputType without action
+   */
+  export type AssistantConversationCountOutputTypeCountChannelConnectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelConnectionWhereInput
   }
 
 
@@ -3499,6 +3822,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: boolean | User$assistantIdempotencyRecordsArgs<ExtArgs>
     assistantProviderExecutions?: boolean | User$assistantProviderExecutionsArgs<ExtArgs>
     clarificationRequests?: boolean | User$clarificationRequestsArgs<ExtArgs>
+    channelLinkTokens?: boolean | User$channelLinkTokensArgs<ExtArgs>
+    channelConnections?: boolean | User$channelConnectionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3544,6 +3869,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: boolean | User$assistantIdempotencyRecordsArgs<ExtArgs>
     assistantProviderExecutions?: boolean | User$assistantProviderExecutionsArgs<ExtArgs>
     clarificationRequests?: boolean | User$clarificationRequestsArgs<ExtArgs>
+    channelLinkTokens?: boolean | User$channelLinkTokensArgs<ExtArgs>
+    channelConnections?: boolean | User$channelConnectionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3565,6 +3892,8 @@ export namespace Prisma {
       assistantIdempotencyRecords: Prisma.$AssistantIdempotencyRecordPayload<ExtArgs>[]
       assistantProviderExecutions: Prisma.$AssistantProviderExecutionPayload<ExtArgs>[]
       clarificationRequests: Prisma.$ClarificationRequestPayload<ExtArgs>[]
+      channelLinkTokens: Prisma.$ChannelLinkTokenPayload<ExtArgs>[]
+      channelConnections: Prisma.$ChannelConnectionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3980,6 +4309,8 @@ export namespace Prisma {
     assistantIdempotencyRecords<T extends User$assistantIdempotencyRecordsArgs<ExtArgs> = {}>(args?: Subset<T, User$assistantIdempotencyRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AssistantIdempotencyRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     assistantProviderExecutions<T extends User$assistantProviderExecutionsArgs<ExtArgs> = {}>(args?: Subset<T, User$assistantProviderExecutionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AssistantProviderExecutionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     clarificationRequests<T extends User$clarificationRequestsArgs<ExtArgs> = {}>(args?: Subset<T, User$clarificationRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClarificationRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    channelLinkTokens<T extends User$channelLinkTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$channelLinkTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelLinkTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    channelConnections<T extends User$channelConnectionsArgs<ExtArgs> = {}>(args?: Subset<T, User$channelConnectionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelConnectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4720,6 +5051,54 @@ export namespace Prisma {
   }
 
   /**
+   * User.channelLinkTokens
+   */
+  export type User$channelLinkTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelLinkToken
+     */
+    select?: ChannelLinkTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelLinkToken
+     */
+    omit?: ChannelLinkTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelLinkTokenInclude<ExtArgs> | null
+    where?: ChannelLinkTokenWhereInput
+    orderBy?: ChannelLinkTokenOrderByWithRelationInput | ChannelLinkTokenOrderByWithRelationInput[]
+    cursor?: ChannelLinkTokenWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ChannelLinkTokenScalarFieldEnum | ChannelLinkTokenScalarFieldEnum[]
+  }
+
+  /**
+   * User.channelConnections
+   */
+  export type User$channelConnectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelConnection
+     */
+    select?: ChannelConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelConnection
+     */
+    omit?: ChannelConnectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelConnectionInclude<ExtArgs> | null
+    where?: ChannelConnectionWhereInput
+    orderBy?: ChannelConnectionOrderByWithRelationInput | ChannelConnectionOrderByWithRelationInput[]
+    cursor?: ChannelConnectionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ChannelConnectionScalarFieldEnum | ChannelConnectionScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4933,6 +5312,7 @@ export namespace Prisma {
     financialDrafts?: boolean | AssistantConversation$financialDraftsArgs<ExtArgs>
     providerExecutions?: boolean | AssistantConversation$providerExecutionsArgs<ExtArgs>
     clarificationRequests?: boolean | AssistantConversation$clarificationRequestsArgs<ExtArgs>
+    channelConnections?: boolean | AssistantConversation$channelConnectionsArgs<ExtArgs>
     _count?: boolean | AssistantConversationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["assistantConversation"]>
 
@@ -4980,6 +5360,7 @@ export namespace Prisma {
     financialDrafts?: boolean | AssistantConversation$financialDraftsArgs<ExtArgs>
     providerExecutions?: boolean | AssistantConversation$providerExecutionsArgs<ExtArgs>
     clarificationRequests?: boolean | AssistantConversation$clarificationRequestsArgs<ExtArgs>
+    channelConnections?: boolean | AssistantConversation$channelConnectionsArgs<ExtArgs>
     _count?: boolean | AssistantConversationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AssistantConversationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4999,6 +5380,7 @@ export namespace Prisma {
       financialDrafts: Prisma.$AssistantFinancialDraftPayload<ExtArgs>[]
       providerExecutions: Prisma.$AssistantProviderExecutionPayload<ExtArgs>[]
       clarificationRequests: Prisma.$ClarificationRequestPayload<ExtArgs>[]
+      channelConnections: Prisma.$ChannelConnectionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5410,6 +5792,7 @@ export namespace Prisma {
     financialDrafts<T extends AssistantConversation$financialDraftsArgs<ExtArgs> = {}>(args?: Subset<T, AssistantConversation$financialDraftsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AssistantFinancialDraftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     providerExecutions<T extends AssistantConversation$providerExecutionsArgs<ExtArgs> = {}>(args?: Subset<T, AssistantConversation$providerExecutionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AssistantProviderExecutionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     clarificationRequests<T extends AssistantConversation$clarificationRequestsArgs<ExtArgs> = {}>(args?: Subset<T, AssistantConversation$clarificationRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClarificationRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    channelConnections<T extends AssistantConversation$channelConnectionsArgs<ExtArgs> = {}>(args?: Subset<T, AssistantConversation$channelConnectionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelConnectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5989,6 +6372,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ClarificationRequestScalarFieldEnum | ClarificationRequestScalarFieldEnum[]
+  }
+
+  /**
+   * AssistantConversation.channelConnections
+   */
+  export type AssistantConversation$channelConnectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelConnection
+     */
+    select?: ChannelConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelConnection
+     */
+    omit?: ChannelConnectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelConnectionInclude<ExtArgs> | null
+    where?: ChannelConnectionWhereInput
+    orderBy?: ChannelConnectionOrderByWithRelationInput | ChannelConnectionOrderByWithRelationInput[]
+    cursor?: ChannelConnectionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ChannelConnectionScalarFieldEnum | ChannelConnectionScalarFieldEnum[]
   }
 
   /**
@@ -26120,6 +26527,3237 @@ export namespace Prisma {
 
 
   /**
+   * Model ChannelLinkToken
+   */
+
+  export type AggregateChannelLinkToken = {
+    _count: ChannelLinkTokenCountAggregateOutputType | null
+    _min: ChannelLinkTokenMinAggregateOutputType | null
+    _max: ChannelLinkTokenMaxAggregateOutputType | null
+  }
+
+  export type ChannelLinkTokenMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    provider: $Enums.ChannelProvider | null
+    tokenDigest: string | null
+    expiresAt: Date | null
+    consumedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type ChannelLinkTokenMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    provider: $Enums.ChannelProvider | null
+    tokenDigest: string | null
+    expiresAt: Date | null
+    consumedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type ChannelLinkTokenCountAggregateOutputType = {
+    id: number
+    userId: number
+    provider: number
+    tokenDigest: number
+    expiresAt: number
+    consumedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ChannelLinkTokenMinAggregateInputType = {
+    id?: true
+    userId?: true
+    provider?: true
+    tokenDigest?: true
+    expiresAt?: true
+    consumedAt?: true
+    createdAt?: true
+  }
+
+  export type ChannelLinkTokenMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    provider?: true
+    tokenDigest?: true
+    expiresAt?: true
+    consumedAt?: true
+    createdAt?: true
+  }
+
+  export type ChannelLinkTokenCountAggregateInputType = {
+    id?: true
+    userId?: true
+    provider?: true
+    tokenDigest?: true
+    expiresAt?: true
+    consumedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ChannelLinkTokenAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChannelLinkToken to aggregate.
+     */
+    where?: ChannelLinkTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelLinkTokens to fetch.
+     */
+    orderBy?: ChannelLinkTokenOrderByWithRelationInput | ChannelLinkTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: ChannelLinkTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelLinkTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelLinkTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned ChannelLinkTokens
+    **/
+    _count?: true | ChannelLinkTokenCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: ChannelLinkTokenMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: ChannelLinkTokenMaxAggregateInputType
+  }
+
+  export type GetChannelLinkTokenAggregateType<T extends ChannelLinkTokenAggregateArgs> = {
+        [P in keyof T & keyof AggregateChannelLinkToken]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateChannelLinkToken[P]>
+      : GetScalarType<T[P], AggregateChannelLinkToken[P]>
+  }
+
+
+
+
+  export type ChannelLinkTokenGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelLinkTokenWhereInput
+    orderBy?: ChannelLinkTokenOrderByWithAggregationInput | ChannelLinkTokenOrderByWithAggregationInput[]
+    by: ChannelLinkTokenScalarFieldEnum[] | ChannelLinkTokenScalarFieldEnum
+    having?: ChannelLinkTokenScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ChannelLinkTokenCountAggregateInputType | true
+    _min?: ChannelLinkTokenMinAggregateInputType
+    _max?: ChannelLinkTokenMaxAggregateInputType
+  }
+
+  export type ChannelLinkTokenGroupByOutputType = {
+    id: string
+    userId: string
+    provider: $Enums.ChannelProvider
+    tokenDigest: string
+    expiresAt: Date
+    consumedAt: Date | null
+    createdAt: Date
+    _count: ChannelLinkTokenCountAggregateOutputType | null
+    _min: ChannelLinkTokenMinAggregateOutputType | null
+    _max: ChannelLinkTokenMaxAggregateOutputType | null
+  }
+
+  type GetChannelLinkTokenGroupByPayload<T extends ChannelLinkTokenGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ChannelLinkTokenGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ChannelLinkTokenGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ChannelLinkTokenGroupByOutputType[P]>
+            : GetScalarType<T[P], ChannelLinkTokenGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ChannelLinkTokenSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    provider?: boolean
+    tokenDigest?: boolean
+    expiresAt?: boolean
+    consumedAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["channelLinkToken"]>
+
+  export type ChannelLinkTokenSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    provider?: boolean
+    tokenDigest?: boolean
+    expiresAt?: boolean
+    consumedAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["channelLinkToken"]>
+
+  export type ChannelLinkTokenSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    provider?: boolean
+    tokenDigest?: boolean
+    expiresAt?: boolean
+    consumedAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["channelLinkToken"]>
+
+  export type ChannelLinkTokenSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    provider?: boolean
+    tokenDigest?: boolean
+    expiresAt?: boolean
+    consumedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type ChannelLinkTokenOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "provider" | "tokenDigest" | "expiresAt" | "consumedAt" | "createdAt", ExtArgs["result"]["channelLinkToken"]>
+  export type ChannelLinkTokenInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ChannelLinkTokenIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ChannelLinkTokenIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ChannelLinkTokenPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ChannelLinkToken"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      provider: $Enums.ChannelProvider
+      tokenDigest: string
+      expiresAt: Date
+      consumedAt: Date | null
+      createdAt: Date
+    }, ExtArgs["result"]["channelLinkToken"]>
+    composites: {}
+  }
+
+  type ChannelLinkTokenGetPayload<S extends boolean | null | undefined | ChannelLinkTokenDefaultArgs> = $Result.GetResult<Prisma.$ChannelLinkTokenPayload, S>
+
+  type ChannelLinkTokenCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ChannelLinkTokenFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ChannelLinkTokenCountAggregateInputType | true
+    }
+
+  export interface ChannelLinkTokenDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ChannelLinkToken'], meta: { name: 'ChannelLinkToken' } }
+    /**
+     * Find zero or one ChannelLinkToken that matches the filter.
+     * @param {ChannelLinkTokenFindUniqueArgs} args - Arguments to find a ChannelLinkToken
+     * @example
+     * // Get one ChannelLinkToken
+     * const channelLinkToken = await prisma.channelLinkToken.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ChannelLinkTokenFindUniqueArgs>(args: SelectSubset<T, ChannelLinkTokenFindUniqueArgs<ExtArgs>>): Prisma__ChannelLinkTokenClient<$Result.GetResult<Prisma.$ChannelLinkTokenPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ChannelLinkToken that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ChannelLinkTokenFindUniqueOrThrowArgs} args - Arguments to find a ChannelLinkToken
+     * @example
+     * // Get one ChannelLinkToken
+     * const channelLinkToken = await prisma.channelLinkToken.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ChannelLinkTokenFindUniqueOrThrowArgs>(args: SelectSubset<T, ChannelLinkTokenFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ChannelLinkTokenClient<$Result.GetResult<Prisma.$ChannelLinkTokenPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ChannelLinkToken that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelLinkTokenFindFirstArgs} args - Arguments to find a ChannelLinkToken
+     * @example
+     * // Get one ChannelLinkToken
+     * const channelLinkToken = await prisma.channelLinkToken.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ChannelLinkTokenFindFirstArgs>(args?: SelectSubset<T, ChannelLinkTokenFindFirstArgs<ExtArgs>>): Prisma__ChannelLinkTokenClient<$Result.GetResult<Prisma.$ChannelLinkTokenPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ChannelLinkToken that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelLinkTokenFindFirstOrThrowArgs} args - Arguments to find a ChannelLinkToken
+     * @example
+     * // Get one ChannelLinkToken
+     * const channelLinkToken = await prisma.channelLinkToken.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ChannelLinkTokenFindFirstOrThrowArgs>(args?: SelectSubset<T, ChannelLinkTokenFindFirstOrThrowArgs<ExtArgs>>): Prisma__ChannelLinkTokenClient<$Result.GetResult<Prisma.$ChannelLinkTokenPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ChannelLinkTokens that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelLinkTokenFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ChannelLinkTokens
+     * const channelLinkTokens = await prisma.channelLinkToken.findMany()
+     *
+     * // Get first 10 ChannelLinkTokens
+     * const channelLinkTokens = await prisma.channelLinkToken.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const channelLinkTokenWithIdOnly = await prisma.channelLinkToken.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends ChannelLinkTokenFindManyArgs>(args?: SelectSubset<T, ChannelLinkTokenFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelLinkTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ChannelLinkToken.
+     * @param {ChannelLinkTokenCreateArgs} args - Arguments to create a ChannelLinkToken.
+     * @example
+     * // Create one ChannelLinkToken
+     * const ChannelLinkToken = await prisma.channelLinkToken.create({
+     *   data: {
+     *     // ... data to create a ChannelLinkToken
+     *   }
+     * })
+     *
+     */
+    create<T extends ChannelLinkTokenCreateArgs>(args: SelectSubset<T, ChannelLinkTokenCreateArgs<ExtArgs>>): Prisma__ChannelLinkTokenClient<$Result.GetResult<Prisma.$ChannelLinkTokenPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ChannelLinkTokens.
+     * @param {ChannelLinkTokenCreateManyArgs} args - Arguments to create many ChannelLinkTokens.
+     * @example
+     * // Create many ChannelLinkTokens
+     * const channelLinkToken = await prisma.channelLinkToken.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends ChannelLinkTokenCreateManyArgs>(args?: SelectSubset<T, ChannelLinkTokenCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ChannelLinkTokens and returns the data saved in the database.
+     * @param {ChannelLinkTokenCreateManyAndReturnArgs} args - Arguments to create many ChannelLinkTokens.
+     * @example
+     * // Create many ChannelLinkTokens
+     * const channelLinkToken = await prisma.channelLinkToken.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many ChannelLinkTokens and only return the `id`
+     * const channelLinkTokenWithIdOnly = await prisma.channelLinkToken.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends ChannelLinkTokenCreateManyAndReturnArgs>(args?: SelectSubset<T, ChannelLinkTokenCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelLinkTokenPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ChannelLinkToken.
+     * @param {ChannelLinkTokenDeleteArgs} args - Arguments to delete one ChannelLinkToken.
+     * @example
+     * // Delete one ChannelLinkToken
+     * const ChannelLinkToken = await prisma.channelLinkToken.delete({
+     *   where: {
+     *     // ... filter to delete one ChannelLinkToken
+     *   }
+     * })
+     *
+     */
+    delete<T extends ChannelLinkTokenDeleteArgs>(args: SelectSubset<T, ChannelLinkTokenDeleteArgs<ExtArgs>>): Prisma__ChannelLinkTokenClient<$Result.GetResult<Prisma.$ChannelLinkTokenPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ChannelLinkToken.
+     * @param {ChannelLinkTokenUpdateArgs} args - Arguments to update one ChannelLinkToken.
+     * @example
+     * // Update one ChannelLinkToken
+     * const channelLinkToken = await prisma.channelLinkToken.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends ChannelLinkTokenUpdateArgs>(args: SelectSubset<T, ChannelLinkTokenUpdateArgs<ExtArgs>>): Prisma__ChannelLinkTokenClient<$Result.GetResult<Prisma.$ChannelLinkTokenPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ChannelLinkTokens.
+     * @param {ChannelLinkTokenDeleteManyArgs} args - Arguments to filter ChannelLinkTokens to delete.
+     * @example
+     * // Delete a few ChannelLinkTokens
+     * const { count } = await prisma.channelLinkToken.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends ChannelLinkTokenDeleteManyArgs>(args?: SelectSubset<T, ChannelLinkTokenDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ChannelLinkTokens.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelLinkTokenUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ChannelLinkTokens
+     * const channelLinkToken = await prisma.channelLinkToken.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends ChannelLinkTokenUpdateManyArgs>(args: SelectSubset<T, ChannelLinkTokenUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ChannelLinkTokens and returns the data updated in the database.
+     * @param {ChannelLinkTokenUpdateManyAndReturnArgs} args - Arguments to update many ChannelLinkTokens.
+     * @example
+     * // Update many ChannelLinkTokens
+     * const channelLinkToken = await prisma.channelLinkToken.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more ChannelLinkTokens and only return the `id`
+     * const channelLinkTokenWithIdOnly = await prisma.channelLinkToken.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends ChannelLinkTokenUpdateManyAndReturnArgs>(args: SelectSubset<T, ChannelLinkTokenUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelLinkTokenPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ChannelLinkToken.
+     * @param {ChannelLinkTokenUpsertArgs} args - Arguments to update or create a ChannelLinkToken.
+     * @example
+     * // Update or create a ChannelLinkToken
+     * const channelLinkToken = await prisma.channelLinkToken.upsert({
+     *   create: {
+     *     // ... data to create a ChannelLinkToken
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ChannelLinkToken we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ChannelLinkTokenUpsertArgs>(args: SelectSubset<T, ChannelLinkTokenUpsertArgs<ExtArgs>>): Prisma__ChannelLinkTokenClient<$Result.GetResult<Prisma.$ChannelLinkTokenPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ChannelLinkTokens.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelLinkTokenCountArgs} args - Arguments to filter ChannelLinkTokens to count.
+     * @example
+     * // Count the number of ChannelLinkTokens
+     * const count = await prisma.channelLinkToken.count({
+     *   where: {
+     *     // ... the filter for the ChannelLinkTokens we want to count
+     *   }
+     * })
+    **/
+    count<T extends ChannelLinkTokenCountArgs>(
+      args?: Subset<T, ChannelLinkTokenCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ChannelLinkTokenCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ChannelLinkToken.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelLinkTokenAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ChannelLinkTokenAggregateArgs>(args: Subset<T, ChannelLinkTokenAggregateArgs>): Prisma.PrismaPromise<GetChannelLinkTokenAggregateType<T>>
+
+    /**
+     * Group by ChannelLinkToken.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelLinkTokenGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<
+      T extends ChannelLinkTokenGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ChannelLinkTokenGroupByArgs['orderBy'] }
+        : { orderBy?: ChannelLinkTokenGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ChannelLinkTokenGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetChannelLinkTokenGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ChannelLinkToken model
+   */
+  readonly fields: ChannelLinkTokenFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ChannelLinkToken.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ChannelLinkTokenClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ChannelLinkToken model
+   */
+  interface ChannelLinkTokenFieldRefs {
+    readonly id: FieldRef<"ChannelLinkToken", 'String'>
+    readonly userId: FieldRef<"ChannelLinkToken", 'String'>
+    readonly provider: FieldRef<"ChannelLinkToken", 'ChannelProvider'>
+    readonly tokenDigest: FieldRef<"ChannelLinkToken", 'String'>
+    readonly expiresAt: FieldRef<"ChannelLinkToken", 'DateTime'>
+    readonly consumedAt: FieldRef<"ChannelLinkToken", 'DateTime'>
+    readonly createdAt: FieldRef<"ChannelLinkToken", 'DateTime'>
+  }
+
+
+  // Custom InputTypes
+  /**
+   * ChannelLinkToken findUnique
+   */
+  export type ChannelLinkTokenFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelLinkToken
+     */
+    select?: ChannelLinkTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelLinkToken
+     */
+    omit?: ChannelLinkTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelLinkTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelLinkToken to fetch.
+     */
+    where: ChannelLinkTokenWhereUniqueInput
+  }
+
+  /**
+   * ChannelLinkToken findUniqueOrThrow
+   */
+  export type ChannelLinkTokenFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelLinkToken
+     */
+    select?: ChannelLinkTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelLinkToken
+     */
+    omit?: ChannelLinkTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelLinkTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelLinkToken to fetch.
+     */
+    where: ChannelLinkTokenWhereUniqueInput
+  }
+
+  /**
+   * ChannelLinkToken findFirst
+   */
+  export type ChannelLinkTokenFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelLinkToken
+     */
+    select?: ChannelLinkTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelLinkToken
+     */
+    omit?: ChannelLinkTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelLinkTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelLinkToken to fetch.
+     */
+    where?: ChannelLinkTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelLinkTokens to fetch.
+     */
+    orderBy?: ChannelLinkTokenOrderByWithRelationInput | ChannelLinkTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ChannelLinkTokens.
+     */
+    cursor?: ChannelLinkTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelLinkTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelLinkTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ChannelLinkTokens.
+     */
+    distinct?: ChannelLinkTokenScalarFieldEnum | ChannelLinkTokenScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelLinkToken findFirstOrThrow
+   */
+  export type ChannelLinkTokenFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelLinkToken
+     */
+    select?: ChannelLinkTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelLinkToken
+     */
+    omit?: ChannelLinkTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelLinkTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelLinkToken to fetch.
+     */
+    where?: ChannelLinkTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelLinkTokens to fetch.
+     */
+    orderBy?: ChannelLinkTokenOrderByWithRelationInput | ChannelLinkTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ChannelLinkTokens.
+     */
+    cursor?: ChannelLinkTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelLinkTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelLinkTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ChannelLinkTokens.
+     */
+    distinct?: ChannelLinkTokenScalarFieldEnum | ChannelLinkTokenScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelLinkToken findMany
+   */
+  export type ChannelLinkTokenFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelLinkToken
+     */
+    select?: ChannelLinkTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelLinkToken
+     */
+    omit?: ChannelLinkTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelLinkTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelLinkTokens to fetch.
+     */
+    where?: ChannelLinkTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelLinkTokens to fetch.
+     */
+    orderBy?: ChannelLinkTokenOrderByWithRelationInput | ChannelLinkTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing ChannelLinkTokens.
+     */
+    cursor?: ChannelLinkTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelLinkTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelLinkTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ChannelLinkTokens.
+     */
+    distinct?: ChannelLinkTokenScalarFieldEnum | ChannelLinkTokenScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelLinkToken create
+   */
+  export type ChannelLinkTokenCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelLinkToken
+     */
+    select?: ChannelLinkTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelLinkToken
+     */
+    omit?: ChannelLinkTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelLinkTokenInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ChannelLinkToken.
+     */
+    data: XOR<ChannelLinkTokenCreateInput, ChannelLinkTokenUncheckedCreateInput>
+  }
+
+  /**
+   * ChannelLinkToken createMany
+   */
+  export type ChannelLinkTokenCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ChannelLinkTokens.
+     */
+    data: ChannelLinkTokenCreateManyInput | ChannelLinkTokenCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ChannelLinkToken createManyAndReturn
+   */
+  export type ChannelLinkTokenCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelLinkToken
+     */
+    select?: ChannelLinkTokenSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelLinkToken
+     */
+    omit?: ChannelLinkTokenOmit<ExtArgs> | null
+    /**
+     * The data used to create many ChannelLinkTokens.
+     */
+    data: ChannelLinkTokenCreateManyInput | ChannelLinkTokenCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelLinkTokenIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ChannelLinkToken update
+   */
+  export type ChannelLinkTokenUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelLinkToken
+     */
+    select?: ChannelLinkTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelLinkToken
+     */
+    omit?: ChannelLinkTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelLinkTokenInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ChannelLinkToken.
+     */
+    data: XOR<ChannelLinkTokenUpdateInput, ChannelLinkTokenUncheckedUpdateInput>
+    /**
+     * Choose, which ChannelLinkToken to update.
+     */
+    where: ChannelLinkTokenWhereUniqueInput
+  }
+
+  /**
+   * ChannelLinkToken updateMany
+   */
+  export type ChannelLinkTokenUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ChannelLinkTokens.
+     */
+    data: XOR<ChannelLinkTokenUpdateManyMutationInput, ChannelLinkTokenUncheckedUpdateManyInput>
+    /**
+     * Filter which ChannelLinkTokens to update
+     */
+    where?: ChannelLinkTokenWhereInput
+    /**
+     * Limit how many ChannelLinkTokens to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ChannelLinkToken updateManyAndReturn
+   */
+  export type ChannelLinkTokenUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelLinkToken
+     */
+    select?: ChannelLinkTokenSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelLinkToken
+     */
+    omit?: ChannelLinkTokenOmit<ExtArgs> | null
+    /**
+     * The data used to update ChannelLinkTokens.
+     */
+    data: XOR<ChannelLinkTokenUpdateManyMutationInput, ChannelLinkTokenUncheckedUpdateManyInput>
+    /**
+     * Filter which ChannelLinkTokens to update
+     */
+    where?: ChannelLinkTokenWhereInput
+    /**
+     * Limit how many ChannelLinkTokens to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelLinkTokenIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ChannelLinkToken upsert
+   */
+  export type ChannelLinkTokenUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelLinkToken
+     */
+    select?: ChannelLinkTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelLinkToken
+     */
+    omit?: ChannelLinkTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelLinkTokenInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ChannelLinkToken to update in case it exists.
+     */
+    where: ChannelLinkTokenWhereUniqueInput
+    /**
+     * In case the ChannelLinkToken found by the `where` argument doesn't exist, create a new ChannelLinkToken with this data.
+     */
+    create: XOR<ChannelLinkTokenCreateInput, ChannelLinkTokenUncheckedCreateInput>
+    /**
+     * In case the ChannelLinkToken was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ChannelLinkTokenUpdateInput, ChannelLinkTokenUncheckedUpdateInput>
+  }
+
+  /**
+   * ChannelLinkToken delete
+   */
+  export type ChannelLinkTokenDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelLinkToken
+     */
+    select?: ChannelLinkTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelLinkToken
+     */
+    omit?: ChannelLinkTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelLinkTokenInclude<ExtArgs> | null
+    /**
+     * Filter which ChannelLinkToken to delete.
+     */
+    where: ChannelLinkTokenWhereUniqueInput
+  }
+
+  /**
+   * ChannelLinkToken deleteMany
+   */
+  export type ChannelLinkTokenDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChannelLinkTokens to delete
+     */
+    where?: ChannelLinkTokenWhereInput
+    /**
+     * Limit how many ChannelLinkTokens to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ChannelLinkToken without action
+   */
+  export type ChannelLinkTokenDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelLinkToken
+     */
+    select?: ChannelLinkTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelLinkToken
+     */
+    omit?: ChannelLinkTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelLinkTokenInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ChannelConnection
+   */
+
+  export type AggregateChannelConnection = {
+    _count: ChannelConnectionCountAggregateOutputType | null
+    _min: ChannelConnectionMinAggregateOutputType | null
+    _max: ChannelConnectionMaxAggregateOutputType | null
+  }
+
+  export type ChannelConnectionMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    provider: $Enums.ChannelProvider | null
+    externalUserId: string | null
+    externalChatId: string | null
+    conversationId: string | null
+    status: $Enums.ChannelConnectionStatus | null
+    linkedAt: Date | null
+    revokedAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ChannelConnectionMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    provider: $Enums.ChannelProvider | null
+    externalUserId: string | null
+    externalChatId: string | null
+    conversationId: string | null
+    status: $Enums.ChannelConnectionStatus | null
+    linkedAt: Date | null
+    revokedAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ChannelConnectionCountAggregateOutputType = {
+    id: number
+    userId: number
+    provider: number
+    externalUserId: number
+    externalChatId: number
+    conversationId: number
+    status: number
+    linkedAt: number
+    revokedAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ChannelConnectionMinAggregateInputType = {
+    id?: true
+    userId?: true
+    provider?: true
+    externalUserId?: true
+    externalChatId?: true
+    conversationId?: true
+    status?: true
+    linkedAt?: true
+    revokedAt?: true
+    updatedAt?: true
+  }
+
+  export type ChannelConnectionMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    provider?: true
+    externalUserId?: true
+    externalChatId?: true
+    conversationId?: true
+    status?: true
+    linkedAt?: true
+    revokedAt?: true
+    updatedAt?: true
+  }
+
+  export type ChannelConnectionCountAggregateInputType = {
+    id?: true
+    userId?: true
+    provider?: true
+    externalUserId?: true
+    externalChatId?: true
+    conversationId?: true
+    status?: true
+    linkedAt?: true
+    revokedAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ChannelConnectionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChannelConnection to aggregate.
+     */
+    where?: ChannelConnectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelConnections to fetch.
+     */
+    orderBy?: ChannelConnectionOrderByWithRelationInput | ChannelConnectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: ChannelConnectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelConnections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelConnections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned ChannelConnections
+    **/
+    _count?: true | ChannelConnectionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: ChannelConnectionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: ChannelConnectionMaxAggregateInputType
+  }
+
+  export type GetChannelConnectionAggregateType<T extends ChannelConnectionAggregateArgs> = {
+        [P in keyof T & keyof AggregateChannelConnection]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateChannelConnection[P]>
+      : GetScalarType<T[P], AggregateChannelConnection[P]>
+  }
+
+
+
+
+  export type ChannelConnectionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelConnectionWhereInput
+    orderBy?: ChannelConnectionOrderByWithAggregationInput | ChannelConnectionOrderByWithAggregationInput[]
+    by: ChannelConnectionScalarFieldEnum[] | ChannelConnectionScalarFieldEnum
+    having?: ChannelConnectionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ChannelConnectionCountAggregateInputType | true
+    _min?: ChannelConnectionMinAggregateInputType
+    _max?: ChannelConnectionMaxAggregateInputType
+  }
+
+  export type ChannelConnectionGroupByOutputType = {
+    id: string
+    userId: string
+    provider: $Enums.ChannelProvider
+    externalUserId: string
+    externalChatId: string
+    conversationId: string | null
+    status: $Enums.ChannelConnectionStatus
+    linkedAt: Date
+    revokedAt: Date | null
+    updatedAt: Date
+    _count: ChannelConnectionCountAggregateOutputType | null
+    _min: ChannelConnectionMinAggregateOutputType | null
+    _max: ChannelConnectionMaxAggregateOutputType | null
+  }
+
+  type GetChannelConnectionGroupByPayload<T extends ChannelConnectionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ChannelConnectionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ChannelConnectionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ChannelConnectionGroupByOutputType[P]>
+            : GetScalarType<T[P], ChannelConnectionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ChannelConnectionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    provider?: boolean
+    externalUserId?: boolean
+    externalChatId?: boolean
+    conversationId?: boolean
+    status?: boolean
+    linkedAt?: boolean
+    revokedAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    conversation?: boolean | ChannelConnection$conversationArgs<ExtArgs>
+  }, ExtArgs["result"]["channelConnection"]>
+
+  export type ChannelConnectionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    provider?: boolean
+    externalUserId?: boolean
+    externalChatId?: boolean
+    conversationId?: boolean
+    status?: boolean
+    linkedAt?: boolean
+    revokedAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    conversation?: boolean | ChannelConnection$conversationArgs<ExtArgs>
+  }, ExtArgs["result"]["channelConnection"]>
+
+  export type ChannelConnectionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    provider?: boolean
+    externalUserId?: boolean
+    externalChatId?: boolean
+    conversationId?: boolean
+    status?: boolean
+    linkedAt?: boolean
+    revokedAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    conversation?: boolean | ChannelConnection$conversationArgs<ExtArgs>
+  }, ExtArgs["result"]["channelConnection"]>
+
+  export type ChannelConnectionSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    provider?: boolean
+    externalUserId?: boolean
+    externalChatId?: boolean
+    conversationId?: boolean
+    status?: boolean
+    linkedAt?: boolean
+    revokedAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ChannelConnectionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "provider" | "externalUserId" | "externalChatId" | "conversationId" | "status" | "linkedAt" | "revokedAt" | "updatedAt", ExtArgs["result"]["channelConnection"]>
+  export type ChannelConnectionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    conversation?: boolean | ChannelConnection$conversationArgs<ExtArgs>
+  }
+  export type ChannelConnectionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    conversation?: boolean | ChannelConnection$conversationArgs<ExtArgs>
+  }
+  export type ChannelConnectionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    conversation?: boolean | ChannelConnection$conversationArgs<ExtArgs>
+  }
+
+  export type $ChannelConnectionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ChannelConnection"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      conversation: Prisma.$AssistantConversationPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      provider: $Enums.ChannelProvider
+      externalUserId: string
+      externalChatId: string
+      conversationId: string | null
+      status: $Enums.ChannelConnectionStatus
+      linkedAt: Date
+      revokedAt: Date | null
+      updatedAt: Date
+    }, ExtArgs["result"]["channelConnection"]>
+    composites: {}
+  }
+
+  type ChannelConnectionGetPayload<S extends boolean | null | undefined | ChannelConnectionDefaultArgs> = $Result.GetResult<Prisma.$ChannelConnectionPayload, S>
+
+  type ChannelConnectionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ChannelConnectionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ChannelConnectionCountAggregateInputType | true
+    }
+
+  export interface ChannelConnectionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ChannelConnection'], meta: { name: 'ChannelConnection' } }
+    /**
+     * Find zero or one ChannelConnection that matches the filter.
+     * @param {ChannelConnectionFindUniqueArgs} args - Arguments to find a ChannelConnection
+     * @example
+     * // Get one ChannelConnection
+     * const channelConnection = await prisma.channelConnection.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ChannelConnectionFindUniqueArgs>(args: SelectSubset<T, ChannelConnectionFindUniqueArgs<ExtArgs>>): Prisma__ChannelConnectionClient<$Result.GetResult<Prisma.$ChannelConnectionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ChannelConnection that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ChannelConnectionFindUniqueOrThrowArgs} args - Arguments to find a ChannelConnection
+     * @example
+     * // Get one ChannelConnection
+     * const channelConnection = await prisma.channelConnection.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ChannelConnectionFindUniqueOrThrowArgs>(args: SelectSubset<T, ChannelConnectionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ChannelConnectionClient<$Result.GetResult<Prisma.$ChannelConnectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ChannelConnection that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelConnectionFindFirstArgs} args - Arguments to find a ChannelConnection
+     * @example
+     * // Get one ChannelConnection
+     * const channelConnection = await prisma.channelConnection.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ChannelConnectionFindFirstArgs>(args?: SelectSubset<T, ChannelConnectionFindFirstArgs<ExtArgs>>): Prisma__ChannelConnectionClient<$Result.GetResult<Prisma.$ChannelConnectionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ChannelConnection that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelConnectionFindFirstOrThrowArgs} args - Arguments to find a ChannelConnection
+     * @example
+     * // Get one ChannelConnection
+     * const channelConnection = await prisma.channelConnection.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ChannelConnectionFindFirstOrThrowArgs>(args?: SelectSubset<T, ChannelConnectionFindFirstOrThrowArgs<ExtArgs>>): Prisma__ChannelConnectionClient<$Result.GetResult<Prisma.$ChannelConnectionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ChannelConnections that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelConnectionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ChannelConnections
+     * const channelConnections = await prisma.channelConnection.findMany()
+     *
+     * // Get first 10 ChannelConnections
+     * const channelConnections = await prisma.channelConnection.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const channelConnectionWithIdOnly = await prisma.channelConnection.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends ChannelConnectionFindManyArgs>(args?: SelectSubset<T, ChannelConnectionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelConnectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ChannelConnection.
+     * @param {ChannelConnectionCreateArgs} args - Arguments to create a ChannelConnection.
+     * @example
+     * // Create one ChannelConnection
+     * const ChannelConnection = await prisma.channelConnection.create({
+     *   data: {
+     *     // ... data to create a ChannelConnection
+     *   }
+     * })
+     *
+     */
+    create<T extends ChannelConnectionCreateArgs>(args: SelectSubset<T, ChannelConnectionCreateArgs<ExtArgs>>): Prisma__ChannelConnectionClient<$Result.GetResult<Prisma.$ChannelConnectionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ChannelConnections.
+     * @param {ChannelConnectionCreateManyArgs} args - Arguments to create many ChannelConnections.
+     * @example
+     * // Create many ChannelConnections
+     * const channelConnection = await prisma.channelConnection.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends ChannelConnectionCreateManyArgs>(args?: SelectSubset<T, ChannelConnectionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ChannelConnections and returns the data saved in the database.
+     * @param {ChannelConnectionCreateManyAndReturnArgs} args - Arguments to create many ChannelConnections.
+     * @example
+     * // Create many ChannelConnections
+     * const channelConnection = await prisma.channelConnection.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many ChannelConnections and only return the `id`
+     * const channelConnectionWithIdOnly = await prisma.channelConnection.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends ChannelConnectionCreateManyAndReturnArgs>(args?: SelectSubset<T, ChannelConnectionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelConnectionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ChannelConnection.
+     * @param {ChannelConnectionDeleteArgs} args - Arguments to delete one ChannelConnection.
+     * @example
+     * // Delete one ChannelConnection
+     * const ChannelConnection = await prisma.channelConnection.delete({
+     *   where: {
+     *     // ... filter to delete one ChannelConnection
+     *   }
+     * })
+     *
+     */
+    delete<T extends ChannelConnectionDeleteArgs>(args: SelectSubset<T, ChannelConnectionDeleteArgs<ExtArgs>>): Prisma__ChannelConnectionClient<$Result.GetResult<Prisma.$ChannelConnectionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ChannelConnection.
+     * @param {ChannelConnectionUpdateArgs} args - Arguments to update one ChannelConnection.
+     * @example
+     * // Update one ChannelConnection
+     * const channelConnection = await prisma.channelConnection.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends ChannelConnectionUpdateArgs>(args: SelectSubset<T, ChannelConnectionUpdateArgs<ExtArgs>>): Prisma__ChannelConnectionClient<$Result.GetResult<Prisma.$ChannelConnectionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ChannelConnections.
+     * @param {ChannelConnectionDeleteManyArgs} args - Arguments to filter ChannelConnections to delete.
+     * @example
+     * // Delete a few ChannelConnections
+     * const { count } = await prisma.channelConnection.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends ChannelConnectionDeleteManyArgs>(args?: SelectSubset<T, ChannelConnectionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ChannelConnections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelConnectionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ChannelConnections
+     * const channelConnection = await prisma.channelConnection.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends ChannelConnectionUpdateManyArgs>(args: SelectSubset<T, ChannelConnectionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ChannelConnections and returns the data updated in the database.
+     * @param {ChannelConnectionUpdateManyAndReturnArgs} args - Arguments to update many ChannelConnections.
+     * @example
+     * // Update many ChannelConnections
+     * const channelConnection = await prisma.channelConnection.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more ChannelConnections and only return the `id`
+     * const channelConnectionWithIdOnly = await prisma.channelConnection.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends ChannelConnectionUpdateManyAndReturnArgs>(args: SelectSubset<T, ChannelConnectionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelConnectionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ChannelConnection.
+     * @param {ChannelConnectionUpsertArgs} args - Arguments to update or create a ChannelConnection.
+     * @example
+     * // Update or create a ChannelConnection
+     * const channelConnection = await prisma.channelConnection.upsert({
+     *   create: {
+     *     // ... data to create a ChannelConnection
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ChannelConnection we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ChannelConnectionUpsertArgs>(args: SelectSubset<T, ChannelConnectionUpsertArgs<ExtArgs>>): Prisma__ChannelConnectionClient<$Result.GetResult<Prisma.$ChannelConnectionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ChannelConnections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelConnectionCountArgs} args - Arguments to filter ChannelConnections to count.
+     * @example
+     * // Count the number of ChannelConnections
+     * const count = await prisma.channelConnection.count({
+     *   where: {
+     *     // ... the filter for the ChannelConnections we want to count
+     *   }
+     * })
+    **/
+    count<T extends ChannelConnectionCountArgs>(
+      args?: Subset<T, ChannelConnectionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ChannelConnectionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ChannelConnection.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelConnectionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ChannelConnectionAggregateArgs>(args: Subset<T, ChannelConnectionAggregateArgs>): Prisma.PrismaPromise<GetChannelConnectionAggregateType<T>>
+
+    /**
+     * Group by ChannelConnection.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelConnectionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<
+      T extends ChannelConnectionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ChannelConnectionGroupByArgs['orderBy'] }
+        : { orderBy?: ChannelConnectionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ChannelConnectionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetChannelConnectionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ChannelConnection model
+   */
+  readonly fields: ChannelConnectionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ChannelConnection.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ChannelConnectionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    conversation<T extends ChannelConnection$conversationArgs<ExtArgs> = {}>(args?: Subset<T, ChannelConnection$conversationArgs<ExtArgs>>): Prisma__AssistantConversationClient<$Result.GetResult<Prisma.$AssistantConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ChannelConnection model
+   */
+  interface ChannelConnectionFieldRefs {
+    readonly id: FieldRef<"ChannelConnection", 'String'>
+    readonly userId: FieldRef<"ChannelConnection", 'String'>
+    readonly provider: FieldRef<"ChannelConnection", 'ChannelProvider'>
+    readonly externalUserId: FieldRef<"ChannelConnection", 'String'>
+    readonly externalChatId: FieldRef<"ChannelConnection", 'String'>
+    readonly conversationId: FieldRef<"ChannelConnection", 'String'>
+    readonly status: FieldRef<"ChannelConnection", 'ChannelConnectionStatus'>
+    readonly linkedAt: FieldRef<"ChannelConnection", 'DateTime'>
+    readonly revokedAt: FieldRef<"ChannelConnection", 'DateTime'>
+    readonly updatedAt: FieldRef<"ChannelConnection", 'DateTime'>
+  }
+
+
+  // Custom InputTypes
+  /**
+   * ChannelConnection findUnique
+   */
+  export type ChannelConnectionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelConnection
+     */
+    select?: ChannelConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelConnection
+     */
+    omit?: ChannelConnectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelConnectionInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelConnection to fetch.
+     */
+    where: ChannelConnectionWhereUniqueInput
+  }
+
+  /**
+   * ChannelConnection findUniqueOrThrow
+   */
+  export type ChannelConnectionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelConnection
+     */
+    select?: ChannelConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelConnection
+     */
+    omit?: ChannelConnectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelConnectionInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelConnection to fetch.
+     */
+    where: ChannelConnectionWhereUniqueInput
+  }
+
+  /**
+   * ChannelConnection findFirst
+   */
+  export type ChannelConnectionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelConnection
+     */
+    select?: ChannelConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelConnection
+     */
+    omit?: ChannelConnectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelConnectionInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelConnection to fetch.
+     */
+    where?: ChannelConnectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelConnections to fetch.
+     */
+    orderBy?: ChannelConnectionOrderByWithRelationInput | ChannelConnectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ChannelConnections.
+     */
+    cursor?: ChannelConnectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelConnections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelConnections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ChannelConnections.
+     */
+    distinct?: ChannelConnectionScalarFieldEnum | ChannelConnectionScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelConnection findFirstOrThrow
+   */
+  export type ChannelConnectionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelConnection
+     */
+    select?: ChannelConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelConnection
+     */
+    omit?: ChannelConnectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelConnectionInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelConnection to fetch.
+     */
+    where?: ChannelConnectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelConnections to fetch.
+     */
+    orderBy?: ChannelConnectionOrderByWithRelationInput | ChannelConnectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ChannelConnections.
+     */
+    cursor?: ChannelConnectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelConnections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelConnections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ChannelConnections.
+     */
+    distinct?: ChannelConnectionScalarFieldEnum | ChannelConnectionScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelConnection findMany
+   */
+  export type ChannelConnectionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelConnection
+     */
+    select?: ChannelConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelConnection
+     */
+    omit?: ChannelConnectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelConnectionInclude<ExtArgs> | null
+    /**
+     * Filter, which ChannelConnections to fetch.
+     */
+    where?: ChannelConnectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelConnections to fetch.
+     */
+    orderBy?: ChannelConnectionOrderByWithRelationInput | ChannelConnectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing ChannelConnections.
+     */
+    cursor?: ChannelConnectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelConnections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelConnections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ChannelConnections.
+     */
+    distinct?: ChannelConnectionScalarFieldEnum | ChannelConnectionScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelConnection create
+   */
+  export type ChannelConnectionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelConnection
+     */
+    select?: ChannelConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelConnection
+     */
+    omit?: ChannelConnectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelConnectionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ChannelConnection.
+     */
+    data: XOR<ChannelConnectionCreateInput, ChannelConnectionUncheckedCreateInput>
+  }
+
+  /**
+   * ChannelConnection createMany
+   */
+  export type ChannelConnectionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ChannelConnections.
+     */
+    data: ChannelConnectionCreateManyInput | ChannelConnectionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ChannelConnection createManyAndReturn
+   */
+  export type ChannelConnectionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelConnection
+     */
+    select?: ChannelConnectionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelConnection
+     */
+    omit?: ChannelConnectionOmit<ExtArgs> | null
+    /**
+     * The data used to create many ChannelConnections.
+     */
+    data: ChannelConnectionCreateManyInput | ChannelConnectionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelConnectionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ChannelConnection update
+   */
+  export type ChannelConnectionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelConnection
+     */
+    select?: ChannelConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelConnection
+     */
+    omit?: ChannelConnectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelConnectionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ChannelConnection.
+     */
+    data: XOR<ChannelConnectionUpdateInput, ChannelConnectionUncheckedUpdateInput>
+    /**
+     * Choose, which ChannelConnection to update.
+     */
+    where: ChannelConnectionWhereUniqueInput
+  }
+
+  /**
+   * ChannelConnection updateMany
+   */
+  export type ChannelConnectionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ChannelConnections.
+     */
+    data: XOR<ChannelConnectionUpdateManyMutationInput, ChannelConnectionUncheckedUpdateManyInput>
+    /**
+     * Filter which ChannelConnections to update
+     */
+    where?: ChannelConnectionWhereInput
+    /**
+     * Limit how many ChannelConnections to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ChannelConnection updateManyAndReturn
+   */
+  export type ChannelConnectionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelConnection
+     */
+    select?: ChannelConnectionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelConnection
+     */
+    omit?: ChannelConnectionOmit<ExtArgs> | null
+    /**
+     * The data used to update ChannelConnections.
+     */
+    data: XOR<ChannelConnectionUpdateManyMutationInput, ChannelConnectionUncheckedUpdateManyInput>
+    /**
+     * Filter which ChannelConnections to update
+     */
+    where?: ChannelConnectionWhereInput
+    /**
+     * Limit how many ChannelConnections to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelConnectionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ChannelConnection upsert
+   */
+  export type ChannelConnectionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelConnection
+     */
+    select?: ChannelConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelConnection
+     */
+    omit?: ChannelConnectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelConnectionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ChannelConnection to update in case it exists.
+     */
+    where: ChannelConnectionWhereUniqueInput
+    /**
+     * In case the ChannelConnection found by the `where` argument doesn't exist, create a new ChannelConnection with this data.
+     */
+    create: XOR<ChannelConnectionCreateInput, ChannelConnectionUncheckedCreateInput>
+    /**
+     * In case the ChannelConnection was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ChannelConnectionUpdateInput, ChannelConnectionUncheckedUpdateInput>
+  }
+
+  /**
+   * ChannelConnection delete
+   */
+  export type ChannelConnectionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelConnection
+     */
+    select?: ChannelConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelConnection
+     */
+    omit?: ChannelConnectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelConnectionInclude<ExtArgs> | null
+    /**
+     * Filter which ChannelConnection to delete.
+     */
+    where: ChannelConnectionWhereUniqueInput
+  }
+
+  /**
+   * ChannelConnection deleteMany
+   */
+  export type ChannelConnectionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChannelConnections to delete
+     */
+    where?: ChannelConnectionWhereInput
+    /**
+     * Limit how many ChannelConnections to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ChannelConnection.conversation
+   */
+  export type ChannelConnection$conversationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AssistantConversation
+     */
+    select?: AssistantConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AssistantConversation
+     */
+    omit?: AssistantConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AssistantConversationInclude<ExtArgs> | null
+    where?: AssistantConversationWhereInput
+  }
+
+  /**
+   * ChannelConnection without action
+   */
+  export type ChannelConnectionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelConnection
+     */
+    select?: ChannelConnectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelConnection
+     */
+    omit?: ChannelConnectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChannelConnectionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ChannelUpdateDedup
+   */
+
+  export type AggregateChannelUpdateDedup = {
+    _count: ChannelUpdateDedupCountAggregateOutputType | null
+    _min: ChannelUpdateDedupMinAggregateOutputType | null
+    _max: ChannelUpdateDedupMaxAggregateOutputType | null
+  }
+
+  export type ChannelUpdateDedupMinAggregateOutputType = {
+    id: string | null
+    provider: $Enums.ChannelProvider | null
+    externalUpdateId: string | null
+    createdAt: Date | null
+  }
+
+  export type ChannelUpdateDedupMaxAggregateOutputType = {
+    id: string | null
+    provider: $Enums.ChannelProvider | null
+    externalUpdateId: string | null
+    createdAt: Date | null
+  }
+
+  export type ChannelUpdateDedupCountAggregateOutputType = {
+    id: number
+    provider: number
+    externalUpdateId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ChannelUpdateDedupMinAggregateInputType = {
+    id?: true
+    provider?: true
+    externalUpdateId?: true
+    createdAt?: true
+  }
+
+  export type ChannelUpdateDedupMaxAggregateInputType = {
+    id?: true
+    provider?: true
+    externalUpdateId?: true
+    createdAt?: true
+  }
+
+  export type ChannelUpdateDedupCountAggregateInputType = {
+    id?: true
+    provider?: true
+    externalUpdateId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ChannelUpdateDedupAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChannelUpdateDedup to aggregate.
+     */
+    where?: ChannelUpdateDedupWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelUpdateDedups to fetch.
+     */
+    orderBy?: ChannelUpdateDedupOrderByWithRelationInput | ChannelUpdateDedupOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: ChannelUpdateDedupWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelUpdateDedups from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelUpdateDedups.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned ChannelUpdateDedups
+    **/
+    _count?: true | ChannelUpdateDedupCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: ChannelUpdateDedupMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: ChannelUpdateDedupMaxAggregateInputType
+  }
+
+  export type GetChannelUpdateDedupAggregateType<T extends ChannelUpdateDedupAggregateArgs> = {
+        [P in keyof T & keyof AggregateChannelUpdateDedup]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateChannelUpdateDedup[P]>
+      : GetScalarType<T[P], AggregateChannelUpdateDedup[P]>
+  }
+
+
+
+
+  export type ChannelUpdateDedupGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelUpdateDedupWhereInput
+    orderBy?: ChannelUpdateDedupOrderByWithAggregationInput | ChannelUpdateDedupOrderByWithAggregationInput[]
+    by: ChannelUpdateDedupScalarFieldEnum[] | ChannelUpdateDedupScalarFieldEnum
+    having?: ChannelUpdateDedupScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ChannelUpdateDedupCountAggregateInputType | true
+    _min?: ChannelUpdateDedupMinAggregateInputType
+    _max?: ChannelUpdateDedupMaxAggregateInputType
+  }
+
+  export type ChannelUpdateDedupGroupByOutputType = {
+    id: string
+    provider: $Enums.ChannelProvider
+    externalUpdateId: string
+    createdAt: Date
+    _count: ChannelUpdateDedupCountAggregateOutputType | null
+    _min: ChannelUpdateDedupMinAggregateOutputType | null
+    _max: ChannelUpdateDedupMaxAggregateOutputType | null
+  }
+
+  type GetChannelUpdateDedupGroupByPayload<T extends ChannelUpdateDedupGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ChannelUpdateDedupGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ChannelUpdateDedupGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ChannelUpdateDedupGroupByOutputType[P]>
+            : GetScalarType<T[P], ChannelUpdateDedupGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ChannelUpdateDedupSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    provider?: boolean
+    externalUpdateId?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["channelUpdateDedup"]>
+
+  export type ChannelUpdateDedupSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    provider?: boolean
+    externalUpdateId?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["channelUpdateDedup"]>
+
+  export type ChannelUpdateDedupSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    provider?: boolean
+    externalUpdateId?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["channelUpdateDedup"]>
+
+  export type ChannelUpdateDedupSelectScalar = {
+    id?: boolean
+    provider?: boolean
+    externalUpdateId?: boolean
+    createdAt?: boolean
+  }
+
+  export type ChannelUpdateDedupOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "provider" | "externalUpdateId" | "createdAt", ExtArgs["result"]["channelUpdateDedup"]>
+
+  export type $ChannelUpdateDedupPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ChannelUpdateDedup"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      provider: $Enums.ChannelProvider
+      externalUpdateId: string
+      createdAt: Date
+    }, ExtArgs["result"]["channelUpdateDedup"]>
+    composites: {}
+  }
+
+  type ChannelUpdateDedupGetPayload<S extends boolean | null | undefined | ChannelUpdateDedupDefaultArgs> = $Result.GetResult<Prisma.$ChannelUpdateDedupPayload, S>
+
+  type ChannelUpdateDedupCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ChannelUpdateDedupFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ChannelUpdateDedupCountAggregateInputType | true
+    }
+
+  export interface ChannelUpdateDedupDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ChannelUpdateDedup'], meta: { name: 'ChannelUpdateDedup' } }
+    /**
+     * Find zero or one ChannelUpdateDedup that matches the filter.
+     * @param {ChannelUpdateDedupFindUniqueArgs} args - Arguments to find a ChannelUpdateDedup
+     * @example
+     * // Get one ChannelUpdateDedup
+     * const channelUpdateDedup = await prisma.channelUpdateDedup.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ChannelUpdateDedupFindUniqueArgs>(args: SelectSubset<T, ChannelUpdateDedupFindUniqueArgs<ExtArgs>>): Prisma__ChannelUpdateDedupClient<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ChannelUpdateDedup that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ChannelUpdateDedupFindUniqueOrThrowArgs} args - Arguments to find a ChannelUpdateDedup
+     * @example
+     * // Get one ChannelUpdateDedup
+     * const channelUpdateDedup = await prisma.channelUpdateDedup.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ChannelUpdateDedupFindUniqueOrThrowArgs>(args: SelectSubset<T, ChannelUpdateDedupFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ChannelUpdateDedupClient<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ChannelUpdateDedup that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelUpdateDedupFindFirstArgs} args - Arguments to find a ChannelUpdateDedup
+     * @example
+     * // Get one ChannelUpdateDedup
+     * const channelUpdateDedup = await prisma.channelUpdateDedup.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ChannelUpdateDedupFindFirstArgs>(args?: SelectSubset<T, ChannelUpdateDedupFindFirstArgs<ExtArgs>>): Prisma__ChannelUpdateDedupClient<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ChannelUpdateDedup that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelUpdateDedupFindFirstOrThrowArgs} args - Arguments to find a ChannelUpdateDedup
+     * @example
+     * // Get one ChannelUpdateDedup
+     * const channelUpdateDedup = await prisma.channelUpdateDedup.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ChannelUpdateDedupFindFirstOrThrowArgs>(args?: SelectSubset<T, ChannelUpdateDedupFindFirstOrThrowArgs<ExtArgs>>): Prisma__ChannelUpdateDedupClient<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ChannelUpdateDedups that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelUpdateDedupFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ChannelUpdateDedups
+     * const channelUpdateDedups = await prisma.channelUpdateDedup.findMany()
+     *
+     * // Get first 10 ChannelUpdateDedups
+     * const channelUpdateDedups = await prisma.channelUpdateDedup.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const channelUpdateDedupWithIdOnly = await prisma.channelUpdateDedup.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends ChannelUpdateDedupFindManyArgs>(args?: SelectSubset<T, ChannelUpdateDedupFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ChannelUpdateDedup.
+     * @param {ChannelUpdateDedupCreateArgs} args - Arguments to create a ChannelUpdateDedup.
+     * @example
+     * // Create one ChannelUpdateDedup
+     * const ChannelUpdateDedup = await prisma.channelUpdateDedup.create({
+     *   data: {
+     *     // ... data to create a ChannelUpdateDedup
+     *   }
+     * })
+     *
+     */
+    create<T extends ChannelUpdateDedupCreateArgs>(args: SelectSubset<T, ChannelUpdateDedupCreateArgs<ExtArgs>>): Prisma__ChannelUpdateDedupClient<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ChannelUpdateDedups.
+     * @param {ChannelUpdateDedupCreateManyArgs} args - Arguments to create many ChannelUpdateDedups.
+     * @example
+     * // Create many ChannelUpdateDedups
+     * const channelUpdateDedup = await prisma.channelUpdateDedup.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends ChannelUpdateDedupCreateManyArgs>(args?: SelectSubset<T, ChannelUpdateDedupCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ChannelUpdateDedups and returns the data saved in the database.
+     * @param {ChannelUpdateDedupCreateManyAndReturnArgs} args - Arguments to create many ChannelUpdateDedups.
+     * @example
+     * // Create many ChannelUpdateDedups
+     * const channelUpdateDedup = await prisma.channelUpdateDedup.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many ChannelUpdateDedups and only return the `id`
+     * const channelUpdateDedupWithIdOnly = await prisma.channelUpdateDedup.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends ChannelUpdateDedupCreateManyAndReturnArgs>(args?: SelectSubset<T, ChannelUpdateDedupCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ChannelUpdateDedup.
+     * @param {ChannelUpdateDedupDeleteArgs} args - Arguments to delete one ChannelUpdateDedup.
+     * @example
+     * // Delete one ChannelUpdateDedup
+     * const ChannelUpdateDedup = await prisma.channelUpdateDedup.delete({
+     *   where: {
+     *     // ... filter to delete one ChannelUpdateDedup
+     *   }
+     * })
+     *
+     */
+    delete<T extends ChannelUpdateDedupDeleteArgs>(args: SelectSubset<T, ChannelUpdateDedupDeleteArgs<ExtArgs>>): Prisma__ChannelUpdateDedupClient<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ChannelUpdateDedup.
+     * @param {ChannelUpdateDedupUpdateArgs} args - Arguments to update one ChannelUpdateDedup.
+     * @example
+     * // Update one ChannelUpdateDedup
+     * const channelUpdateDedup = await prisma.channelUpdateDedup.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends ChannelUpdateDedupUpdateArgs>(args: SelectSubset<T, ChannelUpdateDedupUpdateArgs<ExtArgs>>): Prisma__ChannelUpdateDedupClient<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ChannelUpdateDedups.
+     * @param {ChannelUpdateDedupDeleteManyArgs} args - Arguments to filter ChannelUpdateDedups to delete.
+     * @example
+     * // Delete a few ChannelUpdateDedups
+     * const { count } = await prisma.channelUpdateDedup.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends ChannelUpdateDedupDeleteManyArgs>(args?: SelectSubset<T, ChannelUpdateDedupDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ChannelUpdateDedups.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelUpdateDedupUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ChannelUpdateDedups
+     * const channelUpdateDedup = await prisma.channelUpdateDedup.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends ChannelUpdateDedupUpdateManyArgs>(args: SelectSubset<T, ChannelUpdateDedupUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ChannelUpdateDedups and returns the data updated in the database.
+     * @param {ChannelUpdateDedupUpdateManyAndReturnArgs} args - Arguments to update many ChannelUpdateDedups.
+     * @example
+     * // Update many ChannelUpdateDedups
+     * const channelUpdateDedup = await prisma.channelUpdateDedup.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more ChannelUpdateDedups and only return the `id`
+     * const channelUpdateDedupWithIdOnly = await prisma.channelUpdateDedup.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends ChannelUpdateDedupUpdateManyAndReturnArgs>(args: SelectSubset<T, ChannelUpdateDedupUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ChannelUpdateDedup.
+     * @param {ChannelUpdateDedupUpsertArgs} args - Arguments to update or create a ChannelUpdateDedup.
+     * @example
+     * // Update or create a ChannelUpdateDedup
+     * const channelUpdateDedup = await prisma.channelUpdateDedup.upsert({
+     *   create: {
+     *     // ... data to create a ChannelUpdateDedup
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ChannelUpdateDedup we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ChannelUpdateDedupUpsertArgs>(args: SelectSubset<T, ChannelUpdateDedupUpsertArgs<ExtArgs>>): Prisma__ChannelUpdateDedupClient<$Result.GetResult<Prisma.$ChannelUpdateDedupPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ChannelUpdateDedups.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelUpdateDedupCountArgs} args - Arguments to filter ChannelUpdateDedups to count.
+     * @example
+     * // Count the number of ChannelUpdateDedups
+     * const count = await prisma.channelUpdateDedup.count({
+     *   where: {
+     *     // ... the filter for the ChannelUpdateDedups we want to count
+     *   }
+     * })
+    **/
+    count<T extends ChannelUpdateDedupCountArgs>(
+      args?: Subset<T, ChannelUpdateDedupCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ChannelUpdateDedupCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ChannelUpdateDedup.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelUpdateDedupAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ChannelUpdateDedupAggregateArgs>(args: Subset<T, ChannelUpdateDedupAggregateArgs>): Prisma.PrismaPromise<GetChannelUpdateDedupAggregateType<T>>
+
+    /**
+     * Group by ChannelUpdateDedup.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelUpdateDedupGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<
+      T extends ChannelUpdateDedupGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ChannelUpdateDedupGroupByArgs['orderBy'] }
+        : { orderBy?: ChannelUpdateDedupGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ChannelUpdateDedupGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetChannelUpdateDedupGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ChannelUpdateDedup model
+   */
+  readonly fields: ChannelUpdateDedupFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ChannelUpdateDedup.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ChannelUpdateDedupClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ChannelUpdateDedup model
+   */
+  interface ChannelUpdateDedupFieldRefs {
+    readonly id: FieldRef<"ChannelUpdateDedup", 'String'>
+    readonly provider: FieldRef<"ChannelUpdateDedup", 'ChannelProvider'>
+    readonly externalUpdateId: FieldRef<"ChannelUpdateDedup", 'String'>
+    readonly createdAt: FieldRef<"ChannelUpdateDedup", 'DateTime'>
+  }
+
+
+  // Custom InputTypes
+  /**
+   * ChannelUpdateDedup findUnique
+   */
+  export type ChannelUpdateDedupFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelUpdateDedup
+     */
+    select?: ChannelUpdateDedupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelUpdateDedup
+     */
+    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    /**
+     * Filter, which ChannelUpdateDedup to fetch.
+     */
+    where: ChannelUpdateDedupWhereUniqueInput
+  }
+
+  /**
+   * ChannelUpdateDedup findUniqueOrThrow
+   */
+  export type ChannelUpdateDedupFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelUpdateDedup
+     */
+    select?: ChannelUpdateDedupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelUpdateDedup
+     */
+    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    /**
+     * Filter, which ChannelUpdateDedup to fetch.
+     */
+    where: ChannelUpdateDedupWhereUniqueInput
+  }
+
+  /**
+   * ChannelUpdateDedup findFirst
+   */
+  export type ChannelUpdateDedupFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelUpdateDedup
+     */
+    select?: ChannelUpdateDedupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelUpdateDedup
+     */
+    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    /**
+     * Filter, which ChannelUpdateDedup to fetch.
+     */
+    where?: ChannelUpdateDedupWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelUpdateDedups to fetch.
+     */
+    orderBy?: ChannelUpdateDedupOrderByWithRelationInput | ChannelUpdateDedupOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ChannelUpdateDedups.
+     */
+    cursor?: ChannelUpdateDedupWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelUpdateDedups from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelUpdateDedups.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ChannelUpdateDedups.
+     */
+    distinct?: ChannelUpdateDedupScalarFieldEnum | ChannelUpdateDedupScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelUpdateDedup findFirstOrThrow
+   */
+  export type ChannelUpdateDedupFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelUpdateDedup
+     */
+    select?: ChannelUpdateDedupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelUpdateDedup
+     */
+    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    /**
+     * Filter, which ChannelUpdateDedup to fetch.
+     */
+    where?: ChannelUpdateDedupWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelUpdateDedups to fetch.
+     */
+    orderBy?: ChannelUpdateDedupOrderByWithRelationInput | ChannelUpdateDedupOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ChannelUpdateDedups.
+     */
+    cursor?: ChannelUpdateDedupWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelUpdateDedups from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelUpdateDedups.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ChannelUpdateDedups.
+     */
+    distinct?: ChannelUpdateDedupScalarFieldEnum | ChannelUpdateDedupScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelUpdateDedup findMany
+   */
+  export type ChannelUpdateDedupFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelUpdateDedup
+     */
+    select?: ChannelUpdateDedupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelUpdateDedup
+     */
+    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    /**
+     * Filter, which ChannelUpdateDedups to fetch.
+     */
+    where?: ChannelUpdateDedupWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelUpdateDedups to fetch.
+     */
+    orderBy?: ChannelUpdateDedupOrderByWithRelationInput | ChannelUpdateDedupOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing ChannelUpdateDedups.
+     */
+    cursor?: ChannelUpdateDedupWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelUpdateDedups from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelUpdateDedups.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ChannelUpdateDedups.
+     */
+    distinct?: ChannelUpdateDedupScalarFieldEnum | ChannelUpdateDedupScalarFieldEnum[]
+  }
+
+  /**
+   * ChannelUpdateDedup create
+   */
+  export type ChannelUpdateDedupCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelUpdateDedup
+     */
+    select?: ChannelUpdateDedupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelUpdateDedup
+     */
+    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    /**
+     * The data needed to create a ChannelUpdateDedup.
+     */
+    data: XOR<ChannelUpdateDedupCreateInput, ChannelUpdateDedupUncheckedCreateInput>
+  }
+
+  /**
+   * ChannelUpdateDedup createMany
+   */
+  export type ChannelUpdateDedupCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ChannelUpdateDedups.
+     */
+    data: ChannelUpdateDedupCreateManyInput | ChannelUpdateDedupCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ChannelUpdateDedup createManyAndReturn
+   */
+  export type ChannelUpdateDedupCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelUpdateDedup
+     */
+    select?: ChannelUpdateDedupSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelUpdateDedup
+     */
+    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    /**
+     * The data used to create many ChannelUpdateDedups.
+     */
+    data: ChannelUpdateDedupCreateManyInput | ChannelUpdateDedupCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ChannelUpdateDedup update
+   */
+  export type ChannelUpdateDedupUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelUpdateDedup
+     */
+    select?: ChannelUpdateDedupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelUpdateDedup
+     */
+    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    /**
+     * The data needed to update a ChannelUpdateDedup.
+     */
+    data: XOR<ChannelUpdateDedupUpdateInput, ChannelUpdateDedupUncheckedUpdateInput>
+    /**
+     * Choose, which ChannelUpdateDedup to update.
+     */
+    where: ChannelUpdateDedupWhereUniqueInput
+  }
+
+  /**
+   * ChannelUpdateDedup updateMany
+   */
+  export type ChannelUpdateDedupUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ChannelUpdateDedups.
+     */
+    data: XOR<ChannelUpdateDedupUpdateManyMutationInput, ChannelUpdateDedupUncheckedUpdateManyInput>
+    /**
+     * Filter which ChannelUpdateDedups to update
+     */
+    where?: ChannelUpdateDedupWhereInput
+    /**
+     * Limit how many ChannelUpdateDedups to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ChannelUpdateDedup updateManyAndReturn
+   */
+  export type ChannelUpdateDedupUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelUpdateDedup
+     */
+    select?: ChannelUpdateDedupSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelUpdateDedup
+     */
+    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    /**
+     * The data used to update ChannelUpdateDedups.
+     */
+    data: XOR<ChannelUpdateDedupUpdateManyMutationInput, ChannelUpdateDedupUncheckedUpdateManyInput>
+    /**
+     * Filter which ChannelUpdateDedups to update
+     */
+    where?: ChannelUpdateDedupWhereInput
+    /**
+     * Limit how many ChannelUpdateDedups to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ChannelUpdateDedup upsert
+   */
+  export type ChannelUpdateDedupUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelUpdateDedup
+     */
+    select?: ChannelUpdateDedupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelUpdateDedup
+     */
+    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    /**
+     * The filter to search for the ChannelUpdateDedup to update in case it exists.
+     */
+    where: ChannelUpdateDedupWhereUniqueInput
+    /**
+     * In case the ChannelUpdateDedup found by the `where` argument doesn't exist, create a new ChannelUpdateDedup with this data.
+     */
+    create: XOR<ChannelUpdateDedupCreateInput, ChannelUpdateDedupUncheckedCreateInput>
+    /**
+     * In case the ChannelUpdateDedup was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ChannelUpdateDedupUpdateInput, ChannelUpdateDedupUncheckedUpdateInput>
+  }
+
+  /**
+   * ChannelUpdateDedup delete
+   */
+  export type ChannelUpdateDedupDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelUpdateDedup
+     */
+    select?: ChannelUpdateDedupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelUpdateDedup
+     */
+    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+    /**
+     * Filter which ChannelUpdateDedup to delete.
+     */
+    where: ChannelUpdateDedupWhereUniqueInput
+  }
+
+  /**
+   * ChannelUpdateDedup deleteMany
+   */
+  export type ChannelUpdateDedupDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChannelUpdateDedups to delete
+     */
+    where?: ChannelUpdateDedupWhereInput
+    /**
+     * Limit how many ChannelUpdateDedups to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ChannelUpdateDedup without action
+   */
+  export type ChannelUpdateDedupDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelUpdateDedup
+     */
+    select?: ChannelUpdateDedupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChannelUpdateDedup
+     */
+    omit?: ChannelUpdateDedupOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Model Budget
    */
 
@@ -27595,6 +31233,45 @@ export namespace Prisma {
   export type SavingGoalScalarFieldEnum = (typeof SavingGoalScalarFieldEnum)[keyof typeof SavingGoalScalarFieldEnum]
 
 
+  export const ChannelLinkTokenScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    provider: 'provider',
+    tokenDigest: 'tokenDigest',
+    expiresAt: 'expiresAt',
+    consumedAt: 'consumedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type ChannelLinkTokenScalarFieldEnum = (typeof ChannelLinkTokenScalarFieldEnum)[keyof typeof ChannelLinkTokenScalarFieldEnum]
+
+
+  export const ChannelConnectionScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    provider: 'provider',
+    externalUserId: 'externalUserId',
+    externalChatId: 'externalChatId',
+    conversationId: 'conversationId',
+    status: 'status',
+    linkedAt: 'linkedAt',
+    revokedAt: 'revokedAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ChannelConnectionScalarFieldEnum = (typeof ChannelConnectionScalarFieldEnum)[keyof typeof ChannelConnectionScalarFieldEnum]
+
+
+  export const ChannelUpdateDedupScalarFieldEnum: {
+    id: 'id',
+    provider: 'provider',
+    externalUpdateId: 'externalUpdateId',
+    createdAt: 'createdAt'
+  };
+
+  export type ChannelUpdateDedupScalarFieldEnum = (typeof ChannelUpdateDedupScalarFieldEnum)[keyof typeof ChannelUpdateDedupScalarFieldEnum]
+
+
   export const BudgetScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
@@ -27977,6 +31654,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ChannelProvider'
+   */
+  export type EnumChannelProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChannelProvider'>
+
+
+
+  /**
+   * Reference to a field of type 'ChannelProvider[]'
+   */
+  export type ListEnumChannelProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChannelProvider[]'>
+
+
+
+  /**
+   * Reference to a field of type 'ChannelConnectionStatus'
+   */
+  export type EnumChannelConnectionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChannelConnectionStatus'>
+
+
+
+  /**
+   * Reference to a field of type 'ChannelConnectionStatus[]'
+   */
+  export type ListEnumChannelConnectionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChannelConnectionStatus[]'>
+
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -28016,6 +31721,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordListRelationFilter
     assistantProviderExecutions?: AssistantProviderExecutionListRelationFilter
     clarificationRequests?: ClarificationRequestListRelationFilter
+    channelLinkTokens?: ChannelLinkTokenListRelationFilter
+    channelConnections?: ChannelConnectionListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -28038,6 +31745,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordOrderByRelationAggregateInput
     assistantProviderExecutions?: AssistantProviderExecutionOrderByRelationAggregateInput
     clarificationRequests?: ClarificationRequestOrderByRelationAggregateInput
+    channelLinkTokens?: ChannelLinkTokenOrderByRelationAggregateInput
+    channelConnections?: ChannelConnectionOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -28063,6 +31772,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordListRelationFilter
     assistantProviderExecutions?: AssistantProviderExecutionListRelationFilter
     clarificationRequests?: ClarificationRequestListRelationFilter
+    channelLinkTokens?: ChannelLinkTokenListRelationFilter
+    channelConnections?: ChannelConnectionListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -28108,6 +31819,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftListRelationFilter
     providerExecutions?: AssistantProviderExecutionListRelationFilter
     clarificationRequests?: ClarificationRequestListRelationFilter
+    channelConnections?: ChannelConnectionListRelationFilter
   }
 
   export type AssistantConversationOrderByWithRelationInput = {
@@ -28126,6 +31838,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftOrderByRelationAggregateInput
     providerExecutions?: AssistantProviderExecutionOrderByRelationAggregateInput
     clarificationRequests?: ClarificationRequestOrderByRelationAggregateInput
+    channelConnections?: ChannelConnectionOrderByRelationAggregateInput
   }
 
   export type AssistantConversationWhereUniqueInput = Prisma.AtLeast<{
@@ -28147,6 +31860,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftListRelationFilter
     providerExecutions?: AssistantProviderExecutionListRelationFilter
     clarificationRequests?: ClarificationRequestListRelationFilter
+    channelConnections?: ChannelConnectionListRelationFilter
   }, "id">
 
   export type AssistantConversationOrderByWithAggregationInput = {
@@ -29864,6 +33578,205 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"SavingGoal"> | Date | string
   }
 
+  export type ChannelLinkTokenWhereInput = {
+    AND?: ChannelLinkTokenWhereInput | ChannelLinkTokenWhereInput[]
+    OR?: ChannelLinkTokenWhereInput[]
+    NOT?: ChannelLinkTokenWhereInput | ChannelLinkTokenWhereInput[]
+    id?: StringFilter<"ChannelLinkToken"> | string
+    userId?: StringFilter<"ChannelLinkToken"> | string
+    provider?: EnumChannelProviderFilter<"ChannelLinkToken"> | $Enums.ChannelProvider
+    tokenDigest?: StringFilter<"ChannelLinkToken"> | string
+    expiresAt?: DateTimeFilter<"ChannelLinkToken"> | Date | string
+    consumedAt?: DateTimeNullableFilter<"ChannelLinkToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"ChannelLinkToken"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ChannelLinkTokenOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    provider?: SortOrder
+    tokenDigest?: SortOrder
+    expiresAt?: SortOrder
+    consumedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type ChannelLinkTokenWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    provider_tokenDigest?: ChannelLinkTokenProviderTokenDigestCompoundUniqueInput
+    AND?: ChannelLinkTokenWhereInput | ChannelLinkTokenWhereInput[]
+    OR?: ChannelLinkTokenWhereInput[]
+    NOT?: ChannelLinkTokenWhereInput | ChannelLinkTokenWhereInput[]
+    userId?: StringFilter<"ChannelLinkToken"> | string
+    provider?: EnumChannelProviderFilter<"ChannelLinkToken"> | $Enums.ChannelProvider
+    tokenDigest?: StringFilter<"ChannelLinkToken"> | string
+    expiresAt?: DateTimeFilter<"ChannelLinkToken"> | Date | string
+    consumedAt?: DateTimeNullableFilter<"ChannelLinkToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"ChannelLinkToken"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "provider_tokenDigest">
+
+  export type ChannelLinkTokenOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    provider?: SortOrder
+    tokenDigest?: SortOrder
+    expiresAt?: SortOrder
+    consumedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ChannelLinkTokenCountOrderByAggregateInput
+    _max?: ChannelLinkTokenMaxOrderByAggregateInput
+    _min?: ChannelLinkTokenMinOrderByAggregateInput
+  }
+
+  export type ChannelLinkTokenScalarWhereWithAggregatesInput = {
+    AND?: ChannelLinkTokenScalarWhereWithAggregatesInput | ChannelLinkTokenScalarWhereWithAggregatesInput[]
+    OR?: ChannelLinkTokenScalarWhereWithAggregatesInput[]
+    NOT?: ChannelLinkTokenScalarWhereWithAggregatesInput | ChannelLinkTokenScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ChannelLinkToken"> | string
+    userId?: StringWithAggregatesFilter<"ChannelLinkToken"> | string
+    provider?: EnumChannelProviderWithAggregatesFilter<"ChannelLinkToken"> | $Enums.ChannelProvider
+    tokenDigest?: StringWithAggregatesFilter<"ChannelLinkToken"> | string
+    expiresAt?: DateTimeWithAggregatesFilter<"ChannelLinkToken"> | Date | string
+    consumedAt?: DateTimeNullableWithAggregatesFilter<"ChannelLinkToken"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ChannelLinkToken"> | Date | string
+  }
+
+  export type ChannelConnectionWhereInput = {
+    AND?: ChannelConnectionWhereInput | ChannelConnectionWhereInput[]
+    OR?: ChannelConnectionWhereInput[]
+    NOT?: ChannelConnectionWhereInput | ChannelConnectionWhereInput[]
+    id?: StringFilter<"ChannelConnection"> | string
+    userId?: StringFilter<"ChannelConnection"> | string
+    provider?: EnumChannelProviderFilter<"ChannelConnection"> | $Enums.ChannelProvider
+    externalUserId?: StringFilter<"ChannelConnection"> | string
+    externalChatId?: StringFilter<"ChannelConnection"> | string
+    conversationId?: StringNullableFilter<"ChannelConnection"> | string | null
+    status?: EnumChannelConnectionStatusFilter<"ChannelConnection"> | $Enums.ChannelConnectionStatus
+    linkedAt?: DateTimeFilter<"ChannelConnection"> | Date | string
+    revokedAt?: DateTimeNullableFilter<"ChannelConnection"> | Date | string | null
+    updatedAt?: DateTimeFilter<"ChannelConnection"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    conversation?: XOR<AssistantConversationNullableScalarRelationFilter, AssistantConversationWhereInput> | null
+  }
+
+  export type ChannelConnectionOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    provider?: SortOrder
+    externalUserId?: SortOrder
+    externalChatId?: SortOrder
+    conversationId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    linkedAt?: SortOrder
+    revokedAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    conversation?: AssistantConversationOrderByWithRelationInput
+  }
+
+  export type ChannelConnectionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    provider_externalUserId?: ChannelConnectionProviderExternalUserIdCompoundUniqueInput
+    userId_provider?: ChannelConnectionUserIdProviderCompoundUniqueInput
+    AND?: ChannelConnectionWhereInput | ChannelConnectionWhereInput[]
+    OR?: ChannelConnectionWhereInput[]
+    NOT?: ChannelConnectionWhereInput | ChannelConnectionWhereInput[]
+    userId?: StringFilter<"ChannelConnection"> | string
+    provider?: EnumChannelProviderFilter<"ChannelConnection"> | $Enums.ChannelProvider
+    externalUserId?: StringFilter<"ChannelConnection"> | string
+    externalChatId?: StringFilter<"ChannelConnection"> | string
+    conversationId?: StringNullableFilter<"ChannelConnection"> | string | null
+    status?: EnumChannelConnectionStatusFilter<"ChannelConnection"> | $Enums.ChannelConnectionStatus
+    linkedAt?: DateTimeFilter<"ChannelConnection"> | Date | string
+    revokedAt?: DateTimeNullableFilter<"ChannelConnection"> | Date | string | null
+    updatedAt?: DateTimeFilter<"ChannelConnection"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    conversation?: XOR<AssistantConversationNullableScalarRelationFilter, AssistantConversationWhereInput> | null
+  }, "id" | "provider_externalUserId" | "userId_provider">
+
+  export type ChannelConnectionOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    provider?: SortOrder
+    externalUserId?: SortOrder
+    externalChatId?: SortOrder
+    conversationId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    linkedAt?: SortOrder
+    revokedAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrder
+    _count?: ChannelConnectionCountOrderByAggregateInput
+    _max?: ChannelConnectionMaxOrderByAggregateInput
+    _min?: ChannelConnectionMinOrderByAggregateInput
+  }
+
+  export type ChannelConnectionScalarWhereWithAggregatesInput = {
+    AND?: ChannelConnectionScalarWhereWithAggregatesInput | ChannelConnectionScalarWhereWithAggregatesInput[]
+    OR?: ChannelConnectionScalarWhereWithAggregatesInput[]
+    NOT?: ChannelConnectionScalarWhereWithAggregatesInput | ChannelConnectionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ChannelConnection"> | string
+    userId?: StringWithAggregatesFilter<"ChannelConnection"> | string
+    provider?: EnumChannelProviderWithAggregatesFilter<"ChannelConnection"> | $Enums.ChannelProvider
+    externalUserId?: StringWithAggregatesFilter<"ChannelConnection"> | string
+    externalChatId?: StringWithAggregatesFilter<"ChannelConnection"> | string
+    conversationId?: StringNullableWithAggregatesFilter<"ChannelConnection"> | string | null
+    status?: EnumChannelConnectionStatusWithAggregatesFilter<"ChannelConnection"> | $Enums.ChannelConnectionStatus
+    linkedAt?: DateTimeWithAggregatesFilter<"ChannelConnection"> | Date | string
+    revokedAt?: DateTimeNullableWithAggregatesFilter<"ChannelConnection"> | Date | string | null
+    updatedAt?: DateTimeWithAggregatesFilter<"ChannelConnection"> | Date | string
+  }
+
+  export type ChannelUpdateDedupWhereInput = {
+    AND?: ChannelUpdateDedupWhereInput | ChannelUpdateDedupWhereInput[]
+    OR?: ChannelUpdateDedupWhereInput[]
+    NOT?: ChannelUpdateDedupWhereInput | ChannelUpdateDedupWhereInput[]
+    id?: StringFilter<"ChannelUpdateDedup"> | string
+    provider?: EnumChannelProviderFilter<"ChannelUpdateDedup"> | $Enums.ChannelProvider
+    externalUpdateId?: StringFilter<"ChannelUpdateDedup"> | string
+    createdAt?: DateTimeFilter<"ChannelUpdateDedup"> | Date | string
+  }
+
+  export type ChannelUpdateDedupOrderByWithRelationInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    externalUpdateId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ChannelUpdateDedupWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    provider_externalUpdateId?: ChannelUpdateDedupProviderExternalUpdateIdCompoundUniqueInput
+    AND?: ChannelUpdateDedupWhereInput | ChannelUpdateDedupWhereInput[]
+    OR?: ChannelUpdateDedupWhereInput[]
+    NOT?: ChannelUpdateDedupWhereInput | ChannelUpdateDedupWhereInput[]
+    provider?: EnumChannelProviderFilter<"ChannelUpdateDedup"> | $Enums.ChannelProvider
+    externalUpdateId?: StringFilter<"ChannelUpdateDedup"> | string
+    createdAt?: DateTimeFilter<"ChannelUpdateDedup"> | Date | string
+  }, "id" | "provider_externalUpdateId">
+
+  export type ChannelUpdateDedupOrderByWithAggregationInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    externalUpdateId?: SortOrder
+    createdAt?: SortOrder
+    _count?: ChannelUpdateDedupCountOrderByAggregateInput
+    _max?: ChannelUpdateDedupMaxOrderByAggregateInput
+    _min?: ChannelUpdateDedupMinOrderByAggregateInput
+  }
+
+  export type ChannelUpdateDedupScalarWhereWithAggregatesInput = {
+    AND?: ChannelUpdateDedupScalarWhereWithAggregatesInput | ChannelUpdateDedupScalarWhereWithAggregatesInput[]
+    OR?: ChannelUpdateDedupScalarWhereWithAggregatesInput[]
+    NOT?: ChannelUpdateDedupScalarWhereWithAggregatesInput | ChannelUpdateDedupScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ChannelUpdateDedup"> | string
+    provider?: EnumChannelProviderWithAggregatesFilter<"ChannelUpdateDedup"> | $Enums.ChannelProvider
+    externalUpdateId?: StringWithAggregatesFilter<"ChannelUpdateDedup"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"ChannelUpdateDedup"> | Date | string
+  }
+
   export type BudgetWhereInput = {
     AND?: BudgetWhereInput | BudgetWhereInput[]
     OR?: BudgetWhereInput[]
@@ -29955,6 +33868,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -29977,6 +33892,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -29999,6 +33916,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -30021,6 +33940,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -30065,6 +33986,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutConversationInput
     clarificationRequests?: ClarificationRequestCreateNestedManyWithoutConversationInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationUncheckedCreateInput = {
@@ -30082,6 +34004,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutConversationInput
     clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutConversationInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationUpdateInput = {
@@ -30099,6 +34022,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUpdateManyWithoutConversationNestedInput
     clarificationRequests?: ClarificationRequestUpdateManyWithoutConversationNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantConversationUncheckedUpdateInput = {
@@ -30116,6 +34040,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutConversationNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutConversationNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantConversationCreateManyInput = {
@@ -32002,6 +35927,213 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ChannelLinkTokenCreateInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    tokenDigest: string
+    expiresAt: Date | string
+    consumedAt?: Date | string | null
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutChannelLinkTokensInput
+  }
+
+  export type ChannelLinkTokenUncheckedCreateInput = {
+    id?: string
+    userId: string
+    provider: $Enums.ChannelProvider
+    tokenDigest: string
+    expiresAt: Date | string
+    consumedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ChannelLinkTokenUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    tokenDigest?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutChannelLinkTokensNestedInput
+  }
+
+  export type ChannelLinkTokenUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    tokenDigest?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelLinkTokenCreateManyInput = {
+    id?: string
+    userId: string
+    provider: $Enums.ChannelProvider
+    tokenDigest: string
+    expiresAt: Date | string
+    consumedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ChannelLinkTokenUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    tokenDigest?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelLinkTokenUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    tokenDigest?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelConnectionCreateInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    externalUserId: string
+    externalChatId: string
+    status?: $Enums.ChannelConnectionStatus
+    linkedAt?: Date | string
+    revokedAt?: Date | string | null
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutChannelConnectionsInput
+    conversation?: AssistantConversationCreateNestedOneWithoutChannelConnectionsInput
+  }
+
+  export type ChannelConnectionUncheckedCreateInput = {
+    id?: string
+    userId: string
+    provider: $Enums.ChannelProvider
+    externalUserId: string
+    externalChatId: string
+    conversationId?: string | null
+    status?: $Enums.ChannelConnectionStatus
+    linkedAt?: Date | string
+    revokedAt?: Date | string | null
+    updatedAt?: Date | string
+  }
+
+  export type ChannelConnectionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUserId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelConnectionStatusFieldUpdateOperationsInput | $Enums.ChannelConnectionStatus
+    linkedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutChannelConnectionsNestedInput
+    conversation?: AssistantConversationUpdateOneWithoutChannelConnectionsNestedInput
+  }
+
+  export type ChannelConnectionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUserId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumChannelConnectionStatusFieldUpdateOperationsInput | $Enums.ChannelConnectionStatus
+    linkedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelConnectionCreateManyInput = {
+    id?: string
+    userId: string
+    provider: $Enums.ChannelProvider
+    externalUserId: string
+    externalChatId: string
+    conversationId?: string | null
+    status?: $Enums.ChannelConnectionStatus
+    linkedAt?: Date | string
+    revokedAt?: Date | string | null
+    updatedAt?: Date | string
+  }
+
+  export type ChannelConnectionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUserId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelConnectionStatusFieldUpdateOperationsInput | $Enums.ChannelConnectionStatus
+    linkedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelConnectionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUserId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumChannelConnectionStatusFieldUpdateOperationsInput | $Enums.ChannelConnectionStatus
+    linkedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelUpdateDedupCreateInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    externalUpdateId: string
+    createdAt?: Date | string
+  }
+
+  export type ChannelUpdateDedupUncheckedCreateInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    externalUpdateId: string
+    createdAt?: Date | string
+  }
+
+  export type ChannelUpdateDedupUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUpdateId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelUpdateDedupUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUpdateId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelUpdateDedupCreateManyInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    externalUpdateId: string
+    createdAt?: Date | string
+  }
+
+  export type ChannelUpdateDedupUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUpdateId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelUpdateDedupUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUpdateId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type BudgetCreateInput = {
     id?: string
     amount: Decimal | DecimalJsLike | number | string
@@ -32189,6 +36321,18 @@ export namespace Prisma {
     none?: ClarificationRequestWhereInput
   }
 
+  export type ChannelLinkTokenListRelationFilter = {
+    every?: ChannelLinkTokenWhereInput
+    some?: ChannelLinkTokenWhereInput
+    none?: ChannelLinkTokenWhereInput
+  }
+
+  export type ChannelConnectionListRelationFilter = {
+    every?: ChannelConnectionWhereInput
+    some?: ChannelConnectionWhereInput
+    none?: ChannelConnectionWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -32243,6 +36387,14 @@ export namespace Prisma {
   }
 
   export type ClarificationRequestOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ChannelLinkTokenOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ChannelConnectionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -33940,6 +38092,155 @@ export namespace Prisma {
     _max?: NestedEnumSavingGoalStatusFilter<$PrismaModel>
   }
 
+  export type EnumChannelProviderFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChannelProvider | EnumChannelProviderFieldRefInput<$PrismaModel>
+    in?: $Enums.ChannelProvider[] | ListEnumChannelProviderFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChannelProvider[] | ListEnumChannelProviderFieldRefInput<$PrismaModel>
+    not?: NestedEnumChannelProviderFilter<$PrismaModel> | $Enums.ChannelProvider
+  }
+
+  export type ChannelLinkTokenProviderTokenDigestCompoundUniqueInput = {
+    provider: $Enums.ChannelProvider
+    tokenDigest: string
+  }
+
+  export type ChannelLinkTokenCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    provider?: SortOrder
+    tokenDigest?: SortOrder
+    expiresAt?: SortOrder
+    consumedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ChannelLinkTokenMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    provider?: SortOrder
+    tokenDigest?: SortOrder
+    expiresAt?: SortOrder
+    consumedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ChannelLinkTokenMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    provider?: SortOrder
+    tokenDigest?: SortOrder
+    expiresAt?: SortOrder
+    consumedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumChannelProviderWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChannelProvider | EnumChannelProviderFieldRefInput<$PrismaModel>
+    in?: $Enums.ChannelProvider[] | ListEnumChannelProviderFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChannelProvider[] | ListEnumChannelProviderFieldRefInput<$PrismaModel>
+    not?: NestedEnumChannelProviderWithAggregatesFilter<$PrismaModel> | $Enums.ChannelProvider
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumChannelProviderFilter<$PrismaModel>
+    _max?: NestedEnumChannelProviderFilter<$PrismaModel>
+  }
+
+  export type EnumChannelConnectionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChannelConnectionStatus | EnumChannelConnectionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ChannelConnectionStatus[] | ListEnumChannelConnectionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChannelConnectionStatus[] | ListEnumChannelConnectionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumChannelConnectionStatusFilter<$PrismaModel> | $Enums.ChannelConnectionStatus
+  }
+
+  export type AssistantConversationNullableScalarRelationFilter = {
+    is?: AssistantConversationWhereInput | null
+    isNot?: AssistantConversationWhereInput | null
+  }
+
+  export type ChannelConnectionProviderExternalUserIdCompoundUniqueInput = {
+    provider: $Enums.ChannelProvider
+    externalUserId: string
+  }
+
+  export type ChannelConnectionUserIdProviderCompoundUniqueInput = {
+    userId: string
+    provider: $Enums.ChannelProvider
+  }
+
+  export type ChannelConnectionCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    provider?: SortOrder
+    externalUserId?: SortOrder
+    externalChatId?: SortOrder
+    conversationId?: SortOrder
+    status?: SortOrder
+    linkedAt?: SortOrder
+    revokedAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ChannelConnectionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    provider?: SortOrder
+    externalUserId?: SortOrder
+    externalChatId?: SortOrder
+    conversationId?: SortOrder
+    status?: SortOrder
+    linkedAt?: SortOrder
+    revokedAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ChannelConnectionMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    provider?: SortOrder
+    externalUserId?: SortOrder
+    externalChatId?: SortOrder
+    conversationId?: SortOrder
+    status?: SortOrder
+    linkedAt?: SortOrder
+    revokedAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumChannelConnectionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChannelConnectionStatus | EnumChannelConnectionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ChannelConnectionStatus[] | ListEnumChannelConnectionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChannelConnectionStatus[] | ListEnumChannelConnectionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumChannelConnectionStatusWithAggregatesFilter<$PrismaModel> | $Enums.ChannelConnectionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumChannelConnectionStatusFilter<$PrismaModel>
+    _max?: NestedEnumChannelConnectionStatusFilter<$PrismaModel>
+  }
+
+  export type ChannelUpdateDedupProviderExternalUpdateIdCompoundUniqueInput = {
+    provider: $Enums.ChannelProvider
+    externalUpdateId: string
+  }
+
+  export type ChannelUpdateDedupCountOrderByAggregateInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    externalUpdateId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ChannelUpdateDedupMaxOrderByAggregateInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    externalUpdateId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ChannelUpdateDedupMinOrderByAggregateInput = {
+    id?: SortOrder
+    provider?: SortOrder
+    externalUpdateId?: SortOrder
+    createdAt?: SortOrder
+  }
+
   export type BudgetUserIdCategoryIdCompoundUniqueInput = {
     userId: string
     categoryId: string
@@ -34074,6 +38375,20 @@ export namespace Prisma {
     connect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
   }
 
+  export type ChannelLinkTokenCreateNestedManyWithoutUserInput = {
+    create?: XOR<ChannelLinkTokenCreateWithoutUserInput, ChannelLinkTokenUncheckedCreateWithoutUserInput> | ChannelLinkTokenCreateWithoutUserInput[] | ChannelLinkTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ChannelLinkTokenCreateOrConnectWithoutUserInput | ChannelLinkTokenCreateOrConnectWithoutUserInput[]
+    createMany?: ChannelLinkTokenCreateManyUserInputEnvelope
+    connect?: ChannelLinkTokenWhereUniqueInput | ChannelLinkTokenWhereUniqueInput[]
+  }
+
+  export type ChannelConnectionCreateNestedManyWithoutUserInput = {
+    create?: XOR<ChannelConnectionCreateWithoutUserInput, ChannelConnectionUncheckedCreateWithoutUserInput> | ChannelConnectionCreateWithoutUserInput[] | ChannelConnectionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ChannelConnectionCreateOrConnectWithoutUserInput | ChannelConnectionCreateOrConnectWithoutUserInput[]
+    createMany?: ChannelConnectionCreateManyUserInputEnvelope
+    connect?: ChannelConnectionWhereUniqueInput | ChannelConnectionWhereUniqueInput[]
+  }
+
   export type WalletUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<WalletCreateWithoutUserInput, WalletUncheckedCreateWithoutUserInput> | WalletCreateWithoutUserInput[] | WalletUncheckedCreateWithoutUserInput[]
     connectOrCreate?: WalletCreateOrConnectWithoutUserInput | WalletCreateOrConnectWithoutUserInput[]
@@ -34163,6 +38478,20 @@ export namespace Prisma {
     connectOrCreate?: ClarificationRequestCreateOrConnectWithoutUserInput | ClarificationRequestCreateOrConnectWithoutUserInput[]
     createMany?: ClarificationRequestCreateManyUserInputEnvelope
     connect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+  }
+
+  export type ChannelLinkTokenUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ChannelLinkTokenCreateWithoutUserInput, ChannelLinkTokenUncheckedCreateWithoutUserInput> | ChannelLinkTokenCreateWithoutUserInput[] | ChannelLinkTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ChannelLinkTokenCreateOrConnectWithoutUserInput | ChannelLinkTokenCreateOrConnectWithoutUserInput[]
+    createMany?: ChannelLinkTokenCreateManyUserInputEnvelope
+    connect?: ChannelLinkTokenWhereUniqueInput | ChannelLinkTokenWhereUniqueInput[]
+  }
+
+  export type ChannelConnectionUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ChannelConnectionCreateWithoutUserInput, ChannelConnectionUncheckedCreateWithoutUserInput> | ChannelConnectionCreateWithoutUserInput[] | ChannelConnectionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ChannelConnectionCreateOrConnectWithoutUserInput | ChannelConnectionCreateOrConnectWithoutUserInput[]
+    createMany?: ChannelConnectionCreateManyUserInputEnvelope
+    connect?: ChannelConnectionWhereUniqueInput | ChannelConnectionWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -34359,6 +38688,34 @@ export namespace Prisma {
     deleteMany?: ClarificationRequestScalarWhereInput | ClarificationRequestScalarWhereInput[]
   }
 
+  export type ChannelLinkTokenUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ChannelLinkTokenCreateWithoutUserInput, ChannelLinkTokenUncheckedCreateWithoutUserInput> | ChannelLinkTokenCreateWithoutUserInput[] | ChannelLinkTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ChannelLinkTokenCreateOrConnectWithoutUserInput | ChannelLinkTokenCreateOrConnectWithoutUserInput[]
+    upsert?: ChannelLinkTokenUpsertWithWhereUniqueWithoutUserInput | ChannelLinkTokenUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ChannelLinkTokenCreateManyUserInputEnvelope
+    set?: ChannelLinkTokenWhereUniqueInput | ChannelLinkTokenWhereUniqueInput[]
+    disconnect?: ChannelLinkTokenWhereUniqueInput | ChannelLinkTokenWhereUniqueInput[]
+    delete?: ChannelLinkTokenWhereUniqueInput | ChannelLinkTokenWhereUniqueInput[]
+    connect?: ChannelLinkTokenWhereUniqueInput | ChannelLinkTokenWhereUniqueInput[]
+    update?: ChannelLinkTokenUpdateWithWhereUniqueWithoutUserInput | ChannelLinkTokenUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ChannelLinkTokenUpdateManyWithWhereWithoutUserInput | ChannelLinkTokenUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ChannelLinkTokenScalarWhereInput | ChannelLinkTokenScalarWhereInput[]
+  }
+
+  export type ChannelConnectionUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ChannelConnectionCreateWithoutUserInput, ChannelConnectionUncheckedCreateWithoutUserInput> | ChannelConnectionCreateWithoutUserInput[] | ChannelConnectionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ChannelConnectionCreateOrConnectWithoutUserInput | ChannelConnectionCreateOrConnectWithoutUserInput[]
+    upsert?: ChannelConnectionUpsertWithWhereUniqueWithoutUserInput | ChannelConnectionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ChannelConnectionCreateManyUserInputEnvelope
+    set?: ChannelConnectionWhereUniqueInput | ChannelConnectionWhereUniqueInput[]
+    disconnect?: ChannelConnectionWhereUniqueInput | ChannelConnectionWhereUniqueInput[]
+    delete?: ChannelConnectionWhereUniqueInput | ChannelConnectionWhereUniqueInput[]
+    connect?: ChannelConnectionWhereUniqueInput | ChannelConnectionWhereUniqueInput[]
+    update?: ChannelConnectionUpdateWithWhereUniqueWithoutUserInput | ChannelConnectionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ChannelConnectionUpdateManyWithWhereWithoutUserInput | ChannelConnectionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ChannelConnectionScalarWhereInput | ChannelConnectionScalarWhereInput[]
+  }
+
   export type WalletUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<WalletCreateWithoutUserInput, WalletUncheckedCreateWithoutUserInput> | WalletCreateWithoutUserInput[] | WalletUncheckedCreateWithoutUserInput[]
     connectOrCreate?: WalletCreateOrConnectWithoutUserInput | WalletCreateOrConnectWithoutUserInput[]
@@ -34541,6 +38898,34 @@ export namespace Prisma {
     deleteMany?: ClarificationRequestScalarWhereInput | ClarificationRequestScalarWhereInput[]
   }
 
+  export type ChannelLinkTokenUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ChannelLinkTokenCreateWithoutUserInput, ChannelLinkTokenUncheckedCreateWithoutUserInput> | ChannelLinkTokenCreateWithoutUserInput[] | ChannelLinkTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ChannelLinkTokenCreateOrConnectWithoutUserInput | ChannelLinkTokenCreateOrConnectWithoutUserInput[]
+    upsert?: ChannelLinkTokenUpsertWithWhereUniqueWithoutUserInput | ChannelLinkTokenUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ChannelLinkTokenCreateManyUserInputEnvelope
+    set?: ChannelLinkTokenWhereUniqueInput | ChannelLinkTokenWhereUniqueInput[]
+    disconnect?: ChannelLinkTokenWhereUniqueInput | ChannelLinkTokenWhereUniqueInput[]
+    delete?: ChannelLinkTokenWhereUniqueInput | ChannelLinkTokenWhereUniqueInput[]
+    connect?: ChannelLinkTokenWhereUniqueInput | ChannelLinkTokenWhereUniqueInput[]
+    update?: ChannelLinkTokenUpdateWithWhereUniqueWithoutUserInput | ChannelLinkTokenUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ChannelLinkTokenUpdateManyWithWhereWithoutUserInput | ChannelLinkTokenUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ChannelLinkTokenScalarWhereInput | ChannelLinkTokenScalarWhereInput[]
+  }
+
+  export type ChannelConnectionUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ChannelConnectionCreateWithoutUserInput, ChannelConnectionUncheckedCreateWithoutUserInput> | ChannelConnectionCreateWithoutUserInput[] | ChannelConnectionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ChannelConnectionCreateOrConnectWithoutUserInput | ChannelConnectionCreateOrConnectWithoutUserInput[]
+    upsert?: ChannelConnectionUpsertWithWhereUniqueWithoutUserInput | ChannelConnectionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ChannelConnectionCreateManyUserInputEnvelope
+    set?: ChannelConnectionWhereUniqueInput | ChannelConnectionWhereUniqueInput[]
+    disconnect?: ChannelConnectionWhereUniqueInput | ChannelConnectionWhereUniqueInput[]
+    delete?: ChannelConnectionWhereUniqueInput | ChannelConnectionWhereUniqueInput[]
+    connect?: ChannelConnectionWhereUniqueInput | ChannelConnectionWhereUniqueInput[]
+    update?: ChannelConnectionUpdateWithWhereUniqueWithoutUserInput | ChannelConnectionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ChannelConnectionUpdateManyWithWhereWithoutUserInput | ChannelConnectionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ChannelConnectionScalarWhereInput | ChannelConnectionScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutAssistantConversationsInput = {
     create?: XOR<UserCreateWithoutAssistantConversationsInput, UserUncheckedCreateWithoutAssistantConversationsInput>
     connectOrCreate?: UserCreateOrConnectWithoutAssistantConversationsInput
@@ -34589,6 +38974,13 @@ export namespace Prisma {
     connect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
   }
 
+  export type ChannelConnectionCreateNestedManyWithoutConversationInput = {
+    create?: XOR<ChannelConnectionCreateWithoutConversationInput, ChannelConnectionUncheckedCreateWithoutConversationInput> | ChannelConnectionCreateWithoutConversationInput[] | ChannelConnectionUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ChannelConnectionCreateOrConnectWithoutConversationInput | ChannelConnectionCreateOrConnectWithoutConversationInput[]
+    createMany?: ChannelConnectionCreateManyConversationInputEnvelope
+    connect?: ChannelConnectionWhereUniqueInput | ChannelConnectionWhereUniqueInput[]
+  }
+
   export type AssistantTurnUncheckedCreateNestedManyWithoutConversationInput = {
     create?: XOR<AssistantTurnCreateWithoutConversationInput, AssistantTurnUncheckedCreateWithoutConversationInput> | AssistantTurnCreateWithoutConversationInput[] | AssistantTurnUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: AssistantTurnCreateOrConnectWithoutConversationInput | AssistantTurnCreateOrConnectWithoutConversationInput[]
@@ -34629,6 +39021,13 @@ export namespace Prisma {
     connectOrCreate?: ClarificationRequestCreateOrConnectWithoutConversationInput | ClarificationRequestCreateOrConnectWithoutConversationInput[]
     createMany?: ClarificationRequestCreateManyConversationInputEnvelope
     connect?: ClarificationRequestWhereUniqueInput | ClarificationRequestWhereUniqueInput[]
+  }
+
+  export type ChannelConnectionUncheckedCreateNestedManyWithoutConversationInput = {
+    create?: XOR<ChannelConnectionCreateWithoutConversationInput, ChannelConnectionUncheckedCreateWithoutConversationInput> | ChannelConnectionCreateWithoutConversationInput[] | ChannelConnectionUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ChannelConnectionCreateOrConnectWithoutConversationInput | ChannelConnectionCreateOrConnectWithoutConversationInput[]
+    createMany?: ChannelConnectionCreateManyConversationInputEnvelope
+    connect?: ChannelConnectionWhereUniqueInput | ChannelConnectionWhereUniqueInput[]
   }
 
   export type EnumAssistantConversationStatusFieldUpdateOperationsInput = {
@@ -34731,6 +39130,20 @@ export namespace Prisma {
     deleteMany?: ClarificationRequestScalarWhereInput | ClarificationRequestScalarWhereInput[]
   }
 
+  export type ChannelConnectionUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<ChannelConnectionCreateWithoutConversationInput, ChannelConnectionUncheckedCreateWithoutConversationInput> | ChannelConnectionCreateWithoutConversationInput[] | ChannelConnectionUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ChannelConnectionCreateOrConnectWithoutConversationInput | ChannelConnectionCreateOrConnectWithoutConversationInput[]
+    upsert?: ChannelConnectionUpsertWithWhereUniqueWithoutConversationInput | ChannelConnectionUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: ChannelConnectionCreateManyConversationInputEnvelope
+    set?: ChannelConnectionWhereUniqueInput | ChannelConnectionWhereUniqueInput[]
+    disconnect?: ChannelConnectionWhereUniqueInput | ChannelConnectionWhereUniqueInput[]
+    delete?: ChannelConnectionWhereUniqueInput | ChannelConnectionWhereUniqueInput[]
+    connect?: ChannelConnectionWhereUniqueInput | ChannelConnectionWhereUniqueInput[]
+    update?: ChannelConnectionUpdateWithWhereUniqueWithoutConversationInput | ChannelConnectionUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: ChannelConnectionUpdateManyWithWhereWithoutConversationInput | ChannelConnectionUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: ChannelConnectionScalarWhereInput | ChannelConnectionScalarWhereInput[]
+  }
+
   export type AssistantTurnUncheckedUpdateManyWithoutConversationNestedInput = {
     create?: XOR<AssistantTurnCreateWithoutConversationInput, AssistantTurnUncheckedCreateWithoutConversationInput> | AssistantTurnCreateWithoutConversationInput[] | AssistantTurnUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: AssistantTurnCreateOrConnectWithoutConversationInput | AssistantTurnCreateOrConnectWithoutConversationInput[]
@@ -34813,6 +39226,20 @@ export namespace Prisma {
     update?: ClarificationRequestUpdateWithWhereUniqueWithoutConversationInput | ClarificationRequestUpdateWithWhereUniqueWithoutConversationInput[]
     updateMany?: ClarificationRequestUpdateManyWithWhereWithoutConversationInput | ClarificationRequestUpdateManyWithWhereWithoutConversationInput[]
     deleteMany?: ClarificationRequestScalarWhereInput | ClarificationRequestScalarWhereInput[]
+  }
+
+  export type ChannelConnectionUncheckedUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<ChannelConnectionCreateWithoutConversationInput, ChannelConnectionUncheckedCreateWithoutConversationInput> | ChannelConnectionCreateWithoutConversationInput[] | ChannelConnectionUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: ChannelConnectionCreateOrConnectWithoutConversationInput | ChannelConnectionCreateOrConnectWithoutConversationInput[]
+    upsert?: ChannelConnectionUpsertWithWhereUniqueWithoutConversationInput | ChannelConnectionUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: ChannelConnectionCreateManyConversationInputEnvelope
+    set?: ChannelConnectionWhereUniqueInput | ChannelConnectionWhereUniqueInput[]
+    disconnect?: ChannelConnectionWhereUniqueInput | ChannelConnectionWhereUniqueInput[]
+    delete?: ChannelConnectionWhereUniqueInput | ChannelConnectionWhereUniqueInput[]
+    connect?: ChannelConnectionWhereUniqueInput | ChannelConnectionWhereUniqueInput[]
+    update?: ChannelConnectionUpdateWithWhereUniqueWithoutConversationInput | ChannelConnectionUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: ChannelConnectionUpdateManyWithWhereWithoutConversationInput | ChannelConnectionUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: ChannelConnectionScalarWhereInput | ChannelConnectionScalarWhereInput[]
   }
 
   export type AssistantConversationCreateNestedOneWithoutTurnsInput = {
@@ -36419,6 +40846,58 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSavingGoalsInput, UserUpdateWithoutSavingGoalsInput>, UserUncheckedUpdateWithoutSavingGoalsInput>
   }
 
+  export type UserCreateNestedOneWithoutChannelLinkTokensInput = {
+    create?: XOR<UserCreateWithoutChannelLinkTokensInput, UserUncheckedCreateWithoutChannelLinkTokensInput>
+    connectOrCreate?: UserCreateOrConnectWithoutChannelLinkTokensInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumChannelProviderFieldUpdateOperationsInput = {
+    set?: $Enums.ChannelProvider
+  }
+
+  export type UserUpdateOneRequiredWithoutChannelLinkTokensNestedInput = {
+    create?: XOR<UserCreateWithoutChannelLinkTokensInput, UserUncheckedCreateWithoutChannelLinkTokensInput>
+    connectOrCreate?: UserCreateOrConnectWithoutChannelLinkTokensInput
+    upsert?: UserUpsertWithoutChannelLinkTokensInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutChannelLinkTokensInput, UserUpdateWithoutChannelLinkTokensInput>, UserUncheckedUpdateWithoutChannelLinkTokensInput>
+  }
+
+  export type UserCreateNestedOneWithoutChannelConnectionsInput = {
+    create?: XOR<UserCreateWithoutChannelConnectionsInput, UserUncheckedCreateWithoutChannelConnectionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutChannelConnectionsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type AssistantConversationCreateNestedOneWithoutChannelConnectionsInput = {
+    create?: XOR<AssistantConversationCreateWithoutChannelConnectionsInput, AssistantConversationUncheckedCreateWithoutChannelConnectionsInput>
+    connectOrCreate?: AssistantConversationCreateOrConnectWithoutChannelConnectionsInput
+    connect?: AssistantConversationWhereUniqueInput
+  }
+
+  export type EnumChannelConnectionStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ChannelConnectionStatus
+  }
+
+  export type UserUpdateOneRequiredWithoutChannelConnectionsNestedInput = {
+    create?: XOR<UserCreateWithoutChannelConnectionsInput, UserUncheckedCreateWithoutChannelConnectionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutChannelConnectionsInput
+    upsert?: UserUpsertWithoutChannelConnectionsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutChannelConnectionsInput, UserUpdateWithoutChannelConnectionsInput>, UserUncheckedUpdateWithoutChannelConnectionsInput>
+  }
+
+  export type AssistantConversationUpdateOneWithoutChannelConnectionsNestedInput = {
+    create?: XOR<AssistantConversationCreateWithoutChannelConnectionsInput, AssistantConversationUncheckedCreateWithoutChannelConnectionsInput>
+    connectOrCreate?: AssistantConversationCreateOrConnectWithoutChannelConnectionsInput
+    upsert?: AssistantConversationUpsertWithoutChannelConnectionsInput
+    disconnect?: AssistantConversationWhereInput | boolean
+    delete?: AssistantConversationWhereInput | boolean
+    connect?: AssistantConversationWhereUniqueInput
+    update?: XOR<XOR<AssistantConversationUpdateToOneWithWhereWithoutChannelConnectionsInput, AssistantConversationUpdateWithoutChannelConnectionsInput>, AssistantConversationUncheckedUpdateWithoutChannelConnectionsInput>
+  }
+
   export type UserCreateNestedOneWithoutBudgetsInput = {
     create?: XOR<UserCreateWithoutBudgetsInput, UserUncheckedCreateWithoutBudgetsInput>
     connectOrCreate?: UserCreateOrConnectWithoutBudgetsInput
@@ -37037,6 +41516,40 @@ export namespace Prisma {
     _max?: NestedEnumSavingGoalStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumChannelProviderFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChannelProvider | EnumChannelProviderFieldRefInput<$PrismaModel>
+    in?: $Enums.ChannelProvider[] | ListEnumChannelProviderFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChannelProvider[] | ListEnumChannelProviderFieldRefInput<$PrismaModel>
+    not?: NestedEnumChannelProviderFilter<$PrismaModel> | $Enums.ChannelProvider
+  }
+
+  export type NestedEnumChannelProviderWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChannelProvider | EnumChannelProviderFieldRefInput<$PrismaModel>
+    in?: $Enums.ChannelProvider[] | ListEnumChannelProviderFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChannelProvider[] | ListEnumChannelProviderFieldRefInput<$PrismaModel>
+    not?: NestedEnumChannelProviderWithAggregatesFilter<$PrismaModel> | $Enums.ChannelProvider
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumChannelProviderFilter<$PrismaModel>
+    _max?: NestedEnumChannelProviderFilter<$PrismaModel>
+  }
+
+  export type NestedEnumChannelConnectionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChannelConnectionStatus | EnumChannelConnectionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ChannelConnectionStatus[] | ListEnumChannelConnectionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChannelConnectionStatus[] | ListEnumChannelConnectionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumChannelConnectionStatusFilter<$PrismaModel> | $Enums.ChannelConnectionStatus
+  }
+
+  export type NestedEnumChannelConnectionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ChannelConnectionStatus | EnumChannelConnectionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ChannelConnectionStatus[] | ListEnumChannelConnectionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ChannelConnectionStatus[] | ListEnumChannelConnectionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumChannelConnectionStatusWithAggregatesFilter<$PrismaModel> | $Enums.ChannelConnectionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumChannelConnectionStatusFilter<$PrismaModel>
+    _max?: NestedEnumChannelConnectionStatusFilter<$PrismaModel>
+  }
+
   export type WalletCreateWithoutUserInput = {
     id?: string
     name: string
@@ -37393,6 +41906,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutConversationInput
     clarificationRequests?: ClarificationRequestCreateNestedManyWithoutConversationInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationUncheckedCreateWithoutUserInput = {
@@ -37409,6 +41923,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutConversationInput
     clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutConversationInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationCreateOrConnectWithoutUserInput = {
@@ -37606,6 +42121,68 @@ export namespace Prisma {
 
   export type ClarificationRequestCreateManyUserInputEnvelope = {
     data: ClarificationRequestCreateManyUserInput | ClarificationRequestCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ChannelLinkTokenCreateWithoutUserInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    tokenDigest: string
+    expiresAt: Date | string
+    consumedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ChannelLinkTokenUncheckedCreateWithoutUserInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    tokenDigest: string
+    expiresAt: Date | string
+    consumedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ChannelLinkTokenCreateOrConnectWithoutUserInput = {
+    where: ChannelLinkTokenWhereUniqueInput
+    create: XOR<ChannelLinkTokenCreateWithoutUserInput, ChannelLinkTokenUncheckedCreateWithoutUserInput>
+  }
+
+  export type ChannelLinkTokenCreateManyUserInputEnvelope = {
+    data: ChannelLinkTokenCreateManyUserInput | ChannelLinkTokenCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ChannelConnectionCreateWithoutUserInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    externalUserId: string
+    externalChatId: string
+    status?: $Enums.ChannelConnectionStatus
+    linkedAt?: Date | string
+    revokedAt?: Date | string | null
+    updatedAt?: Date | string
+    conversation?: AssistantConversationCreateNestedOneWithoutChannelConnectionsInput
+  }
+
+  export type ChannelConnectionUncheckedCreateWithoutUserInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    externalUserId: string
+    externalChatId: string
+    conversationId?: string | null
+    status?: $Enums.ChannelConnectionStatus
+    linkedAt?: Date | string
+    revokedAt?: Date | string | null
+    updatedAt?: Date | string
+  }
+
+  export type ChannelConnectionCreateOrConnectWithoutUserInput = {
+    where: ChannelConnectionWhereUniqueInput
+    create: XOR<ChannelConnectionCreateWithoutUserInput, ChannelConnectionUncheckedCreateWithoutUserInput>
+  }
+
+  export type ChannelConnectionCreateManyUserInputEnvelope = {
+    data: ChannelConnectionCreateManyUserInput | ChannelConnectionCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -38067,6 +42644,67 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"ClarificationRequest"> | Date | string
   }
 
+  export type ChannelLinkTokenUpsertWithWhereUniqueWithoutUserInput = {
+    where: ChannelLinkTokenWhereUniqueInput
+    update: XOR<ChannelLinkTokenUpdateWithoutUserInput, ChannelLinkTokenUncheckedUpdateWithoutUserInput>
+    create: XOR<ChannelLinkTokenCreateWithoutUserInput, ChannelLinkTokenUncheckedCreateWithoutUserInput>
+  }
+
+  export type ChannelLinkTokenUpdateWithWhereUniqueWithoutUserInput = {
+    where: ChannelLinkTokenWhereUniqueInput
+    data: XOR<ChannelLinkTokenUpdateWithoutUserInput, ChannelLinkTokenUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ChannelLinkTokenUpdateManyWithWhereWithoutUserInput = {
+    where: ChannelLinkTokenScalarWhereInput
+    data: XOR<ChannelLinkTokenUpdateManyMutationInput, ChannelLinkTokenUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ChannelLinkTokenScalarWhereInput = {
+    AND?: ChannelLinkTokenScalarWhereInput | ChannelLinkTokenScalarWhereInput[]
+    OR?: ChannelLinkTokenScalarWhereInput[]
+    NOT?: ChannelLinkTokenScalarWhereInput | ChannelLinkTokenScalarWhereInput[]
+    id?: StringFilter<"ChannelLinkToken"> | string
+    userId?: StringFilter<"ChannelLinkToken"> | string
+    provider?: EnumChannelProviderFilter<"ChannelLinkToken"> | $Enums.ChannelProvider
+    tokenDigest?: StringFilter<"ChannelLinkToken"> | string
+    expiresAt?: DateTimeFilter<"ChannelLinkToken"> | Date | string
+    consumedAt?: DateTimeNullableFilter<"ChannelLinkToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"ChannelLinkToken"> | Date | string
+  }
+
+  export type ChannelConnectionUpsertWithWhereUniqueWithoutUserInput = {
+    where: ChannelConnectionWhereUniqueInput
+    update: XOR<ChannelConnectionUpdateWithoutUserInput, ChannelConnectionUncheckedUpdateWithoutUserInput>
+    create: XOR<ChannelConnectionCreateWithoutUserInput, ChannelConnectionUncheckedCreateWithoutUserInput>
+  }
+
+  export type ChannelConnectionUpdateWithWhereUniqueWithoutUserInput = {
+    where: ChannelConnectionWhereUniqueInput
+    data: XOR<ChannelConnectionUpdateWithoutUserInput, ChannelConnectionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ChannelConnectionUpdateManyWithWhereWithoutUserInput = {
+    where: ChannelConnectionScalarWhereInput
+    data: XOR<ChannelConnectionUpdateManyMutationInput, ChannelConnectionUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ChannelConnectionScalarWhereInput = {
+    AND?: ChannelConnectionScalarWhereInput | ChannelConnectionScalarWhereInput[]
+    OR?: ChannelConnectionScalarWhereInput[]
+    NOT?: ChannelConnectionScalarWhereInput | ChannelConnectionScalarWhereInput[]
+    id?: StringFilter<"ChannelConnection"> | string
+    userId?: StringFilter<"ChannelConnection"> | string
+    provider?: EnumChannelProviderFilter<"ChannelConnection"> | $Enums.ChannelProvider
+    externalUserId?: StringFilter<"ChannelConnection"> | string
+    externalChatId?: StringFilter<"ChannelConnection"> | string
+    conversationId?: StringNullableFilter<"ChannelConnection"> | string | null
+    status?: EnumChannelConnectionStatusFilter<"ChannelConnection"> | $Enums.ChannelConnectionStatus
+    linkedAt?: DateTimeFilter<"ChannelConnection"> | Date | string
+    revokedAt?: DateTimeNullableFilter<"ChannelConnection"> | Date | string | null
+    updatedAt?: DateTimeFilter<"ChannelConnection"> | Date | string
+  }
+
   export type UserCreateWithoutAssistantConversationsInput = {
     id?: string
     email: string
@@ -38086,6 +42724,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAssistantConversationsInput = {
@@ -38107,6 +42747,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAssistantConversationsInput = {
@@ -38396,6 +43038,40 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ChannelConnectionCreateWithoutConversationInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    externalUserId: string
+    externalChatId: string
+    status?: $Enums.ChannelConnectionStatus
+    linkedAt?: Date | string
+    revokedAt?: Date | string | null
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutChannelConnectionsInput
+  }
+
+  export type ChannelConnectionUncheckedCreateWithoutConversationInput = {
+    id?: string
+    userId: string
+    provider: $Enums.ChannelProvider
+    externalUserId: string
+    externalChatId: string
+    status?: $Enums.ChannelConnectionStatus
+    linkedAt?: Date | string
+    revokedAt?: Date | string | null
+    updatedAt?: Date | string
+  }
+
+  export type ChannelConnectionCreateOrConnectWithoutConversationInput = {
+    where: ChannelConnectionWhereUniqueInput
+    create: XOR<ChannelConnectionCreateWithoutConversationInput, ChannelConnectionUncheckedCreateWithoutConversationInput>
+  }
+
+  export type ChannelConnectionCreateManyConversationInputEnvelope = {
+    data: ChannelConnectionCreateManyConversationInput | ChannelConnectionCreateManyConversationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutAssistantConversationsInput = {
     update: XOR<UserUpdateWithoutAssistantConversationsInput, UserUncheckedUpdateWithoutAssistantConversationsInput>
     create: XOR<UserCreateWithoutAssistantConversationsInput, UserUncheckedCreateWithoutAssistantConversationsInput>
@@ -38426,6 +43102,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssistantConversationsInput = {
@@ -38447,6 +43125,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AssistantTurnUpsertWithWhereUniqueWithoutConversationInput = {
@@ -38597,6 +43277,22 @@ export namespace Prisma {
     data: XOR<ClarificationRequestUpdateManyMutationInput, ClarificationRequestUncheckedUpdateManyWithoutConversationInput>
   }
 
+  export type ChannelConnectionUpsertWithWhereUniqueWithoutConversationInput = {
+    where: ChannelConnectionWhereUniqueInput
+    update: XOR<ChannelConnectionUpdateWithoutConversationInput, ChannelConnectionUncheckedUpdateWithoutConversationInput>
+    create: XOR<ChannelConnectionCreateWithoutConversationInput, ChannelConnectionUncheckedCreateWithoutConversationInput>
+  }
+
+  export type ChannelConnectionUpdateWithWhereUniqueWithoutConversationInput = {
+    where: ChannelConnectionWhereUniqueInput
+    data: XOR<ChannelConnectionUpdateWithoutConversationInput, ChannelConnectionUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type ChannelConnectionUpdateManyWithWhereWithoutConversationInput = {
+    where: ChannelConnectionScalarWhereInput
+    data: XOR<ChannelConnectionUpdateManyMutationInput, ChannelConnectionUncheckedUpdateManyWithoutConversationInput>
+  }
+
   export type AssistantConversationCreateWithoutTurnsInput = {
     id?: string
     status?: $Enums.AssistantConversationStatus
@@ -38611,6 +43307,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutConversationInput
     clarificationRequests?: ClarificationRequestCreateNestedManyWithoutConversationInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationUncheckedCreateWithoutTurnsInput = {
@@ -38627,6 +43324,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutConversationInput
     clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutConversationInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationCreateOrConnectWithoutTurnsInput = {
@@ -38895,6 +43593,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUpdateManyWithoutConversationNestedInput
     clarificationRequests?: ClarificationRequestUpdateManyWithoutConversationNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantConversationUncheckedUpdateWithoutTurnsInput = {
@@ -38911,6 +43610,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutConversationNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutConversationNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantMessageUpsertWithWhereUniqueWithoutTurnInput = {
@@ -39007,6 +43707,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutConversationInput
     clarificationRequests?: ClarificationRequestCreateNestedManyWithoutConversationInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationUncheckedCreateWithoutMessagesInput = {
@@ -39023,6 +43724,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutConversationInput
     clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutConversationInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationCreateOrConnectWithoutMessagesInput = {
@@ -39096,6 +43798,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUpdateManyWithoutConversationNestedInput
     clarificationRequests?: ClarificationRequestUpdateManyWithoutConversationNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantConversationUncheckedUpdateWithoutMessagesInput = {
@@ -39112,6 +43815,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutConversationNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutConversationNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantTurnUpsertWithoutMessagesInput = {
@@ -39180,6 +43884,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAssistantFinancialDraftsInput = {
@@ -39201,6 +43907,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAssistantFinancialDraftsInput = {
@@ -39222,6 +43930,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutConversationInput
     clarificationRequests?: ClarificationRequestCreateNestedManyWithoutConversationInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationUncheckedCreateWithoutFinancialDraftsInput = {
@@ -39238,6 +43947,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUncheckedCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutConversationInput
     clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutConversationInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationCreateOrConnectWithoutFinancialDraftsInput = {
@@ -39428,6 +44138,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssistantFinancialDraftsInput = {
@@ -39449,6 +44161,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AssistantConversationUpsertWithoutFinancialDraftsInput = {
@@ -39476,6 +44190,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUpdateManyWithoutConversationNestedInput
     clarificationRequests?: ClarificationRequestUpdateManyWithoutConversationNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantConversationUncheckedUpdateWithoutFinancialDraftsInput = {
@@ -39492,6 +44207,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUncheckedUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutConversationNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutConversationNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantTurnUpsertWithoutFinancialDraftsInput = {
@@ -39672,6 +44388,8 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAssistantIdempotencyRecordsInput = {
@@ -39693,6 +44411,8 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAssistantIdempotencyRecordsInput = {
@@ -39822,6 +44542,8 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssistantIdempotencyRecordsInput = {
@@ -39843,6 +44565,8 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AssistantFinancialDraftUpsertWithoutIdempotencyRecordsInput = {
@@ -39963,6 +44687,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutConversationInput
     clarificationRequests?: ClarificationRequestCreateNestedManyWithoutConversationInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationUncheckedCreateWithoutToolExecutionsInput = {
@@ -39979,6 +44704,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutConversationInput
     clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutConversationInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationCreateOrConnectWithoutToolExecutionsInput = {
@@ -40103,6 +44829,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUpdateManyWithoutConversationNestedInput
     clarificationRequests?: ClarificationRequestUpdateManyWithoutConversationNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantConversationUncheckedUpdateWithoutToolExecutionsInput = {
@@ -40119,6 +44846,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutConversationNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutConversationNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantTurnUpsertWithoutToolExecutionsInput = {
@@ -40244,6 +44972,8 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAssistantProviderExecutionsInput = {
@@ -40265,6 +44995,8 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAssistantProviderExecutionsInput = {
@@ -40286,6 +45018,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionCreateNestedManyWithoutConversationInput
     financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutConversationInput
     clarificationRequests?: ClarificationRequestCreateNestedManyWithoutConversationInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationUncheckedCreateWithoutProviderExecutionsInput = {
@@ -40302,6 +45035,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUncheckedCreateNestedManyWithoutConversationInput
     financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutConversationInput
     clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutConversationInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationCreateOrConnectWithoutProviderExecutionsInput = {
@@ -40380,6 +45114,8 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssistantProviderExecutionsInput = {
@@ -40401,6 +45137,8 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AssistantConversationUpsertWithoutProviderExecutionsInput = {
@@ -40428,6 +45166,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUpdateManyWithoutConversationNestedInput
     financialDrafts?: AssistantFinancialDraftUpdateManyWithoutConversationNestedInput
     clarificationRequests?: ClarificationRequestUpdateManyWithoutConversationNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantConversationUncheckedUpdateWithoutProviderExecutionsInput = {
@@ -40444,6 +45183,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUncheckedUpdateManyWithoutConversationNestedInput
     financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutConversationNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutConversationNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantTurnUpsertWithoutProviderExecutionsInput = {
@@ -40512,6 +45252,8 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutClarificationRequestsInput = {
@@ -40533,6 +45275,8 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutUserInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutClarificationRequestsInput = {
@@ -40554,6 +45298,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionCreateNestedManyWithoutConversationInput
     financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutConversationInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationUncheckedCreateWithoutClarificationRequestsInput = {
@@ -40570,6 +45315,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUncheckedCreateNestedManyWithoutConversationInput
     financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutConversationInput
     providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutConversationInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutConversationInput
   }
 
   export type AssistantConversationCreateOrConnectWithoutClarificationRequestsInput = {
@@ -40775,6 +45521,8 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClarificationRequestsInput = {
@@ -40796,6 +45544,8 @@ export namespace Prisma {
     assistantFinancialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutUserNestedInput
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AssistantConversationUpsertWithoutClarificationRequestsInput = {
@@ -40823,6 +45573,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUpdateManyWithoutConversationNestedInput
     financialDrafts?: AssistantFinancialDraftUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUpdateManyWithoutConversationNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantConversationUncheckedUpdateWithoutClarificationRequestsInput = {
@@ -40839,6 +45590,7 @@ export namespace Prisma {
     toolExecutions?: AssistantToolExecutionUncheckedUpdateManyWithoutConversationNestedInput
     financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutConversationNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantTurnUpsertWithoutClarificationRequestsInput = {
@@ -41105,6 +45857,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutWalletsInput = {
@@ -41126,6 +45880,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutWalletsInput = {
@@ -41367,6 +46123,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWalletsInput = {
@@ -41388,6 +46146,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TransactionUpsertWithWhereUniqueWithoutWalletInput = {
@@ -41473,6 +46233,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCategoriesInput = {
@@ -41494,6 +46256,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCategoriesInput = {
@@ -41683,6 +46447,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCategoriesInput = {
@@ -41704,6 +46470,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TransactionUpsertWithWhereUniqueWithoutCategoryInput = {
@@ -41789,6 +46557,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMerchantMappingsInput = {
@@ -41810,6 +46580,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMerchantMappingsInput = {
@@ -41880,6 +46652,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMerchantMappingsInput = {
@@ -41901,6 +46675,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CategoryUpsertWithoutMerchantMappingsInput = {
@@ -41961,6 +46737,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsInput = {
@@ -41982,6 +46760,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsInput = {
@@ -42321,6 +47101,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsInput = {
@@ -42342,6 +47124,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type WalletUpsertWithoutTransactionsInput = {
@@ -42689,6 +47473,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutInstallmentsInput = {
@@ -42710,6 +47496,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutInstallmentsInput = {
@@ -42880,6 +47668,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInstallmentsInput = {
@@ -42901,6 +47691,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type WalletUpsertWithoutInstallmentsInput = {
@@ -43028,6 +47820,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutRecurringTransactionTemplatesInput = {
@@ -43049,6 +47843,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutRecurringTransactionTemplatesInput = {
@@ -43206,6 +48002,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRecurringTransactionTemplatesInput = {
@@ -43227,6 +48025,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type WalletUpsertWithoutRecurringTransactionTemplatesInput = {
@@ -43664,6 +48464,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSavingGoalsInput = {
@@ -43685,6 +48487,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSavingGoalsInput = {
@@ -43722,6 +48526,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSavingGoalsInput = {
@@ -43743,6 +48549,308 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutChannelLinkTokensInput = {
+    id?: string
+    email: string
+    name: string
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    wallets?: WalletCreateNestedManyWithoutUserInput
+    categories?: CategoryCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    installments?: InstallmentCreateNestedManyWithoutUserInput
+    recurringTransactionTemplates?: RecurringTransactionTemplateCreateNestedManyWithoutUserInput
+    savingGoals?: SavingGoalCreateNestedManyWithoutUserInput
+    budgets?: BudgetCreateNestedManyWithoutUserInput
+    merchantMappings?: MerchantMappingCreateNestedManyWithoutUserInput
+    assistantConversations?: AssistantConversationCreateNestedManyWithoutUserInput
+    assistantFinancialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutUserInput
+    assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
+    assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutChannelLinkTokensInput = {
+    id?: string
+    email: string
+    name: string
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    wallets?: WalletUncheckedCreateNestedManyWithoutUserInput
+    categories?: CategoryUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    installments?: InstallmentUncheckedCreateNestedManyWithoutUserInput
+    recurringTransactionTemplates?: RecurringTransactionTemplateUncheckedCreateNestedManyWithoutUserInput
+    savingGoals?: SavingGoalUncheckedCreateNestedManyWithoutUserInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutUserInput
+    merchantMappings?: MerchantMappingUncheckedCreateNestedManyWithoutUserInput
+    assistantConversations?: AssistantConversationUncheckedCreateNestedManyWithoutUserInput
+    assistantFinancialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutUserInput
+    assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
+    assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutChannelLinkTokensInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutChannelLinkTokensInput, UserUncheckedCreateWithoutChannelLinkTokensInput>
+  }
+
+  export type UserUpsertWithoutChannelLinkTokensInput = {
+    update: XOR<UserUpdateWithoutChannelLinkTokensInput, UserUncheckedUpdateWithoutChannelLinkTokensInput>
+    create: XOR<UserCreateWithoutChannelLinkTokensInput, UserUncheckedCreateWithoutChannelLinkTokensInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutChannelLinkTokensInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutChannelLinkTokensInput, UserUncheckedUpdateWithoutChannelLinkTokensInput>
+  }
+
+  export type UserUpdateWithoutChannelLinkTokensInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    wallets?: WalletUpdateManyWithoutUserNestedInput
+    categories?: CategoryUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    installments?: InstallmentUpdateManyWithoutUserNestedInput
+    recurringTransactionTemplates?: RecurringTransactionTemplateUpdateManyWithoutUserNestedInput
+    savingGoals?: SavingGoalUpdateManyWithoutUserNestedInput
+    budgets?: BudgetUpdateManyWithoutUserNestedInput
+    merchantMappings?: MerchantMappingUpdateManyWithoutUserNestedInput
+    assistantConversations?: AssistantConversationUpdateManyWithoutUserNestedInput
+    assistantFinancialDrafts?: AssistantFinancialDraftUpdateManyWithoutUserNestedInput
+    assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
+    assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutChannelLinkTokensInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    wallets?: WalletUncheckedUpdateManyWithoutUserNestedInput
+    categories?: CategoryUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    installments?: InstallmentUncheckedUpdateManyWithoutUserNestedInput
+    recurringTransactionTemplates?: RecurringTransactionTemplateUncheckedUpdateManyWithoutUserNestedInput
+    savingGoals?: SavingGoalUncheckedUpdateManyWithoutUserNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutUserNestedInput
+    merchantMappings?: MerchantMappingUncheckedUpdateManyWithoutUserNestedInput
+    assistantConversations?: AssistantConversationUncheckedUpdateManyWithoutUserNestedInput
+    assistantFinancialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutUserNestedInput
+    assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
+    assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutChannelConnectionsInput = {
+    id?: string
+    email: string
+    name: string
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    wallets?: WalletCreateNestedManyWithoutUserInput
+    categories?: CategoryCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    installments?: InstallmentCreateNestedManyWithoutUserInput
+    recurringTransactionTemplates?: RecurringTransactionTemplateCreateNestedManyWithoutUserInput
+    savingGoals?: SavingGoalCreateNestedManyWithoutUserInput
+    budgets?: BudgetCreateNestedManyWithoutUserInput
+    merchantMappings?: MerchantMappingCreateNestedManyWithoutUserInput
+    assistantConversations?: AssistantConversationCreateNestedManyWithoutUserInput
+    assistantFinancialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutUserInput
+    assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
+    assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutChannelConnectionsInput = {
+    id?: string
+    email: string
+    name: string
+    avatarUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    wallets?: WalletUncheckedCreateNestedManyWithoutUserInput
+    categories?: CategoryUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    installments?: InstallmentUncheckedCreateNestedManyWithoutUserInput
+    recurringTransactionTemplates?: RecurringTransactionTemplateUncheckedCreateNestedManyWithoutUserInput
+    savingGoals?: SavingGoalUncheckedCreateNestedManyWithoutUserInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutUserInput
+    merchantMappings?: MerchantMappingUncheckedCreateNestedManyWithoutUserInput
+    assistantConversations?: AssistantConversationUncheckedCreateNestedManyWithoutUserInput
+    assistantFinancialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutUserInput
+    assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
+    assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutChannelConnectionsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutChannelConnectionsInput, UserUncheckedCreateWithoutChannelConnectionsInput>
+  }
+
+  export type AssistantConversationCreateWithoutChannelConnectionsInput = {
+    id?: string
+    status?: $Enums.AssistantConversationStatus
+    locale?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastActivityAt?: Date | string
+    archivedAt?: Date | string | null
+    user: UserCreateNestedOneWithoutAssistantConversationsInput
+    turns?: AssistantTurnCreateNestedManyWithoutConversationInput
+    messages?: AssistantMessageCreateNestedManyWithoutConversationInput
+    toolExecutions?: AssistantToolExecutionCreateNestedManyWithoutConversationInput
+    financialDrafts?: AssistantFinancialDraftCreateNestedManyWithoutConversationInput
+    providerExecutions?: AssistantProviderExecutionCreateNestedManyWithoutConversationInput
+    clarificationRequests?: ClarificationRequestCreateNestedManyWithoutConversationInput
+  }
+
+  export type AssistantConversationUncheckedCreateWithoutChannelConnectionsInput = {
+    id?: string
+    userId: string
+    status?: $Enums.AssistantConversationStatus
+    locale?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastActivityAt?: Date | string
+    archivedAt?: Date | string | null
+    turns?: AssistantTurnUncheckedCreateNestedManyWithoutConversationInput
+    messages?: AssistantMessageUncheckedCreateNestedManyWithoutConversationInput
+    toolExecutions?: AssistantToolExecutionUncheckedCreateNestedManyWithoutConversationInput
+    financialDrafts?: AssistantFinancialDraftUncheckedCreateNestedManyWithoutConversationInput
+    providerExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutConversationInput
+    clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type AssistantConversationCreateOrConnectWithoutChannelConnectionsInput = {
+    where: AssistantConversationWhereUniqueInput
+    create: XOR<AssistantConversationCreateWithoutChannelConnectionsInput, AssistantConversationUncheckedCreateWithoutChannelConnectionsInput>
+  }
+
+  export type UserUpsertWithoutChannelConnectionsInput = {
+    update: XOR<UserUpdateWithoutChannelConnectionsInput, UserUncheckedUpdateWithoutChannelConnectionsInput>
+    create: XOR<UserCreateWithoutChannelConnectionsInput, UserUncheckedCreateWithoutChannelConnectionsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutChannelConnectionsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutChannelConnectionsInput, UserUncheckedUpdateWithoutChannelConnectionsInput>
+  }
+
+  export type UserUpdateWithoutChannelConnectionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    wallets?: WalletUpdateManyWithoutUserNestedInput
+    categories?: CategoryUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    installments?: InstallmentUpdateManyWithoutUserNestedInput
+    recurringTransactionTemplates?: RecurringTransactionTemplateUpdateManyWithoutUserNestedInput
+    savingGoals?: SavingGoalUpdateManyWithoutUserNestedInput
+    budgets?: BudgetUpdateManyWithoutUserNestedInput
+    merchantMappings?: MerchantMappingUpdateManyWithoutUserNestedInput
+    assistantConversations?: AssistantConversationUpdateManyWithoutUserNestedInput
+    assistantFinancialDrafts?: AssistantFinancialDraftUpdateManyWithoutUserNestedInput
+    assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
+    assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutChannelConnectionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    wallets?: WalletUncheckedUpdateManyWithoutUserNestedInput
+    categories?: CategoryUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    installments?: InstallmentUncheckedUpdateManyWithoutUserNestedInput
+    recurringTransactionTemplates?: RecurringTransactionTemplateUncheckedUpdateManyWithoutUserNestedInput
+    savingGoals?: SavingGoalUncheckedUpdateManyWithoutUserNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutUserNestedInput
+    merchantMappings?: MerchantMappingUncheckedUpdateManyWithoutUserNestedInput
+    assistantConversations?: AssistantConversationUncheckedUpdateManyWithoutUserNestedInput
+    assistantFinancialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutUserNestedInput
+    assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
+    assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type AssistantConversationUpsertWithoutChannelConnectionsInput = {
+    update: XOR<AssistantConversationUpdateWithoutChannelConnectionsInput, AssistantConversationUncheckedUpdateWithoutChannelConnectionsInput>
+    create: XOR<AssistantConversationCreateWithoutChannelConnectionsInput, AssistantConversationUncheckedCreateWithoutChannelConnectionsInput>
+    where?: AssistantConversationWhereInput
+  }
+
+  export type AssistantConversationUpdateToOneWithWhereWithoutChannelConnectionsInput = {
+    where?: AssistantConversationWhereInput
+    data: XOR<AssistantConversationUpdateWithoutChannelConnectionsInput, AssistantConversationUncheckedUpdateWithoutChannelConnectionsInput>
+  }
+
+  export type AssistantConversationUpdateWithoutChannelConnectionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantConversationStatusFieldUpdateOperationsInput | $Enums.AssistantConversationStatus
+    locale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateOneRequiredWithoutAssistantConversationsNestedInput
+    turns?: AssistantTurnUpdateManyWithoutConversationNestedInput
+    messages?: AssistantMessageUpdateManyWithoutConversationNestedInput
+    toolExecutions?: AssistantToolExecutionUpdateManyWithoutConversationNestedInput
+    financialDrafts?: AssistantFinancialDraftUpdateManyWithoutConversationNestedInput
+    providerExecutions?: AssistantProviderExecutionUpdateManyWithoutConversationNestedInput
+    clarificationRequests?: ClarificationRequestUpdateManyWithoutConversationNestedInput
+  }
+
+  export type AssistantConversationUncheckedUpdateWithoutChannelConnectionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: EnumAssistantConversationStatusFieldUpdateOperationsInput | $Enums.AssistantConversationStatus
+    locale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActivityAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    turns?: AssistantTurnUncheckedUpdateManyWithoutConversationNestedInput
+    messages?: AssistantMessageUncheckedUpdateManyWithoutConversationNestedInput
+    toolExecutions?: AssistantToolExecutionUncheckedUpdateManyWithoutConversationNestedInput
+    financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutConversationNestedInput
+    providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutConversationNestedInput
+    clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type UserCreateWithoutBudgetsInput = {
@@ -43764,6 +48872,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutBudgetsInput = {
@@ -43785,6 +48895,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedCreateNestedManyWithoutUserInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedCreateNestedManyWithoutUserInput
     clarificationRequests?: ClarificationRequestUncheckedCreateNestedManyWithoutUserInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedCreateNestedManyWithoutUserInput
+    channelConnections?: ChannelConnectionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutBudgetsInput = {
@@ -43855,6 +48967,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBudgetsInput = {
@@ -43876,6 +48990,8 @@ export namespace Prisma {
     assistantIdempotencyRecords?: AssistantIdempotencyRecordUncheckedUpdateManyWithoutUserNestedInput
     assistantProviderExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutUserNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutUserNestedInput
+    channelLinkTokens?: ChannelLinkTokenUncheckedUpdateManyWithoutUserNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CategoryUpsertWithoutBudgetsInput = {
@@ -44112,6 +49228,27 @@ export namespace Prisma {
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ChannelLinkTokenCreateManyUserInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    tokenDigest: string
+    expiresAt: Date | string
+    consumedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ChannelConnectionCreateManyUserInput = {
+    id?: string
+    provider: $Enums.ChannelProvider
+    externalUserId: string
+    externalChatId: string
+    conversationId?: string | null
+    status?: $Enums.ChannelConnectionStatus
+    linkedAt?: Date | string
+    revokedAt?: Date | string | null
     updatedAt?: Date | string
   }
 
@@ -44508,6 +49645,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUpdateManyWithoutConversationNestedInput
     clarificationRequests?: ClarificationRequestUpdateManyWithoutConversationNestedInput
+    channelConnections?: ChannelConnectionUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantConversationUncheckedUpdateWithoutUserInput = {
@@ -44524,6 +49662,7 @@ export namespace Prisma {
     financialDrafts?: AssistantFinancialDraftUncheckedUpdateManyWithoutConversationNestedInput
     providerExecutions?: AssistantProviderExecutionUncheckedUpdateManyWithoutConversationNestedInput
     clarificationRequests?: ClarificationRequestUncheckedUpdateManyWithoutConversationNestedInput
+    channelConnections?: ChannelConnectionUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type AssistantConversationUncheckedUpdateManyWithoutUserInput = {
@@ -44755,6 +49894,69 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ChannelLinkTokenUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    tokenDigest?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelLinkTokenUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    tokenDigest?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelLinkTokenUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    tokenDigest?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelConnectionUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUserId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelConnectionStatusFieldUpdateOperationsInput | $Enums.ChannelConnectionStatus
+    linkedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: AssistantConversationUpdateOneWithoutChannelConnectionsNestedInput
+  }
+
+  export type ChannelConnectionUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUserId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumChannelConnectionStatusFieldUpdateOperationsInput | $Enums.ChannelConnectionStatus
+    linkedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelConnectionUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUserId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    conversationId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumChannelConnectionStatusFieldUpdateOperationsInput | $Enums.ChannelConnectionStatus
+    linkedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type AssistantTurnCreateManyConversationInput = {
     id?: string
     correlationId: string
@@ -44854,6 +50056,18 @@ export namespace Prisma {
     consumedAt?: Date | string | null
     cancelledAt?: Date | string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ChannelConnectionCreateManyConversationInput = {
+    id?: string
+    userId: string
+    provider: $Enums.ChannelProvider
+    externalUserId: string
+    externalChatId: string
+    status?: $Enums.ChannelConnectionStatus
+    linkedAt?: Date | string
+    revokedAt?: Date | string | null
     updatedAt?: Date | string
   }
 
@@ -45178,6 +50392,42 @@ export namespace Prisma {
     consumedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelConnectionUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUserId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelConnectionStatusFieldUpdateOperationsInput | $Enums.ChannelConnectionStatus
+    linkedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutChannelConnectionsNestedInput
+  }
+
+  export type ChannelConnectionUncheckedUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUserId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelConnectionStatusFieldUpdateOperationsInput | $Enums.ChannelConnectionStatus
+    linkedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChannelConnectionUncheckedUpdateManyWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    provider?: EnumChannelProviderFieldUpdateOperationsInput | $Enums.ChannelProvider
+    externalUserId?: StringFieldUpdateOperationsInput | string
+    externalChatId?: StringFieldUpdateOperationsInput | string
+    status?: EnumChannelConnectionStatusFieldUpdateOperationsInput | $Enums.ChannelConnectionStatus
+    linkedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

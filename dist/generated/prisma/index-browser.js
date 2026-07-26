@@ -397,6 +397,36 @@ exports.Prisma.SavingGoalScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ChannelLinkTokenScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  provider: 'provider',
+  tokenDigest: 'tokenDigest',
+  expiresAt: 'expiresAt',
+  consumedAt: 'consumedAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ChannelConnectionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  provider: 'provider',
+  externalUserId: 'externalUserId',
+  externalChatId: 'externalChatId',
+  conversationId: 'conversationId',
+  status: 'status',
+  linkedAt: 'linkedAt',
+  revokedAt: 'revokedAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ChannelUpdateDedupScalarFieldEnum = {
+  id: 'id',
+  provider: 'provider',
+  externalUpdateId: 'externalUpdateId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.BudgetScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -552,6 +582,15 @@ exports.SavingGoalStatus = exports.$Enums.SavingGoalStatus = {
   ARCHIVED: 'ARCHIVED'
 };
 
+exports.ChannelProvider = exports.$Enums.ChannelProvider = {
+  TELEGRAM: 'TELEGRAM'
+};
+
+exports.ChannelConnectionStatus = exports.$Enums.ChannelConnectionStatus = {
+  ACTIVE: 'ACTIVE',
+  REVOKED: 'REVOKED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   AssistantConversation: 'AssistantConversation',
@@ -571,6 +610,9 @@ exports.Prisma.ModelName = {
   RecurringTransactionTemplate: 'RecurringTransactionTemplate',
   RecurringReminderEvent: 'RecurringReminderEvent',
   SavingGoal: 'SavingGoal',
+  ChannelLinkToken: 'ChannelLinkToken',
+  ChannelConnection: 'ChannelConnection',
+  ChannelUpdateDedup: 'ChannelUpdateDedup',
   Budget: 'Budget'
 };
 

@@ -39,3 +39,10 @@ export declare const generalLimiter: RateLimitRequestHandler;
  * rate limiting turns it into a passthrough.
  */
 export declare const mutationLimiter: RateLimitRequestHandler;
+/**
+ * Separate instance for the public Telegram webhook: no verified user exists
+ * (it's server-to-server, not a browser-authenticated caller), so it keys by
+ * IP like the general limiter, but with its own generous budget so a burst of
+ * legitimate Telegram delivery retries isn't confused with abuse.
+ */
+export declare const telegramWebhookLimiter: RateLimitRequestHandler;

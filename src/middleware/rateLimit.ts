@@ -80,3 +80,16 @@ export const mutationLimiter: RateLimitRequestHandler = rateLimit({
     req.method === 'GET' ||
     req.method === 'HEAD',
 });
+
+/**
+ * Separate instance for the public Telegram webhook: no verified user exists
+ * (it's server-to-server, not a browser-authenticated caller), so it keys by
+ * IP like the general limiter, but with its own generous budget so a burst of
+ * legitimate Telegram delivery retries isn't confused with abuse.
+ */
+export const telegramWebhookLimiter: RateLimitRequestHandler = rateLimit({
+  ...shared,
+  limit: rateLimitConfig.max,
+  keyGenerator: ipKey,
+  skip: () => !rateLimitConfig.enabled,
+});

@@ -15,6 +15,8 @@ const budgetRoutes_1 = require("./budgetRoutes");
 const analyticsRoutes_1 = require("./analyticsRoutes");
 const merchantMappingRoutes_1 = require("./merchantMappingRoutes");
 const assistantRoutes_1 = require("./assistantRoutes");
+const channelRoutes_1 = require("./channelRoutes");
+const telegramRoutes_1 = require("./telegramRoutes");
 const router = (0, express_1.Router)();
 exports.router = router;
 // API v1
@@ -32,4 +34,6 @@ router.use('/v1/budgets', budgetRoutes_1.budgetRouter);
 router.use('/v1/analytics', analyticsRoutes_1.analyticsRouter);
 router.use('/v1/merchant-mappings', merchantMappingRoutes_1.merchantMappingRouter);
 router.use('/v1/assistant', assistantRoutes_1.assistantRouter);
+router.use('/v1/channels', channelRoutes_1.channelRouter);
+router.use('/v1/telegram', telegramRoutes_1.telegramRouter);
 //# sourceMappingURL=index.js.map

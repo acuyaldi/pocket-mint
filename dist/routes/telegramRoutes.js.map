@@ -1,0 +1,1 @@
+{"version":3,"file":"telegramRoutes.js","sourceRoot":"","sources":["../../src/routes/telegramRoutes.ts"],"names":[],"mappings":";;;AAAA,qCAAiC;AACjC,4EAAkG;AAClG,uDAAiE;AAEjE,MAAM,cAAc,GAAG,IAAA,gBAAM,GAAE,CAAC;AAUvB,wCAAc;AARvB,2EAA2E;AAC3E,2EAA2E;AAC3E,yEAAyE;AACzE,uEAAuE;AACvE,4EAA4E;AAC5E,8DAA8D;AAC9D,cAAc,CAAC,IAAI,CAAC,UAAU,EAAE,kCAAsB,EAAE,iDAA2B,EAAE,qCAAe,CAAC,CAAC"}
