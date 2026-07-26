@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { redact, logger } from '../src/utils/logger';
+import { redact, logger, logEvent, startTimer } from '../src/utils/logger';
 
 describe('redact', () => {
   it('redacts sensitive top-level fields', () => {
@@ -71,5 +71,45 @@ describe('logger output', () => {
     expect(line).not.toContain('raw-key-should-not-appear');
     expect(line).not.toContain('raw-password-should-not-appear');
     expect(line).toContain('[REDACTED]');
+  });
+});
+
+describe('logEvent', () => {
+  afterEach(() => vi.restoreAllMocks());
+
+  it('emits only the canonical event fields at the requested level', () => {
+    const spy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    logEvent('info', {
+      event: 'assistant.draft.confirmed',
+      requestId: 'req-1',
+      durationMs: 42,
+      idempotencyOutcome: 'replay',
+    });
+    const line = spy.mock.calls[0][0] as string;
+    const parsed = JSON.parse(line);
+    expect(parsed).toMatchObject({
+      level: 'info',
+      message: 'assistant.draft.confirmed',
+      event: 'assistant.draft.confirmed',
+      requestId: 'req-1',
+      durationMs: 42,
+      idempotencyOutcome: 'replay',
+    });
+  });
+
+  it('routes warn/error levels to the matching console method', () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    logEvent('warn', { event: 'assistant.provider.failed', errorCategory: 'provider_timeout' });
+    logEvent('error', { event: 'assistant.message.failed', errorCategory: 'internal' });
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+    expect(errorSpy).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('startTimer', () => {
+  it('returns non-negative elapsed milliseconds', () => {
+    const elapsed = startTimer();
+    expect(elapsed()).toBeGreaterThanOrEqual(0);
   });
 });

@@ -62,8 +62,9 @@ function createAssistantFinancialDraftService(db, transactions, clock = () => ne
                 let draft = await tx.assistantFinancialDraft.findFirst({ where: { id: draftId, userId } });
                 if (!draft)
                     throw errors_1.AssistantError.draftNotFound();
-                if (draft.status === 'COMMITTED' && draft.transactionId)
-                    return committedResult(draft);
+                if (draft.status === 'COMMITTED' && draft.transactionId) {
+                    return { ...committedResult(draft), idempotencyOutcome: 'replay' };
+                }
                 const now = clock();
                 if (draft.status === 'PENDING_CONFIRMATION' && draft.expiresAt <= now) {
                     draft = await tx.assistantFinancialDraft.update({ where: { id: draft.id }, data: { status: 'EXPIRED' } });
@@ -86,7 +87,7 @@ function createAssistantFinancialDraftService(db, transactions, clock = () => ne
                 await tx.assistantToolExecution.update({ where: { id: execution.id }, data: { status: 'SUCCEEDED', completedAt: now, outputSummary: { draftId: draft.id, transactionId: created.id, status: 'COMMITTED' } } });
                 await tx.assistantTurn.update({ where: { id: turn.id }, data: { status: 'SUCCEEDED', finishedAt: now } });
                 await tx.assistantConversation.update({ where: { id: draft.conversationId }, data: { lastActivityAt: now } });
-                return { draftId: draft.id, status: 'COMMITTED', transactionId: created.id, conversationId: draft.conversationId, turnId: turn.id, renderedText: content };
+                return { draftId: draft.id, status: 'COMMITTED', transactionId: created.id, conversationId: draft.conversationId, turnId: turn.id, renderedText: content, idempotencyOutcome: 'new' };
             });
             if ('error' in result)
                 throw result.error;

@@ -27,7 +27,8 @@ import type { ToolContract, ToolId, ExecutionContext, ToolExecutionResult } from
 import type { ToolRegistry } from './registry';
 import { evaluatePolicy } from './policy';
 import { AssistantError } from './errors';
-import { logger } from '../utils/logger';
+import { logEvent } from '../utils/logger';
+import { categorizeError } from '../utils/errorCategory';
 
 /** The handler signature every tool implementation must satisfy. */
 export type ToolHandler<TInput = unknown, TOutput = unknown> = (
@@ -55,29 +56,33 @@ export async function executeTool(
   // 1. Resolve
   const tool = toolRegistry.get(toolId);
   if (!tool) {
-    logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, 'tool not found');
-    throw AssistantError.toolNotFound(toolId);
+    const err = AssistantError.toolNotFound(toolId);
+    logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, err);
+    throw err;
   }
 
   // 2. Enabled check
   if (!tool.enabled) {
-    logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, 'tool disabled');
-    throw AssistantError.toolDisabled(toolId);
+    const err = AssistantError.toolDisabled(toolId);
+    logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, err);
+    throw err;
   }
 
   // 3. Policy evaluation
   const policy = evaluatePolicy(tool);
   if (policy.action === 'UNAVAILABLE') {
-    logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, policy.reason);
-    throw AssistantError.policyDenied(toolId, policy.reason);
+    const err = AssistantError.policyDenied(toolId, policy.reason);
+    logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, err);
+    throw err;
   }
   if (policy.action !== 'EXECUTE_IMMEDIATELY') {
     // Phase 21.2 only supports immediate execution
-    logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, `policy requires ${policy.action}`);
-    throw AssistantError.policyDenied(
+    const err = AssistantError.policyDenied(
       toolId,
       `This tool requires ${policy.action} which is not yet supported`,
     );
+    logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, err);
+    throw err;
   }
 
   // 4. Validate input
@@ -85,15 +90,16 @@ export async function executeTool(
   try {
     validatedInput = tool.validateInput(untrustedArgs);
   } catch (err) {
-    logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, 'input validation failed');
+    logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, err);
     throw err;
   }
 
   // 5. Resolve handler
   const handler = handlerRegistry.get(toolId);
   if (!handler) {
-    logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, 'no handler registered');
-    throw AssistantError.toolNotFound(toolId);
+    const err = AssistantError.toolNotFound(toolId);
+    logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, err);
+    throw err;
   }
 
   // 6. Execute with timeout
@@ -105,11 +111,7 @@ export async function executeTool(
     );
   } catch (err) {
     const durationMs = Date.now() - startedAt;
-    if (err instanceof AssistantError && err.code === 'ASSISTANT_EXECUTION_TIMEOUT') {
-      logExecution(ctx, toolId, 'FAILED', durationMs, 'timeout');
-      throw err;
-    }
-    logExecution(ctx, toolId, 'FAILED', durationMs, (err as Error)?.message ?? 'handler error');
+    logExecution(ctx, toolId, 'FAILED', durationMs, err);
     throw err;
   }
 
@@ -119,7 +121,7 @@ export async function executeTool(
     validatedOutput = tool.validateOutput(output);
   } catch (err) {
     const durationMs = Date.now() - startedAt;
-    logExecution(ctx, toolId, 'FAILED', durationMs, 'output validation failed');
+    logExecution(ctx, toolId, 'FAILED', durationMs, err);
     throw err;
   }
 
@@ -154,16 +156,16 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
 function logExecution(
   ctx: ExecutionContext,
   toolId: string,
-  status: string,
+  status: 'SUCCEEDED' | 'FAILED',
   durationMs: number,
-  error?: string,
+  err?: unknown,
 ): void {
-  logger.info('assistant_tool_execution', {
-    correlationId: ctx.correlationId,
-    userId: ctx.userId,
-    toolId,
-    status,
+  logEvent(status === 'SUCCEEDED' ? 'info' : 'warn', {
+    event: status === 'SUCCEEDED' ? 'assistant.tool.completed' : 'assistant.tool.failed',
+    requestId: ctx.correlationId,
+    tool: toolId,
+    outcome: status,
     durationMs,
-    ...(error ? { error } : {}),
+    ...(err ? { errorCategory: categorizeError(err) } : {}),
   });
 }

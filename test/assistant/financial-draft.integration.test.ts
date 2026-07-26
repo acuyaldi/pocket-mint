@@ -1,4 +1,4 @@
-import { afterAll, afterEach, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, describe, expect, it, vi } from 'vitest';
 import express from 'express';
 import request from 'supertest';
 import { createPrismaResources } from '../../src/lib/prismaFactory';
@@ -63,6 +63,8 @@ describe.skipIf(!url)('Assistant financial drafts (disposable PostgreSQL)', () =
     const different = await request(server).post(`/drafts/${draftId}/confirm`).set('x-test-user', user.id).set('Idempotency-Key', 'another-key');
     expect(first.status).toBe(200); expect(replay.status).toBe(200); expect(different.status).toBe(200);
     expect(first.body.data.transactionId).toBe(replay.body.data.transactionId);
+    expect(first.body.data).not.toHaveProperty('idempotencyOutcome');
+    expect(replay.body.data).not.toHaveProperty('idempotencyOutcome');
     expect(await resources!.prisma.transaction.count({ where: { userId: user.id } })).toBe(1);
     expect((await resources!.prisma.wallet.findUniqueOrThrow({ where: { id: wallet.id } })).balance.toString()).toBe('87499.5');
     const history = await request(server).get(`/conversations/${prepared.body.data.conversationId}`).set('x-test-user', user.id);
@@ -233,5 +235,57 @@ describe.skipIf(!url)('Assistant financial drafts (disposable PostgreSQL)', () =
     expect((await resources!.prisma.assistantFinancialDraft.findUniqueOrThrow({
       where: { id: draftId },
     })).status).toBe('FAILED');
+  });
+
+  it('logs idempotency outcome and error category without exposing keys, amounts, or entity names', async () => {
+    const { user, wallet, category } = await fixture('observability'); const server = app();
+    const infoSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      const prepared = await request(server).post('/execute').set('x-test-user', user.id).send(draftBody(wallet.id, category.id));
+      const draftId = prepared.body.data.data.draftId;
+      await request(server).post(`/drafts/${draftId}/confirm`).set('x-test-user', user.id).set('Idempotency-Key', 'observability-key');
+      await request(server).post(`/drafts/${draftId}/confirm`).set('x-test-user', user.id).set('Idempotency-Key', 'observability-key');
+      const conflict = await request(server).post(`/drafts/${draftId}/confirm`).set('x-test-user', user.id).set('Idempotency-Key', 'observability-other-key');
+      expect(conflict.status).toBe(409);
+
+      const infoLines = infoSpy.mock.calls.map((call) => call[0] as string);
+      const errorLines = errorSpy.mock.calls.map((call) => call[0] as string);
+      const confirmedEvents = infoLines.filter((line) => line.includes('"assistant.draft.confirmed"'));
+      expect(confirmedEvents.some((line) => line.includes('"idempotencyOutcome":"new"'))).toBe(true);
+      expect(confirmedEvents.some((line) => line.includes('"idempotencyOutcome":"replay"'))).toBe(true);
+      expect(errorLines.some((line) => line.includes('"errorCategory":"idempotency"'))).toBe(true);
+
+      const allLines = [...infoLines, ...errorLines];
+      for (const line of allLines) {
+        expect(line).not.toContain('observability-key');
+        expect(line).not.toContain('observability-other-key');
+        expect(line).not.toContain('12500.50');
+        expect(line).not.toContain(wallet.id);
+        expect(line).not.toContain(category.id);
+        expect(line).not.toContain('Lunch');
+      }
+    } finally {
+      infoSpy.mockRestore();
+      errorSpy.mockRestore();
+    }
+  });
+
+  it('categorizes an expired confirmation attempt without exposing draft content', async () => {
+    const { user, wallet, category } = await fixture('observability-expiry');
+    const prepared = await request(app()).post('/execute').set('x-test-user', user.id).send(draftBody(wallet.id, category.id));
+    const draftId = prepared.body.data.data.draftId;
+    const draft = await resources!.prisma.assistantFinancialDraft.findUniqueOrThrow({ where: { id: draftId } });
+    const server = app(() => new Date(draft.expiresAt.getTime() + 1));
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      const response = await request(server).post(`/drafts/${draftId}/confirm`).set('x-test-user', user.id).set('Idempotency-Key', 'expiry-observability-key');
+      expect(response.status).toBe(409);
+      const lines = errorSpy.mock.calls.map((call) => call[0] as string);
+      expect(lines.some((line) => line.includes('"errorCategory":"expired"'))).toBe(true);
+      for (const line of lines) expect(line).not.toContain('expiry-observability-key');
+    } finally {
+      errorSpy.mockRestore();
+    }
   });
 });

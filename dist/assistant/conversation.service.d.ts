@@ -61,12 +61,12 @@ export declare function createAssistantConversationService(db: PrismaClient): {
             intent: string;
             finishedAt: Date | null;
             toolExecutions: {
+                durationMs: number | null;
                 id: string;
                 status: import("@/generated/prisma").$Enums.AssistantToolExecutionStatus;
                 correlationId: string;
                 startedAt: Date;
                 completedAt: Date | null;
-                durationMs: number | null;
                 safeErrorCode: string | null;
                 toolId: string;
                 capability: string;

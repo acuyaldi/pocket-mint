@@ -8,6 +8,7 @@ const provider_types_1 = require("./provider-types");
 const persistence_1 = require("./persistence");
 const errors_1 = require("./errors");
 const logger_1 = require("../utils/logger");
+const errorCategory_1 = require("../utils/errorCategory");
 function modelInputBytes(request) {
     return Buffer.byteLength(JSON.stringify({
         systemInstruction: request.systemInstruction,
@@ -81,6 +82,12 @@ function createAssistantProviderRuntime(deps) {
         });
         const startedAt = Date.now();
         let providerStageComplete = false;
+        (0, logger_1.logEvent)('info', {
+            event: 'assistant.provider.started',
+            requestId: correlationId,
+            provider: deps.provider.kind,
+            model: deps.provider.model,
+        });
         try {
             const providerResponse = await invokeProvider(request, abortController);
             if (providerResponse.finishClassification === 'SAFETY')
@@ -90,6 +97,14 @@ function createAssistantProviderRuntime(deps) {
             const plan = (0, provider_plan_1.validateAssistantPlan)(providerResponse.output, deps.toolRegistry);
             providerStageComplete = true;
             const durationMs = Date.now() - startedAt;
+            (0, logger_1.logEvent)('info', {
+                event: 'assistant.provider.completed',
+                requestId: correlationId,
+                provider: deps.provider.kind,
+                model: deps.provider.model,
+                durationMs,
+                outcome: plan.kind,
+            });
             if (plan.kind === 'intent') {
                 const result = await deps.application.execute(userId, correlationId, {
                     conversationId,
@@ -166,15 +181,13 @@ function createAssistantProviderRuntime(deps) {
                 durationMs,
                 safeErrorCode: operational.code,
             }, { correlationId, conversationId });
-            logger_1.logger.warn('assistant_provider_execution', {
-                correlationId,
-                conversationId,
+            (0, logger_1.logEvent)('warn', {
+                event: 'assistant.provider.failed',
+                requestId: correlationId,
                 provider: deps.provider.kind,
                 model: deps.provider.model,
                 durationMs,
-                status: 'FAILED',
-                safeErrorCode: operational.code,
-                inputBytes,
+                errorCategory: (0, errorCategory_1.categorizeError)(operational),
             });
             return {
                 httpStatus: operational.statusCode,

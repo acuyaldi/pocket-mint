@@ -7,7 +7,8 @@ import { AssistantProviderError, type AssistantModelProvider, type AssistantProv
 import type { ToolRegistry } from './registry';
 import { assertAssistantMessageLength, normalizeProvidedMessage } from './persistence';
 import { AssistantError } from './errors';
-import { logger } from '../utils/logger';
+import { logger, logEvent } from '../utils/logger';
+import { categorizeError } from '../utils/errorCategory';
 
 export interface AssistantProviderAudit {
   begin(input: {
@@ -155,6 +156,12 @@ export function createAssistantProviderRuntime(deps: RuntimeDependencies) {
     });
     const startedAt = Date.now();
     let providerStageComplete = false;
+    logEvent('info', {
+      event: 'assistant.provider.started',
+      requestId: correlationId,
+      provider: deps.provider.kind,
+      model: deps.provider.model,
+    });
 
     try {
       const providerResponse = await invokeProvider(request, abortController);
@@ -163,6 +170,14 @@ export function createAssistantProviderRuntime(deps: RuntimeDependencies) {
       const plan = validateAssistantPlan(providerResponse.output, deps.toolRegistry);
       providerStageComplete = true;
       const durationMs = Date.now() - startedAt;
+      logEvent('info', {
+        event: 'assistant.provider.completed',
+        requestId: correlationId,
+        provider: deps.provider.kind,
+        model: deps.provider.model,
+        durationMs,
+        outcome: plan.kind,
+      });
 
       if (plan.kind === 'intent') {
         const result = await deps.application.execute(userId, correlationId, {
@@ -240,15 +255,13 @@ export function createAssistantProviderRuntime(deps: RuntimeDependencies) {
         durationMs,
         safeErrorCode: operational.code,
       }, { correlationId, conversationId });
-      logger.warn('assistant_provider_execution', {
-        correlationId,
-        conversationId,
+      logEvent('warn', {
+        event: 'assistant.provider.failed',
+        requestId: correlationId,
         provider: deps.provider.kind,
         model: deps.provider.model,
         durationMs,
-        status: 'FAILED',
-        safeErrorCode: operational.code,
-        inputBytes,
+        errorCategory: categorizeError(operational),
       });
       return {
         httpStatus: operational.statusCode,

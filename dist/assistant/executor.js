@@ -28,6 +28,7 @@ exports.executeTool = executeTool;
 const policy_1 = require("./policy");
 const errors_1 = require("./errors");
 const logger_1 = require("../utils/logger");
+const errorCategory_1 = require("../utils/errorCategory");
 /**
  * Execute one tool: resolve, validate, enforce policy, invoke,
  * validate output. Returns a structured result — never throws
@@ -38,24 +39,28 @@ async function executeTool(toolId, untrustedArgs, ctx, toolRegistry, handlerRegi
     // 1. Resolve
     const tool = toolRegistry.get(toolId);
     if (!tool) {
-        logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, 'tool not found');
-        throw errors_1.AssistantError.toolNotFound(toolId);
+        const err = errors_1.AssistantError.toolNotFound(toolId);
+        logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, err);
+        throw err;
     }
     // 2. Enabled check
     if (!tool.enabled) {
-        logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, 'tool disabled');
-        throw errors_1.AssistantError.toolDisabled(toolId);
+        const err = errors_1.AssistantError.toolDisabled(toolId);
+        logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, err);
+        throw err;
     }
     // 3. Policy evaluation
     const policy = (0, policy_1.evaluatePolicy)(tool);
     if (policy.action === 'UNAVAILABLE') {
-        logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, policy.reason);
-        throw errors_1.AssistantError.policyDenied(toolId, policy.reason);
+        const err = errors_1.AssistantError.policyDenied(toolId, policy.reason);
+        logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, err);
+        throw err;
     }
     if (policy.action !== 'EXECUTE_IMMEDIATELY') {
         // Phase 21.2 only supports immediate execution
-        logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, `policy requires ${policy.action}`);
-        throw errors_1.AssistantError.policyDenied(toolId, `This tool requires ${policy.action} which is not yet supported`);
+        const err = errors_1.AssistantError.policyDenied(toolId, `This tool requires ${policy.action} which is not yet supported`);
+        logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, err);
+        throw err;
     }
     // 4. Validate input
     let validatedInput;
@@ -63,14 +68,15 @@ async function executeTool(toolId, untrustedArgs, ctx, toolRegistry, handlerRegi
         validatedInput = tool.validateInput(untrustedArgs);
     }
     catch (err) {
-        logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, 'input validation failed');
+        logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, err);
         throw err;
     }
     // 5. Resolve handler
     const handler = handlerRegistry.get(toolId);
     if (!handler) {
-        logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, 'no handler registered');
-        throw errors_1.AssistantError.toolNotFound(toolId);
+        const err = errors_1.AssistantError.toolNotFound(toolId);
+        logExecution(ctx, toolId, 'FAILED', Date.now() - startedAt, err);
+        throw err;
     }
     // 6. Execute with timeout
     let output;
@@ -79,11 +85,7 @@ async function executeTool(toolId, untrustedArgs, ctx, toolRegistry, handlerRegi
     }
     catch (err) {
         const durationMs = Date.now() - startedAt;
-        if (err instanceof errors_1.AssistantError && err.code === 'ASSISTANT_EXECUTION_TIMEOUT') {
-            logExecution(ctx, toolId, 'FAILED', durationMs, 'timeout');
-            throw err;
-        }
-        logExecution(ctx, toolId, 'FAILED', durationMs, err?.message ?? 'handler error');
+        logExecution(ctx, toolId, 'FAILED', durationMs, err);
         throw err;
     }
     // 7. Validate output
@@ -93,7 +95,7 @@ async function executeTool(toolId, untrustedArgs, ctx, toolRegistry, handlerRegi
     }
     catch (err) {
         const durationMs = Date.now() - startedAt;
-        logExecution(ctx, toolId, 'FAILED', durationMs, 'output validation failed');
+        logExecution(ctx, toolId, 'FAILED', durationMs, err);
         throw err;
     }
     const durationMs = Date.now() - startedAt;
@@ -115,14 +117,14 @@ function withTimeout(promise, ms) {
         new Promise((_, reject) => setTimeout(() => reject(errors_1.AssistantError.executionTimeout('tool', ms)), ms)),
     ]);
 }
-function logExecution(ctx, toolId, status, durationMs, error) {
-    logger_1.logger.info('assistant_tool_execution', {
-        correlationId: ctx.correlationId,
-        userId: ctx.userId,
-        toolId,
-        status,
+function logExecution(ctx, toolId, status, durationMs, err) {
+    (0, logger_1.logEvent)(status === 'SUCCEEDED' ? 'info' : 'warn', {
+        event: status === 'SUCCEEDED' ? 'assistant.tool.completed' : 'assistant.tool.failed',
+        requestId: ctx.correlationId,
+        tool: toolId,
+        outcome: status,
         durationMs,
-        ...(error ? { error } : {}),
+        ...(err ? { errorCategory: (0, errorCategory_1.categorizeError)(err) } : {}),
     });
 }
 //# sourceMappingURL=executor.js.map

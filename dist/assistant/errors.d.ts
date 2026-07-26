@@ -2,6 +2,8 @@ export declare class AssistantError extends Error {
     readonly statusCode: number;
     readonly code: string;
     readonly isOperational = true;
+    /** Optional bounded, non-sensitive detail (e.g. a draft status) for observability categorization — never user content. */
+    readonly detail?: string;
     private constructor();
     static toolNotFound(toolId: string): AssistantError;
     static toolDisabled(toolId: string): AssistantError;

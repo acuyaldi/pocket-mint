@@ -8,6 +8,8 @@ import type { AssistantConversationService } from '../assistant/conversation.ser
 import type { AssistantCanonicalRequest } from '../assistant/types';
 import type { AssistantFinancialDraftService } from '../assistant/financial-draft.service';
 import type { AssistantProviderRuntime } from '../assistant/provider-runtime';
+import { logEvent, startTimer } from '../utils/logger';
+import { categorizeError } from '../utils/errorCategory';
 
 function canonicalRequest(body: unknown): body is AssistantCanonicalRequest {
   if (typeof body !== 'object' || body === null) return false;
@@ -36,6 +38,13 @@ const intQuery = (value: unknown): number | undefined => {
 
 const routeId = (value: string | string[]): string => Array.isArray(value) ? value[0] : value;
 
+/** Bounded boolean signal only — never inspects/logs the draft content itself. */
+function draftWasCreated(response: unknown): boolean {
+  if (typeof response !== 'object' || response === null) return false;
+  const value = response as { status?: unknown; data?: { confirmationRequired?: unknown } };
+  return value.status === 'success' && value.data?.confirmationRequired === true;
+}
+
 /** Strict body for clarification selection — exactly one key: a non-empty, non-whitespace string token. */
 function selectClarificationRequest(body: unknown): body is { optionToken: string } {
   if (typeof body !== 'object' || body === null || Array.isArray(body)) return false;
@@ -52,17 +61,33 @@ export function createAssistantControllers(
   providerRuntime?: AssistantProviderRuntime,
 ) {
   async function execute(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const elapsed = startTimer();
     try {
       const userId = getAuthenticatedUserId(req);
       if (!userId) return sendError(res, 'Unauthorized', 401);
       if (!canonicalRequest(req.body)) return sendError(res, 'Request body must include a string "intent" field and valid optional fields', 400, 'BAD_REQUEST');
+      logEvent('info', { event: 'assistant.message.received', requestId: req.correlationId, operation: 'execute' });
       const result = await application.execute(userId, req.correlationId, req.body);
+      logEvent('info', {
+        event: 'assistant.message.completed',
+        requestId: req.correlationId,
+        operation: 'execute',
+        outcome: result.response.status,
+        httpStatus: result.httpStatus,
+        durationMs: elapsed(),
+        clarificationRequired: result.response.status === 'clarification_required',
+        draftCreated: draftWasCreated(result.response),
+      });
       if (result.response.status === 'success') return sendSuccess(res, result.response, 'Assistant executed successfully');
       res.status(result.httpStatus).json({ success: false, error: { ...result.response, statusCode: result.httpStatus } });
-    } catch (error) { forwardError(error, res, next); }
+    } catch (error) {
+      logEvent('error', { event: 'assistant.message.failed', requestId: req.correlationId, operation: 'execute', durationMs: elapsed(), errorCategory: categorizeError(error) });
+      forwardError(error, res, next);
+    }
   }
 
   async function messages(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const elapsed = startTimer();
     try {
       const userId = getAuthenticatedUserId(req);
       if (!userId) return sendError(res, 'Unauthorized', 401);
@@ -70,9 +95,20 @@ export function createAssistantControllers(
       if (!providerMessageRequest(req.body)) {
         return sendError(res, 'Request body must include a non-empty string "message" and an optional string "conversationId"', 400, 'BAD_REQUEST');
       }
+      logEvent('info', { event: 'assistant.message.received', requestId: req.correlationId, operation: 'messages' });
       const result = await providerRuntime.sendMessage(userId, req.correlationId, {
         message: req.body.message,
         ...(req.body.conversationId === undefined ? {} : { conversationId: req.body.conversationId }),
+      });
+      logEvent('info', {
+        event: 'assistant.message.completed',
+        requestId: req.correlationId,
+        operation: 'messages',
+        outcome: result.response.status,
+        httpStatus: result.httpStatus,
+        durationMs: elapsed(),
+        clarificationRequired: result.response.status === 'clarification_required',
+        draftCreated: draftWasCreated(result.response),
       });
       if (result.response.status === 'error' || result.response.status === 'rejected') {
         return void res.status(result.httpStatus).json({
@@ -82,6 +118,7 @@ export function createAssistantControllers(
       }
       sendSuccess(res, result.response, 'Assistant message processed');
     } catch (error) {
+      logEvent('error', { event: 'assistant.message.failed', requestId: req.correlationId, operation: 'messages', durationMs: elapsed(), errorCategory: categorizeError(error) });
       forwardError(error, res, next);
     }
   }
@@ -103,6 +140,7 @@ export function createAssistantControllers(
   }
 
   async function recoveryState(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const elapsed = startTimer();
     try {
       const userId = getAuthenticatedUserId(req);
       if (!userId) return sendError(res, 'Unauthorized', 401);
@@ -111,8 +149,25 @@ export function createAssistantControllers(
       // does not verify the conversation exists, so a bad id would silently look like
       // "no active workflow" instead of 404. Verify ownership first, same as `get`.
       await conversations.assertOwned(userId, conversationId);
-      sendSuccess(res, await application.getAssistantState(userId, conversationId));
-    } catch (error) { forwardError(error, res, next); }
+      logEvent('info', { event: 'assistant.recovery.requested', requestId: req.correlationId });
+      const state = await application.getAssistantState(userId, conversationId);
+      const hasActiveClarification = Boolean(state.activeClarification);
+      const hasPendingDraft = Boolean(state.pendingDraft);
+      const hasTerminalClarification = Boolean(state.latestTerminalClarification);
+      const resolved = hasActiveClarification || hasPendingDraft || hasTerminalClarification;
+      logEvent('info', {
+        event: resolved ? 'assistant.recovery.resolved' : 'assistant.recovery.unresolved',
+        requestId: req.correlationId,
+        durationMs: elapsed(),
+        hasActiveClarification,
+        hasPendingDraft,
+        hasTerminalClarification,
+      });
+      sendSuccess(res, state);
+    } catch (error) {
+      logEvent('error', { event: 'assistant.recovery.unresolved', requestId: req.correlationId, durationMs: elapsed(), errorCategory: categorizeError(error) });
+      forwardError(error, res, next);
+    }
   }
   async function archive(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -122,23 +177,41 @@ export function createAssistantControllers(
     } catch (error) { forwardError(error, res, next); }
   }
   async function confirmDraft(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const elapsed = startTimer();
     try {
       const userId = getAuthenticatedUserId(req);
       if (!userId) return sendError(res, 'Unauthorized', 401);
       if (!drafts) return sendError(res, 'Assistant financial drafts unavailable', 503);
-      const result = await drafts.confirm(userId, routeId(req.params.draftId), req.header('Idempotency-Key'), req.correlationId);
+      const { idempotencyOutcome, ...result } = await drafts.confirm(userId, routeId(req.params.draftId), req.header('Idempotency-Key'), req.correlationId);
+      logEvent('info', {
+        event: 'assistant.draft.confirmed',
+        requestId: req.correlationId,
+        durationMs: elapsed(),
+        idempotencyOutcome,
+        idempotentReplay: idempotencyOutcome === 'replay',
+      });
       sendSuccess(res, result, 'Financial draft confirmed');
-    } catch (error) { forwardError(error, res, next); }
+    } catch (error) {
+      logEvent('warn', { event: 'assistant.draft.confirmed', requestId: req.correlationId, durationMs: elapsed(), outcome: 'failed', errorCategory: categorizeError(error) });
+      forwardError(error, res, next);
+    }
   }
   async function cancelDraft(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const elapsed = startTimer();
     try {
       const userId = getAuthenticatedUserId(req);
       if (!userId) return sendError(res, 'Unauthorized', 401);
       if (!drafts) return sendError(res, 'Assistant financial drafts unavailable', 503);
-      sendSuccess(res, await drafts.cancel(userId, routeId(req.params.draftId), req.correlationId), 'Financial draft cancelled');
-    } catch (error) { forwardError(error, res, next); }
+      const result = await drafts.cancel(userId, routeId(req.params.draftId), req.correlationId);
+      logEvent('info', { event: 'assistant.draft.cancelled', requestId: req.correlationId, durationMs: elapsed(), outcome: result.status });
+      sendSuccess(res, result, 'Financial draft cancelled');
+    } catch (error) {
+      logEvent('warn', { event: 'assistant.draft.cancelled', requestId: req.correlationId, durationMs: elapsed(), outcome: 'failed', errorCategory: categorizeError(error) });
+      forwardError(error, res, next);
+    }
   }
   async function selectClarification(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const elapsed = startTimer();
     try {
       const userId = getAuthenticatedUserId(req);
       if (!userId) return sendError(res, 'Unauthorized', 401);
@@ -148,24 +221,47 @@ export function createAssistantControllers(
       const conversationId = routeId(req.params.conversationId);
       const clarificationId = routeId(req.params.clarificationId);
       const result = await application.selectClarification(userId, req.correlationId, req.body.optionToken, conversationId, clarificationId);
+      logEvent('info', {
+        event: 'assistant.clarification.selected',
+        requestId: req.correlationId,
+        durationMs: elapsed(),
+        outcome: result.response.status,
+        httpStatus: result.httpStatus,
+        chainedClarification: result.response.status === 'clarification_required',
+        draftCreated: draftWasCreated(result.response),
+      });
       if (result.response.status === 'error' || result.response.status === 'rejected') {
         return void res.status(result.httpStatus).json({ success: false, error: { ...result.response, statusCode: result.httpStatus } });
       }
       sendSuccess(res, result.response, 'Clarification processed');
-    } catch (error) { forwardError(error, res, next); }
+    } catch (error) {
+      logEvent('error', { event: 'assistant.clarification.selected', requestId: req.correlationId, durationMs: elapsed(), outcome: 'failed', errorCategory: categorizeError(error) });
+      forwardError(error, res, next);
+    }
   }
   async function cancelClarification(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const elapsed = startTimer();
     try {
       const userId = getAuthenticatedUserId(req);
       if (!userId) return sendError(res, 'Unauthorized', 401);
       const conversationId = routeId(req.params.conversationId);
       const clarificationId = routeId(req.params.clarificationId);
       const result = await application.cancelClarification(userId, req.correlationId, clarificationId, conversationId);
+      logEvent('info', {
+        event: 'assistant.clarification.cancelled',
+        requestId: req.correlationId,
+        durationMs: elapsed(),
+        outcome: result.response.status,
+        httpStatus: result.httpStatus,
+      });
       if (result.response.status === 'error' || result.response.status === 'rejected') {
         return void res.status(result.httpStatus).json({ success: false, error: { ...result.response, statusCode: result.httpStatus } });
       }
       sendSuccess(res, result.response, 'Clarification cancelled');
-    } catch (error) { forwardError(error, res, next); }
+    } catch (error) {
+      logEvent('error', { event: 'assistant.clarification.cancelled', requestId: req.correlationId, durationMs: elapsed(), outcome: 'failed', errorCategory: categorizeError(error) });
+      forwardError(error, res, next);
+    }
   }
   return { execute, messages, list, get, recoveryState, archive, confirmDraft, cancelDraft, selectClarification, cancelClarification };
 }
