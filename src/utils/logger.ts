@@ -148,6 +148,8 @@ export interface AssistantLogEvent {
   readonly hasActiveClarification?: boolean;
   readonly hasPendingDraft?: boolean;
   readonly hasTerminalClarification?: boolean;
+  readonly attempt?: number;
+  readonly leaseRecovered?: boolean;
 }
 
 /**

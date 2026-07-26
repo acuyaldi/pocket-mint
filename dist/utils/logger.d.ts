@@ -50,6 +50,8 @@ export interface AssistantLogEvent {
     readonly hasActiveClarification?: boolean;
     readonly hasPendingDraft?: boolean;
     readonly hasTerminalClarification?: boolean;
+    readonly attempt?: number;
+    readonly leaseRecovered?: boolean;
 }
 /**
  * Emit a canonical Assistant lifecycle event. Fields are passed through

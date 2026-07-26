@@ -420,11 +420,52 @@ exports.Prisma.ChannelConnectionScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.ChannelUpdateDedupScalarFieldEnum = {
+exports.Prisma.ChannelInboundJobScalarFieldEnum = {
   id: 'id',
   provider: 'provider',
   externalUpdateId: 'externalUpdateId',
-  createdAt: 'createdAt'
+  channelConnectionId: 'channelConnectionId',
+  externalSenderId: 'externalSenderId',
+  externalChatId: 'externalChatId',
+  text: 'text',
+  status: 'status',
+  attempt: 'attempt',
+  availableAt: 'availableAt',
+  leaseOwner: 'leaseOwner',
+  leaseExpiresAt: 'leaseExpiresAt',
+  processingStartedAt: 'processingStartedAt',
+  completedAt: 'completedAt',
+  assistantTurnId: 'assistantTurnId',
+  errorCategory: 'errorCategory',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ChannelOutboundDeliveryScalarFieldEnum = {
+  id: 'id',
+  inboundJobId: 'inboundJobId',
+  provider: 'provider',
+  destinationChatId: 'destinationChatId',
+  renderedText: 'renderedText',
+  status: 'status',
+  attempt: 'attempt',
+  availableAt: 'availableAt',
+  leaseOwner: 'leaseOwner',
+  leaseExpiresAt: 'leaseExpiresAt',
+  providerMessageId: 'providerMessageId',
+  sentAt: 'sentAt',
+  errorCategory: 'errorCategory',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ChannelAssistantOperationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  turnId: 'turnId',
+  renderedText: 'renderedText',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.BudgetScalarFieldEnum = {
@@ -591,6 +632,22 @@ exports.ChannelConnectionStatus = exports.$Enums.ChannelConnectionStatus = {
   REVOKED: 'REVOKED'
 };
 
+exports.ChannelJobStatus = exports.$Enums.ChannelJobStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED_RETRYABLE: 'FAILED_RETRYABLE',
+  FAILED_TERMINAL: 'FAILED_TERMINAL'
+};
+
+exports.ChannelDeliveryStatus = exports.$Enums.ChannelDeliveryStatus = {
+  PENDING: 'PENDING',
+  SENDING: 'SENDING',
+  SENT: 'SENT',
+  FAILED_RETRYABLE: 'FAILED_RETRYABLE',
+  FAILED_TERMINAL: 'FAILED_TERMINAL'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   AssistantConversation: 'AssistantConversation',
@@ -612,7 +669,9 @@ exports.Prisma.ModelName = {
   SavingGoal: 'SavingGoal',
   ChannelLinkToken: 'ChannelLinkToken',
   ChannelConnection: 'ChannelConnection',
-  ChannelUpdateDedup: 'ChannelUpdateDedup',
+  ChannelInboundJob: 'ChannelInboundJob',
+  ChannelOutboundDelivery: 'ChannelOutboundDelivery',
+  ChannelAssistantOperation: 'ChannelAssistantOperation',
   Budget: 'Budget'
 };
 
