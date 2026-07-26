@@ -12,6 +12,8 @@ import { budgetRouter } from './budgetRoutes';
 import { analyticsRouter } from './analyticsRoutes';
 import { merchantMappingRouter } from './merchantMappingRoutes';
 import { assistantRouter } from './assistantRoutes';
+import { channelRouter } from './channelRoutes';
+import { telegramRouter } from './telegramRoutes';
 
 const router = Router();
 
@@ -30,5 +32,7 @@ router.use('/v1/budgets', budgetRouter);
 router.use('/v1/analytics', analyticsRouter);
 router.use('/v1/merchant-mappings', merchantMappingRouter);
 router.use('/v1/assistant', assistantRouter);
+router.use('/v1/channels', channelRouter);
+router.use('/v1/telegram', telegramRouter);
 
 export { router };

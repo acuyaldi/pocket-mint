@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.corsConfig = exports.rateLimitConfig = exports.trustProxy = exports.assistantProviderConfig = exports.databaseConfig = exports.authConfig = exports.reportingConfig = exports.serverConfig = exports.isProduction = void 0;
+exports.corsConfig = exports.rateLimitConfig = exports.trustProxy = exports.telegramConfig = exports.assistantProviderConfig = exports.databaseConfig = exports.authConfig = exports.reportingConfig = exports.serverConfig = exports.isProduction = void 0;
 exports.validateConfig = validateConfig;
 require("dotenv/config");
 const reportingTime_1 = require("../domain/reportingTime");
 const assistant_provider_1 = require("./assistant-provider");
+const config_1 = require("../telegram/config");
 /**
  * Centralized, typed configuration.
  *
@@ -107,6 +108,8 @@ exports.databaseConfig = {
 };
 // ---------------- Assistant provider ----------------
 exports.assistantProviderConfig = (0, assistant_provider_1.loadAssistantProviderConfig)(process.env);
+// ---------------- Telegram channel ----------------
+exports.telegramConfig = (0, config_1.loadTelegramConfig)(process.env);
 // ---------------- network / rate limiting ----------------
 exports.trustProxy = parseTrustProxy(process.env.TRUST_PROXY);
 /**

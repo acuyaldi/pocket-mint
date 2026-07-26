@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.mutationLimiter = exports.generalLimiter = void 0;
+exports.telegramWebhookLimiter = exports.mutationLimiter = exports.generalLimiter = void 0;
 exports.ipKey = ipKey;
 exports.userOrIpKey = userOrIpKey;
 const express_rate_limit_1 = require("express-rate-limit");
@@ -77,5 +77,17 @@ exports.mutationLimiter = (0, express_rate_limit_1.rateLimit)({
         req.method === 'OPTIONS' ||
         req.method === 'GET' ||
         req.method === 'HEAD',
+});
+/**
+ * Separate instance for the public Telegram webhook: no verified user exists
+ * (it's server-to-server, not a browser-authenticated caller), so it keys by
+ * IP like the general limiter, but with its own generous budget so a burst of
+ * legitimate Telegram delivery retries isn't confused with abuse.
+ */
+exports.telegramWebhookLimiter = (0, express_rate_limit_1.rateLimit)({
+    ...shared,
+    limit: config_1.rateLimitConfig.max,
+    keyGenerator: ipKey,
+    skip: () => !config_1.rateLimitConfig.enabled,
 });
 //# sourceMappingURL=rateLimit.js.map

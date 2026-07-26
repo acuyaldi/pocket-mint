@@ -42,6 +42,8 @@ model User {
   assistantIdempotencyRecords   AssistantIdempotencyRecord[]
   assistantProviderExecutions  AssistantProviderExecution[]
   clarificationRequests        ClarificationRequest[]
+  channelLinkTokens             ChannelLinkToken[]
+  channelConnections            ChannelConnection[]
 
   @@map("users")
 }
@@ -125,6 +127,7 @@ model AssistantConversation {
   financialDrafts AssistantFinancialDraft[]
   providerExecutions AssistantProviderExecution[]
   clarificationRequests ClarificationRequest[]
+  channelConnections ChannelConnection[]
 
   @@index([userId, lastActivityAt, id])
   @@index([userId, status, lastActivityAt])
@@ -654,6 +657,77 @@ model SavingGoal {
 
   @@index([userId, status])
   @@map("saving_goals")
+}
+
+// ─────────────────────────────────────────────
+// CHANNELS  (Phase 25 — Telegram channel foundation)
+// ─────────────────────────────────────────────
+// Provider-agnostic boundary for external-channel identity linking. Deliberately
+// separate from the Assistant models: this is a transport/identity concern, not
+// an Assistant domain concern. Never stores bot tokens, webhook secrets, raw
+// provider payloads, or message content — see docs/product/decisions/013.
+enum ChannelProvider {
+  TELEGRAM
+}
+
+enum ChannelConnectionStatus {
+  ACTIVE
+  REVOKED
+}
+
+// One-time linking code, digest-only. Raw token is returned to the
+// authenticated user exactly once at creation and never persisted.
+model ChannelLinkToken {
+  id          String          @id @default(cuid())
+  userId      String          @map("user_id")
+  provider    ChannelProvider
+  tokenDigest String          @map("token_digest")
+  expiresAt   DateTime        @map("expires_at")
+  consumedAt  DateTime?       @map("consumed_at")
+  createdAt   DateTime        @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, tokenDigest])
+  @@index([userId, provider])
+  @@map("channel_link_tokens")
+}
+
+// Ownership-scoped mapping from an external channel identity to a Pocket Mint
+// user. One active Telegram identity maps to exactly one user (conservative
+// default) and a user has at most one active connection per provider.
+model ChannelConnection {
+  id             String                  @id @default(cuid())
+  userId         String                  @map("user_id")
+  provider       ChannelProvider
+  externalUserId String                  @map("external_user_id")
+  externalChatId String                  @map("external_chat_id")
+  conversationId String?                 @map("conversation_id")
+  status         ChannelConnectionStatus @default(ACTIVE)
+  linkedAt       DateTime                @default(now()) @map("linked_at")
+  revokedAt      DateTime?               @map("revoked_at")
+  updatedAt      DateTime                @updatedAt @map("updated_at")
+
+  user         User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversation AssistantConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+
+  @@unique([provider, externalUserId])
+  @@unique([userId, provider])
+  @@map("channel_connections")
+}
+
+// Authoritative dedup record for retried provider webhook deliveries (e.g.
+// Telegram's update_id). Rows older than the retention window are deleted
+// inline by the webhook handler — see src/telegram/dedup.ts.
+model ChannelUpdateDedup {
+  id               String          @id @default(cuid())
+  provider         ChannelProvider
+  externalUpdateId String          @map("external_update_id")
+  createdAt        DateTime        @default(now()) @map("created_at")
+
+  @@unique([provider, externalUpdateId])
+  @@index([createdAt])
+  @@map("channel_update_dedups")
 }
 
 // ─────────────────────────────────────────────

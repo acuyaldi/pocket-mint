@@ -57,6 +57,7 @@ const integrationTests = [
   'test/assistant/recovery-state-http.integration.test.ts',
   'test/assistant/clarification-expiry.integration.test.ts',
   'test/assistant/entity-resolution-transaction.integration.test.ts',
+  'test/channels/telegram-channel.integration.test.ts',
 ];
 
 async function main() {

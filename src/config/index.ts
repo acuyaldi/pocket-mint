@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { assertValidTimeZone } from '../domain/reportingTime';
 import { loadAssistantProviderConfig } from './assistant-provider';
+import { loadTelegramConfig } from '../telegram/config';
 
 /**
  * Centralized, typed configuration.
@@ -117,6 +118,10 @@ export const databaseConfig = {
 // ---------------- Assistant provider ----------------
 
 export const assistantProviderConfig = loadAssistantProviderConfig(process.env);
+
+// ---------------- Telegram channel ----------------
+
+export const telegramConfig = loadTelegramConfig(process.env);
 
 // ---------------- network / rate limiting ----------------
 
