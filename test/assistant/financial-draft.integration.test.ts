@@ -239,27 +239,32 @@ describe.skipIf(!url)('Assistant financial drafts (disposable PostgreSQL)', () =
 
   it('logs idempotency outcome and error category without exposing keys, amounts, or entity names', async () => {
     const { user, wallet, category } = await fixture('observability'); const server = app();
+    // AssistantError-driven 4xx responses are structurally "operational" (see
+    // src/http/forwardError.ts), so they're rendered via `sendError` directly —
+    // `error.middleware.ts` (and its console.error logging) is bypassed. The
+    // controller's own logEvent call is the only place these get logged, at 'warn'.
     const infoSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     try {
       const prepared = await request(server).post('/execute').set('x-test-user', user.id).send(draftBody(wallet.id, category.id));
       const draftId = prepared.body.data.data.draftId;
+      const other = await request(server).post('/execute').set('x-test-user', user.id).send(draftBody(wallet.id, category.id));
+      const otherDraftId = other.body.data.data.draftId;
       await request(server).post(`/drafts/${draftId}/confirm`).set('x-test-user', user.id).set('Idempotency-Key', 'observability-key');
       await request(server).post(`/drafts/${draftId}/confirm`).set('x-test-user', user.id).set('Idempotency-Key', 'observability-key');
-      const conflict = await request(server).post(`/drafts/${draftId}/confirm`).set('x-test-user', user.id).set('Idempotency-Key', 'observability-other-key');
+      const conflict = await request(server).post(`/drafts/${otherDraftId}/confirm`).set('x-test-user', user.id).set('Idempotency-Key', 'observability-key');
       expect(conflict.status).toBe(409);
 
       const infoLines = infoSpy.mock.calls.map((call) => call[0] as string);
-      const errorLines = errorSpy.mock.calls.map((call) => call[0] as string);
+      const warnLines = warnSpy.mock.calls.map((call) => call[0] as string);
       const confirmedEvents = infoLines.filter((line) => line.includes('"assistant.draft.confirmed"'));
       expect(confirmedEvents.some((line) => line.includes('"idempotencyOutcome":"new"'))).toBe(true);
       expect(confirmedEvents.some((line) => line.includes('"idempotencyOutcome":"replay"'))).toBe(true);
-      expect(errorLines.some((line) => line.includes('"errorCategory":"idempotency"'))).toBe(true);
+      expect(warnLines.some((line) => line.includes('"assistant.draft.confirmed"') && line.includes('"errorCategory":"idempotency"'))).toBe(true);
 
-      const allLines = [...infoLines, ...errorLines];
+      const allLines = [...infoLines, ...warnLines];
       for (const line of allLines) {
         expect(line).not.toContain('observability-key');
-        expect(line).not.toContain('observability-other-key');
         expect(line).not.toContain('12500.50');
         expect(line).not.toContain(wallet.id);
         expect(line).not.toContain(category.id);
@@ -267,7 +272,7 @@ describe.skipIf(!url)('Assistant financial drafts (disposable PostgreSQL)', () =
       }
     } finally {
       infoSpy.mockRestore();
-      errorSpy.mockRestore();
+      warnSpy.mockRestore();
     }
   });
 
@@ -277,15 +282,15 @@ describe.skipIf(!url)('Assistant financial drafts (disposable PostgreSQL)', () =
     const draftId = prepared.body.data.data.draftId;
     const draft = await resources!.prisma.assistantFinancialDraft.findUniqueOrThrow({ where: { id: draftId } });
     const server = app(() => new Date(draft.expiresAt.getTime() + 1));
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     try {
       const response = await request(server).post(`/drafts/${draftId}/confirm`).set('x-test-user', user.id).set('Idempotency-Key', 'expiry-observability-key');
       expect(response.status).toBe(409);
-      const lines = errorSpy.mock.calls.map((call) => call[0] as string);
-      expect(lines.some((line) => line.includes('"errorCategory":"expired"'))).toBe(true);
+      const lines = warnSpy.mock.calls.map((call) => call[0] as string);
+      expect(lines.some((line) => line.includes('"assistant.draft.confirmed"') && line.includes('"errorCategory":"expired"'))).toBe(true);
       for (const line of lines) expect(line).not.toContain('expiry-observability-key');
     } finally {
-      errorSpy.mockRestore();
+      warnSpy.mockRestore();
     }
   });
 });
