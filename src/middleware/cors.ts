@@ -23,7 +23,8 @@ export const corsOptions: CorsOptions = {
   // Only headers the app actually uses. Identity travels exclusively in
   // `Authorization: Bearer <jwt>`; the retired legacy identity headers
   // (x-api-key / x-user-id / x-user-email) are no longer accepted.
-  allowedHeaders: ['Authorization', 'Content-Type'],
+  // `Idempotency-Key` is required by `POST /assistant/drafts/:draftId/confirm`.
+  allowedHeaders: ['Authorization', 'Content-Type', 'Idempotency-Key'],
   // Browser clients need explicit permission to read the correlation ID
   // header that the correlation middleware sets on every response.
   exposedHeaders: ['X-Correlation-Id'],
