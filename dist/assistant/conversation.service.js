@@ -157,6 +157,6 @@ function createAssistantConversationService(db) {
         const updated = await db.assistantConversation.update({ where: { id }, data: { status: 'ARCHIVED', archivedAt: new Date() } });
         return { id: updated.id, status: updated.status, archivedAt: updated.archivedAt };
     }
-    return { assertContinuable, establishConversation, beginTurn, markTurnRunning, beginToolExecution, finalize, finalizeRejected, finalizeWithoutTool, listOwnedConversations, getOwnedConversation, archiveOwnedConversation };
+    return { assertContinuable, assertOwned: owned, establishConversation, beginTurn, markTurnRunning, beginToolExecution, finalize, finalizeRejected, finalizeWithoutTool, listOwnedConversations, getOwnedConversation, archiveOwnedConversation };
 }
 //# sourceMappingURL=conversation.service.js.map

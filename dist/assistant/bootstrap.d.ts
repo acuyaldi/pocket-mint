@@ -8,6 +8,16 @@ export declare const handlerRegistry: HandlerRegistry;
 export declare const entityResolverRegistry: EntityResolverRegistry;
 export declare const assistantConversationService: {
     assertContinuable: (userId: string, id: string) => Promise<void>;
+    assertOwned: (userId: string, id: string) => Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        userId: string;
+        status: import("@/generated/prisma").$Enums.AssistantConversationStatus;
+        locale: string;
+        lastActivityAt: Date;
+        archivedAt: Date | null;
+    }>;
     establishConversation: (userId: string, conversationId: string | undefined, locale: string) => Promise<string>;
     beginTurn: (input: import("./conversation.types").BeginTurnInput) => Promise<import("./conversation.types").BeginTurnResult>;
     markTurnRunning: (turnId: string) => Promise<void>;

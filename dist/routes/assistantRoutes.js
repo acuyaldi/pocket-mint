@@ -13,6 +13,7 @@ assistantRouter.post('/execute', apiKeyAuth_1.requireUser, rateLimit_1.mutationL
 assistantRouter.post('/messages', apiKeyAuth_1.requireUser, rateLimit_1.mutationLimiter, assistant_controller_1.assistantMessages);
 assistantRouter.get('/conversations', apiKeyAuth_1.requireUser, assistant_controller_1.listAssistantConversations);
 assistantRouter.get('/conversations/:conversationId', apiKeyAuth_1.requireUser, assistant_controller_1.getAssistantConversation);
+assistantRouter.get('/conversations/:conversationId/recovery-state', apiKeyAuth_1.requireUser, assistant_controller_1.getAssistantRecoveryState);
 assistantRouter.post('/conversations/:conversationId/archive', apiKeyAuth_1.requireUser, rateLimit_1.mutationLimiter, assistant_controller_1.archiveAssistantConversation);
 assistantRouter.post('/drafts/:draftId/confirm', apiKeyAuth_1.requireUser, rateLimit_1.mutationLimiter, assistant_controller_1.confirmAssistantFinancialDraft);
 assistantRouter.post('/drafts/:draftId/cancel', apiKeyAuth_1.requireUser, rateLimit_1.mutationLimiter, assistant_controller_1.cancelAssistantFinancialDraft);
