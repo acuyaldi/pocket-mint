@@ -20,3 +20,21 @@ export declare function channelOperationId(provider: string, inboundJobId: strin
  */
 export declare function beginAssistantOperation(db: PrismaClient, operationId: string, userId: string): Promise<OperationBeginResult>;
 export declare function completeAssistantOperation(db: PrismaClient, operationId: string, turnId: string, renderedText: string): Promise<void>;
+export type CallbackOperationBeginResult = {
+    readonly status: 'new';
+} | {
+    readonly status: 'replay';
+    readonly terminalStatus: string;
+    readonly renderedText: string;
+}
+/** A prior attempt crashed before recording a terminal result — fails safe: caller must not repeat the callback action. */
+ | {
+    readonly status: 'ambiguous';
+};
+/**
+ * Same insert-first-wins operation-identity guard as `beginAssistantOperation`,
+ * but for a CALLBACK_INTERACTION — never an Assistant turn. One inbound
+ * callback job maps to at most one interaction operation.
+ */
+export declare function beginCallbackOperation(db: PrismaClient, operationId: string, userId: string, callbackTokenId: string | null): Promise<CallbackOperationBeginResult>;
+export declare function completeCallbackOperation(db: PrismaClient, operationId: string, terminalStatus: string, renderedText: string): Promise<void>;

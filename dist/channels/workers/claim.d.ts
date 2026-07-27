@@ -7,14 +7,20 @@ export interface ClaimedInboundJob {
     readonly externalSenderId: string;
     readonly externalChatId: string;
     readonly text: string;
+    readonly kind: 'MESSAGE' | 'CALLBACK';
+    readonly callbackQueryId: string | null;
+    readonly callbackMessageId: string | null;
     readonly attempt: number;
     readonly assistantTurnId: string | null;
 }
 export interface ClaimedDelivery {
     readonly id: string;
     readonly inboundJobId: string;
+    readonly kind: 'SEND_MESSAGE' | 'EDIT_REPLY_MARKUP' | 'ANSWER_CALLBACK';
     readonly destinationChatId: string;
     readonly renderedText: string;
+    readonly replyMarkup: unknown;
+    readonly targetMessageId: string | null;
     readonly attempt: number;
 }
 export interface ClaimOptions {

@@ -42,3 +42,41 @@ export async function completeAssistantOperation(
 ): Promise<void> {
   await db.channelAssistantOperation.update({ where: { id: operationId }, data: { turnId, renderedText } });
 }
+
+export type CallbackOperationBeginResult =
+  | { readonly status: 'new' }
+  | { readonly status: 'replay'; readonly terminalStatus: string; readonly renderedText: string }
+  /** A prior attempt crashed before recording a terminal result — fails safe: caller must not repeat the callback action. */
+  | { readonly status: 'ambiguous' };
+
+/**
+ * Same insert-first-wins operation-identity guard as `beginAssistantOperation`,
+ * but for a CALLBACK_INTERACTION — never an Assistant turn. One inbound
+ * callback job maps to at most one interaction operation.
+ */
+export async function beginCallbackOperation(
+  db: PrismaClient,
+  operationId: string,
+  userId: string,
+  callbackTokenId: string | null,
+): Promise<CallbackOperationBeginResult> {
+  try {
+    await db.channelAssistantOperation.create({ data: { id: operationId, userId, kind: 'CALLBACK_INTERACTION', callbackTokenId } });
+    return { status: 'new' };
+  } catch (error) {
+    if ((error as { code?: string }).code !== 'P2002') throw error;
+    const existing = await db.channelAssistantOperation.findUniqueOrThrow({ where: { id: operationId } });
+    return existing.terminalStatus && existing.renderedText
+      ? { status: 'replay', terminalStatus: existing.terminalStatus, renderedText: existing.renderedText }
+      : { status: 'ambiguous' };
+  }
+}
+
+export async function completeCallbackOperation(
+  db: PrismaClient,
+  operationId: string,
+  terminalStatus: string,
+  renderedText: string,
+): Promise<void> {
+  await db.channelAssistantOperation.update({ where: { id: operationId }, data: { terminalStatus, renderedText } });
+}

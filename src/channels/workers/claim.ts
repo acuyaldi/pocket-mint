@@ -8,6 +8,9 @@ export interface ClaimedInboundJob {
   readonly externalSenderId: string;
   readonly externalChatId: string;
   readonly text: string;
+  readonly kind: 'MESSAGE' | 'CALLBACK';
+  readonly callbackQueryId: string | null;
+  readonly callbackMessageId: string | null;
   readonly attempt: number;
   readonly assistantTurnId: string | null;
 }
@@ -15,8 +18,11 @@ export interface ClaimedInboundJob {
 export interface ClaimedDelivery {
   readonly id: string;
   readonly inboundJobId: string;
+  readonly kind: 'SEND_MESSAGE' | 'EDIT_REPLY_MARKUP' | 'ANSWER_CALLBACK';
   readonly destinationChatId: string;
   readonly renderedText: string;
+  readonly replyMarkup: unknown;
+  readonly targetMessageId: string | null;
   readonly attempt: number;
 }
 
@@ -60,6 +66,9 @@ export async function claimInboundJobs(db: PrismaClient, opts: ClaimOptions): Pr
       j.external_sender_id AS "externalSenderId",
       j.external_chat_id AS "externalChatId",
       j.text,
+      j.kind,
+      j.callback_query_id AS "callbackQueryId",
+      j.callback_message_id AS "callbackMessageId",
       j.attempt,
       j.assistant_turn_id AS "assistantTurnId"
   `);
@@ -86,8 +95,11 @@ export async function claimOutboundDeliveries(db: PrismaClient, opts: ClaimOptio
     RETURNING
       d.id,
       d.inbound_job_id AS "inboundJobId",
+      d.kind,
       d.destination_chat_id AS "destinationChatId",
       d.rendered_text AS "renderedText",
+      d.reply_markup AS "replyMarkup",
+      d.target_message_id AS "targetMessageId",
       d.attempt
   `);
 }

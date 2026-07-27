@@ -1,5 +1,6 @@
 import type { AssistantApplicationService, AssistantApplicationResult } from './application.service';
 import type { AssistantConversationService } from './conversation.service';
+import type { AssistantFinancialDraftService } from './financial-draft.service';
 import { buildProviderCapabilityCatalog } from './provider-capability';
 import { assembleAssistantModelRequest } from './provider-prompt';
 import { validateAssistantPlan } from './provider-plan';
@@ -52,6 +53,7 @@ export interface AssistantProviderRuntimeResult {
 interface RuntimeDependencies {
   application: AssistantApplicationService;
   conversations: AssistantConversationService;
+  financialDrafts: AssistantFinancialDraftService;
   provider: AssistantModelProvider;
   audit: AssistantProviderAudit;
   toolRegistry: ToolRegistry;
@@ -270,7 +272,45 @@ export function createAssistantProviderRuntime(deps: RuntimeDependencies) {
     }
   }
 
-  return { sendMessage };
+  // ---- Channel callback passthroughs -----------------------------------
+  // Thin forwards to the same authoritative services the HTTP path calls
+  // (assistant.controller.ts) — no parallel clarification/draft logic here.
+  // These exist so a Telegram callback handler can reuse them without
+  // importing application.service.ts / financial-draft.service.ts directly
+  // (see test/channels/telegramAdapterBoundary.test.ts).
+
+  function selectClarification(
+    userId: string,
+    correlationId: string,
+    token: string,
+    conversationId: string,
+    clarificationId?: string,
+  ): Promise<AssistantApplicationResult> {
+    return deps.application.selectClarification(userId, correlationId, token, conversationId, clarificationId);
+  }
+
+  function cancelClarification(
+    userId: string,
+    correlationId: string,
+    clarificationId: string,
+    conversationId: string,
+  ): Promise<AssistantApplicationResult> {
+    return deps.application.cancelClarification(userId, correlationId, clarificationId, conversationId);
+  }
+
+  function confirmDraft(userId: string, draftId: string, idempotencyKey: string, correlationId: string) {
+    return deps.financialDrafts.confirm(userId, draftId, idempotencyKey, correlationId);
+  }
+
+  function cancelDraft(userId: string, draftId: string, correlationId: string) {
+    return deps.financialDrafts.cancel(userId, draftId, correlationId);
+  }
+
+  function getAssistantState(userId: string, conversationId: string) {
+    return deps.application.getAssistantState(userId, conversationId);
+  }
+
+  return { sendMessage, selectClarification, cancelClarification, confirmDraft, cancelDraft, getAssistantState };
 }
 
 export type AssistantProviderRuntime = ReturnType<typeof createAssistantProviderRuntime>;

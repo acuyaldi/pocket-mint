@@ -56,4 +56,48 @@ describe('createTelegramClient', () => {
     const client = createTelegramClient({ botToken: 'test-token', fetchImpl });
     expect(await client.sendMessage('123', 'hi')).toEqual({ ok: false, category: 'provider_invalid_response' });
   });
+
+  it('captures the provider message_id from a successful send', async () => {
+    const fetchImpl = fakeFetch([{ status: 200, body: { result: { message_id: 4242 } } }]);
+    const client = createTelegramClient({ botToken: 'test-token', fetchImpl });
+    expect(await client.sendMessage('123', 'hi')).toEqual({ ok: true, messageId: '4242' });
+  });
+
+  it('sends an inline keyboard as reply_markup when provided', async () => {
+    const fetchImpl = fakeFetch([{ status: 200 }]);
+    const client = createTelegramClient({ botToken: 'test-token', fetchImpl });
+    const keyboard = { inline_keyboard: [[{ text: 'Confirm', callback_data: 'cbk_abc' }]] };
+    await client.sendMessage('123', 'hi', keyboard);
+    const [, init] = fetchImpl.mock.calls[0];
+    const body = JSON.parse(String(init?.body));
+    expect(body.reply_markup).toEqual(keyboard);
+  });
+
+  it('answerCallbackQuery posts callback_query_id and never leaks it into unrelated calls', async () => {
+    const fetchImpl = fakeFetch([{ status: 200 }]);
+    const client = createTelegramClient({ botToken: 'test-token', fetchImpl });
+    await client.answerCallbackQuery('cbq-1', 'Processing…');
+    const [url, init] = fetchImpl.mock.calls[0];
+    expect(url).toContain('/answerCallbackQuery');
+    expect(JSON.parse(String(init?.body))).toEqual({ callback_query_id: 'cbq-1', text: 'Processing…' });
+  });
+
+  it('editMessageReplyMarkup targets the given chat/message and omits reply_markup when clearing', async () => {
+    const fetchImpl = fakeFetch([{ status: 200 }]);
+    const client = createTelegramClient({ botToken: 'test-token', fetchImpl });
+    await client.editMessageReplyMarkup('123', '999');
+    const [url, init] = fetchImpl.mock.calls[0];
+    expect(url).toContain('/editMessageReplyMarkup');
+    const body = JSON.parse(String(init?.body));
+    expect(body).toEqual({ chat_id: '123', message_id: 999 });
+  });
+
+  it('setWebhook now subscribes to callback_query updates too', async () => {
+    const fetchImpl = fakeFetch([{ status: 200 }]);
+    const client = createTelegramClient({ botToken: 'test-token', fetchImpl });
+    await client.setWebhook('https://example.test/webhook', 'secret');
+    const [, init] = fetchImpl.mock.calls[0];
+    const body = JSON.parse(String(init?.body));
+    expect(body.allowed_updates).toEqual(['message', 'callback_query']);
+  });
 });

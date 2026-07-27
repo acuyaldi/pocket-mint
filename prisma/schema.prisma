@@ -711,6 +711,7 @@ model ChannelConnection {
   user         User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
   conversation AssistantConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
   inboundJobs  ChannelInboundJob[]
+  callbackTokens ChannelCallbackToken[]
 
   @@unique([provider, externalUserId])
   @@unique([userId, provider])
@@ -741,6 +742,21 @@ enum ChannelDeliveryStatus {
   FAILED_TERMINAL
 }
 
+// Phase 26A: distinguishes a natural-language text update from an inline
+// keyboard button press. CALLBACK jobs never reach the Assistant NL path.
+enum ChannelJobKind {
+  MESSAGE
+  CALLBACK
+}
+
+// Phase 26A: what a queued outbound row actually asks Telegram to do. Kept as
+// a closed enum (not an arbitrary method name) so nothing but these three
+// bounded actions can ever be persisted.
+enum ChannelDeliveryKind {
+  SEND_MESSAGE
+  EDIT_REPLY_MARKUP
+}
+
 model ChannelInboundJob {
   id                  String            @id @default(cuid())
   provider            ChannelProvider
@@ -749,6 +765,14 @@ model ChannelInboundJob {
   externalSenderId    String            @map("external_sender_id")
   externalChatId      String            @map("external_chat_id")
   text                String
+  kind                ChannelJobKind    @default(MESSAGE)
+  // Telegram callback_query.id, kept only for answerCallbackQuery diagnostics
+  // — never used as an authorization credential.
+  callbackQueryId     String?           @map("callback_query_id")
+  // The message the inline keyboard is attached to, taken directly from
+  // callback_query.message.message_id — lets keyboard cleanup target the
+  // right message without a separate provider-message lookup.
+  callbackMessageId   String?           @map("callback_message_id")
   status              ChannelJobStatus  @default(PENDING)
   attempt             Int               @default(0)
   availableAt         DateTime          @default(now()) @map("available_at")
@@ -761,8 +785,8 @@ model ChannelInboundJob {
   createdAt           DateTime          @default(now()) @map("created_at")
   updatedAt           DateTime          @updatedAt @map("updated_at")
 
-  connection ChannelConnection?        @relation(fields: [channelConnectionId], references: [id], onDelete: SetNull)
-  delivery   ChannelOutboundDelivery?
+  connection ChannelConnection?         @relation(fields: [channelConnectionId], references: [id], onDelete: SetNull)
+  deliveries ChannelOutboundDelivery[]
 
   @@unique([provider, externalUpdateId])
   @@index([status, availableAt])
@@ -770,14 +794,23 @@ model ChannelInboundJob {
   @@map("channel_inbound_jobs")
 }
 
-// One outbound Telegram reply per inbound job (current behavior always sends
-// exactly one reply — multi-part chunking is out of scope, see PD-015).
+// Outbound Telegram actions for a job. A MESSAGE job still produces exactly
+// one SEND_MESSAGE delivery; a CALLBACK job may produce a result-text
+// delivery plus a keyboard-cleanup (EDIT_REPLY_MARKUP) delivery, so this is
+// no longer 1:1 with the inbound job (see ChannelDeliveryKind).
 model ChannelOutboundDelivery {
   id              String                @id @default(cuid())
-  inboundJobId    String                @unique @map("inbound_job_id")
+  inboundJobId    String                @map("inbound_job_id")
   provider        ChannelProvider
+  kind            ChannelDeliveryKind   @default(SEND_MESSAGE)
   destinationChatId String              @map("destination_chat_id")
   renderedText    String                @map("rendered_text")
+  // Inline keyboard for SEND_MESSAGE, or the (empty/inert) markup to apply
+  // for EDIT_REPLY_MARKUP. Never carries real domain identifiers — only
+  // opaque callback handles rendered by the interaction service.
+  replyMarkup     Json?                 @map("reply_markup")
+  // For EDIT_REPLY_MARKUP: which previously-sent message to edit.
+  targetMessageId String?               @map("target_message_id")
   status          ChannelDeliveryStatus @default(PENDING)
   attempt         Int                   @default(0)
   availableAt     DateTime              @default(now()) @map("available_at")
@@ -791,27 +824,99 @@ model ChannelOutboundDelivery {
 
   inboundJob ChannelInboundJob @relation(fields: [inboundJobId], references: [id], onDelete: Cascade)
 
+  // One delivery per (job, kind): preserves the original "create once, P2002
+  // on reclaim" idempotency per action, while allowing a CALLBACK job to
+  // produce both a result-text delivery and a keyboard-cleanup delivery.
+  @@unique([inboundJobId, kind])
   @@index([status, availableAt])
   @@index([status, leaseExpiresAt])
   @@map("channel_outbound_deliveries")
 }
 
+// Phase 26A: which kind of durable operation this row represents. A CALLBACK
+// operation is never an Assistant turn — it is the result of re-derived
+// ownership + an authoritative clarification/draft service call.
+enum ChannelOperationKind {
+  ASSISTANT_TURN
+  CALLBACK_INTERACTION
+}
+
 // Operation-identity guard binding one inbound job to at most one Assistant
-// turn. `id` is the operation key itself (`channel:<provider>:<jobId>`), so
-// uniqueness is free via the primary key — this is what makes a reclaimed job
-// discover an already-completed Assistant turn instead of re-invoking it.
+// turn OR one callback interaction. `id` is the operation key itself
+// (`channel:<provider>:<jobId>`), so uniqueness is free via the primary key —
+// this is what makes a reclaimed job discover an already-completed result
+// instead of re-invoking the Assistant or re-running the callback action.
 model ChannelAssistantOperation {
-  id           String   @id
-  userId       String   @map("user_id")
-  turnId       String?  @map("turn_id")
+  id              String               @id
+  userId          String               @map("user_id")
+  kind            ChannelOperationKind @default(ASSISTANT_TURN)
+  turnId          String?              @map("turn_id")
   // The already-rendered reply, captured at bind time so a reclaimed job can
   // reconstruct the outbound delivery without reaching into Assistant
   // persistence internals (turns/drafts/clarifications) to re-derive it.
-  renderedText String?  @map("rendered_text")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  renderedText    String?              @map("rendered_text")
+  // CALLBACK_INTERACTION only: which callback token this operation resolved,
+  // and the terminal domain status of the underlying action (e.g.
+  // "selected", "already_consumed", "expired", "committed", "cancelled").
+  callbackTokenId String?              @map("callback_token_id")
+  terminalStatus  String?              @map("terminal_status")
+  createdAt       DateTime             @default(now()) @map("created_at")
+  updatedAt       DateTime             @updatedAt @map("updated_at")
+
+  callbackToken ChannelCallbackToken? @relation(fields: [callbackTokenId], references: [id], onDelete: SetNull)
 
   @@map("channel_assistant_operations")
+}
+
+enum ChannelCallbackInteractionType {
+  CLARIFICATION_SELECT
+  CLARIFICATION_CANCEL
+  DRAFT_CONFIRM
+  DRAFT_CANCEL
+}
+
+enum ChannelCallbackTokenStatus {
+  PENDING
+  CONSUMED
+  EXPIRED
+  CANCELLED
+  STALE
+}
+
+// Opaque inline-keyboard button handle. Telegram callback_data carries only
+// this token's plaintext once (never persisted); everything the button
+// "means" — action, clarification/draft identity — is resolved server-side
+// by digest lookup, never trusted from the callback payload. Mirrors the
+// ClarificationOption.tokenDigest pattern (Phase 24) rather than inventing a
+// new safety model.
+model ChannelCallbackToken {
+  id                     String                         @id @default(cuid())
+  provider               ChannelProvider
+  tokenDigest            String                         @map("token_digest")
+  connectionId           String                         @map("connection_id")
+  conversationId         String                         @map("conversation_id")
+  interactionType        ChannelCallbackInteractionType  @map("interaction_type")
+  clarificationRequestId String?                        @map("clarification_request_id")
+  clarificationOptionId  String?                        @map("clarification_option_id")
+  financialDraftId       String?                        @map("financial_draft_id")
+  // Server-side-only material needed to invoke the authoritative service
+  // (currently: the raw ClarificationOption token for CLARIFICATION_SELECT).
+  // Never returned to Telegram — callback_data carries only this token's own
+  // id/digest. Cleared to null once consumed.
+  actionSecret           String?                        @map("action_secret")
+  status                 ChannelCallbackTokenStatus     @default(PENDING)
+  expiresAt              DateTime                       @map("expires_at")
+  consumedAt             DateTime?                      @map("consumed_at")
+  createdAt              DateTime                       @default(now()) @map("created_at")
+  updatedAt              DateTime                       @updatedAt @map("updated_at")
+
+  connection ChannelConnection          @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  operations ChannelAssistantOperation[]
+
+  @@unique([provider, tokenDigest])
+  @@index([connectionId, status])
+  @@index([status, expiresAt])
+  @@map("channel_callback_tokens")
 }
 
 // ─────────────────────────────────────────────

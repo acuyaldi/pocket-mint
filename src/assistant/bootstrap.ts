@@ -65,6 +65,7 @@ export const assistantProviderRuntime = assistantProviderConfig.enabled
   ? createAssistantProviderRuntime({
     application: assistantApplicationService,
     conversations: assistantConversationService,
+    financialDrafts: assistantFinancialDraftService,
     provider: createGeminiAssistantProvider({
       apiKey: assistantProviderConfig.apiKey!,
       model: assistantProviderConfig.model!,

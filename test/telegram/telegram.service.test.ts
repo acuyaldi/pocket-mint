@@ -34,6 +34,13 @@ function buildDeps(overrides: Partial<TelegramServiceDeps> = {}): TelegramServic
       revoke: vi.fn(),
       setCurrentConversation: vi.fn(),
     } as never,
+    client: {
+      answerCallbackQuery: vi.fn().mockResolvedValue({ ok: true }),
+      sendMessage: vi.fn(),
+      editMessageReplyMarkup: vi.fn(),
+      setWebhook: vi.fn(),
+      deleteWebhook: vi.fn(),
+    } as never,
     ...overrides,
   };
 }
@@ -42,6 +49,15 @@ const groupUpdate = { update_id: 1, message: { chat: { id: 1, type: 'group' }, f
 const privateUpdate = (id: number, text: string, senderId = 42) => ({
   update_id: id,
   message: { chat: { id: 555, type: 'private' }, from: { id: senderId }, text },
+});
+const callbackUpdate = (id: number, data: string, senderId = 42) => ({
+  update_id: id,
+  callback_query: {
+    id: `cbq-${id}`,
+    data,
+    from: { id: senderId },
+    message: { message_id: 900 + id, chat: { id: 555, type: 'private' } },
+  },
 });
 
 describe('createTelegramService (webhook path — persist and acknowledge only)', () => {
@@ -73,7 +89,7 @@ describe('createTelegramService (webhook path — persist and acknowledge only)'
     await createTelegramService(deps).handleUpdate(privateUpdate(9, 'spend 50000 on food'), CORRELATION_ID);
     const [data] = (deps.db as ReturnType<typeof fakeDb>).created as Array<Record<string, unknown>>;
     expect(Object.keys(data).sort()).toEqual(
-      ['channelConnectionId', 'externalChatId', 'externalSenderId', 'externalUpdateId', 'provider', 'text'].sort(),
+      ['channelConnectionId', 'externalChatId', 'externalSenderId', 'externalUpdateId', 'kind', 'provider', 'text'].sort(),
     );
     expect(data.text).toBe('spend 50000 on food');
   });
@@ -111,5 +127,36 @@ describe('createTelegramService (webhook path — persist and acknowledge only)'
       logSpy.mockRestore();
       warnSpy.mockRestore();
     }
+  });
+
+  it('persists a callback query as a CALLBACK-kind job and synchronously acknowledges it', async () => {
+    const deps = buildDeps();
+    await createTelegramService(deps).handleUpdate(callbackUpdate(20, 'cbk_opaquehandle'), CORRELATION_ID);
+    const [data] = (deps.db as ReturnType<typeof fakeDb>).created as Array<Record<string, unknown>>;
+    expect(data).toMatchObject({ kind: 'CALLBACK', text: 'cbk_opaquehandle', callbackQueryId: 'cbq-20', callbackMessageId: '920' });
+    expect(deps.client.answerCallbackQuery).toHaveBeenCalledWith('cbq-20');
+  });
+
+  it('acknowledges the callback even on a duplicate update_id (Telegram retry storm)', async () => {
+    const deps = buildDeps();
+    const service = createTelegramService(deps);
+    await service.handleUpdate(callbackUpdate(21, 'cbk_a'), CORRELATION_ID);
+    await service.handleUpdate(callbackUpdate(21, 'cbk_a'), CORRELATION_ID);
+    expect(deps.client.answerCallbackQuery).toHaveBeenCalledTimes(2);
+    expect((deps.db as ReturnType<typeof fakeDb>).created).toHaveLength(1);
+  });
+
+  it('a failed acknowledgment does not undo durable job acceptance', async () => {
+    const deps = buildDeps({ client: { answerCallbackQuery: vi.fn().mockRejectedValue(new Error('network')), sendMessage: vi.fn(), editMessageReplyMarkup: vi.fn(), setWebhook: vi.fn(), deleteWebhook: vi.fn() } as never });
+    await createTelegramService(deps).handleUpdate(callbackUpdate(22, 'cbk_b'), CORRELATION_ID);
+    expect((deps.db as ReturnType<typeof fakeDb>).created).toHaveLength(1);
+  });
+
+  it('rejects a callback_query update.data whose signature is unsupported (e.g. group chat) — no job created', async () => {
+    const deps = buildDeps();
+    const groupCallback = { update_id: 30, callback_query: { id: 'cbq-30', data: 'x', from: { id: 1 }, message: { message_id: 1, chat: { id: 1, type: 'group' } } } };
+    await createTelegramService(deps).handleUpdate(groupCallback, CORRELATION_ID);
+    expect((deps.db as ReturnType<typeof fakeDb>).created).toHaveLength(0);
+    expect(deps.client.answerCallbackQuery).not.toHaveBeenCalled();
   });
 });

@@ -26,5 +26,14 @@ async function cleanupChannelRecords(db, retentionDays) {
             ],
         },
     });
+    // Only ever terminal callback tokens — PENDING (even past expiresAt, before
+    // lazy transition) and tokens a still-processing job might reference are
+    // never touched.
+    await db.channelCallbackToken.deleteMany({
+        where: {
+            status: { in: ['CONSUMED', 'EXPIRED', 'CANCELLED', 'STALE'] },
+            updatedAt: { lt: successCutoff },
+        },
+    });
 }
 //# sourceMappingURL=retention.js.map

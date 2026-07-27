@@ -58,6 +58,7 @@ exports.assistantProviderRuntime = config_1.assistantProviderConfig.enabled
     ? (0, provider_runtime_1.createAssistantProviderRuntime)({
         application: exports.assistantApplicationService,
         conversations: exports.assistantConversationService,
+        financialDrafts: exports.assistantFinancialDraftService,
         provider: (0, gemini_provider_1.createGeminiAssistantProvider)({
             apiKey: config_1.assistantProviderConfig.apiKey,
             model: config_1.assistantProviderConfig.model,

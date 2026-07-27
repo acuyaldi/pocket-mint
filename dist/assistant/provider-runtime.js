@@ -195,6 +195,27 @@ function createAssistantProviderRuntime(deps) {
             };
         }
     }
-    return { sendMessage };
+    // ---- Channel callback passthroughs -----------------------------------
+    // Thin forwards to the same authoritative services the HTTP path calls
+    // (assistant.controller.ts) — no parallel clarification/draft logic here.
+    // These exist so a Telegram callback handler can reuse them without
+    // importing application.service.ts / financial-draft.service.ts directly
+    // (see test/channels/telegramAdapterBoundary.test.ts).
+    function selectClarification(userId, correlationId, token, conversationId, clarificationId) {
+        return deps.application.selectClarification(userId, correlationId, token, conversationId, clarificationId);
+    }
+    function cancelClarification(userId, correlationId, clarificationId, conversationId) {
+        return deps.application.cancelClarification(userId, correlationId, clarificationId, conversationId);
+    }
+    function confirmDraft(userId, draftId, idempotencyKey, correlationId) {
+        return deps.financialDrafts.confirm(userId, draftId, idempotencyKey, correlationId);
+    }
+    function cancelDraft(userId, draftId, correlationId) {
+        return deps.financialDrafts.cancel(userId, draftId, correlationId);
+    }
+    function getAssistantState(userId, conversationId) {
+        return deps.application.getAssistantState(userId, conversationId);
+    }
+    return { sendMessage, selectClarification, cancelClarification, confirmDraft, cancelDraft, getAssistantState };
 }
 //# sourceMappingURL=provider-runtime.js.map
