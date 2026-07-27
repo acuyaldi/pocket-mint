@@ -37,6 +37,9 @@ async function claimInboundJobs(db, opts) {
       j.external_sender_id AS "externalSenderId",
       j.external_chat_id AS "externalChatId",
       j.text,
+      j.kind,
+      j.callback_query_id AS "callbackQueryId",
+      j.callback_message_id AS "callbackMessageId",
       j.attempt,
       j.assistant_turn_id AS "assistantTurnId"
   `);
@@ -62,8 +65,11 @@ async function claimOutboundDeliveries(db, opts) {
     RETURNING
       d.id,
       d.inbound_job_id AS "inboundJobId",
+      d.kind,
       d.destination_chat_id AS "destinationChatId",
       d.rendered_text AS "renderedText",
+      d.reply_markup AS "replyMarkup",
+      d.target_message_id AS "targetMessageId",
       d.attempt
   `);
 }

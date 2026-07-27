@@ -2,9 +2,11 @@
 // ============================================================
 // Telegram Bot API client — minimal typed fetch wrapper.
 // ------------------------------------------------------------
-// No SDK: this repo's needs (sendMessage, setWebhook, deleteWebhook) don't
-// justify a dependency. Never logs the bot token; never throws a raw
-// SDK/fetch-shaped error upward — callers get a classified outcome.
+// No SDK: this repo's needs (sendMessage, setWebhook, deleteWebhook,
+// answerCallbackQuery, editMessageReplyMarkup) don't justify a dependency.
+// Never logs the bot token or request/response bodies; never throws a raw
+// SDK/fetch-shaped error upward — callers get a classified outcome. No
+// arbitrary method proxy — only the fixed set of methods below.
 // ============================================================
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createTelegramClient = createTelegramClient;
@@ -42,18 +44,51 @@ function createTelegramClient(deps) {
             return { ok: false, category: 'provider_unavailable' };
         if (!response.ok)
             return { ok: false, category: 'provider_invalid_response' };
-        return { ok: true };
+        try {
+            const payload = (await response.json());
+            return { ok: true, result: payload.result };
+        }
+        catch {
+            return { ok: true, result: undefined };
+        }
     }
-    /** Bounded plain-text send. Telegram enforces a 4096-char message cap. */
-    async function sendMessage(chatId, text) {
-        return call('sendMessage', { chat_id: chatId, text });
+    /** Bounded plain-text send, optionally with an inline keyboard. Telegram enforces a 4096-char message cap. */
+    async function sendMessage(chatId, text, replyMarkup) {
+        const outcome = await call('sendMessage', {
+            chat_id: chatId,
+            text,
+            ...(replyMarkup ? { reply_markup: replyMarkup } : {}),
+        });
+        if (!outcome.ok)
+            return outcome;
+        const messageId = outcome.result?.message_id;
+        return { ok: true, ...(messageId !== undefined ? { messageId: String(messageId) } : {}) };
+    }
+    /** Replaces (or clears, when `replyMarkup` is omitted) the inline keyboard on an already-sent message. */
+    async function editMessageReplyMarkup(chatId, messageId, replyMarkup) {
+        return call('editMessageReplyMarkup', {
+            chat_id: chatId,
+            message_id: Number(messageId),
+            ...(replyMarkup ? { reply_markup: replyMarkup } : {}),
+        });
+    }
+    /**
+     * Synchronous, bounded callback acknowledgment. Not the authoritative
+     * business result — must never claim success before the durable worker
+     * executes. `text` should be neutral (e.g. "Processing…") or omitted.
+     */
+    async function answerCallbackQuery(callbackQueryId, text) {
+        return call('answerCallbackQuery', {
+            callback_query_id: callbackQueryId,
+            ...(text ? { text } : {}),
+        });
     }
     async function setWebhook(url, secretToken) {
-        return call('setWebhook', { url, secret_token: secretToken, allowed_updates: ['message'] });
+        return call('setWebhook', { url, secret_token: secretToken, allowed_updates: ['message', 'callback_query'] });
     }
     async function deleteWebhook() {
         return call('deleteWebhook', {});
     }
-    return { sendMessage, setWebhook, deleteWebhook };
+    return { sendMessage, editMessageReplyMarkup, answerCallbackQuery, setWebhook, deleteWebhook };
 }
 //# sourceMappingURL=client.js.map

@@ -1,4 +1,4 @@
-import type { PrismaClient } from '../../generated/prisma/client';
+import { type PrismaClient } from '../../generated/prisma/client';
 import type { ChannelConnectionService } from '../connection.service';
 import type { ChannelLinkTokenService } from '../linkToken.service';
 import type { AssistantProviderRuntime } from '../../assistant/provider-runtime';

@@ -28,6 +28,9 @@ async function createInboundJob(db, connectionId, message) {
                     externalSenderId: message.externalSenderId,
                     externalChatId: message.externalChatId,
                     text: message.text.slice(0, MAX_TEXT_LENGTH),
+                    kind: message.kind ?? 'MESSAGE',
+                    ...(message.callbackQueryId ? { callbackQueryId: message.callbackQueryId } : {}),
+                    ...(message.callbackMessageId ? { callbackMessageId: message.callbackMessageId } : {}),
                 },
             }),
             db.channelInboundJob.deleteMany({

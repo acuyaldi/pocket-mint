@@ -176,4 +176,37 @@ export declare const assistantApplicationService: {
 export declare const assistantProviderAuditService: import("./provider-runtime").AssistantProviderAudit;
 export declare const assistantProviderRuntime: {
     sendMessage: (userId: string, correlationId: string, input: import("./provider-runtime").AssistantProviderMessageInput) => Promise<import("./provider-runtime").AssistantProviderRuntimeResult>;
+    selectClarification: (userId: string, correlationId: string, token: string, conversationId: string, clarificationId?: string) => Promise<import("./application.service").AssistantApplicationResult>;
+    cancelClarification: (userId: string, correlationId: string, clarificationId: string, conversationId: string) => Promise<import("./application.service").AssistantApplicationResult>;
+    confirmDraft: (userId: string, draftId: string, idempotencyKey: string, correlationId: string) => Promise<{
+        idempotencyOutcome: "replay";
+        draftId: string;
+        status: "COMMITTED";
+        transactionId: string;
+        conversationId: string;
+        renderedText: string;
+        readonly error?: undefined;
+        turnId?: undefined;
+    } | {
+        draftId: string;
+        status: "COMMITTED";
+        transactionId: string;
+        conversationId: string;
+        turnId: string;
+        renderedText: string;
+        idempotencyOutcome: "new";
+        readonly error?: undefined;
+    }>;
+    cancelDraft: (userId: string, draftId: string, correlationId: string) => Promise<{
+        renderedText: string;
+        turnId?: string | undefined;
+        draftId: string;
+        status: "CANCELLED";
+        conversationId: string;
+    } | {
+        draftId: string;
+        status: "EXPIRED";
+        conversationId: string;
+    }>;
+    getAssistantState: (userId: string, conversationId: string) => Promise<import("./clarification.types").AssistantStateProjection>;
 } | undefined;

@@ -10,13 +10,27 @@ const retention_1 = require("../retention");
 const OUTER_BACKOFF = { baseMs: 2000, maxMs: 5 * 60000 };
 /** Exported for direct unit testing — pollOnce composes this with the raw-SQL claim step. */
 async function processDelivery(deps, delivery) {
-    const outcome = await deps.client.sendMessage(delivery.destinationChatId, delivery.renderedText);
+    const outcome = delivery.kind === 'EDIT_REPLY_MARKUP'
+        ? await deps.client.editMessageReplyMarkup(delivery.destinationChatId, delivery.targetMessageId ?? '')
+        : delivery.replyMarkup
+            ? await deps.client.sendMessage(delivery.destinationChatId, delivery.renderedText, delivery.replyMarkup)
+            : await deps.client.sendMessage(delivery.destinationChatId, delivery.renderedText);
     if (outcome.ok) {
+        const messageId = 'messageId' in outcome ? outcome.messageId : undefined;
         await deps.db.channelOutboundDelivery.update({
             where: { id: delivery.id },
-            data: { status: 'SENT', sentAt: new Date(), leaseOwner: null, leaseExpiresAt: null },
+            data: {
+                status: 'SENT',
+                sentAt: new Date(),
+                leaseOwner: null,
+                leaseExpiresAt: null,
+                ...(messageId ? { providerMessageId: messageId } : {}),
+            },
         });
         (0, logger_1.logEvent)('info', { event: 'channel.outbound.sent', requestId: delivery.id, provider: 'telegram', attempt: delivery.attempt });
+        if (delivery.kind === 'EDIT_REPLY_MARKUP') {
+            (0, logger_1.logEvent)('info', { event: 'channel.telegram.keyboard_cleanup_completed', requestId: delivery.id, provider: 'telegram' });
+        }
         return;
     }
     const decision = (0, retry_1.decideRetry)(outcome.category, delivery.attempt, deps.config.maxAttemptsOutbound, OUTER_BACKOFF);
@@ -34,6 +48,9 @@ async function processDelivery(deps, delivery) {
         errorCategory: outcome.category,
         retryable: decision.outcome === 'retry',
     });
+    if (delivery.kind === 'EDIT_REPLY_MARKUP' && decision.outcome !== 'retry') {
+        (0, logger_1.logEvent)('warn', { event: 'channel.telegram.keyboard_cleanup_failed', requestId: delivery.id, provider: 'telegram' });
+    }
 }
 function createOutboundWorker(deps) {
     async function pollOnce() {

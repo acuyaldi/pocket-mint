@@ -428,6 +428,9 @@ exports.Prisma.ChannelInboundJobScalarFieldEnum = {
   externalSenderId: 'externalSenderId',
   externalChatId: 'externalChatId',
   text: 'text',
+  kind: 'kind',
+  callbackQueryId: 'callbackQueryId',
+  callbackMessageId: 'callbackMessageId',
   status: 'status',
   attempt: 'attempt',
   availableAt: 'availableAt',
@@ -445,8 +448,11 @@ exports.Prisma.ChannelOutboundDeliveryScalarFieldEnum = {
   id: 'id',
   inboundJobId: 'inboundJobId',
   provider: 'provider',
+  kind: 'kind',
   destinationChatId: 'destinationChatId',
   renderedText: 'renderedText',
+  replyMarkup: 'replyMarkup',
+  targetMessageId: 'targetMessageId',
   status: 'status',
   attempt: 'attempt',
   availableAt: 'availableAt',
@@ -462,8 +468,29 @@ exports.Prisma.ChannelOutboundDeliveryScalarFieldEnum = {
 exports.Prisma.ChannelAssistantOperationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  kind: 'kind',
   turnId: 'turnId',
   renderedText: 'renderedText',
+  callbackTokenId: 'callbackTokenId',
+  terminalStatus: 'terminalStatus',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ChannelCallbackTokenScalarFieldEnum = {
+  id: 'id',
+  provider: 'provider',
+  tokenDigest: 'tokenDigest',
+  connectionId: 'connectionId',
+  conversationId: 'conversationId',
+  interactionType: 'interactionType',
+  clarificationRequestId: 'clarificationRequestId',
+  clarificationOptionId: 'clarificationOptionId',
+  financialDraftId: 'financialDraftId',
+  actionSecret: 'actionSecret',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  consumedAt: 'consumedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -632,6 +659,11 @@ exports.ChannelConnectionStatus = exports.$Enums.ChannelConnectionStatus = {
   REVOKED: 'REVOKED'
 };
 
+exports.ChannelJobKind = exports.$Enums.ChannelJobKind = {
+  MESSAGE: 'MESSAGE',
+  CALLBACK: 'CALLBACK'
+};
+
 exports.ChannelJobStatus = exports.$Enums.ChannelJobStatus = {
   PENDING: 'PENDING',
   PROCESSING: 'PROCESSING',
@@ -640,12 +672,37 @@ exports.ChannelJobStatus = exports.$Enums.ChannelJobStatus = {
   FAILED_TERMINAL: 'FAILED_TERMINAL'
 };
 
+exports.ChannelDeliveryKind = exports.$Enums.ChannelDeliveryKind = {
+  SEND_MESSAGE: 'SEND_MESSAGE',
+  EDIT_REPLY_MARKUP: 'EDIT_REPLY_MARKUP'
+};
+
 exports.ChannelDeliveryStatus = exports.$Enums.ChannelDeliveryStatus = {
   PENDING: 'PENDING',
   SENDING: 'SENDING',
   SENT: 'SENT',
   FAILED_RETRYABLE: 'FAILED_RETRYABLE',
   FAILED_TERMINAL: 'FAILED_TERMINAL'
+};
+
+exports.ChannelOperationKind = exports.$Enums.ChannelOperationKind = {
+  ASSISTANT_TURN: 'ASSISTANT_TURN',
+  CALLBACK_INTERACTION: 'CALLBACK_INTERACTION'
+};
+
+exports.ChannelCallbackInteractionType = exports.$Enums.ChannelCallbackInteractionType = {
+  CLARIFICATION_SELECT: 'CLARIFICATION_SELECT',
+  CLARIFICATION_CANCEL: 'CLARIFICATION_CANCEL',
+  DRAFT_CONFIRM: 'DRAFT_CONFIRM',
+  DRAFT_CANCEL: 'DRAFT_CANCEL'
+};
+
+exports.ChannelCallbackTokenStatus = exports.$Enums.ChannelCallbackTokenStatus = {
+  PENDING: 'PENDING',
+  CONSUMED: 'CONSUMED',
+  EXPIRED: 'EXPIRED',
+  CANCELLED: 'CANCELLED',
+  STALE: 'STALE'
 };
 
 exports.Prisma.ModelName = {
@@ -672,6 +729,7 @@ exports.Prisma.ModelName = {
   ChannelInboundJob: 'ChannelInboundJob',
   ChannelOutboundDelivery: 'ChannelOutboundDelivery',
   ChannelAssistantOperation: 'ChannelAssistantOperation',
+  ChannelCallbackToken: 'ChannelCallbackToken',
   Budget: 'Budget'
 };
 

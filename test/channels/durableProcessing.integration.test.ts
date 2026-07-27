@@ -99,7 +99,7 @@ describe.skipIf(!url)('Durable channel processing — crash windows & concurrenc
 
     expect(runtime.sendMessage).not.toHaveBeenCalled();
     expect(await resources!.prisma.channelOutboundDelivery.count({ where: { inboundJobId: job.id } })).toBe(1);
-    const delivery = await resources!.prisma.channelOutboundDelivery.findUniqueOrThrow({ where: { inboundJobId: job.id } });
+    const delivery = await resources!.prisma.channelOutboundDelivery.findFirstOrThrow({ where: { inboundJobId: job.id } });
     expect(delivery.renderedText).toBe('Already answered.');
   });
 
@@ -123,7 +123,7 @@ describe.skipIf(!url)('Durable channel processing — crash windows & concurrenc
     await processJob(deps, claimed, 'corr-1');
     const updated = await resources!.prisma.channelInboundJob.findUniqueOrThrow({ where: { id: job.id } });
     expect(updated.status).toBe('SUCCEEDED');
-    const delivery = await resources!.prisma.channelOutboundDelivery.findUniqueOrThrow({ where: { inboundJobId: job.id } });
+    const delivery = await resources!.prisma.channelOutboundDelivery.findFirstOrThrow({ where: { inboundJobId: job.id } });
     expect(delivery.renderedText).toMatch(/not linked/i);
   });
 

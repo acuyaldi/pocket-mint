@@ -52,6 +52,9 @@ export interface AssistantLogEvent {
     readonly hasTerminalClarification?: boolean;
     readonly attempt?: number;
     readonly leaseRecovered?: boolean;
+    /** Callback interaction taxonomy (Phase 26A) — bounded closed-enum labels only, never token/payload content. */
+    readonly interactionType?: string;
+    readonly terminalStatus?: string;
 }
 /**
  * Emit a canonical Assistant lifecycle event. Fields are passed through

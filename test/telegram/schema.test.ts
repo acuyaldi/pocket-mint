@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseTelegramUpdate } from '../../src/telegram/schema';
+import { parseTelegramUpdate, parseTelegramCallbackQuery } from '../../src/telegram/schema';
 
 const privateMessage = (overrides: Record<string, unknown> = {}) => ({
   update_id: 1001,
@@ -45,5 +45,49 @@ describe('parseTelegramUpdate', () => {
     expect(parseTelegramUpdate({})).toBeNull();
     expect(parseTelegramUpdate({ update_id: 1 })).toBeNull();
     expect(parseTelegramUpdate({ update_id: 1, message: { chat: { id: 1, type: 'private' }, text: 'hi' } })).toBeNull(); // missing from
+  });
+});
+
+const privateCallback = (overrides: Record<string, unknown> = {}) => ({
+  update_id: 2001,
+  callback_query: {
+    id: 'cbq-1',
+    data: 'cbk_abc123',
+    from: { id: 42 },
+    message: { message_id: 777, chat: { id: 555, type: 'private' } },
+    ...overrides,
+  },
+});
+
+describe('parseTelegramCallbackQuery', () => {
+  it('accepts a private-chat callback query', () => {
+    expect(parseTelegramCallbackQuery(privateCallback())).toEqual({
+      updateId: '2001', callbackQueryId: 'cbq-1', chatId: '555', senderId: '42', messageId: '777', data: 'cbk_abc123',
+    });
+  });
+
+  it('rejects a callback query attached to a group chat', () => {
+    const update = privateCallback();
+    (update.callback_query as Record<string, unknown>).message = { message_id: 1, chat: { id: 1, type: 'group' } };
+    expect(parseTelegramCallbackQuery(update)).toBeNull();
+  });
+
+  it('rejects a message update (not a callback query)', () => {
+    expect(parseTelegramCallbackQuery({ update_id: 1, message: { chat: { id: 1, type: 'private' }, from: { id: 1 }, text: 'hi' } })).toBeNull();
+  });
+
+  it('rejects a missing or empty callback data handle', () => {
+    expect(parseTelegramCallbackQuery(privateCallback({ data: undefined }))).toBeNull();
+    expect(parseTelegramCallbackQuery(privateCallback({ data: '' }))).toBeNull();
+  });
+
+  it('rejects an oversized data handle (beyond Telegram callback_data bounds)', () => {
+    expect(parseTelegramCallbackQuery(privateCallback({ data: 'x'.repeat(257) }))).toBeNull();
+  });
+
+  it('rejects malformed/missing fields', () => {
+    expect(parseTelegramCallbackQuery(null)).toBeNull();
+    expect(parseTelegramCallbackQuery({})).toBeNull();
+    expect(parseTelegramCallbackQuery({ update_id: 1, callback_query: { id: 'x', data: 'y' } })).toBeNull(); // missing from/message
   });
 });
