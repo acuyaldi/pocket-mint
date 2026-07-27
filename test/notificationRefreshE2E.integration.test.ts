@@ -2,7 +2,7 @@ import { describe, it, expect, vi, afterAll, afterEach } from 'vitest';
 import request from 'supertest';
 import type { Express } from 'express';
 import { createPrismaResources } from '../src/lib/prismaFactory';
-import { assertTestDatabaseUrl } from '../src/lib/assertTestDatabaseUrl';
+import { assertTestDatabaseUrl, assertDatabaseUrlsMatch } from '../src/lib/assertTestDatabaseUrl';
 import { formatReportingDate } from '../src/domain/reportingTime';
 import { mint, validClaims, SECRET, ISSUER, applyEnv } from './helpers';
 
@@ -18,7 +18,10 @@ import { mint, validClaims, SECRET, ISSUER, applyEnv } from './helpers';
  */
 const TEST_DATABASE_URL = process.env.TEST_DATABASE_URL;
 
-if (TEST_DATABASE_URL) assertTestDatabaseUrl(TEST_DATABASE_URL);
+if (TEST_DATABASE_URL) {
+  assertTestDatabaseUrl(TEST_DATABASE_URL);
+  assertDatabaseUrlsMatch(process.env.DATABASE_URL, TEST_DATABASE_URL);
+}
 
 const resources = TEST_DATABASE_URL ? createPrismaResources(TEST_DATABASE_URL, { max: 5 }) : undefined;
 
