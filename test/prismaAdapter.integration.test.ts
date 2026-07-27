@@ -1,6 +1,6 @@
 import { describe, it, expect, afterAll, afterEach } from 'vitest';
 import { createPrismaResources } from '../src/lib/prismaFactory';
-import { assertTestDatabaseUrl } from '../src/lib/assertTestDatabaseUrl';
+import { assertTestDatabaseUrl, assertDatabaseUrlsMatch } from '../src/lib/assertTestDatabaseUrl';
 import { createTransactionService } from '../src/services/transaction.service';
 import { createWalletService } from '../src/services/wallet.service';
 import { createInstallmentPaymentService } from '../src/services/installment-payment.service';
@@ -24,7 +24,10 @@ import { createBudgetService } from '../src/services/budget.service';
  */
 const TEST_DATABASE_URL = process.env.TEST_DATABASE_URL;
 
-if (TEST_DATABASE_URL) assertTestDatabaseUrl(TEST_DATABASE_URL);
+if (TEST_DATABASE_URL) {
+  assertTestDatabaseUrl(TEST_DATABASE_URL);
+  assertDatabaseUrlsMatch(process.env.DATABASE_URL, TEST_DATABASE_URL);
+}
 
 const resources = TEST_DATABASE_URL
   ? createPrismaResources(TEST_DATABASE_URL, { max: 5 })
