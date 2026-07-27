@@ -10,6 +10,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.assertTestDatabaseUrl = assertTestDatabaseUrl;
+exports.assertDatabaseUrlsMatch = assertDatabaseUrlsMatch;
 const BLOCKED_HOST_PATTERNS = [/supabase\.co$/i, /supabase\.in$/i, /rds\.amazonaws\.com$/i];
 /** Supabase's default database name — a strong signal this isn't a disposable instance. */
 const BLOCKED_DATABASE_NAMES = ['postgres'];
@@ -30,6 +31,41 @@ function assertTestDatabaseUrl(rawUrl) {
     if (BLOCKED_DATABASE_NAMES.includes(databaseName)) {
         throw new Error(`TEST_DATABASE_URL database name "${databaseName}" is Supabase's default database name — ` +
             'this looks like a production/managed database, not a disposable test instance.');
+    }
+}
+/** The connection details that identify which physical database a URL points at. */
+function effectiveDestination(rawUrl) {
+    const url = new URL(rawUrl);
+    const port = url.port || '5432';
+    return `${url.hostname.toLowerCase()}:${port}${url.pathname}`;
+}
+/**
+ * Fail-fast guard against a split-brain integration run: fixtures written
+ * through `TEST_DATABASE_URL` while application code reads through
+ * `DATABASE_URL` bound to a different database. That split produces
+ * misleading test failures (data "missing" that was actually written
+ * elsewhere) instead of an honest configuration error.
+ *
+ * `databaseUrl` is optional because the repository's existing tooling (CI,
+ * `scripts/run-integration-tests.mjs`) intentionally leaves `DATABASE_URL`
+ * unset while running the integration suite — that is not a misconfiguration
+ * and must keep working exactly as it does today. This guard only fires when
+ * both variables are set and point at different databases.
+ */
+function assertDatabaseUrlsMatch(databaseUrl, testDatabaseUrl) {
+    if (!databaseUrl)
+        return;
+    let same;
+    try {
+        same = effectiveDestination(databaseUrl) === effectiveDestination(testDatabaseUrl);
+    }
+    catch {
+        throw new Error('DATABASE_URL is not a valid connection string.');
+    }
+    if (!same) {
+        throw new Error('DATABASE_URL and TEST_DATABASE_URL point at different databases. Integration fixtures and application ' +
+            'queries must target the same disposable database — set both to identical values before running the ' +
+            'integration suite.');
     }
 }
 //# sourceMappingURL=assertTestDatabaseUrl.js.map
