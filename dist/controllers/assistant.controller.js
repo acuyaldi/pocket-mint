@@ -22,11 +22,14 @@ function providerMessageRequest(body) {
         return false;
     const value = body;
     const keys = Object.keys(value).sort();
-    if (keys.some((key) => key !== 'conversationId' && key !== 'message'))
+    // `locale` is an optional BCP-47 reply-language hint (e.g. "id-ID" / "en-US").
+    // Any other unknown key is still rejected — no widening of the accepted body.
+    if (keys.some((key) => key !== 'conversationId' && key !== 'message' && key !== 'locale'))
         return false;
     return typeof value.message === 'string' &&
         Boolean(value.message.trim()) &&
-        (value.conversationId === undefined || typeof value.conversationId === 'string');
+        (value.conversationId === undefined || typeof value.conversationId === 'string') &&
+        (value.locale === undefined || typeof value.locale === 'string');
 }
 const intQuery = (value) => {
     const text = Array.isArray(value) ? value[0] : value;
@@ -97,6 +100,7 @@ function createAssistantControllers(application, conversations, drafts, provider
             const result = await providerRuntime.sendMessage(userId, req.correlationId, {
                 message: req.body.message,
                 ...(req.body.conversationId === undefined ? {} : { conversationId: req.body.conversationId }),
+                ...(req.body.locale === undefined ? {} : { locale: req.body.locale }),
             });
             (0, logger_1.logEvent)('info', {
                 event: 'assistant.message.completed',

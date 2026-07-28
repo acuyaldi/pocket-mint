@@ -14,11 +14,22 @@ const RULES = [
     'Return unsupported when no allowed capability fits.',
     'Return one concise clarification question only when essential required data is missing.',
 ];
-function buildAssistantSystemInstruction(catalog) {
+/**
+ * Maps a stored/requested locale to the language the model must reply in.
+ * Anything that isn't clearly English falls back to Bahasa Indonesia — the
+ * product's primary language and the conversation default — so an unknown or
+ * missing locale never yields an English answer.
+ */
+function replyLanguageDirective(locale) {
+    const language = (locale ?? '').trim().toLowerCase().startsWith('en') ? 'English' : 'Bahasa Indonesia';
+    return `Write every user-facing text field you return (the clarification question and any message) in ${language}. Keep this reply language regardless of the language used in the conversation history, tool summaries, or the current request.`;
+}
+function buildAssistantSystemInstruction(catalog, locale) {
     const stableCatalog = [...catalog].sort((left, right) => left.intent.localeCompare(right.intent));
     return [
         'POCKET MINT ASSISTANT PROVIDER RULES',
         ...RULES.map((rule, index) => `${index + 1}. ${rule}`),
+        `${RULES.length + 1}. ${replyLanguageDirective(locale)}`,
         'ALLOWED CAPABILITY CATALOG (authoritative system data):',
         JSON.stringify(stableCatalog),
     ].join('\n');
