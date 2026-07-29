@@ -20,14 +20,17 @@ function canonicalRequest(body: unknown): body is AssistantCanonicalRequest {
     (value.locale === undefined || typeof value.locale === 'string');
 }
 
-function providerMessageRequest(body: unknown): body is { message: string; conversationId?: string } {
+function providerMessageRequest(body: unknown): body is { message: string; conversationId?: string; locale?: string } {
   if (typeof body !== 'object' || body === null || Array.isArray(body)) return false;
   const value = body as Record<string, unknown>;
   const keys = Object.keys(value).sort();
-  if (keys.some((key) => key !== 'conversationId' && key !== 'message')) return false;
+  // `locale` is an optional BCP-47 reply-language hint (e.g. "id-ID" / "en-US").
+  // Any other unknown key is still rejected — no widening of the accepted body.
+  if (keys.some((key) => key !== 'conversationId' && key !== 'message' && key !== 'locale')) return false;
   return typeof value.message === 'string' &&
     Boolean(value.message.trim()) &&
-    (value.conversationId === undefined || typeof value.conversationId === 'string');
+    (value.conversationId === undefined || typeof value.conversationId === 'string') &&
+    (value.locale === undefined || typeof value.locale === 'string');
 }
 
 const intQuery = (value: unknown): number | undefined => {
@@ -99,6 +102,7 @@ export function createAssistantControllers(
       const result = await providerRuntime.sendMessage(userId, req.correlationId, {
         message: req.body.message,
         ...(req.body.conversationId === undefined ? {} : { conversationId: req.body.conversationId }),
+        ...(req.body.locale === undefined ? {} : { locale: req.body.locale }),
       });
       logEvent('info', {
         event: 'assistant.message.completed',

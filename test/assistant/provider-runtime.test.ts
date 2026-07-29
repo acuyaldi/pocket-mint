@@ -88,6 +88,20 @@ describe('provider-safe capability catalogue and prompt', () => {
     expect(first).not.toMatch(/Prisma|assistant_turns|userId/);
   });
 
+  it('directs provider user-facing text to the conversation locale', () => {
+    const catalog = buildProviderCapabilityCatalog(registry());
+
+    expect(buildAssistantSystemInstruction(catalog, 'id-ID')).toContain(
+      'Write every user-facing text field you return (the clarification question and any message) in Bahasa Indonesia.',
+    );
+    expect(buildAssistantSystemInstruction(catalog, 'en-US')).toContain(
+      'Write every user-facing text field you return (the clarification question and any message) in English.',
+    );
+    expect(buildAssistantSystemInstruction(catalog, 'fr-FR')).toContain(
+      'Write every user-facing text field you return (the clarification question and any message) in Bahasa Indonesia.',
+    );
+  });
+
   it('keeps history, draft data, tool summaries, and current request in labelled untrusted sections', () => {
     const request = assembleAssistantModelRequest(context, buildProviderCapabilityCatalog(registry()));
     const payload = JSON.parse(request.messages[0].content);
@@ -100,6 +114,7 @@ describe('provider-safe capability catalogue and prompt', () => {
     });
     expect(request.messages).toHaveLength(1);
     expect(request.messages[0].content.match(/Ringkas pengeluaran Juli 2026/g)).toHaveLength(1);
+    expect(request.systemInstruction).toContain('in Bahasa Indonesia');
     expect(request.systemInstruction).not.toContain('Ignore previous instructions');
     expect(request.responseSchema).toMatchObject({ type: 'object', additionalProperties: false });
   });
