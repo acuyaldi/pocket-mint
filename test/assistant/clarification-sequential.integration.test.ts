@@ -93,7 +93,7 @@ describe.skipIf(!url)('Clarification sequential flow (disposable PostgreSQL)', (
     const data = result.response.data as any;
 
     // Verification: entityType is wallet
-    expect(data.kind).toBe('ambiguous');
+    expect(data.kind).toBe('entity_selection');
     expect(data.entityType).toBe('wallet');
 
     // Verification: clarification exists with tokens
@@ -160,7 +160,7 @@ describe.skipIf(!url)('Clarification sequential flow (disposable PostgreSQL)', (
     });
 
     expect(result.response.status).toBe('clarification_required');
-    expect((result.response.data as any).kind).toBe('not_found');
+    expect((result.response.data as any).kind).toBe('provider_text');
 
     // No clarification request persisted
     const clarCount = await db.clarificationRequest.count({ where: { userId: user.id } });
@@ -416,7 +416,7 @@ describe.skipIf(!url)('Clarification sequential flow (disposable PostgreSQL)', (
     // Expect wallet clarification
     expect(r1.response.status).toBe('clarification_required');
     const wData = r1.response.data as any;
-    expect(wData.kind).toBe('ambiguous');
+    expect(wData.kind).toBe('entity_selection');
     expect(wData.entityType).toBe('wallet');
     const walletClar = wData.clarification;
     expect(walletClar.options.length).toBeGreaterThanOrEqual(2);
@@ -426,7 +426,7 @@ describe.skipIf(!url)('Clarification sequential flow (disposable PostgreSQL)', (
     const r2 = await application.selectClarification(user.id, 'corr-fc2', walletToken, r1.response.conversationId);
     expect(r2.response.status).toBe('clarification_required');
     const mData = r2.response.data as any;
-    expect(mData.kind).toBe('ambiguous');
+    expect(mData.kind).toBe('entity_selection');
     expect(mData.entityType).toBe('merchant');
     const merchantClar = mData.clarification;
     expect(merchantClar.options.length).toBeGreaterThanOrEqual(2);
@@ -436,7 +436,7 @@ describe.skipIf(!url)('Clarification sequential flow (disposable PostgreSQL)', (
     const r3 = await application.selectClarification(user.id, 'corr-fc3', merchantToken, r1.response.conversationId);
     expect(r3.response.status).toBe('clarification_required');
     const cData = r3.response.data as any;
-    expect(cData.kind).toBe('ambiguous');
+    expect(cData.kind).toBe('entity_selection');
     expect(cData.entityType).toBe('category');
     const categoryClar = cData.clarification;
     expect(categoryClar.options.length).toBeGreaterThanOrEqual(2);
@@ -741,13 +741,13 @@ describe.skipIf(!url)('Clarification sequential flow (disposable PostgreSQL)', (
       const r3 = await application.selectClarification(user.id, 'corr-cnf3', mClar.options[0].token, r1.response.conversationId);
       expect(r3.response.status).toBe('clarification_required');
       const cData = r3.response.data as any;
-      expect(cData.kind).toBe('not_found');
+      expect(cData.kind).toBe('provider_text');
       return;
     }
 
     // Direct category not_found
     expect(r2.response.status).toBe('clarification_required');
-    expect((r2.response.data as any).kind).toBe('not_found');
+    expect((r2.response.data as any).kind).toBe('provider_text');
   });
 
   // ---- Merchant not_found continues with free-form ---------------------------

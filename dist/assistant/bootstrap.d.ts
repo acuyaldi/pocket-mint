@@ -91,7 +91,11 @@ export declare const assistantContextService: {
     buildExecutionContext: (input: import("./context.service").BuildAssistantExecutionContextInput) => Promise<import("./context.types").AssistantContext>;
 };
 export declare const assistantFinancialDraftService: {
-    prepare: (input: import("./tools").TransactionCreateInput & {
+    prepare: (input: (import("./tools").TransactionCreateInput & {
+        walletId: string;
+        categoryId: string;
+        date: string;
+    }) & {
         walletDisplayLabel?: string;
         merchantDisplayLabel?: string;
         userId: string;
@@ -158,7 +162,9 @@ export declare const assistantFinancialDraftService: {
 export declare const entityResolutionService: import("./entity-resolution").EntityResolutionService;
 export declare const clarificationService: {
     create: (input: import("./clarification.types").CreateClarificationInput, options?: import("./clarification.service").TransactionOption) => Promise<import("./clarification.types").ClarificationCreationProjection>;
+    createGuidedFields: (input: import("./clarification.types").CreateGuidedFieldsClarificationInput, options?: import("./clarification.service").TransactionOption) => Promise<import("./clarification.types").GuidedClarificationProjection>;
     select: (input: import("./clarification.types").SelectClarificationInput, options?: import("./clarification.service").TransactionOption) => Promise<import("./clarification.types").SelectClarificationResult>;
+    consumeGuidedFields: (input: import("./clarification.types").ConsumeGuidedFieldsInput, options?: import("./clarification.service").TransactionOption) => Promise<import("./clarification.types").ConsumeGuidedFieldsResult>;
     cancel: (input: import("./clarification.types").CancelClarificationInput, options?: import("./clarification.service").TransactionOption) => Promise<void>;
     getAssistantState: (userId: string, conversationId: string) => Promise<import("./clarification.types").AssistantStateProjection>;
     buildConsumedResult: (consumedClarificationId: string) => Pick<import("./clarification.types").ClarificationAdvanceResult, "consumedClarificationId">;
@@ -170,6 +176,7 @@ export declare const assistantApplicationService: {
     execute: (userId: string, correlationId: string, request: import("./types").AssistantCanonicalRequest) => Promise<import("./application.service").AssistantApplicationResult>;
     prepareProviderExecution: (input: import("./context.service").BuildAssistantExecutionContextInput) => Promise<import("./context.types").AssistantContext>;
     selectClarification: (userId: string, correlationId: string, token: string, conversationId: string, clarificationId?: string) => Promise<import("./application.service").AssistantApplicationResult>;
+    submitGuidedClarification: (userId: string, correlationId: string, fields: Record<string, unknown>, conversationId: string, clarificationId: string) => Promise<import("./application.service").AssistantApplicationResult>;
     cancelClarification: (userId: string, correlationId: string, clarificationId: string, conversationId: string) => Promise<import("./application.service").AssistantApplicationResult>;
     getAssistantState: (userId: string, conversationId: string) => Promise<import("./clarification.types").AssistantStateProjection>;
 };

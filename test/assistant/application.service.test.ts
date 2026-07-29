@@ -75,8 +75,38 @@ function setup() {
       status: 'CONSUMED',
       selectedCandidateId: 'wallet-a',
       selectedDisplayLabel: 'BCA Debit',
-      trustedContext: { version: 1, operation: 'transaction.create', type: 'EXPENSE', amount: '20000', date: '2026-07-23', resumeAt: new Date().toISOString() },
-      previousTrustedContext: { version: 1, operation: 'transaction.create', type: 'EXPENSE', amount: '20000', date: '2026-07-23', resumeAt: new Date().toISOString() },
+      trustedContext: {
+        version: 1,
+        operation: 'transaction.create',
+        type: 'EXPENSE',
+        amount: '20000',
+        date: '2026-07-23',
+        category: { internalId: 'category-resolved', displayLabel: 'Food', categoryType: 'EXPENSE' },
+        resumeAt: new Date().toISOString(),
+      },
+      previousTrustedContext: {
+        version: 1,
+        operation: 'transaction.create',
+        type: 'EXPENSE',
+        amount: '20000',
+        date: '2026-07-23',
+        category: { internalId: 'category-resolved', displayLabel: 'Food', categoryType: 'EXPENSE' },
+        resumeAt: new Date().toISOString(),
+      },
+    }),
+    consumeGuidedFields: vi.fn().mockResolvedValue({
+      clarificationId: 'clar-date',
+      entityType: 'transaction_fields',
+      status: 'CONSUMED',
+      trustedContext: {
+        version: 1,
+        operation: 'transaction.create',
+        type: 'EXPENSE',
+        amount: '20000',
+        wallet: { internalId: 'wallet-resolved', displayLabel: 'BCA Debit' },
+        category: { internalId: 'category-resolved', displayLabel: 'Food', categoryType: 'EXPENSE' },
+        resumeAt: new Date().toISOString(),
+      },
     }),
     cancel: vi.fn().mockResolvedValue(undefined),
     getAssistantState: vi.fn().mockResolvedValue({}),
@@ -257,6 +287,209 @@ describe('Assistant application lifecycle', () => {
     });
   });
 
+  it('creates a persisted guided date clarification after resolving transaction entities without drafting', async () => {
+    const { service, clarification, financialDrafts, conversations } = setup();
+    clarification.createGuidedFields = vi.fn().mockResolvedValue({
+      kind: 'guided',
+      clarificationId: 'clar-date',
+      fields: [
+        { field: 'date', required: true, input: { type: 'date' } },
+      ],
+      expiresAt: '2026-07-23T00:15:00.000Z',
+    });
+
+    const result = await service.execute('u1', 'corr-guided-date', {
+      intent: 'transaction.create',
+      arguments: {
+        type: 'EXPENSE',
+        amount: '20000',
+        walletReference: 'bca',
+        categoryReference: 'Food',
+      },
+    });
+
+    expect(result.response).toMatchObject({
+      status: 'clarification_required',
+      data: {
+        kind: 'guided_fields',
+        clarification: {
+          kind: 'guided',
+          clarificationId: 'clar-date',
+          fields: [
+            { field: 'date', required: true, input: { type: 'date' } },
+          ],
+        },
+      },
+    });
+    expect(clarification.createGuidedFields).toHaveBeenCalledWith(expect.objectContaining({
+      userId: 'u1',
+      entityType: 'transaction_fields',
+      trustedContext: expect.objectContaining({
+        version: 1,
+        operation: 'transaction.create',
+        type: 'EXPENSE',
+        amount: '20000',
+        wallet: { internalId: 'wallet-resolved', displayLabel: 'BCA Debit' },
+        category: { internalId: 'category-resolved', displayLabel: 'Food', categoryType: 'EXPENSE' },
+      }),
+      fields: [
+        { field: 'date', required: true, input: { type: 'date' } },
+      ],
+    }));
+    expect(financialDrafts.prepare).not.toHaveBeenCalled();
+    expect(conversations.finalize).toHaveBeenCalledWith(expect.objectContaining({
+      status: 'SUCCEEDED',
+      turnStatus: 'CLARIFICATION_REQUIRED',
+      outputSummary: expect.objectContaining({
+        operation: 'transaction.create',
+        missingFields: ['date'],
+        clarificationId: 'clar-date',
+      }),
+    }));
+  });
+
+  it('creates one guided clarification for missing category and date after wallet resolution', async () => {
+    const { service, clarification, financialDrafts } = setup();
+    clarification.createGuidedFields = vi.fn().mockResolvedValue({
+      kind: 'guided',
+      clarificationId: 'clar-fields',
+      fields: [
+        { field: 'category', required: true, input: { type: 'text', placeholder: 'Nama kategori' } },
+        { field: 'date', required: true, input: { type: 'date' } },
+      ],
+      expiresAt: '2026-07-23T00:15:00.000Z',
+    });
+
+    const result = await service.execute('u1', 'corr-guided-fields', {
+      intent: 'transaction.create',
+      arguments: {
+        type: 'EXPENSE',
+        amount: '20000',
+        walletReference: 'bca',
+      },
+    });
+
+    expect(result.response).toMatchObject({
+      status: 'clarification_required',
+      data: {
+        kind: 'guided_fields',
+        clarification: {
+          clarificationId: 'clar-fields',
+          fields: [
+            { field: 'category', required: true, input: { type: 'text', placeholder: 'Nama kategori' } },
+            { field: 'date', required: true, input: { type: 'date' } },
+          ],
+        },
+      },
+    });
+    expect(clarification.createGuidedFields).toHaveBeenCalledWith(expect.objectContaining({
+      fields: [
+        { field: 'category', required: true, input: { type: 'text', placeholder: 'Nama kategori' } },
+        { field: 'date', required: true, input: { type: 'date' } },
+      ],
+      trustedContext: expect.not.objectContaining({
+        category: expect.anything(),
+        date: expect.anything(),
+      }),
+    }));
+    expect(financialDrafts.prepare).not.toHaveBeenCalled();
+  });
+
+  it('continues a guided date clarification into a pending draft after server-side date validation', async () => {
+    const { service, clarification, financialDrafts } = setup();
+
+    const result = await service.submitGuidedClarification(
+      'u1',
+      'corr-guided-submit',
+      { date: '2026-07-29' },
+      'c1',
+      'clar-date',
+    );
+
+    expect(clarification.consumeGuidedFields).toHaveBeenCalledWith({
+      userId: 'u1',
+      conversationId: 'c1',
+      clarificationId: 'clar-date',
+      correlationId: 'corr-guided-submit',
+    }, { transaction: TX_STUB });
+    expect(financialDrafts.prepare).toHaveBeenCalledWith(expect.objectContaining({
+      userId: 'u1',
+      walletId: 'wallet-resolved',
+      walletDisplayLabel: 'BCA Debit',
+      categoryId: 'category-resolved',
+      date: '2026-07-29',
+      transaction: TX_STUB,
+    }));
+    expect(result.response).toMatchObject({
+      status: 'success',
+      data: { draftId: 'd1', status: 'PENDING_CONFIRMATION' },
+    });
+  });
+
+  it('resolves submitted guided category text server-side before drafting', async () => {
+    const { service, clarification, entityResolution, financialDrafts } = setup();
+    clarification.consumeGuidedFields.mockResolvedValueOnce({
+      clarificationId: 'clar-fields',
+      entityType: 'transaction_fields',
+      status: 'CONSUMED',
+      trustedContext: {
+        version: 1,
+        operation: 'transaction.create',
+        type: 'EXPENSE',
+        amount: '20000',
+        wallet: { internalId: 'wallet-resolved', displayLabel: 'BCA Debit' },
+        resumeAt: new Date().toISOString(),
+      },
+    });
+
+    const result = await service.submitGuidedClarification(
+      'u1',
+      'corr-guided-category-submit',
+      { date: '2026-07-29', categoryReference: 'Food' },
+      'c1',
+      'clar-fields',
+    );
+
+    expect(entityResolution.resolve).toHaveBeenCalledWith({
+      authenticatedUserId: 'u1',
+      reference: {
+        entityType: 'category',
+        referenceText: 'Food',
+        source: 'provider_extracted',
+      },
+      trustedConstraints: {
+        eligibleFor: 'transaction.create',
+        ownerScoped: true,
+        transactionType: 'EXPENSE',
+      },
+      transaction: TX_STUB,
+    });
+    expect(financialDrafts.prepare).toHaveBeenCalledWith(expect.objectContaining({
+      categoryId: 'category-resolved',
+      date: '2026-07-29',
+    }));
+    expect(result.response.status).toBe('success');
+  });
+
+  it('rejects an invalid guided date before consuming the clarification', async () => {
+    const { service, clarification, financialDrafts } = setup();
+
+    const result = await service.submitGuidedClarification(
+      'u1',
+      'corr-guided-invalid-date',
+      { date: '2026-02-30' },
+      'c1',
+      'clar-date',
+    );
+
+    expect(result.response).toMatchObject({
+      status: 'error',
+      code: 'ASSISTANT_INVALID_INPUT',
+    });
+    expect(clarification.consumeGuidedFields).not.toHaveBeenCalled();
+    expect(financialDrafts.prepare).not.toHaveBeenCalled();
+  });
+
   it.each(['ambiguous', 'not_found'] as const)(
     'returns safe category %s clarification without drafting or exposing Category IDs',
     async (kind) => {
@@ -324,7 +557,9 @@ describe('Assistant application lifecycle', () => {
 
       expect(result.response).toMatchObject({
         status: 'clarification_required',
-        data: { kind, entityType: 'category' },
+        data: kind === 'ambiguous'
+          ? { kind: 'entity_selection', entityType: 'category' }
+          : { kind: 'provider_text' },
       });
       expect(JSON.stringify(result.response)).not.toContain('private-category-');
       expect(financialDrafts.prepare).not.toHaveBeenCalled();
@@ -447,7 +682,7 @@ describe('Assistant application lifecycle', () => {
     expect(result.response).toMatchObject({
       status: 'clarification_required',
       data: {
-        kind: 'ambiguous',
+        kind: 'entity_selection',
         entityType: 'merchant',
       },
     });
@@ -669,7 +904,7 @@ describe('Assistant application lifecycle', () => {
     });
 
     expect(result.response.status).toBe('clarification_required');
-    expect(result.response).toMatchObject({ data: { kind: 'not_found', entityType: 'wallet' } });
+    expect(result.response).toMatchObject({ data: { kind: 'provider_text' } });
     expect(clarification.create).not.toHaveBeenCalled();
     expect(financialDrafts.prepare).not.toHaveBeenCalled();
   });

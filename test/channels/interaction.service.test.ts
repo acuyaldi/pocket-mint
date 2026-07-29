@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { processCallback } from '../../src/channels/interaction.service';
+import { processCallback, renderApplicationResult } from '../../src/channels/interaction.service';
 import { createCallbackToken } from '../../src/channels/callbackToken.service';
 import { AssistantError } from '../../src/assistant/errors';
 import type { ClaimedInboundJob } from '../../src/channels/workers/claim';
@@ -206,5 +206,59 @@ describe('interaction.service — processCallback (security resolution)', () => 
     const { token } = await createCallbackToken(db, { connectionId: 'conn-1', conversationId: 'conv-1', interactionType: 'CLARIFICATION_SELECT', clarificationRequestId: 'cr-1', actionSecret: 'clarify_raw-secret' });
     await processCallback({ db, providerRuntime }, job({ text: token }), 'corr-1');
     expect(providerRuntime.selectClarification).toHaveBeenCalledWith('user-1', 'corr-1', 'clarify_raw-secret', 'conv-1', 'cr-1');
+  });
+});
+
+describe('interaction.service — renderApplicationResult', () => {
+  it('wraps only entity_selection clarification options in callback tokens', async () => {
+    const db = fakeDb();
+
+    const result = await renderApplicationResult(db, 'conn-1', 'conv-1', {
+      response: {
+        status: 'clarification_required',
+        data: {
+          kind: 'entity_selection',
+          clarification: {
+            clarificationId: 'clar-wallet',
+            prompt: 'Pilih wallet.',
+            options: [
+              { token: 'clarify_secret_a', label: 'BCA Debit', discriminator: 'BANK' },
+              { token: 'clarify_secret_b', label: 'BCA Payroll', discriminator: 'BANK' },
+            ],
+          },
+        },
+      },
+    });
+
+    expect(result.terminalStatus).toBe('clarification_advanced');
+    expect(result.keyboard?.rows).toHaveLength(3);
+    expect(JSON.stringify(result.keyboard)).not.toContain('clarify_secret');
+  });
+
+  it('does not build Telegram buttons for guided_fields date/category clarification', async () => {
+    const db = fakeDb();
+
+    const result = await renderApplicationResult(db, 'conn-1', 'conv-1', {
+      response: {
+        status: 'clarification_required',
+        message: 'Beberapa detail transaksi belum lengkap.',
+        data: {
+          kind: 'guided_fields',
+          clarification: {
+            kind: 'guided',
+            clarificationId: 'clar-fields',
+            fields: [
+              { field: 'category', required: true, input: { type: 'text' } },
+              { field: 'date', required: true, input: { type: 'date' } },
+            ],
+            expiresAt: '2026-07-29T00:15:00.000Z',
+          },
+        },
+      },
+    });
+
+    expect(result.terminalStatus).toBe('guided_fields_handoff');
+    expect(result.keyboard).toBeUndefined();
+    expect((db as ReturnType<typeof fakeDb>).tokens.size).toBe(0);
   });
 });

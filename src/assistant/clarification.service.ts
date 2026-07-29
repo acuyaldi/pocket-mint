@@ -16,7 +16,11 @@ import type {
   ClarificationAdvanceResult,
   ClarificationCreationProjection,
   ClarificationProjection,
+  ConsumeGuidedFieldsInput,
+  ConsumeGuidedFieldsResult,
+  CreateGuidedFieldsClarificationInput,
   CreateClarificationInput,
+  GuidedClarificationProjection,
   SafeClarificationOption,
   SelectClarificationInput,
   SelectClarificationResult,
@@ -77,7 +81,7 @@ interface TokenPair {
   readonly digest: string;
 }
 
-const KNOWN_ENTITY_TYPES = new Set(['wallet', 'merchant', 'category']);
+const KNOWN_ENTITY_TYPES = new Set(['wallet', 'merchant', 'category', 'transaction_fields']);
 
 /**
  * Structural validity of a persisted trustedContext blob. Guards against a
@@ -90,7 +94,7 @@ function isValidTrustedContext(value: unknown): value is CanonicalContext {
     ctx.operation === 'transaction.create' &&
     (ctx.type === 'INCOME' || ctx.type === 'EXPENSE') &&
     typeof ctx.amount === 'string' &&
-    typeof ctx.date === 'string';
+    (ctx.date === undefined || typeof ctx.date === 'string');
 }
 
 /** Maps a non-PENDING terminal status to its specific bounded error. */
@@ -192,6 +196,42 @@ export function createClarificationService(db: PrismaClient) {
     };
   }
 
+  async function createGuidedFields(
+    input: CreateGuidedFieldsClarificationInput,
+    options: TransactionOption = {},
+  ): Promise<GuidedClarificationProjection> {
+    if (input.fields.length === 0) {
+      throw AssistantError.invalidInput('clarification.create', 'at least one guided field is required');
+    }
+
+    const work = async (tx: TransactionClient) => {
+      const expiresAt = new Date((await dbNow(tx)).getTime() + CLARIFICATION_TTL_MS);
+      return tx.clarificationRequest.create({
+        data: {
+          userId: input.userId,
+          conversationId: input.conversationId,
+          originatingTurnId: input.turnId,
+          executionId: input.executionId,
+          ...(input.parentClarificationId ? { parentId: input.parentClarificationId } : {}),
+          entityType: input.entityType,
+          status: 'PENDING',
+          trustedContext: input.trustedContext as unknown as Prisma.InputJsonValue,
+          prompt: input.prompt,
+          expiresAt,
+        },
+      });
+    };
+
+    const row = options.transaction ? await work(options.transaction) : await db.$transaction(work);
+
+    return {
+      kind: 'guided',
+      clarificationId: row.id,
+      fields: input.fields,
+      expiresAt: row.expiresAt.toISOString(),
+    };
+  }
+
   // ---- Select ----------------------------------------------------------------
 
   async function select(
@@ -277,6 +317,52 @@ export function createClarificationService(db: PrismaClient) {
       trustedContext,
       previousTrustedContext: trustedContext,
       ...(request.parentId ? { parentId: request.parentId } : {}),
+    };
+  }
+
+  async function consumeGuidedFields(
+    input: ConsumeGuidedFieldsInput,
+    options: TransactionOption = {},
+  ): Promise<ConsumeGuidedFieldsResult> {
+    const request = await db.clarificationRequest.findFirst({
+      where: {
+        id: input.clarificationId,
+        conversationId: input.conversationId,
+        userId: input.userId,
+      },
+    });
+
+    if (!request) throw AssistantError.clarificationNotFound();
+    if (request.status !== 'PENDING') {
+      throw terminalStatusError(request.status, request.terminalCode);
+    }
+
+    const now = await dbNow(db);
+    if (request.expiresAt <= now) {
+      await terminalizeOrReportActual(db, request.id, EXPIRED_TERMINAL_CODE, () => AssistantError.clarificationExpired());
+    }
+    if (!isValidTrustedContext(request.trustedContext)) {
+      await terminalizeOrReportActual(db, request.id, 'context_invalid', () => AssistantError.clarificationContextInvalid());
+    }
+    if (request.entityType !== 'transaction_fields') {
+      await terminalizeOrReportActual(db, request.id, 'continuation_invalid', () => AssistantError.clarificationContinuationInvalid());
+    }
+
+    const client = options.transaction ?? db;
+    const claimed = await client.clarificationRequest.updateMany({
+      where: { id: request.id, status: 'PENDING' },
+      data: { status: 'CONSUMED', consumedAt: now },
+    });
+    if (claimed.count !== 1) {
+      const current = await client.clarificationRequest.findUniqueOrThrow({ where: { id: request.id } });
+      throw terminalStatusError(current.status, current.terminalCode);
+    }
+
+    return {
+      clarificationId: request.id,
+      entityType: 'transaction_fields',
+      status: 'CONSUMED',
+      trustedContext: request.trustedContext as unknown as CanonicalContext,
     };
   }
 
@@ -440,7 +526,9 @@ export function createClarificationService(db: PrismaClient) {
 
   return {
     create,
+    createGuidedFields,
     select,
+    consumeGuidedFields,
     cancel,
     getAssistantState,
     buildConsumedResult,

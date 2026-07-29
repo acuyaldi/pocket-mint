@@ -16,8 +16,8 @@ export interface TransactionCreateInput {
   type: 'INCOME' | 'EXPENSE';
   amount: string;
   walletId: string;
-  categoryId: string;
-  date: string;
+  categoryId?: string;
+  date?: string;
   description?: string;
 }
 
@@ -25,8 +25,8 @@ export interface TransactionCreateReferenceInput {
   type: 'INCOME' | 'EXPENSE';
   amount: string;
   walletReference: string;
-  categoryId: string;
-  date: string;
+  categoryId?: string;
+  date?: string;
   description?: string;
   /** Optional merchant name reference — used for merchant resolution. */
   merchantReference?: string;
@@ -107,13 +107,7 @@ function validateTransactionCreateInput(input: unknown): TransactionCreateToolIn
   const hasCategoryRef = typeof value.categoryReference === 'string' && value.categoryReference.trim().length > 0;
   const catId = value.categoryId;
   const hasCategoryId = typeof catId === 'string' && catId.trim().length > 0 && catId.length <= 191;
-  if (!hasCategoryId && !hasCategoryRef) {
-    throw AssistantError.invalidInput(
-      'transaction.create',
-      'categoryId or categoryReference is required',
-    );
-  }
-  if (typeof value.date !== 'string' || !isCalendarDay(value.date)) {
+  if (value.date !== undefined && (typeof value.date !== 'string' || !isCalendarDay(value.date))) {
     throw AssistantError.invalidInput('transaction.create', 'date must be a valid YYYY-MM-DD day');
   }
   if (value.description !== undefined && (typeof value.description !== 'string' || !value.description.trim() || value.description.length > 500)) {
@@ -140,8 +134,8 @@ function validateTransactionCreateInput(input: unknown): TransactionCreateToolIn
   const common: Omit<TransactionCreateInput, 'walletId'> = {
     type: value.type,
     amount,
-    categoryId: (hasCategoryId ? value.categoryId : '') as string,
-    date: value.date,
+    ...(hasCategoryId || hasCategoryRef ? { categoryId: (hasCategoryId ? value.categoryId : '') as string } : {}),
+    ...(value.date === undefined ? {} : { date: value.date }),
     ...(value.description === undefined ? {} : { description: (value.description as string).trim() }),
   };
   return hasWalletId
@@ -288,11 +282,11 @@ export const transactionCreate: ToolContract<
   timeoutMs: 10_000,
   enabled: true,
   providerArguments: {
-    required: ['amount', 'categoryId', 'date', 'type', 'walletReference'],
-    optional: ['description'],
+    required: ['amount', 'type', 'walletReference'],
+    optional: ['categoryReference', 'date', 'description'],
     properties: {
       amount: { type: 'string', description: 'Positive decimal amount with at most two fraction digits.' },
-      categoryId: { type: 'string', description: 'Category identifier supplied by the user; never invent one.' },
+      categoryReference: { type: 'string', description: 'Textual category name from the user; never supply or invent a category identifier.' },
       date: { type: 'string', format: 'YYYY-MM-DD', description: 'Transaction calendar date.' },
       description: { type: 'string', description: 'Optional short transaction description.' },
       type: { type: 'string', enum: ['INCOME', 'EXPENSE'], description: 'Regular transaction type.' },

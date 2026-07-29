@@ -91,12 +91,22 @@ async function buildDraftKeyboard(db, connectionId, conversationId, draftId) {
  */
 async function renderApplicationResult(db, connectionId, conversationId, result) {
     const response = result.response;
-    if (response.status === 'clarification_required' && response.data?.clarification) {
-        const buttons = await buildClarificationKeyboard(db, connectionId, conversationId, response.data.clarification);
+    if (response.status === 'clarification_required' && response.data?.kind === 'entity_selection' && response.data.clarification?.options) {
+        const buttons = await buildClarificationKeyboard(db, connectionId, conversationId, {
+            clarificationId: response.data.clarification.clarificationId,
+            options: response.data.clarification.options,
+        });
         return {
             terminalStatus: 'clarification_advanced',
-            replyText: response.data.clarification.prompt,
+            replyText: response.data.clarification.prompt ?? response.message ?? 'Please choose one option.',
             keyboard: { rows: buttons.map((b) => [b]) },
+            clearOriginalKeyboard: true,
+        };
+    }
+    if (response.status === 'clarification_required' && response.data?.kind === 'guided_fields') {
+        return {
+            terminalStatus: 'guided_fields_handoff',
+            replyText: response.message ?? 'Please continue in the Pocket Mint web app to complete this clarification.',
             clearOriginalKeyboard: true,
         };
     }

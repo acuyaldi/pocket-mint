@@ -10,7 +10,7 @@ export interface CanonicalContext {
     readonly operation: 'transaction.create';
     readonly type: 'INCOME' | 'EXPENSE';
     readonly amount: string;
-    readonly date: string;
+    readonly date?: string;
     readonly description?: string;
     readonly wallet?: {
         readonly internalId: string;
@@ -49,6 +49,28 @@ export interface ClarificationCreationProjection {
     readonly entityType: EntityType;
     readonly prompt: string;
     readonly options: readonly ClarificationOptionToken[];
+    readonly expiresAt: string;
+}
+export type GuidedClarificationField = {
+    readonly field: 'date';
+    readonly required: true;
+    readonly input: {
+        readonly type: 'date';
+        readonly min?: string;
+        readonly max?: string;
+    };
+} | {
+    readonly field: 'category';
+    readonly required: true;
+    readonly input: {
+        readonly type: 'text';
+        readonly placeholder?: string;
+    };
+};
+export interface GuidedClarificationProjection {
+    readonly kind: 'guided';
+    readonly clarificationId: string;
+    readonly fields: readonly GuidedClarificationField[];
     readonly expiresAt: string;
 }
 /** Safe public projection of a clarification request — no tokens. */
@@ -94,6 +116,17 @@ export interface CreateClarificationInput {
         readonly candidateId: string;
     }[];
 }
+export interface CreateGuidedFieldsClarificationInput {
+    readonly userId: string;
+    readonly conversationId: string;
+    readonly turnId: string;
+    readonly executionId: string;
+    readonly entityType: 'transaction_fields';
+    readonly parentClarificationId?: string;
+    readonly trustedContext: CanonicalContext;
+    readonly prompt: string;
+    readonly fields: readonly GuidedClarificationField[];
+}
 export interface SelectClarificationInput {
     readonly userId: string;
     readonly conversationId: string;
@@ -101,6 +134,12 @@ export interface SelectClarificationInput {
     readonly correlationId: string;
     /** When provided (HTTP route scoping), the request must match this id exactly. */
     readonly clarificationId?: string;
+}
+export interface ConsumeGuidedFieldsInput {
+    readonly userId: string;
+    readonly conversationId: string;
+    readonly clarificationId: string;
+    readonly correlationId: string;
 }
 export interface SelectClarificationResult {
     readonly clarificationId: string;
@@ -111,6 +150,12 @@ export interface SelectClarificationResult {
     readonly trustedContext: CanonicalContext;
     readonly previousTrustedContext: CanonicalContext;
     readonly parentId?: string;
+}
+export interface ConsumeGuidedFieldsResult {
+    readonly clarificationId: string;
+    readonly entityType: 'transaction_fields';
+    readonly status: 'CONSUMED';
+    readonly trustedContext: CanonicalContext;
 }
 export interface CancelClarificationInput {
     readonly userId: string;

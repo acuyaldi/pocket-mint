@@ -13,7 +13,7 @@ All endpoints are authenticated under `/api/v1/assistant`. Identity always comes
 }
 ```
 
-Unknown fields, empty messages, non-string values, and messages above the canonical 10,000-character limit are rejected. The standard success/error envelope is unchanged. Successful data is one of the existing deterministic execution/draft responses, `{ "status": "clarification_required", ... }`, or `{ "status": "unsupported", ... }`. Provider availability, timeout, rate-limit, configuration, refusal, and invalid-response failures use safe `ASSISTANT_PROVIDER_*` codes; no prompt, context, raw response, SDK error, request header, vendor request ID, usage detail, or credential is returned.
+Unknown fields, empty messages, non-string values, and messages above the canonical 10,000-character limit are rejected. The standard success/error envelope is unchanged. Successful data is one of the existing deterministic execution/draft responses, `{ "status": "clarification_required", ... }`, or `{ "status": "unsupported", ... }`. Machine-readable clarification responses use an explicit `data.kind` discriminator: `entity_selection`, `guided_fields`, or `provider_text`. Provider availability, timeout, rate-limit, configuration, refusal, and invalid-response failures use safe `ASSISTANT_PROVIDER_*` codes; no prompt, context, raw response, SDK error, request header, vendor request ID, usage detail, or credential is returned.
 
 The endpoint exists even when provider execution is disabled, but returns `ASSISTANT_PROVIDER_UNAVAILABLE` without making an external call. Enablement requires `ASSISTANT_PROVIDER=gemini`, `ASSISTANT_MODEL`, and `GEMINI_API_KEY`; `ASSISTANT_PROVIDER_TIMEOUT_MS` defaults to 15,000 ms. Missing required enabled configuration fails startup. Normal tests and the canonical `/execute` path need no provider key.
 
@@ -28,6 +28,14 @@ For `transaction.create`, the provider plan must supply textual `walletReference
 A unique wallet and category resolution creates a 15-minute `PENDING_CONFIRMATION` draft and returns a deterministic preview with safe display labels. Wallet or Category ambiguity/absence blocks draft creation. Merchant ambiguity also blocks draft creation, but merchant `not_found` does not: because the transaction model has no standalone merchant field or Merchant entity, the validated normalized reference continues as inert free-form merchant text. It becomes `Transaction.description` only when the request did not already include an explicit description; an explicit description remains authoritative and the merchant label is preview-only. An explicit `categoryReference` never falls back to Merchant Mapping category data or Smart Categorization keywords. The initial natural-language request creates no transaction and changes no wallet balance. The model cannot call, select, or simulate confirmation; only the separate authenticated `/drafts/:draftId/confirm` endpoint with an explicit idempotency key may commit.
 
 Provider audit uses the dedicated `AssistantProviderExecution` record rather than overloading tool execution. It stores provider/model identifiers, lifecycle status, correlation/conversation/optional turn references, duration, byte counts, normalized finish class, safe error code, and optional neutral token totals. It has no prompt, context, message, arguments, raw request/response, hidden reasoning, credential, header, or raw SDK error fields. The official `@google/genai` adapter sends one request with SDK retries disabled, caps model generation at 4,096 output tokens, and applies client cancellation plus the configured HTTP timeout. The 32 KiB byte check remains a post-SDK validation boundary because the non-streaming SDK materializes its response before returning.
+
+Provider-generated bounded questions and deterministic no-option retry prompts remain typed as provider text:
+
+```json
+{ "status": "clarification_required", "message": "...", "data": { "kind": "provider_text" } }
+```
+
+Missing transaction `amount` stays in this provider-text path. Wallet/category `not_found` prompts also use this shape because there are no backend-issued options to select. There is no guided amount field in this phase because arbitrary amounts have no backend-authoritative option set.
 
 The provider-audit row is created before the external call. Its terminal update occurs only after the corresponding deterministic/non-tool result is durable. If that metadata-only update fails, the API returns the already-durable result instead of turning a committed draft into a retry-triggering error; the audit row can remain `STARTED` for manual investigation because this phase has no recovery worker.
 
@@ -58,7 +66,7 @@ Assistant records are historical snapshots of what was presented. Finance-domain
 
 ## Financial transaction drafts
 
-`POST /execute` also accepts the allow-listed `transaction.create` intent. Its arguments are `type` (`INCOME` or `EXPENSE`), positive decimal `amount` with at most two fraction digits, `date` (`YYYY-MM-DD`), optional `description` (maximum 500 characters), optional `merchantReference` for deterministic internal compatibility, exactly one of `walletReference` or `walletId`, and exactly one of `categoryReference` or `categoryId`. Provider plans require all three textual references and expose neither compatibility ID. `walletId` and `categoryId` are retained only for legitimate deterministic callers. Both category forms, neither category form, unknown fields, identifier variants, both wallet forms, merchant/mapping identifiers, transfers, installments, ownership/type/authorization/confirmation claims, balances, categorization authority/confidence, resolution evidence, trusted constraints, lifecycle fields, and prototype keys are rejected. The Assistant capability remains closed to `TRANSFER`; it supports only `INCOME` and `EXPENSE`, so a transfer cannot supply or resolve a category through this contract.
+`POST /execute` also accepts the allow-listed `transaction.create` intent. Its arguments are `type` (`INCOME` or `EXPENSE`), positive decimal `amount` with at most two fraction digits, optional `date` (`YYYY-MM-DD`), optional `description` (maximum 500 characters), optional `merchantReference` for deterministic internal compatibility, exactly one of `walletReference` or `walletId`, and optional `categoryReference` or compatibility `categoryId`. Provider plans require textual `walletReference` and may omit textual `categoryReference` and `date`; those omissions create a persisted guided-fields clarification after wallet/merchant resolution. Provider plans expose neither compatibility ID. `walletId` and `categoryId` are retained only for legitimate deterministic callers. Both category forms, unknown fields, identifier variants, both wallet forms, merchant/mapping identifiers, transfers, installments, ownership/type/authorization/confirmation claims, balances, categorization authority/confidence, resolution evidence, trusted constraints, lifecycle fields, and prototype keys are rejected. The Assistant capability remains closed to `TRANSFER`; it supports only `INCOME` and `EXPENSE`, so a transfer cannot supply or resolve a category through this contract.
 
 Wallet resolution applies authenticated owner scope and `isArchived: false` in the database query. Exact canonical names, normalized names, and bounded aliases derived from trusted wallet-name metadata are supported. There is no fuzzy, substring-scored, embedding, semantic, or provider-confidence path. An ambiguous response contains safe display labels, optional wallet-type discriminators, deterministic confidence, and evidence, but no internal option IDs. Unknown, archived, ineligible, and cross-user-only wallets all return the same `not_found` resolution class. These outcomes create no financial draft or mutation.
 
@@ -87,6 +95,49 @@ If the finance domain rejects confirmation, its transaction is rolled back befor
 
 When wallet, merchant, or category resolution returns `ambiguous` during `transaction.create`, the Backend persists a `ClarificationRequest` with up to five bounded, deterministically ordered options and returns one freshly issued, cryptographically random token per option. Each token is returned exactly once, at creation. Only its SHA-256 digest is stored; the raw token is never persisted, logged, or reconstructable, so a lost token cannot be recovered or reissued — the User must restart from a new ambiguous request.
 
+Entity selection response shape:
+
+```json
+{
+  "status": "clarification_required",
+  "message": "...",
+  "data": {
+    "kind": "entity_selection",
+    "entityType": "wallet",
+    "clarification": {
+      "clarificationId": "...",
+      "entityType": "wallet",
+      "prompt": "...",
+      "options": [{ "token": "clarify_...", "label": "BCA", "discriminator": "BANK" }],
+      "expiresAt": "..."
+    }
+  }
+}
+```
+
+When `transaction.create` is otherwise valid but category and/or date is missing, the Backend persists a guided-fields `ClarificationRequest` in the same engine. The frontend may render only the fields the Backend includes. Category values submitted from this guided path are untrusted text and are resolved again server-side; the client never submits a Category ID. Date values are validated as calendar days before the clarification is consumed. A guided clarification creates no draft until all required fields have been validated/resolved.
+
+Guided fields response shape:
+
+```json
+{
+  "status": "clarification_required",
+  "message": "...",
+  "data": {
+    "kind": "guided_fields",
+    "clarification": {
+      "kind": "guided",
+      "clarificationId": "...",
+      "fields": [
+        { "field": "category", "required": true, "input": { "type": "text", "placeholder": "Nama kategori" } },
+        { "field": "date", "required": true, "input": { "type": "date" } }
+      ],
+      "expiresAt": "..."
+    }
+  }
+}
+```
+
 - `POST /assistant/conversations/:conversationId/clarifications/:clarificationId/select`
 - `POST /assistant/conversations/:conversationId/clarifications/:clarificationId/cancel`
 
@@ -94,13 +145,21 @@ Both routes require an authenticated User and are scoped to that User's own conv
 
 ### Select
 
-The request body accepts exactly one key:
+For entity selection, the request body accepts exactly one key:
 
 ```json
 { "optionToken": "clarify_<opaque-example-token>" }
 ```
 
 Any other shape — a missing key, an additional key, an empty or non-string `optionToken`, an array, or a non-plain-object body — is rejected with `400 BAD_REQUEST` before the token is ever compared against stored digests. Selection is deterministic-only: there is no candidate ID, index, or natural-language selection path.
+
+For guided fields, the same route accepts exactly one `fields` object:
+
+```json
+{ "fields": { "categoryReference": "Food", "date": "2026-07-29" } }
+```
+
+`fields.date` must be a valid `YYYY-MM-DD` calendar day. `fields.categoryReference` or `fields.category` is treated as untrusted text and resolved through the existing owner-scoped category resolver. Invalid guided field values are rejected before the clarification is consumed, so the User can correct and retry while the request is still pending.
 
 Lifecycle and expiry are resolved from database time before the supplied token is hashed and matched, so an already-terminal or expired clarification never reveals whether the token would otherwise have matched. A non-`PENDING` clarification returns its specific terminal outcome instead of a generic error:
 
@@ -118,7 +177,7 @@ Lifecycle and expiry are resolved from database time before the supplied token i
 A valid, still-pending token atomically claims the clarification (`PENDING → CONSUMED`) and revalidates the selected candidate and any already-resolved prerequisite (wallet, then merchant) under the authenticated User's current ownership before continuing. A successful selection returns one of two safe shapes:
 
 ```json
-{ "status": "clarification_required", "data": { "kind": "ambiguous", "entityType": "merchant", "clarification": { "clarificationId": "...", "prompt": "...", "options": [{ "token": "...", "label": "..." }], "expiresAt": "..." } } }
+{ "status": "clarification_required", "data": { "kind": "entity_selection", "entityType": "merchant", "clarification": { "clarificationId": "...", "prompt": "...", "options": [{ "token": "...", "label": "..." }], "expiresAt": "..." } } }
 ```
 
 ```json
