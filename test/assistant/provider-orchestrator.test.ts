@@ -140,6 +140,72 @@ describe('Assistant provider runtime orchestration', () => {
     expect(callArgs.categoryReference).toBe('Food');
   });
 
+  it('normalizes a numeric provider amount and null clarifiable fields before deterministic execution', async () => {
+    const { runtime, application } = setup({
+      kind: 'intent',
+      intent: 'transaction.create',
+      arguments: {
+        type: 'EXPENSE',
+        amount: 350000,
+        walletReference: 'bca',
+        categoryReference: 'internet',
+        categoryId: null,
+        date: null,
+      },
+      clarification: null,
+      userMessage: '',
+    });
+
+    const result = await runtime.sendMessage('u1', 'corr-guided-provider-plan', {
+      message: 'bayar internet 350rb dari bca',
+    });
+
+    expect(result.response.status).toBe('success');
+    expect(application.execute).toHaveBeenCalledWith(
+      'u1',
+      'corr-guided-provider-plan',
+      expect.objectContaining({
+        intent: 'transaction.create',
+        arguments: {
+          type: 'EXPENSE',
+          amount: '350000',
+          walletReference: 'bca',
+          categoryReference: 'internet',
+          categoryId: '',
+        },
+      }),
+    );
+  });
+
+  it('keeps a missing provider amount in provider-text clarification instead of guided fields or invalid-response', async () => {
+    const { runtime, application } = setup({
+      kind: 'intent',
+      intent: 'transaction.create',
+      arguments: {
+        type: 'EXPENSE',
+        amount: null,
+        walletReference: 'bca',
+        categoryReference: 'internet',
+        date: null,
+      },
+      clarification: null,
+      userMessage: '',
+    });
+
+    const result = await runtime.sendMessage('u1', 'corr-missing-amount', {
+      message: 'bayar internet dari bca',
+    });
+
+    expect(result).toMatchObject({
+      httpStatus: 200,
+      response: {
+        status: 'clarification_required',
+        data: { kind: 'provider_text' },
+      },
+    });
+    expect(application.execute).not.toHaveBeenCalled();
+  });
+
   it('persists one clarification response and executes no deterministic capability', async () => {
     const { runtime, application, conversations, audit } = setup({
       kind: 'clarification',
