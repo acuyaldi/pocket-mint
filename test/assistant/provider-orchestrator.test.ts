@@ -74,6 +74,22 @@ function setup(output: unknown = {
   return { runtime, dependencies, application, conversations, provider, audit };
 }
 
+function missingAmountTransactionPlan() {
+  return {
+    kind: 'intent',
+    intent: 'transaction.create',
+    arguments: {
+      type: 'EXPENSE',
+      amount: null,
+      walletReference: 'bca',
+      categoryReference: 'internet',
+      date: null,
+    },
+    clarification: null,
+    userMessage: '',
+  };
+}
+
 describe('Assistant provider runtime orchestration', () => {
   it('prepares context, calls the provider, and delegates a valid intent exactly once', async () => {
     const { runtime, application, conversations, provider, audit } = setup();
@@ -177,13 +193,93 @@ describe('Assistant provider runtime orchestration', () => {
     );
   });
 
-  it('keeps a missing provider amount in provider-text clarification instead of guided fields or invalid-response', async () => {
+  it.each([
+    ['bayar internet 350rb dari bca', '350000'],
+    ['bayar internet 350 rb dari bca', '350000'],
+    ['bayar internet 350ribu dari bca', '350000'],
+    ['bayar internet 350 ribu dari bca', '350000'],
+    ['bayar internet Rp350.000 dari bca', '350000'],
+    ['bayar internet 350000 dari bca', '350000'],
+    ['bayar internet 1jt dari bca', '1000000'],
+    ['bayar internet 1 juta dari bca', '1000000'],
+    ['bayar internet 1,5jt dari bca', '1500000'],
+    ['bayar internet 1.5 juta dari bca', '1500000'],
+  ])('recovers one explicit Indonesian amount %s before missing-amount provider text', async (message, amount) => {
+    const { runtime, application } = setup(missingAmountTransactionPlan());
+
+    const result = await runtime.sendMessage('u1', 'corr-explicit-amount-recovery', { message });
+
+    expect(result.response.status).toBe('success');
+    expect(application.execute).toHaveBeenCalledWith(
+      'u1',
+      'corr-explicit-amount-recovery',
+      expect.objectContaining({
+        intent: 'transaction.create',
+        arguments: expect.objectContaining({
+          type: 'EXPENSE',
+          amount,
+          walletReference: 'bca',
+          categoryReference: 'internet',
+        }),
+      }),
+    );
+  });
+
+  it.each([
+    'bayar listrik 300rb lalu internet 500rb',
+    'antara 300rb atau 400rb dari bca',
+    'transfer 1jt lalu bayar admin 10rb',
+    'beli 2 barang 350rb dan 200rb',
+  ])('declines recovery for multiple possible amounts: %s', async (message) => {
+    const { runtime, application } = setup(missingAmountTransactionPlan());
+
+    const result = await runtime.sendMessage('u1', 'corr-ambiguous-amount', { message });
+
+    expect(result).toMatchObject({
+      httpStatus: 200,
+      response: {
+        status: 'clarification_required',
+        message: 'Berapa nominal transaksi yang ingin dicatat?',
+        data: { kind: 'provider_text' },
+      },
+    });
+    expect(application.execute).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    'bayar internet tanggal 30 dari bca',
+    'bayar cicilan bulan ke 12 dari bca',
+    'bayar cicilan 12 bulan 350rb dari bca',
+    'beli 2 barang dari bca',
+    'transfer ke rekening 123456789 dari bca',
+    'bayar internet 0rb dari bca',
+    'bayar internet -350rb dari bca',
+    'bayar internet 350r dari bca',
+    'bayar internet setengah juta dari bca',
+    'bayar internet 99999999999999 dari bca',
+  ])('declines recovery for invalid or unrelated numeric text: %s', async (message) => {
+    const { runtime, application } = setup(missingAmountTransactionPlan());
+
+    const result = await runtime.sendMessage('u1', 'corr-invalid-amount', { message });
+
+    expect(result).toMatchObject({
+      httpStatus: 200,
+      response: {
+        status: 'clarification_required',
+        message: 'Berapa nominal transaksi yang ingin dicatat?',
+        data: { kind: 'provider_text' },
+      },
+    });
+    expect(application.execute).not.toHaveBeenCalled();
+  });
+
+  it('keeps the provider amount authoritative when it is already present', async () => {
     const { runtime, application } = setup({
       kind: 'intent',
       intent: 'transaction.create',
       arguments: {
         type: 'EXPENSE',
-        amount: null,
+        amount: '125000',
         walletReference: 'bca',
         categoryReference: 'internet',
         date: null,
@@ -191,6 +287,73 @@ describe('Assistant provider runtime orchestration', () => {
       clarification: null,
       userMessage: '',
     });
+
+    const result = await runtime.sendMessage('u1', 'corr-provider-amount-present', {
+      message: 'bayar internet 350rb dari bca',
+    });
+
+    expect(result.response.status).toBe('success');
+    expect(application.execute).toHaveBeenCalledWith(
+      'u1',
+      'corr-provider-amount-present',
+      expect.objectContaining({
+        arguments: expect.objectContaining({ amount: '125000' }),
+      }),
+    );
+  });
+
+  it('continues a provider-text missing-amount follow-up without repeating the amount question', async () => {
+    const { runtime, application, provider, conversations } = setup({
+      kind: 'clarification',
+      intent: null,
+      arguments: {},
+      clarification: { question: 'Berapa nominal transaksi yang ingin dicatat?' },
+      userMessage: '',
+    });
+    provider.generateStructuredResponse.mockResolvedValueOnce({
+      output: {
+        kind: 'clarification',
+        intent: null,
+        arguments: {},
+        clarification: { question: 'Berapa nominal transaksi yang ingin dicatat?' },
+        userMessage: '',
+      },
+      outputBytes: 100,
+      finishClassification: 'STOP',
+    }).mockResolvedValueOnce({
+      output: missingAmountTransactionPlan(),
+      outputBytes: 100,
+      finishClassification: 'STOP',
+    });
+
+    const first = await runtime.sendMessage('u1', 'corr-follow-up-1', {
+      conversationId: 'c1',
+      message: 'bayar internet dari bca',
+    });
+    const second = await runtime.sendMessage('u1', 'corr-follow-up-2', {
+      conversationId: 'c1',
+      message: '350 ribu',
+    });
+
+    expect(first.response).toMatchObject({
+      status: 'clarification_required',
+      message: 'Berapa nominal transaksi yang ingin dicatat?',
+      data: { kind: 'provider_text' },
+    });
+    expect(second.response.status).toBe('success');
+    expect(application.execute).toHaveBeenCalledTimes(1);
+    expect(application.execute).toHaveBeenCalledWith(
+      'u1',
+      'corr-follow-up-2',
+      expect.objectContaining({
+        arguments: expect.objectContaining({ amount: '350000' }),
+      }),
+    );
+    expect(conversations.finalizeWithoutTool).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps a missing provider amount in provider-text clarification instead of guided fields or invalid-response', async () => {
+    const { runtime, application } = setup(missingAmountTransactionPlan());
 
     const result = await runtime.sendMessage('u1', 'corr-missing-amount', {
       message: 'bayar internet dari bca',
