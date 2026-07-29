@@ -48,6 +48,7 @@ describe('POST /api/v1/assistant/messages', () => {
   it('returns a standard success envelope for a new or existing conversation', async () => {
     const response = await request(app()).post('/v1/assistant/messages').send({
       conversationId: 'c1',
+      locale: 'id-ID',
       message: 'Ringkas Juli',
     });
     expect(response.status).toBe(200);
@@ -58,7 +59,7 @@ describe('POST /api/v1/assistant/messages', () => {
     expect(sendMessage).toHaveBeenCalledWith(
       'user-1',
       expect.any(String),
-      { conversationId: 'c1', message: 'Ringkas Juli' },
+      { conversationId: 'c1', locale: 'id-ID', message: 'Ringkas Juli' },
     );
   });
 
@@ -69,6 +70,7 @@ describe('POST /api/v1/assistant/messages', () => {
     ['object message', { message: { content: 'hello' } }],
     ['array message', { message: ['hello'] }],
     ['wrong conversation type', { message: 'hello', conversationId: 42 }],
+    ['wrong locale type', { message: 'hello', locale: 42 }],
     ['unknown fields', { message: 'hello', userId: 'victim' }],
     ['prototype-related fields', { message: 'hello', constructor: { userId: 'victim' } }],
   ])('rejects %s', async (_label, body) => {
