@@ -312,7 +312,7 @@ describe.skipIf(!url)('Assistant provider runtime (disposable PostgreSQL)', () =
         type: 'EXPENSE',
         amount: '12500.50',
         walletReference: wallet.name,
-        categoryId: category.id,
+        categoryReference: category.name,
         date: '2026-07-23',
         description: 'Lunch',
       },
@@ -375,7 +375,7 @@ describe.skipIf(!url)('Assistant provider runtime (disposable PostgreSQL)', () =
         type: 'EXPENSE',
         amount: '20000',
         walletReference: 'BCA',
-        categoryId: category.id,
+        categoryReference: category.name,
         date: '2026-07-23',
       },
       clarification: null,
@@ -389,7 +389,7 @@ describe.skipIf(!url)('Assistant provider runtime (disposable PostgreSQL)', () =
     expect(response.status).toBe(200);
     expect(response.body.data).toMatchObject({
       status: 'clarification_required',
-      data: { kind: 'ambiguous', entityType: 'wallet' },
+      data: { kind: 'entity_selection', entityType: 'wallet' },
     });
     // Options are nested inside data.clarification
     const options = response.body.data.data.clarification?.options ?? [];
@@ -431,7 +431,7 @@ describe.skipIf(!url)('Assistant provider runtime (disposable PostgreSQL)', () =
         type: 'EXPENSE',
         amount: '20000',
         walletReference: 'Dormant BCA',
-        categoryId: category.id,
+        categoryReference: category.name,
         date: '2026-07-23',
       },
       clarification: null,
@@ -445,7 +445,7 @@ describe.skipIf(!url)('Assistant provider runtime (disposable PostgreSQL)', () =
     expect(response.status).toBe(200);
     expect(response.body.data).toMatchObject({
       status: 'clarification_required',
-      data: { kind: 'not_found', entityType: 'wallet' },
+      data: { kind: 'provider_text' },
     });
     expect(await resources!.prisma.assistantFinancialDraft.count({
       where: { userId: user.id },
@@ -458,9 +458,9 @@ describe.skipIf(!url)('Assistant provider runtime (disposable PostgreSQL)', () =
     const owner = await fixture(`ownership-owner-${foreignKind}`);
     const other = await fixture(`ownership-other-${foreignKind}`);
     const walletReference = foreignKind === 'wallet' ? other.wallet.name : owner.wallet.name;
-    const categoryId = foreignKind === 'category'
-      ? other.category.id
-      : owner.category.id;
+    const categoryReference = foreignKind === 'category'
+      ? other.category.name
+      : owner.category.name;
     const generate = vi.fn().mockResolvedValue(modelResponse({
       kind: 'intent',
       intent: 'transaction.create',
@@ -468,7 +468,7 @@ describe.skipIf(!url)('Assistant provider runtime (disposable PostgreSQL)', () =
         type: 'EXPENSE',
         amount: '1000',
         walletReference,
-        categoryId,
+        categoryReference,
         date: '2026-07-23',
       },
       clarification: null,
@@ -476,17 +476,13 @@ describe.skipIf(!url)('Assistant provider runtime (disposable PostgreSQL)', () =
     }));
     const { server } = setup(generate);
     const response = await request(server).post('/messages').set('x-test-user', owner.user.id).send({ message: 'prepare' });
-    // Using a foreign walletReference triggers wallet resolution → not_found clarification.
-    // Using a foreign categoryId triggers financial draft ownership check → 404 rejection.
-    if (foreignKind === 'wallet') {
-      expect(response.status).toBe(200);
-      expect(response.body.data).toMatchObject({
-        status: 'clarification_required',
-        data: { kind: 'not_found', entityType: foreignKind },
-      });
-    } else {
-      expect(response.status).toBe(404);
-    }
+    // Cross-user-only textual references resolve as not_found without exposing
+    // which entity was foreign, and without falling through to draft creation.
+    expect(response.status).toBe(200);
+    expect(response.body.data).toMatchObject({
+      status: 'clarification_required',
+      data: { kind: 'provider_text' },
+    });
     expect(await resources!.prisma.assistantFinancialDraft.count({ where: { userId: owner.user.id } })).toBe(0);
     expect(await resources!.prisma.transaction.count({ where: { userId: owner.user.id } })).toBe(0);
   });

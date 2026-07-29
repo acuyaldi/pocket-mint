@@ -48,13 +48,23 @@ function draftWasCreated(response: unknown): boolean {
   return value.status === 'success' && value.data?.confirmationRequired === true;
 }
 
-/** Strict body for clarification selection — exactly one key: a non-empty, non-whitespace string token. */
-function selectClarificationRequest(body: unknown): body is { optionToken: string } {
+type ClarificationContinuationRequest =
+  | { optionToken: string }
+  | { fields: Record<string, unknown> };
+
+/** Strict body for clarification continuation — either one option token or one guided fields object. */
+function selectClarificationRequest(body: unknown): body is ClarificationContinuationRequest {
   if (typeof body !== 'object' || body === null || Array.isArray(body)) return false;
   const value = body as Record<string, unknown>;
   const keys = Object.keys(value);
-  if (keys.length !== 1 || keys[0] !== 'optionToken') return false;
-  return typeof value.optionToken === 'string' && value.optionToken.trim().length > 0;
+  if (keys.length !== 1) return false;
+  if (keys[0] === 'optionToken') {
+    return typeof value.optionToken === 'string' && value.optionToken.trim().length > 0;
+  }
+  if (keys[0] === 'fields') {
+    return typeof value.fields === 'object' && value.fields !== null && !Array.isArray(value.fields);
+  }
+  return false;
 }
 
 export function createAssistantControllers(
@@ -224,7 +234,9 @@ export function createAssistantControllers(
       }
       const conversationId = routeId(req.params.conversationId);
       const clarificationId = routeId(req.params.clarificationId);
-      const result = await application.selectClarification(userId, req.correlationId, req.body.optionToken, conversationId, clarificationId);
+      const result = 'optionToken' in req.body
+        ? await application.selectClarification(userId, req.correlationId, req.body.optionToken, conversationId, clarificationId)
+        : await application.submitGuidedClarification(userId, req.correlationId, req.body.fields, conversationId, clarificationId);
       logEvent('info', {
         event: 'assistant.clarification.selected',
         requestId: req.correlationId,

@@ -3,16 +3,16 @@ export interface TransactionCreateInput {
     type: 'INCOME' | 'EXPENSE';
     amount: string;
     walletId: string;
-    categoryId: string;
-    date: string;
+    categoryId?: string;
+    date?: string;
     description?: string;
 }
 export interface TransactionCreateReferenceInput {
     type: 'INCOME' | 'EXPENSE';
     amount: string;
     walletReference: string;
-    categoryId: string;
-    date: string;
+    categoryId?: string;
+    date?: string;
     description?: string;
     /** Optional merchant name reference — used for merchant resolution. */
     merchantReference?: string;

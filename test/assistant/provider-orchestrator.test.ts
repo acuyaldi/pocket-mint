@@ -100,12 +100,12 @@ describe('Assistant provider runtime orchestration', () => {
     }));
   });
 
-  it('accepts provider-supplied categoryId and walletReference without delegating internal entity identifiers', async () => {
+  it('accepts provider-supplied categoryReference and walletReference without delegating internal entity identifiers', async () => {
     const argumentsValue = {
       type: 'EXPENSE',
       amount: '20000',
       walletReference: 'BCA',
-      categoryId: 'category-food',
+      categoryReference: 'Food',
       date: '2026-07-23',
       description: 'Bakso',
     };
@@ -127,15 +127,17 @@ describe('Assistant provider runtime orchestration', () => {
       'corr-category-reference',
       expect.objectContaining({
         intent: 'transaction.create',
-        arguments: argumentsValue,
+        arguments: expect.objectContaining({
+          ...argumentsValue,
+          categoryId: '',
+        }),
       }),
     );
-    // Internal entity identifiers (merchantReference, categoryReference)
-    // are never exposed to or accepted from the provider.
+    // Internal entity identifiers are never exposed to or accepted from the provider.
     const callArgs = application.execute.mock.calls[0][2].arguments;
     expect(callArgs).not.toHaveProperty('merchantReference');
-    expect(callArgs).not.toHaveProperty('categoryReference');
-    expect(callArgs.categoryId).toBe('category-food');
+    expect(callArgs.categoryId).toBe('');
+    expect(callArgs.categoryReference).toBe('Food');
   });
 
   it('persists one clarification response and executes no deterministic capability', async () => {
@@ -150,7 +152,13 @@ describe('Assistant provider runtime orchestration', () => {
 
     expect(result).toMatchObject({
       httpStatus: 200,
-      response: { status: 'clarification_required', message: 'Bulan mana yang ingin diringkas?', conversationId: 'c1', turnId: 't1' },
+      response: {
+        status: 'clarification_required',
+        message: 'Bulan mana yang ingin diringkas?',
+        data: { kind: 'provider_text' },
+        conversationId: 'c1',
+        turnId: 't1',
+      },
     });
     expect(application.execute).not.toHaveBeenCalled();
     expect(conversations.beginTurn).toHaveBeenCalledOnce();

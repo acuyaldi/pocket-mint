@@ -1,5 +1,5 @@
 import { Prisma, type PrismaClient } from '../generated/prisma/client';
-import type { AssistantStateProjection, CancelClarificationInput, ClarificationAdvanceResult, ClarificationCreationProjection, CreateClarificationInput, SelectClarificationInput, SelectClarificationResult } from './clarification.types';
+import type { AssistantStateProjection, CancelClarificationInput, ClarificationAdvanceResult, ClarificationCreationProjection, ConsumeGuidedFieldsInput, ConsumeGuidedFieldsResult, CreateGuidedFieldsClarificationInput, CreateClarificationInput, GuidedClarificationProjection, SelectClarificationInput, SelectClarificationResult } from './clarification.types';
 export declare const CLARIFICATION_TTL_MS: number;
 export type TransactionClient = Prisma.TransactionClient;
 export interface TransactionOption {
@@ -9,7 +9,9 @@ declare function digestToken(token: string): string;
 declare function generateToken(): string;
 export declare function createClarificationService(db: PrismaClient): {
     create: (input: CreateClarificationInput, options?: TransactionOption) => Promise<ClarificationCreationProjection>;
+    createGuidedFields: (input: CreateGuidedFieldsClarificationInput, options?: TransactionOption) => Promise<GuidedClarificationProjection>;
     select: (input: SelectClarificationInput, options?: TransactionOption) => Promise<SelectClarificationResult>;
+    consumeGuidedFields: (input: ConsumeGuidedFieldsInput, options?: TransactionOption) => Promise<ConsumeGuidedFieldsResult>;
     cancel: (input: CancelClarificationInput, options?: TransactionOption) => Promise<void>;
     getAssistantState: (userId: string, conversationId: string) => Promise<AssistantStateProjection>;
     buildConsumedResult: (consumedClarificationId: string) => Pick<ClarificationAdvanceResult, "consumedClarificationId">;

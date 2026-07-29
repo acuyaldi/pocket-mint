@@ -1,8 +1,13 @@
 import { Prisma, type PrismaClient } from '../generated/prisma/client';
 import type { TransactionService } from '../services/transaction.service';
 import type { TransactionCreateInput } from './tools';
+type DraftReadyTransactionInput = TransactionCreateInput & {
+    walletId: string;
+    categoryId: string;
+    date: string;
+};
 export declare function createAssistantFinancialDraftService(db: PrismaClient, transactions: TransactionService, clock?: () => Date): {
-    prepare: (input: TransactionCreateInput & {
+    prepare: (input: DraftReadyTransactionInput & {
         walletDisplayLabel?: string;
         merchantDisplayLabel?: string;
         userId: string;
@@ -67,3 +72,4 @@ export declare function createAssistantFinancialDraftService(db: PrismaClient, t
     }>;
 };
 export type AssistantFinancialDraftService = ReturnType<typeof createAssistantFinancialDraftService>;
+export {};

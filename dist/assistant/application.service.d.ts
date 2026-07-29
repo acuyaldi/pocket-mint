@@ -22,6 +22,7 @@ export declare function createAssistantApplicationService(deps: {
     execute: (userId: string, correlationId: string, request: AssistantCanonicalRequest) => Promise<AssistantApplicationResult>;
     prepareProviderExecution: (input: BuildAssistantExecutionContextInput) => Promise<import("./context.types").AssistantContext>;
     selectClarification: (userId: string, correlationId: string, token: string, conversationId: string, clarificationId?: string) => Promise<AssistantApplicationResult>;
+    submitGuidedClarification: (userId: string, correlationId: string, fields: Record<string, unknown>, conversationId: string, clarificationId: string) => Promise<AssistantApplicationResult>;
     cancelClarification: (userId: string, correlationId: string, clarificationId: string, conversationId: string) => Promise<AssistantApplicationResult>;
     getAssistantState: (userId: string, conversationId: string) => Promise<import("./clarification.types").AssistantStateProjection>;
 };

@@ -48,7 +48,7 @@ function tokenToDigest(raw) {
     }
     return digestToken(raw);
 }
-const KNOWN_ENTITY_TYPES = new Set(['wallet', 'merchant', 'category']);
+const KNOWN_ENTITY_TYPES = new Set(['wallet', 'merchant', 'category', 'transaction_fields']);
 /**
  * Structural validity of a persisted trustedContext blob. Guards against a
  * corrupted/malformed JSON payload before it's trusted for continuation.
@@ -61,7 +61,7 @@ function isValidTrustedContext(value) {
         ctx.operation === 'transaction.create' &&
         (ctx.type === 'INCOME' || ctx.type === 'EXPENSE') &&
         typeof ctx.amount === 'string' &&
-        typeof ctx.date === 'string';
+        (ctx.date === undefined || typeof ctx.date === 'string');
 }
 /** Maps a non-PENDING terminal status to its specific bounded error. */
 function terminalStatusError(status, terminalCode) {
@@ -148,6 +148,35 @@ function createClarificationService(db) {
             expiresAt: row.expiresAt.toISOString(),
         };
     }
+    async function createGuidedFields(input, options = {}) {
+        if (input.fields.length === 0) {
+            throw errors_1.AssistantError.invalidInput('clarification.create', 'at least one guided field is required');
+        }
+        const work = async (tx) => {
+            const expiresAt = new Date((await dbNow(tx)).getTime() + exports.CLARIFICATION_TTL_MS);
+            return tx.clarificationRequest.create({
+                data: {
+                    userId: input.userId,
+                    conversationId: input.conversationId,
+                    originatingTurnId: input.turnId,
+                    executionId: input.executionId,
+                    ...(input.parentClarificationId ? { parentId: input.parentClarificationId } : {}),
+                    entityType: input.entityType,
+                    status: 'PENDING',
+                    trustedContext: input.trustedContext,
+                    prompt: input.prompt,
+                    expiresAt,
+                },
+            });
+        };
+        const row = options.transaction ? await work(options.transaction) : await db.$transaction(work);
+        return {
+            kind: 'guided',
+            clarificationId: row.id,
+            fields: input.fields,
+            expiresAt: row.expiresAt.toISOString(),
+        };
+    }
     // ---- Select ----------------------------------------------------------------
     async function select(input, options = {}) {
         // Token digest is pure hashing — no DB lookup, no information disclosed
@@ -222,6 +251,45 @@ function createClarificationService(db) {
             trustedContext,
             previousTrustedContext: trustedContext,
             ...(request.parentId ? { parentId: request.parentId } : {}),
+        };
+    }
+    async function consumeGuidedFields(input, options = {}) {
+        const request = await db.clarificationRequest.findFirst({
+            where: {
+                id: input.clarificationId,
+                conversationId: input.conversationId,
+                userId: input.userId,
+            },
+        });
+        if (!request)
+            throw errors_1.AssistantError.clarificationNotFound();
+        if (request.status !== 'PENDING') {
+            throw terminalStatusError(request.status, request.terminalCode);
+        }
+        const now = await dbNow(db);
+        if (request.expiresAt <= now) {
+            await terminalizeOrReportActual(db, request.id, EXPIRED_TERMINAL_CODE, () => errors_1.AssistantError.clarificationExpired());
+        }
+        if (!isValidTrustedContext(request.trustedContext)) {
+            await terminalizeOrReportActual(db, request.id, 'context_invalid', () => errors_1.AssistantError.clarificationContextInvalid());
+        }
+        if (request.entityType !== 'transaction_fields') {
+            await terminalizeOrReportActual(db, request.id, 'continuation_invalid', () => errors_1.AssistantError.clarificationContinuationInvalid());
+        }
+        const client = options.transaction ?? db;
+        const claimed = await client.clarificationRequest.updateMany({
+            where: { id: request.id, status: 'PENDING' },
+            data: { status: 'CONSUMED', consumedAt: now },
+        });
+        if (claimed.count !== 1) {
+            const current = await client.clarificationRequest.findUniqueOrThrow({ where: { id: request.id } });
+            throw terminalStatusError(current.status, current.terminalCode);
+        }
+        return {
+            clarificationId: request.id,
+            entityType: 'transaction_fields',
+            status: 'CONSUMED',
+            trustedContext: request.trustedContext,
         };
     }
     // ---- Cancel ----------------------------------------------------------------
@@ -365,7 +433,9 @@ function createClarificationService(db) {
     }
     return {
         create,
+        createGuidedFields,
         select,
+        consumeGuidedFields,
         cancel,
         getAssistantState,
         buildConsumedResult,

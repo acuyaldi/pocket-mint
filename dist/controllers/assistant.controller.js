@@ -45,15 +45,21 @@ function draftWasCreated(response) {
     const value = response;
     return value.status === 'success' && value.data?.confirmationRequired === true;
 }
-/** Strict body for clarification selection — exactly one key: a non-empty, non-whitespace string token. */
+/** Strict body for clarification continuation — either one option token or one guided fields object. */
 function selectClarificationRequest(body) {
     if (typeof body !== 'object' || body === null || Array.isArray(body))
         return false;
     const value = body;
     const keys = Object.keys(value);
-    if (keys.length !== 1 || keys[0] !== 'optionToken')
+    if (keys.length !== 1)
         return false;
-    return typeof value.optionToken === 'string' && value.optionToken.trim().length > 0;
+    if (keys[0] === 'optionToken') {
+        return typeof value.optionToken === 'string' && value.optionToken.trim().length > 0;
+    }
+    if (keys[0] === 'fields') {
+        return typeof value.fields === 'object' && value.fields !== null && !Array.isArray(value.fields);
+    }
+    return false;
 }
 function createAssistantControllers(application, conversations, drafts, providerRuntime) {
     async function execute(req, res, next) {
@@ -241,7 +247,9 @@ function createAssistantControllers(application, conversations, drafts, provider
             }
             const conversationId = routeId(req.params.conversationId);
             const clarificationId = routeId(req.params.clarificationId);
-            const result = await application.selectClarification(userId, req.correlationId, req.body.optionToken, conversationId, clarificationId);
+            const result = 'optionToken' in req.body
+                ? await application.selectClarification(userId, req.correlationId, req.body.optionToken, conversationId, clarificationId)
+                : await application.submitGuidedClarification(userId, req.correlationId, req.body.fields, conversationId, clarificationId);
             (0, logger_1.logEvent)('info', {
                 event: 'assistant.clarification.selected',
                 requestId: req.correlationId,

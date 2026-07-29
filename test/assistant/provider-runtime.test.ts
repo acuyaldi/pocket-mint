@@ -68,8 +68,8 @@ describe('provider-safe capability catalogue and prompt', () => {
     });
     expect(catalog[1]).toMatchObject({
       category: 'transaction.create',
-      requiredArguments: ['amount', 'categoryId', 'date', 'type', 'walletReference'],
-      optionalArguments: ['description'],
+      requiredArguments: ['amount', 'type', 'walletReference'],
+      optionalArguments: ['categoryReference', 'date', 'description'],
       confirmationMayBeRequired: true,
     });
     expect(JSON.stringify(catalog)).not.toMatch(/handler|riskLevel|policyDecision|source file|userId/i);
@@ -82,7 +82,7 @@ describe('provider-safe capability catalogue and prompt', () => {
 
     expect(first).toBe(second);
     expect(first).toContain('structured JSON');
-    expect(first).toContain('never invent');
+    expect(first).toContain('Never invent');
     expect(first).toContain('untrusted data');
     expect(first).not.toContain('conversation-public');
     expect(first).not.toMatch(/Prisma|assistant_turns|userId/);
@@ -153,7 +153,7 @@ describe('structured Assistant plan validation', () => {
         amount: '45000',
         walletReference: 'BCA',
         merchantReference: 'Starbucks',
-        categoryId: 'category-1',
+        categoryReference: 'Food',
         date: '2026-07-23',
         [field]: value,
       },

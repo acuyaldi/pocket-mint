@@ -140,7 +140,7 @@ function createAssistantProviderRuntime(deps) {
                 }, { correlationId, conversationId });
                 return {
                     httpStatus: 200,
-                    response: { status: 'clarification_required', message: plan.question, correlationId, ...turn },
+                    response: { status: 'clarification_required', message: plan.question, data: { kind: 'provider_text' }, correlationId, ...turn },
                 };
             }
             const turn = await persistNonToolResult(userId, correlationId, conversationId, locale, message, {

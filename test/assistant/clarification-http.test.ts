@@ -48,7 +48,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   h.selectClarification.mockResolvedValue({
     httpStatus: 200,
-    response: { status: 'clarification_required', message: 'Pilih wallet', data: { kind: 'ambiguous', entityType: 'merchant', clarification: { clarificationId: 'clar-2', entityType: 'merchant', prompt: 'Pilih merchant', options: [{ token: 'clarify_new', label: 'Starbucks' }] } }, correlationId: 'corr-1', conversationId: CONV, turnId: 't1' },
+    response: { status: 'clarification_required', message: 'Pilih wallet', data: { kind: 'entity_selection', entityType: 'merchant', clarification: { clarificationId: 'clar-2', entityType: 'merchant', prompt: 'Pilih merchant', options: [{ token: 'clarify_new', label: 'Starbucks' }] } }, correlationId: 'corr-1', conversationId: CONV, turnId: 't1' },
   });
   h.cancelClarification.mockResolvedValue({
     httpStatus: 200,

@@ -24,7 +24,7 @@ function createAssistantApplicationService(deps) {
             operation: 'transaction.create',
             type: input.type,
             amount: input.amount,
-            date: input.date,
+            ...(input.date ? { date: input.date } : {}),
             ...(input.description !== undefined ? { description: input.description } : {}),
             ...(wallet ? { wallet } : {}),
             ...(merchant ? { merchant } : {}),
@@ -82,8 +82,45 @@ function createAssistantApplicationService(deps) {
             response: {
                 status: 'clarification_required',
                 message: projection.prompt,
-                data: { kind: 'ambiguous', entityType, clarification: projection },
+                data: { kind: 'entity_selection', entityType, clarification: projection },
                 correlationId, ...turn,
+            },
+        };
+    }
+    async function guidedFieldsClarificationResponse(params) {
+        if (!deps.clarification)
+            throw new Error('Clarification service is not configured');
+        const missingFields = missingTransactionFields(params.transactionInput, params.categoryData);
+        const prompt = missingFields.length === 1 && missingFields[0] === 'date'
+            ? 'Tanggal transaksi belum lengkap. Pilih atau isi tanggal transaksi.'
+            : 'Beberapa detail transaksi belum lengkap. Lengkapi kategori dan tanggal transaksi.';
+        const fields = missingFields.map((field) => field === 'date'
+            ? { field: 'date', required: true, input: { type: 'date' } }
+            : { field: 'category', required: true, input: { type: 'text', placeholder: 'Nama kategori' } });
+        const projection = await deps.clarification.createGuidedFields({
+            userId: params.userId,
+            conversationId: params.turn.conversationId,
+            turnId: params.turn.turnId,
+            executionId: params.executionId,
+            entityType: 'transaction_fields',
+            trustedContext: buildCanonicalContext(params.transactionInput, params.walletData, params.merchantData, params.categoryData),
+            prompt,
+            fields,
+        }, ...(params.transaction ? [{ transaction: params.transaction }] : []));
+        await deps.conversations.finalize({
+            executionId: params.executionId, ...params.turn, status: 'SUCCEEDED', turnStatus: 'CLARIFICATION_REQUIRED',
+            assistantContent: prompt, assistantSource: 'DETERMINISTIC_RENDERER',
+            durationMs: Date.now() - params.startedAt,
+            outputSummary: { operation: 'transaction.create', missingFields, clarificationId: projection.clarificationId },
+        }, ...(params.transaction ? [{ transaction: params.transaction }] : []));
+        return {
+            httpStatus: 200,
+            response: {
+                status: 'clarification_required',
+                message: prompt,
+                data: { kind: 'guided_fields', clarification: projection },
+                correlationId: params.correlationId,
+                ...params.turn,
             },
         };
     }
@@ -157,7 +194,7 @@ function createAssistantApplicationService(deps) {
                     durationMs: Date.now() - startedAt,
                     outputSummary: { operation: 'transaction.create', walletResolution: 'not_found' },
                 });
-                return { httpStatus: 200, response: { status: 'clarification_required', message, data: (0, entity_resolution_1.toPublicEntityResolutionResult)(walletResult), correlationId, ...turn } };
+                return { httpStatus: 200, response: { status: 'clarification_required', message, data: { kind: 'provider_text' }, correlationId, ...turn } };
             }
             if (walletResult.kind !== 'resolved') {
                 const invalid = errors_1.AssistantError.invalidInput('transaction.create', 'walletReference is invalid');
@@ -249,7 +286,7 @@ function createAssistantApplicationService(deps) {
                     durationMs: Date.now() - startedAt,
                     outputSummary: { operation: 'transaction.create', categoryResolution: 'not_found' },
                 });
-                return { httpStatus: 200, response: { status: 'clarification_required', message, data: (0, entity_resolution_1.toPublicEntityResolutionResult)(categoryResult), correlationId, ...turn } };
+                return { httpStatus: 200, response: { status: 'clarification_required', message, data: { kind: 'provider_text' }, correlationId, ...turn } };
             }
             else {
                 // Any other kind is an invalid reference — reject before drafting
@@ -271,14 +308,25 @@ function createAssistantApplicationService(deps) {
     async function finalizeTransactionDraft(userId, correlationId, turn, executionId, startedAt, transactionInput, walletData, merchantData, categoryData, transaction) {
         if (!deps.financialDrafts)
             throw new Error('Financial draft service is not configured');
+        const missingFields = missingTransactionFields(transactionInput, categoryData);
+        if (missingFields.length > 0) {
+            return guidedFieldsClarificationResponse({
+                userId, correlationId, turn, executionId, startedAt,
+                transactionInput, walletData, merchantData, categoryData, transaction,
+            });
+        }
         const walletId = walletData?.internalId ?? transactionInput.walletId;
         const categoryId = categoryData?.internalId ?? transactionInput.categoryId;
+        const transactionDate = transactionInput.date;
+        if (!walletId || !categoryId || !transactionDate) {
+            throw errors_1.AssistantError.invalidInput('transaction.create', 'wallet, category, and date are required before drafting');
+        }
         const draftInput = {
             type: transactionInput.type,
             amount: transactionInput.amount,
             walletId,
             categoryId,
-            date: transactionInput.date,
+            date: transactionDate,
             ...(transactionInput.description === undefined ? {} : { description: transactionInput.description }),
         };
         try {
@@ -415,6 +463,73 @@ function createAssistantApplicationService(deps) {
             return { httpStatus: operational.statusCode, response: { status: 'error', code: operational.code, message: operational.message, correlationId, ...turn } };
         }
     }
+    async function submitGuidedClarification(userId, correlationId, fields, conversationId, clarificationId) {
+        if (!deps.clarification)
+            throw new Error('Clarification service is not configured');
+        if (!deps.financialDrafts)
+            throw new Error('Financial draft service is not configured');
+        const clarification = deps.clarification;
+        const startedAt = Date.now();
+        const locale = 'id-ID';
+        const turn = await deps.conversations.beginTurn({
+            userId, conversationId, correlationId,
+            intent: 'clarification.guided_submit',
+            locale,
+            content: 'Lengkapi klarifikasi transaksi.',
+            source: 'USER_PROVIDED',
+        });
+        await deps.conversations.markTurnRunning(turn.turnId);
+        const executionId = await deps.conversations.beginToolExecution({
+            ...turn, correlationId, toolId: 'clarification.guided_submit',
+            capability: 'transaction.create', riskLevel: 'HIGH',
+            policyDecision: 'EXPLICIT',
+            redactedInput: { operation: 'clarification.guided_submit' },
+        });
+        try {
+            const submittedDate = fields.date;
+            if (submittedDate !== undefined && (typeof submittedDate !== 'string' || !isCalendarDay(submittedDate))) {
+                throw errors_1.AssistantError.invalidInput('clarification.guided_submit', 'date must be a valid YYYY-MM-DD day');
+            }
+            return await clarification.runInTransaction(async (tx) => {
+                const result = await clarification.consumeGuidedFields({
+                    userId, conversationId, clarificationId, correlationId,
+                }, { transaction: tx });
+                const ctx = result.trustedContext;
+                const walletData = ctx.wallet ? { internalId: ctx.wallet.internalId, displayLabel: ctx.wallet.displayLabel } : undefined;
+                const merchantData = ctx.merchant ? { internalId: ctx.merchant.internalId, displayLabel: ctx.merchant.displayLabel } : undefined;
+                const categoryData = ctx.category ? { internalId: ctx.category.internalId, displayLabel: ctx.category.displayLabel, categoryType: ctx.type } : undefined;
+                const date = ctx.date ?? submittedDate;
+                if (typeof date !== 'string' || !isCalendarDay(date)) {
+                    throw errors_1.AssistantError.invalidInput('clarification.guided_submit', 'date must be a valid YYYY-MM-DD day');
+                }
+                const submittedCategory = typeof fields.categoryReference === 'string'
+                    ? fields.categoryReference.trim()
+                    : typeof fields.category === 'string'
+                        ? fields.category.trim()
+                        : undefined;
+                const txInput = {
+                    type: ctx.type,
+                    amount: ctx.amount,
+                    date,
+                    ...(ctx.description ? { description: ctx.description } : {}),
+                    ...(ctx.merchantReference ? { merchantReference: ctx.merchantReference } : {}),
+                    ...(ctx.categoryReference ? { categoryReference: ctx.categoryReference } : submittedCategory ? { categoryReference: submittedCategory } : {}),
+                    ...(walletData ? { walletId: walletData.internalId } : { walletReference: '' }),
+                    categoryId: categoryData?.internalId ?? '',
+                };
+                return continueToCategory(userId, correlationId, turn, executionId, startedAt, txInput, walletData, merchantData, result.clarificationId, tx);
+            });
+        }
+        catch (error) {
+            const operational = error instanceof errors_1.AssistantError ? error : { message: 'Guided clarification submission failed', statusCode: 500, code: 'ASSISTANT_CLARIFICATION_FAILED' };
+            await deps.conversations.finalize({
+                executionId, ...turn, status: 'FAILED', turnStatus: 'FAILED',
+                assistantContent: operational.message, assistantSource: 'SAFE_ERROR',
+                durationMs: Date.now() - startedAt, safeErrorCode: operational.code,
+            }).catch(() => undefined);
+            return { httpStatus: operational.statusCode, response: { status: 'error', code: operational.code, message: operational.message, correlationId, ...turn } };
+        }
+    }
     // ---- Continue to category after merchant resolution -----------------------
     async function continueToCategory(userId, correlationId, turn, executionId, startedAt, txInput, walletData, merchantData, parentClarificationId, transaction) {
         // Only resolve category if categoryReference is explicitly provided.
@@ -450,7 +565,7 @@ function createAssistantApplicationService(deps) {
                     durationMs: Date.now() - startedAt,
                     outputSummary: { operation: 'transaction.create', categoryResolution: 'not_found' },
                 }, { transaction });
-                return { httpStatus: 200, response: { status: 'clarification_required', message, data: (0, entity_resolution_1.toPublicEntityResolutionResult)(cr), correlationId, ...turn } };
+                return { httpStatus: 200, response: { status: 'clarification_required', message, data: { kind: 'provider_text' }, correlationId, ...turn } };
             }
         }
         // No category reference: use direct categoryId from input → draft
@@ -541,7 +656,7 @@ function createAssistantApplicationService(deps) {
         }
         return { httpStatus: 200, response: { status: 'success', renderedText, data: result.output, correlationId, ...turn } };
     }
-    return { execute, prepareProviderExecution, selectClarification, cancelClarification, getAssistantState };
+    return { execute, prepareProviderExecution, selectClarification, submitGuidedClarification, cancelClarification, getAssistantState };
 }
 // ---- Render helpers ----------------------------------------------------------
 function renderEntityClarificationPrompt(entityType, resolution) {
@@ -558,5 +673,24 @@ function renderWalletNotFound(resolution) {
 }
 function renderCategoryNotFound(_resolution) {
     return 'Kategori tidak ditemukan. Silakan mulai ulang pembuatan transaksi dengan kategori yang valid.';
+}
+function isCalendarDay(value) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value))
+        return false;
+    const [year, month, day] = value.split('-').map(Number);
+    const parsed = new Date(Date.UTC(year, month - 1, day));
+    return parsed.getUTCFullYear() === year && parsed.getUTCMonth() === month - 1 && parsed.getUTCDate() === day;
+}
+function missingTransactionFields(transactionInput, categoryData) {
+    const missing = [];
+    const hasCategoryId = typeof transactionInput.categoryId === 'string'
+        && Boolean(transactionInput.categoryId?.trim());
+    const hasCategoryReference = typeof transactionInput.categoryReference === 'string'
+        && Boolean(transactionInput.categoryReference?.trim());
+    if (!categoryData && !hasCategoryId && !hasCategoryReference)
+        missing.push('category');
+    if (!transactionInput.date)
+        missing.push('date');
+    return missing;
 }
 //# sourceMappingURL=application.service.js.map

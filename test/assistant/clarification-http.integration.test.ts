@@ -156,6 +156,7 @@ describe.skipIf(!url)('Clarification HTTP endpoints (disposable PostgreSQL)', ()
     });
     const r1Body = executeEnvelope(r1);
     expect(r1Body.status).toBe('clarification_required');
+    expect(r1Body.data.kind).toBe('entity_selection');
     expect(r1Body.data.entityType).toBe('wallet');
     const conversationId = r1Body.conversationId;
     const walletClar = r1Body.data.clarification;
@@ -166,6 +167,7 @@ describe.skipIf(!url)('Clarification HTTP endpoints (disposable PostgreSQL)', ()
       .send({ optionToken: walletClar.options[0].token });
     expect(r2.status).toBe(200);
     expect(r2.body.data.status).toBe('clarification_required');
+    expect(r2.body.data.data.kind).toBe('entity_selection');
     expect(r2.body.data.data.entityType).toBe('merchant');
     const merchantClar = r2.body.data.data.clarification;
 
@@ -175,6 +177,7 @@ describe.skipIf(!url)('Clarification HTTP endpoints (disposable PostgreSQL)', ()
       .send({ optionToken: merchantClar.options[0].token });
     expect(r3.status).toBe(200);
     expect(r3.body.data.status).toBe('clarification_required');
+    expect(r3.body.data.data.kind).toBe('entity_selection');
     expect(r3.body.data.data.entityType).toBe('category');
     const categoryClar = r3.body.data.data.clarification;
 

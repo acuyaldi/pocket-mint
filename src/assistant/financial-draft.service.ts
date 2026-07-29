@@ -9,8 +9,9 @@ import type { TransactionCreateInput } from './tools';
 
 const CONFIRM_INTENT = 'transaction.create.confirm';
 const CANCEL_INTENT = 'transaction.create.cancel';
+type DraftReadyTransactionInput = TransactionCreateInput & { walletId: string; categoryId: string; date: string };
 
-function preview(input: TransactionCreateInput & {
+function preview(input: DraftReadyTransactionInput & {
   walletDisplayLabel?: string;
   merchantDisplayLabel?: string;
 }, categoryName: string) {
@@ -30,7 +31,7 @@ function preview(input: TransactionCreateInput & {
 }
 
 export function createAssistantFinancialDraftService(db: PrismaClient, transactions: TransactionService, clock: () => Date = () => new Date()) {
-  async function prepare(input: TransactionCreateInput & { walletDisplayLabel?: string; merchantDisplayLabel?: string; userId: string; conversationId: string; turnId: string; executionId: string; now?: Date; transaction?: Prisma.TransactionClient }) {
+  async function prepare(input: DraftReadyTransactionInput & { walletDisplayLabel?: string; merchantDisplayLabel?: string; userId: string; conversationId: string; turnId: string; executionId: string; now?: Date; transaction?: Prisma.TransactionClient }) {
     const client = input.transaction ?? db;
     const wallet = await client.wallet.findFirst({ where: { id: input.walletId, userId: input.userId }, select: { id: true } });
     const category = await client.category.findFirst({
