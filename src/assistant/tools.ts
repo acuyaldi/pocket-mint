@@ -274,7 +274,7 @@ export const transactionCreate: ToolContract<
   TransactionCreateToolInput
 > = {
   id: 'transaction.create',
-  description: 'Prepare a regular income or expense transaction draft. A separate explicit confirmation is required before creation.',
+  description: 'Prepare a regular income or expense transaction draft. A separate explicit confirmation is required before creation. Preserve explicit transaction type and amount from the current user message; do not return null for type or amount when those values are explicit. Expense signals include bayar, beli, belanja, keluar, transfer untuk membayar, potong saldo, and debit. Examples: "bayar internet 350rb dari bca" -> type EXPENSE; "beli makan 50rb pakai bca" -> type EXPENSE; "belanja bulanan 1jt" -> type EXPENSE. Income signals include terima, dapat, masuk, gaji masuk, dibayar oleh, and refund masuk. Examples: "gaji masuk 5 juta ke bca" -> type INCOME; "terima pembayaran 750rb" -> type INCOME. Do not infer income from neutral transfer language without sufficient evidence.',
   capability: 'transaction.create',
   riskLevel: 'HIGH',
   confirmationPolicy: 'EXPLICIT',
@@ -285,11 +285,11 @@ export const transactionCreate: ToolContract<
     required: ['amount', 'type', 'walletReference'],
     optional: ['categoryReference', 'date', 'description'],
     properties: {
-      amount: { type: 'string', description: 'Positive rupiah decimal amount with at most two fraction digits. Indonesian rupiah shorthand is an amount: return canonical decimal digits, never locale-formatted text or null, when explicit. Examples: 350rb/350 rb/350ribu/350 ribu/Rp350rb/Rp350.000 -> 350000; 1jt/1 jt/1juta/1 juta -> 1000000; 1,5jt/1.5 juta -> 1500000.' },
+      amount: { type: 'string', description: 'Positive rupiah decimal amount with at most two fraction digits. Indonesian rupiah shorthand is an amount: return canonical decimal digits, never locale-formatted text or null, when explicit. Examples: 350rb -> 350000; 350 ribu -> 350000; Rp350.000 -> 350000; 1jt -> 1000000; 1 juta -> 1000000; 1,5jt -> 1500000.' },
       categoryReference: { type: 'string', description: 'Textual category name from the user; never supply or invent a category identifier.' },
       date: { type: 'string', format: 'YYYY-MM-DD', description: 'Transaction calendar date.' },
       description: { type: 'string', description: 'Optional short transaction description.' },
-      type: { type: 'string', enum: ['INCOME', 'EXPENSE'], description: 'Regular transaction type.' },
+      type: { type: 'string', enum: ['INCOME', 'EXPENSE'], description: 'Regular transaction type. Return EXPENSE for explicit payment/purchase/spending language such as bayar, beli, belanja, keluar, transfer untuk membayar, potong saldo, or debit. Return INCOME for explicit receipt/inflow language such as terima, dapat, masuk, gaji masuk, dibayar oleh, or refund masuk. Do not return null when the current user message has one explicit type signal.' },
       walletReference: { type: 'string', description: 'Textual wallet name or alias from the user; never supply a wallet identifier.' },
     },
   },

@@ -30,7 +30,10 @@ function setup(output: unknown = {
   registry.register(monthlySpendingSummary);
   registry.register(transactionCreate);
   const application = {
-    prepareProviderExecution: vi.fn().mockResolvedValue(context),
+    prepareProviderExecution: vi.fn().mockImplementation(async (input: { currentRequest: string }) => ({
+      ...context,
+      currentRequest: { role: 'USER', source: 'CURRENT_REQUEST', content: input.currentRequest },
+    })),
     execute: vi.fn().mockResolvedValue({
       httpStatus: 200,
       response: {
@@ -383,6 +386,53 @@ describe('Assistant provider runtime orchestration', () => {
       }),
     );
     expect(conversations.finalizeWithoutTool).toHaveBeenCalledTimes(1);
+  });
+
+  it('recovers explicit type and amount together before deterministic execution', async () => {
+    const providerOutput = {
+      kind: 'intent',
+      intent: 'transaction.create',
+      arguments: {
+        type: null,
+        amount: null,
+        walletReference: 'bca',
+        categoryReference: 'internet',
+      },
+      clarification: null,
+      userMessage: '',
+    };
+    const { runtime, application, provider } = setup(providerOutput);
+
+    const result = await runtime.sendMessage('u1', 'corr-explicit-type-and-amount-recovery', {
+      message: 'bayar internet 350rb dari bca',
+    });
+
+    const providerRequest = provider.generateStructuredResponse.mock.calls[0][0];
+    expect(JSON.parse(providerRequest.messages[0].content).currentRequest).toEqual({
+      role: 'USER',
+      source: 'CURRENT_REQUEST',
+      content: 'bayar internet 350rb dari bca',
+    });
+    expect(providerOutput.arguments).toEqual({
+      type: null,
+      amount: null,
+      walletReference: 'bca',
+      categoryReference: 'internet',
+    });
+    expect(result.response.status).toBe('success');
+    expect(application.execute).toHaveBeenCalledWith(
+      'u1',
+      'corr-explicit-type-and-amount-recovery',
+      expect.objectContaining({
+        intent: 'transaction.create',
+        arguments: expect.objectContaining({
+          type: 'EXPENSE',
+          amount: '350000',
+          walletReference: 'bca',
+          categoryReference: 'internet',
+        }),
+      }),
+    );
   });
 
   it('keeps a missing provider amount in provider-text clarification instead of guided fields or invalid-response', async () => {
