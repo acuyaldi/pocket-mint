@@ -10,6 +10,7 @@ const errors_1 = require("./errors");
 const logger_1 = require("../utils/logger");
 const errorCategory_1 = require("../utils/errorCategory");
 const rupiah_amount_recovery_1 = require("./rupiah-amount-recovery");
+const transaction_type_recovery_1 = require("./transaction-type-recovery");
 function modelInputBytes(request) {
     return Buffer.byteLength(JSON.stringify({
         systemInstruction: request.systemInstruction,
@@ -19,7 +20,7 @@ function modelInputBytes(request) {
 function normalizeProviderError(error) {
     return error instanceof provider_types_1.AssistantProviderError ? error : provider_types_1.AssistantProviderError.unavailable();
 }
-function recoverMissingTransactionAmount(output, message) {
+function recoverMissingTransactionFields(output, message) {
     if (typeof output !== 'object' || output === null || Array.isArray(output))
         return output;
     const plan = output;
@@ -29,17 +30,23 @@ function recoverMissingTransactionAmount(output, message) {
     if (typeof args !== 'object' || args === null || Array.isArray(args))
         return output;
     const argumentsValue = args;
-    if (argumentsValue.amount !== null && argumentsValue.amount !== undefined)
-        return output;
+    let recovered = false;
+    const recoveredArguments = { ...argumentsValue };
     const recoveredAmount = (0, rupiah_amount_recovery_1.recoverSingleExplicitIndonesianAmount)(message);
-    if (!recoveredAmount)
+    if ((argumentsValue.amount === null || argumentsValue.amount === undefined) && recoveredAmount) {
+        recoveredArguments.amount = recoveredAmount;
+        recovered = true;
+    }
+    const recoveredType = (0, transaction_type_recovery_1.recoverExplicitTransactionType)(message);
+    if ((argumentsValue.type === null || argumentsValue.type === undefined) && recoveredType) {
+        recoveredArguments.type = recoveredType;
+        recovered = true;
+    }
+    if (!recovered)
         return output;
     return {
         ...plan,
-        arguments: {
-            ...argumentsValue,
-            amount: recoveredAmount,
-        },
+        arguments: recoveredArguments,
     };
 }
 function createAssistantProviderRuntime(deps) {
@@ -118,7 +125,7 @@ function createAssistantProviderRuntime(deps) {
                 throw provider_types_1.AssistantProviderError.refused();
             if (providerResponse.finishClassification !== 'STOP')
                 throw provider_types_1.AssistantProviderError.invalidResponse();
-            const normalizedOutput = recoverMissingTransactionAmount(providerResponse.output, message);
+            const normalizedOutput = recoverMissingTransactionFields(providerResponse.output, message);
             const plan = (0, provider_plan_1.validateAssistantPlan)(normalizedOutput, deps.toolRegistry);
             providerStageComplete = true;
             const durationMs = Date.now() - startedAt;
