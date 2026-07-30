@@ -1,6 +1,7 @@
 import { evaluatePolicy } from './policy';
 import type { ToolRegistry } from './registry';
 import { AssistantProviderError, type AssistantPlan } from './provider-types';
+import { recoverSingleExplicitIndonesianAmount } from './rupiah-amount-recovery';
 
 const TOP_LEVEL_KEYS = ['arguments', 'clarification', 'intent', 'kind', 'userMessage'];
 const FORBIDDEN_KEYS = new Set([
@@ -46,7 +47,10 @@ function exactKeys(value: Record<string, unknown>, expected: readonly string[]):
 
 function normalizeProviderAmount(value: unknown): string | null | undefined {
   if (value === null || value === undefined) return null;
-  if (typeof value === 'string') return value;
+  if (typeof value === 'string') {
+    if (MONEY_RE.test(value)) return value;
+    return recoverSingleExplicitIndonesianAmount(value) ?? value;
+  }
   if (typeof value !== 'number' || !Number.isFinite(value)) return undefined;
   const text = String(value);
   if (!MONEY_RE.test(text) || text === '0' || /^0(?:\.0{1,2})?$/.test(text)) return undefined;

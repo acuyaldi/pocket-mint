@@ -302,6 +302,39 @@ describe('Assistant provider runtime orchestration', () => {
     );
   });
 
+  it.each([
+    ['350rb', '350000'],
+    ['350.000', '350000'],
+    ['Rp350.000', '350000'],
+    ['1,5jt', '1500000'],
+  ])('normalizes a provider-formatted amount %s before deterministic execution', async (providerAmount, amount) => {
+    const { runtime, application } = setup({
+      kind: 'intent',
+      intent: 'transaction.create',
+      arguments: {
+        type: 'EXPENSE',
+        amount: providerAmount,
+        walletReference: 'bca',
+        categoryReference: 'internet',
+      },
+      clarification: null,
+      userMessage: '',
+    });
+
+    const result = await runtime.sendMessage('u1', 'corr-provider-formatted-amount', {
+      message: 'bayar internet dari bca',
+    });
+
+    expect(result.response.status).toBe('success');
+    expect(application.execute).toHaveBeenCalledWith(
+      'u1',
+      'corr-provider-formatted-amount',
+      expect.objectContaining({
+        arguments: expect.objectContaining({ amount }),
+      }),
+    );
+  });
+
   it('continues a provider-text missing-amount follow-up without repeating the amount question', async () => {
     const { runtime, application, provider, conversations } = setup({
       kind: 'clarification',

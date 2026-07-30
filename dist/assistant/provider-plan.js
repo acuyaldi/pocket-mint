@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateAssistantPlan = validateAssistantPlan;
 const policy_1 = require("./policy");
 const provider_types_1 = require("./provider-types");
+const rupiah_amount_recovery_1 = require("./rupiah-amount-recovery");
 const TOP_LEVEL_KEYS = ['arguments', 'clarification', 'intent', 'kind', 'userMessage'];
 const FORBIDDEN_KEYS = new Set([
     '__proto__', 'prototype', 'constructor',
@@ -48,8 +49,11 @@ function exactKeys(value, expected) {
 function normalizeProviderAmount(value) {
     if (value === null || value === undefined)
         return null;
-    if (typeof value === 'string')
-        return value;
+    if (typeof value === 'string') {
+        if (MONEY_RE.test(value))
+            return value;
+        return (0, rupiah_amount_recovery_1.recoverSingleExplicitIndonesianAmount)(value) ?? value;
+    }
     if (typeof value !== 'number' || !Number.isFinite(value))
         return undefined;
     const text = String(value);
