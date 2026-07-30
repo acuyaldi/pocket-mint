@@ -402,6 +402,33 @@ describe('Assistant provider runtime orchestration', () => {
     expect(application.execute).not.toHaveBeenCalled();
   });
 
+  it('keeps a missing provider wallet in provider-text clarification instead of invalid-response', async () => {
+    const { runtime, application } = setup({
+      kind: 'intent',
+      intent: 'transaction.create',
+      arguments: {
+        type: 'EXPENSE',
+        amount: '350000',
+      },
+      clarification: null,
+      userMessage: '',
+    });
+
+    const result = await runtime.sendMessage('u1', 'corr-missing-wallet', {
+      message: 'bayar internet 350rb',
+    });
+
+    expect(result).toMatchObject({
+      httpStatus: 200,
+      response: {
+        status: 'clarification_required',
+        message: 'Dompet mana yang ingin digunakan?',
+        data: { kind: 'provider_text' },
+      },
+    });
+    expect(application.execute).not.toHaveBeenCalled();
+  });
+
   it('persists one clarification response and executes no deterministic capability', async () => {
     const { runtime, application, conversations, audit } = setup({
       kind: 'clarification',
