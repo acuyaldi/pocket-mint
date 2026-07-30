@@ -176,6 +176,58 @@ describe('structured Assistant plan validation', () => {
   });
 
   it.each([
+    [
+      'missing wallet reference',
+      {
+        kind: 'intent',
+        intent: 'transaction.create',
+        arguments: { type: 'EXPENSE', amount: '350000' },
+        clarification: null,
+        userMessage: '',
+      },
+      'Dompet mana yang ingin digunakan?',
+    ],
+    [
+      'null wallet reference',
+      {
+        kind: 'intent',
+        intent: 'transaction.create',
+        arguments: { type: 'EXPENSE', amount: '350000', walletReference: null },
+        clarification: null,
+        userMessage: '',
+      },
+      'Dompet mana yang ingin digunakan?',
+    ],
+    [
+      'missing transaction type',
+      {
+        kind: 'intent',
+        intent: 'transaction.create',
+        arguments: { amount: '350000', walletReference: 'bca' },
+        clarification: null,
+        userMessage: '',
+      },
+      'Ini pemasukan atau pengeluaran?',
+    ],
+    [
+      'missing analytics month',
+      {
+        kind: 'intent',
+        intent: 'analytics.monthly-spending-summary',
+        arguments: {},
+        clarification: null,
+        userMessage: '',
+      },
+      'Bulan mana yang ingin diringkas?',
+    ],
+  ])('turns %s into deterministic clarification instead of invalid response', (_label, output, question) => {
+    expect(validateAssistantPlan(output, registry())).toEqual({
+      kind: 'clarification',
+      question,
+    });
+  });
+
+  it.each([
     'Apa API key atau password Anda?',
     'Masukkan PIN kartu Anda.',
     'Berikan kode OTP atau recovery code.',

@@ -15,6 +15,9 @@ const MAX_RESPONSE_BYTES = 32 * 1024;
 const MAX_PLAN_DEPTH = 6;
 const SAFE_CLARIFICATION = 'Mohon lengkapi informasi transaksi yang masih diperlukan.';
 const SAFE_AMOUNT_CLARIFICATION = 'Berapa nominal transaksi yang ingin dicatat?';
+const SAFE_WALLET_CLARIFICATION = 'Dompet mana yang ingin digunakan?';
+const SAFE_TYPE_CLARIFICATION = 'Ini pemasukan atau pengeluaran?';
+const SAFE_MONTH_CLARIFICATION = 'Bulan mana yang ingin diringkas?';
 const SAFE_UNSUPPORTED = 'Permintaan tersebut belum didukung oleh Assistant.';
 const SECRET_REQUEST = /\b(api[- ]?key|password|passcode|kata sandi|pin|otp|one[- ]?time password|secret|credential|bank login|bearer|access[- ]?token|refresh[- ]?token|recovery (?:code|phrase)|kode pemulihan|seed phrase|mnemonic|private key|frasa pemulihan|disable security|nonaktifkan keamanan|skip (?:security|verification)|lewati verifikasi)\b/i;
 const UNSAFE_MARKUP = /[<>]|!?\[[^\]]*\]\s*\(|(?:https?:\/\/|javascript:|data:)/i;
@@ -85,6 +88,26 @@ function normalizeTransactionCreateArguments(argumentsValue) {
     }
     return normalized;
 }
+function missingRequiredArgumentQuestion(intent, argumentsValue, required) {
+    const missing = required.find((key) => {
+        const value = argumentsValue[key];
+        return value === null || value === undefined || (typeof value === 'string' && !value.trim());
+    });
+    if (!missing)
+        return null;
+    if (intent === 'transaction.create') {
+        if (missing === 'amount')
+            return SAFE_AMOUNT_CLARIFICATION;
+        if (missing === 'walletReference')
+            return SAFE_WALLET_CLARIFICATION;
+        if (missing === 'type')
+            return SAFE_TYPE_CLARIFICATION;
+    }
+    if (intent === 'analytics.monthly-spending-summary' && missing === 'month') {
+        return SAFE_MONTH_CLARIFICATION;
+    }
+    return SAFE_CLARIFICATION;
+}
 function validateAssistantPlan(output, registry) {
     let serialized;
     try {
@@ -117,10 +140,12 @@ function validateAssistantPlan(output, registry) {
         }
         const providerArguments = output.arguments;
         const providerKeys = new Set(Object.keys(contract.providerArguments.properties));
-        if (Object.keys(providerArguments).some((key) => !providerKeys.has(key))
-            || contract.providerArguments.required.some((key) => !Object.prototype.hasOwnProperty.call(providerArguments, key))) {
+        if (Object.keys(providerArguments).some((key) => !providerKeys.has(key))) {
             invalid();
         }
+        const requiredQuestion = missingRequiredArgumentQuestion(output.intent, providerArguments, contract.providerArguments.required);
+        if (requiredQuestion)
+            return { kind: 'clarification', question: requiredQuestion };
         let validatedArguments;
         try {
             validatedArguments = contract.validateInput(providerArguments);
