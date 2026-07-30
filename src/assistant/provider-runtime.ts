@@ -10,6 +10,7 @@ import { assertAssistantMessageLength, normalizeProvidedMessage } from './persis
 import { AssistantError } from './errors';
 import { logger, logEvent } from '../utils/logger';
 import { categorizeError } from '../utils/errorCategory';
+import { recoverSingleExplicitIndonesianAmount } from './rupiah-amount-recovery';
 
 export interface AssistantProviderAudit {
   begin(input: {
@@ -69,6 +70,25 @@ function modelInputBytes(request: { systemInstruction: string; messages: readonl
 
 function normalizeProviderError(error: unknown): AssistantProviderError {
   return error instanceof AssistantProviderError ? error : AssistantProviderError.unavailable();
+}
+
+function recoverMissingTransactionAmount(output: unknown, message: string): unknown {
+  if (typeof output !== 'object' || output === null || Array.isArray(output)) return output;
+  const plan = output as Record<string, unknown>;
+  if (plan.kind !== 'intent' || plan.intent !== 'transaction.create') return output;
+  const args = plan.arguments;
+  if (typeof args !== 'object' || args === null || Array.isArray(args)) return output;
+  const argumentsValue = args as Record<string, unknown>;
+  if (argumentsValue.amount !== null && argumentsValue.amount !== undefined) return output;
+  const recoveredAmount = recoverSingleExplicitIndonesianAmount(message);
+  if (!recoveredAmount) return output;
+  return {
+    ...plan,
+    arguments: {
+      ...argumentsValue,
+      amount: recoveredAmount,
+    },
+  };
 }
 
 export function createAssistantProviderRuntime(deps: RuntimeDependencies) {
@@ -169,7 +189,8 @@ export function createAssistantProviderRuntime(deps: RuntimeDependencies) {
       const providerResponse = await invokeProvider(request, abortController);
       if (providerResponse.finishClassification === 'SAFETY') throw AssistantProviderError.refused();
       if (providerResponse.finishClassification !== 'STOP') throw AssistantProviderError.invalidResponse();
-      const plan = validateAssistantPlan(providerResponse.output, deps.toolRegistry);
+      const normalizedOutput = recoverMissingTransactionAmount(providerResponse.output, message);
+      const plan = validateAssistantPlan(normalizedOutput, deps.toolRegistry);
       providerStageComplete = true;
       const durationMs = Date.now() - startedAt;
       logEvent('info', {
