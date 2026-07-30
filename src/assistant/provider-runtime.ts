@@ -11,6 +11,7 @@ import { AssistantError } from './errors';
 import { logger, logEvent } from '../utils/logger';
 import { categorizeError } from '../utils/errorCategory';
 import { recoverSingleExplicitIndonesianAmount } from './rupiah-amount-recovery';
+import { recoverExplicitTransactionType } from './transaction-type-recovery';
 
 export interface AssistantProviderAudit {
   begin(input: {
@@ -72,22 +73,29 @@ function normalizeProviderError(error: unknown): AssistantProviderError {
   return error instanceof AssistantProviderError ? error : AssistantProviderError.unavailable();
 }
 
-function recoverMissingTransactionAmount(output: unknown, message: string): unknown {
+function recoverMissingTransactionFields(output: unknown, message: string): unknown {
   if (typeof output !== 'object' || output === null || Array.isArray(output)) return output;
   const plan = output as Record<string, unknown>;
   if (plan.kind !== 'intent' || plan.intent !== 'transaction.create') return output;
   const args = plan.arguments;
   if (typeof args !== 'object' || args === null || Array.isArray(args)) return output;
   const argumentsValue = args as Record<string, unknown>;
-  if (argumentsValue.amount !== null && argumentsValue.amount !== undefined) return output;
+  let recovered = false;
+  const recoveredArguments = { ...argumentsValue };
   const recoveredAmount = recoverSingleExplicitIndonesianAmount(message);
-  if (!recoveredAmount) return output;
+  if ((argumentsValue.amount === null || argumentsValue.amount === undefined) && recoveredAmount) {
+    recoveredArguments.amount = recoveredAmount;
+    recovered = true;
+  }
+  const recoveredType = recoverExplicitTransactionType(message);
+  if ((argumentsValue.type === null || argumentsValue.type === undefined) && recoveredType) {
+    recoveredArguments.type = recoveredType;
+    recovered = true;
+  }
+  if (!recovered) return output;
   return {
     ...plan,
-    arguments: {
-      ...argumentsValue,
-      amount: recoveredAmount,
-    },
+    arguments: recoveredArguments,
   };
 }
 
@@ -189,7 +197,7 @@ export function createAssistantProviderRuntime(deps: RuntimeDependencies) {
       const providerResponse = await invokeProvider(request, abortController);
       if (providerResponse.finishClassification === 'SAFETY') throw AssistantProviderError.refused();
       if (providerResponse.finishClassification !== 'STOP') throw AssistantProviderError.invalidResponse();
-      const normalizedOutput = recoverMissingTransactionAmount(providerResponse.output, message);
+      const normalizedOutput = recoverMissingTransactionFields(providerResponse.output, message);
       const plan = validateAssistantPlan(normalizedOutput, deps.toolRegistry);
       providerStageComplete = true;
       const durationMs = Date.now() - startedAt;
