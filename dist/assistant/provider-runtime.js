@@ -9,6 +9,7 @@ const persistence_1 = require("./persistence");
 const errors_1 = require("./errors");
 const logger_1 = require("../utils/logger");
 const errorCategory_1 = require("../utils/errorCategory");
+const rupiah_amount_recovery_1 = require("./rupiah-amount-recovery");
 function modelInputBytes(request) {
     return Buffer.byteLength(JSON.stringify({
         systemInstruction: request.systemInstruction,
@@ -17,6 +18,29 @@ function modelInputBytes(request) {
 }
 function normalizeProviderError(error) {
     return error instanceof provider_types_1.AssistantProviderError ? error : provider_types_1.AssistantProviderError.unavailable();
+}
+function recoverMissingTransactionAmount(output, message) {
+    if (typeof output !== 'object' || output === null || Array.isArray(output))
+        return output;
+    const plan = output;
+    if (plan.kind !== 'intent' || plan.intent !== 'transaction.create')
+        return output;
+    const args = plan.arguments;
+    if (typeof args !== 'object' || args === null || Array.isArray(args))
+        return output;
+    const argumentsValue = args;
+    if (argumentsValue.amount !== null && argumentsValue.amount !== undefined)
+        return output;
+    const recoveredAmount = (0, rupiah_amount_recovery_1.recoverSingleExplicitIndonesianAmount)(message);
+    if (!recoveredAmount)
+        return output;
+    return {
+        ...plan,
+        arguments: {
+            ...argumentsValue,
+            amount: recoveredAmount,
+        },
+    };
 }
 function createAssistantProviderRuntime(deps) {
     async function finalizeAuditSafely(id, input, metadata) {
@@ -94,7 +118,8 @@ function createAssistantProviderRuntime(deps) {
                 throw provider_types_1.AssistantProviderError.refused();
             if (providerResponse.finishClassification !== 'STOP')
                 throw provider_types_1.AssistantProviderError.invalidResponse();
-            const plan = (0, provider_plan_1.validateAssistantPlan)(providerResponse.output, deps.toolRegistry);
+            const normalizedOutput = recoverMissingTransactionAmount(providerResponse.output, message);
+            const plan = (0, provider_plan_1.validateAssistantPlan)(normalizedOutput, deps.toolRegistry);
             providerStageComplete = true;
             const durationMs = Date.now() - startedAt;
             (0, logger_1.logEvent)('info', {

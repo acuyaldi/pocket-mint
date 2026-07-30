@@ -187,7 +187,7 @@ exports.transactionCreate = {
         required: ['amount', 'type', 'walletReference'],
         optional: ['categoryReference', 'date', 'description'],
         properties: {
-            amount: { type: 'string', description: 'Positive decimal amount with at most two fraction digits.' },
+            amount: { type: 'string', description: 'Positive rupiah decimal amount with at most two fraction digits. Indonesian rupiah shorthand is an amount: return canonical decimal digits, never locale-formatted text or null, when explicit. Examples: 350rb/350 rb/350ribu/350 ribu/Rp350rb/Rp350.000 -> 350000; 1jt/1 jt/1juta/1 juta -> 1000000; 1,5jt/1.5 juta -> 1500000.' },
             categoryReference: { type: 'string', description: 'Textual category name from the user; never supply or invent a category identifier.' },
             date: { type: 'string', format: 'YYYY-MM-DD', description: 'Transaction calendar date.' },
             description: { type: 'string', description: 'Optional short transaction description.' },
