@@ -78,7 +78,7 @@ describe.skipIf(!TEST_DATABASE_URL)('Analytics v2 (disposable PostgreSQL)', () =
       const userId = await createUser('ov-decimal');
       const walletA = await createWallet(userId, 'A');
       const walletB = await createWallet(userId, 'B');
-      const now = new Date('2026-07-10T04:00:00.000Z'); // 11:00 Jakarta
+      const now = new Date(); // must fall inside 'current-month' — never a pinned date
 
       await createTx({ userId, walletId: walletA.id, type: 'INCOME', amount: '999999999.99', date: now });
       await createTx({ userId, walletId: walletA.id, type: 'EXPENSE', amount: '1234.56', date: now });
@@ -138,7 +138,7 @@ describe.skipIf(!TEST_DATABASE_URL)('Analytics v2 (disposable PostgreSQL)', () =
       const userId = await createUser('cat-uncat');
       const wallet = await createWallet(userId);
       const food = await createCategory(userId, 'Makan', 'EXPENSE');
-      const now = new Date('2026-07-10T04:00:00.000Z');
+      const now = new Date();
 
       await createTx({ userId, walletId: wallet.id, categoryId: food.id, type: 'EXPENSE', amount: '30000', date: now });
       await createTx({ userId, walletId: wallet.id, categoryId: null, type: 'EXPENSE', amount: '10000', date: now });
@@ -156,7 +156,7 @@ describe.skipIf(!TEST_DATABASE_URL)('Analytics v2 (disposable PostgreSQL)', () =
       const userId = await createUser('wallet-breakdown');
       const active = await createWallet(userId, 'Active');
       await createWallet(userId, 'Idle');
-      const now = new Date('2026-07-10T04:00:00.000Z');
+      const now = new Date();
       await createTx({ userId, walletId: active.id, type: 'INCOME', amount: '20000', date: now });
 
       const result = await wallets().getWalletBreakdown({ userId, period: 'current-month' });
@@ -216,7 +216,7 @@ describe.skipIf(!TEST_DATABASE_URL)('Analytics v2 (disposable PostgreSQL)', () =
       const walletA = await createWallet(userA, 'A Wallet');
       const categoryA = await createCategory(userA, 'A Category', 'EXPENSE');
       const walletB = await createWallet(userB, 'B Wallet');
-      const now = new Date('2026-07-10T04:00:00.000Z');
+      const now = new Date();
 
       await createTx({ userId: userA, walletId: walletA.id, categoryId: categoryA.id, type: 'EXPENSE', amount: '999999', date: now });
       await db().budget.create({ data: { userId: userA, categoryId: categoryA.id, amount: '1000000' } });
