@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ASSISTANT_RESPONSE_JSON_SCHEMA = exports.AssistantProviderError = void 0;
+exports.AssistantProviderError = void 0;
+exports.buildAssistantResponseJsonSchema = buildAssistantResponseJsonSchema;
 class AssistantProviderError extends Error {
     constructor(code, message, statusCode) {
         super(message);
@@ -29,26 +30,56 @@ class AssistantProviderError extends Error {
     }
 }
 exports.AssistantProviderError = AssistantProviderError;
-exports.ASSISTANT_RESPONSE_JSON_SCHEMA = Object.freeze({
-    type: 'object',
-    additionalProperties: false,
-    required: ['kind', 'intent', 'arguments', 'clarification', 'userMessage'],
-    properties: {
-        kind: { type: 'string', enum: ['intent', 'clarification', 'unsupported'] },
-        intent: { anyOf: [{ type: 'string' }, { type: 'null' }] },
-        arguments: { type: 'object' },
-        clarification: {
-            anyOf: [
-                { type: 'null' },
-                {
-                    type: 'object',
-                    additionalProperties: false,
-                    required: ['question'],
-                    properties: { question: { type: 'string', maxLength: 500 } },
-                },
-            ],
+/**
+ * Builds the structured-output schema sent to the provider.
+ *
+ * `arguments` must enumerate the capability argument keys explicitly. Gemini
+ * constrains decoding to the supplied schema, and it reads a bare
+ * `{ type: 'object' }` as an object with no permitted keys — it then always
+ * emits `arguments: {}` and silently drops every argument it inferred. The
+ * key list is derived from the tool registry catalog so the schema and the
+ * catalog in the system instruction cannot drift apart.
+ *
+ * This is a decoding constraint, not the trust boundary: `validateAssistantPlan`
+ * still allow-lists arguments per intent and revalidates them against the
+ * tool contract.
+ */
+function buildAssistantResponseJsonSchema(catalog) {
+    const argumentProperties = {};
+    for (const capability of catalog) {
+        for (const [name, spec] of Object.entries(capability.argumentContract)) {
+            argumentProperties[name] = {
+                type: spec.type,
+                description: spec.description,
+                ...(spec.enum ? { enum: [...spec.enum] } : {}),
+            };
+        }
+    }
+    return Object.freeze({
+        type: 'object',
+        additionalProperties: false,
+        required: ['kind', 'intent', 'arguments', 'clarification', 'userMessage'],
+        properties: {
+            kind: { type: 'string', enum: ['intent', 'clarification', 'unsupported'] },
+            intent: { anyOf: [{ type: 'string' }, { type: 'null' }] },
+            arguments: {
+                type: 'object',
+                additionalProperties: false,
+                properties: argumentProperties,
+            },
+            clarification: {
+                anyOf: [
+                    { type: 'null' },
+                    {
+                        type: 'object',
+                        additionalProperties: false,
+                        required: ['question'],
+                        properties: { question: { type: 'string', maxLength: 500 } },
+                    },
+                ],
+            },
+            userMessage: { type: 'string', maxLength: 2000 },
         },
-        userMessage: { type: 'string', maxLength: 2000 },
-    },
-});
+    });
+}
 //# sourceMappingURL=provider-types.js.map

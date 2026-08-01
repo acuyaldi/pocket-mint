@@ -1,11 +1,19 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createGeminiAssistantProvider } from '../../src/assistant/providers/gemini.provider';
-import { AssistantProviderError, ASSISTANT_RESPONSE_JSON_SCHEMA } from '../../src/assistant/provider-types';
+import { AssistantProviderError, buildAssistantResponseJsonSchema } from '../../src/assistant/provider-types';
+import { buildProviderCapabilityCatalog } from '../../src/assistant/provider-capability';
+import { ToolRegistry } from '../../src/assistant/registry';
+import { monthlySpendingSummary, transactionCreate } from '../../src/assistant/tools';
+
+const registry = new ToolRegistry();
+registry.register(monthlySpendingSummary);
+registry.register(transactionCreate);
+const responseSchema = buildAssistantResponseJsonSchema(buildProviderCapabilityCatalog(registry));
 
 const request = {
   systemInstruction: 'system',
   messages: [{ role: 'user' as const, content: '{"currentRequest":"hello"}' }],
-  responseSchema: ASSISTANT_RESPONSE_JSON_SCHEMA,
+  responseSchema,
   signal: new AbortController().signal,
 };
 
@@ -42,7 +50,7 @@ describe('Gemini Assistant provider adapter', () => {
       config: {
         systemInstruction: 'system',
         responseMimeType: 'application/json',
-        responseJsonSchema: ASSISTANT_RESPONSE_JSON_SCHEMA,
+        responseJsonSchema: responseSchema,
         temperature: 0,
         candidateCount: 1,
         maxOutputTokens: 4096,

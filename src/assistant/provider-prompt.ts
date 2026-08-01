@@ -1,6 +1,6 @@
 import type { AssistantContext } from './context.types';
 import { buildAssistantSystemInstruction } from './provider-instruction';
-import { ASSISTANT_RESPONSE_JSON_SCHEMA, type AssistantModelRequest, type ProviderCapability } from './provider-types';
+import { buildAssistantResponseJsonSchema, type AssistantModelRequest, type ProviderCapability } from './provider-types';
 
 export function assembleAssistantModelRequest(
   context: AssistantContext,
@@ -18,7 +18,7 @@ export function assembleAssistantModelRequest(
     // model answers in the user's language instead of defaulting to English.
     systemInstruction: buildAssistantSystemInstruction(catalog, context.system.locale),
     messages: [{ role: 'user', content: JSON.stringify(untrustedContent) }],
-    responseSchema: ASSISTANT_RESPONSE_JSON_SCHEMA,
+    responseSchema: buildAssistantResponseJsonSchema(catalog),
     signal,
   };
 }

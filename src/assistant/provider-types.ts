@@ -102,25 +102,57 @@ export type AssistantPlan =
   | { readonly kind: 'clarification'; readonly question: string }
   | { readonly kind: 'unsupported'; readonly message: string };
 
-export const ASSISTANT_RESPONSE_JSON_SCHEMA: Readonly<Record<string, unknown>> = Object.freeze({
-  type: 'object',
-  additionalProperties: false,
-  required: ['kind', 'intent', 'arguments', 'clarification', 'userMessage'],
-  properties: {
-    kind: { type: 'string', enum: ['intent', 'clarification', 'unsupported'] },
-    intent: { anyOf: [{ type: 'string' }, { type: 'null' }] },
-    arguments: { type: 'object' },
-    clarification: {
-      anyOf: [
-        { type: 'null' },
-        {
-          type: 'object',
-          additionalProperties: false,
-          required: ['question'],
-          properties: { question: { type: 'string', maxLength: 500 } },
-        },
-      ],
+/**
+ * Builds the structured-output schema sent to the provider.
+ *
+ * `arguments` must enumerate the capability argument keys explicitly. Gemini
+ * constrains decoding to the supplied schema, and it reads a bare
+ * `{ type: 'object' }` as an object with no permitted keys — it then always
+ * emits `arguments: {}` and silently drops every argument it inferred. The
+ * key list is derived from the tool registry catalog so the schema and the
+ * catalog in the system instruction cannot drift apart.
+ *
+ * This is a decoding constraint, not the trust boundary: `validateAssistantPlan`
+ * still allow-lists arguments per intent and revalidates them against the
+ * tool contract.
+ */
+export function buildAssistantResponseJsonSchema(
+  catalog: readonly ProviderCapability[],
+): Readonly<Record<string, unknown>> {
+  const argumentProperties: Record<string, unknown> = {};
+  for (const capability of catalog) {
+    for (const [name, spec] of Object.entries(capability.argumentContract)) {
+      argumentProperties[name] = {
+        type: spec.type,
+        description: spec.description,
+        ...(spec.enum ? { enum: [...spec.enum] } : {}),
+      };
+    }
+  }
+  return Object.freeze({
+    type: 'object',
+    additionalProperties: false,
+    required: ['kind', 'intent', 'arguments', 'clarification', 'userMessage'],
+    properties: {
+      kind: { type: 'string', enum: ['intent', 'clarification', 'unsupported'] },
+      intent: { anyOf: [{ type: 'string' }, { type: 'null' }] },
+      arguments: {
+        type: 'object',
+        additionalProperties: false,
+        properties: argumentProperties,
+      },
+      clarification: {
+        anyOf: [
+          { type: 'null' },
+          {
+            type: 'object',
+            additionalProperties: false,
+            required: ['question'],
+            properties: { question: { type: 'string', maxLength: 500 } },
+          },
+        ],
+      },
+      userMessage: { type: 'string', maxLength: 2000 },
     },
-    userMessage: { type: 'string', maxLength: 2000 },
-  },
-});
+  });
+}
