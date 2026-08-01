@@ -1,4 +1,4 @@
-import { afterAll, afterEach, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPrismaResources } from '../src/lib/prismaFactory';
 import { assertTestDatabaseUrl } from '../src/lib/assertTestDatabaseUrl';
 import { createAnalyticsOverviewService } from '../src/services/analytics-overview.service';
@@ -19,6 +19,26 @@ const TEST_DATABASE_URL = process.env.TEST_DATABASE_URL;
 if (TEST_DATABASE_URL) assertTestDatabaseUrl(TEST_DATABASE_URL);
 
 const resources = TEST_DATABASE_URL ? createPrismaResources(TEST_DATABASE_URL, { max: 5 }) : undefined;
+
+/**
+ * `current-month` (and every other relative period) resolves against the wall
+ * clock, so a fixture pinned to a literal calendar date silently falls out of
+ * the period once the month rolls over — this suite went red on 2026-08-01
+ * with July fixtures. Freeze the clock and derive every relative-period
+ * fixture from the frozen instant instead.
+ *
+ * Only `Date` is faked: the Prisma driver adapter's pg pool needs real
+ * setTimeout/setInterval, which a full `vi.useFakeTimers()` would stall.
+ */
+const FROZEN_NOW = new Date('2026-07-10T04:00:00.000Z'); // 11:00 Jakarta, mid-month
+
+beforeEach(() => {
+  vi.useFakeTimers({ toFake: ['Date'], now: FROZEN_NOW });
+});
+
+afterEach(() => {
+  vi.useRealTimers();
+});
 
 afterAll(async () => {
   await resources?.close();
@@ -78,7 +98,7 @@ describe.skipIf(!TEST_DATABASE_URL)('Analytics v2 (disposable PostgreSQL)', () =
       const userId = await createUser('ov-decimal');
       const walletA = await createWallet(userId, 'A');
       const walletB = await createWallet(userId, 'B');
-      const now = new Date('2026-07-10T04:00:00.000Z'); // 11:00 Jakarta
+      const now = new Date(); // frozen — see FROZEN_NOW
 
       await createTx({ userId, walletId: walletA.id, type: 'INCOME', amount: '999999999.99', date: now });
       await createTx({ userId, walletId: walletA.id, type: 'EXPENSE', amount: '1234.56', date: now });
@@ -116,6 +136,40 @@ describe.skipIf(!TEST_DATABASE_URL)('Analytics v2 (disposable PostgreSQL)', () =
       expect(june.income.toString()).toBe('0');
     });
 
+    /**
+     * Regression guard for the 2026-08-01 breakage: `current-month` must track
+     * the reporting calendar at every awkward instant, not just a comfortable
+     * mid-month one. Each anchor is a UTC instant chosen for what it means in
+     * the Asia/Jakarta (UTC+7) reporting zone; the fixtures are derived from
+     * the resolved period, never written as literals.
+     */
+    const CURRENT_MONTH_ANCHORS = [
+      ['ordinary mid-month', '2026-07-10T04:00:00.000Z'], // 2026-07-10 11:00 Jakarta
+      ['first instant of a month', '2026-06-30T17:00:00.000Z'], // 2026-07-01 00:00 Jakarta
+      ['last instant of a month', '2026-07-31T16:59:59.999Z'], // 2026-07-31 23:59:59.999 Jakarta
+      ['first instant of a year', '2025-12-31T17:00:00.000Z'], // 2026-01-01 00:00 Jakarta
+      ['last instant of a year', '2026-12-31T16:59:59.999Z'], // 2026-12-31 23:59:59.999 Jakarta
+      ['a 31-day month, from its final day', '2026-01-31T16:00:00.000Z'], // 2026-01-31 23:00 Jakarta
+      ['February, from its final day', '2026-02-28T16:00:00.000Z'], // 2026-02-28 23:00 Jakarta
+    ] as const;
+
+    it.each(CURRENT_MONTH_ANCHORS)('resolves current-month at the %s', async (_label, anchor) => {
+      vi.setSystemTime(new Date(anchor));
+      const userId = await createUser('ov-anchor');
+      const wallet = await createWallet(userId);
+
+      const period = await overview().getOverview({ userId, period: 'current-month' });
+      await createTx({ userId, walletId: wallet.id, type: 'INCOME', amount: '1', date: period.periodStart });
+      await createTx({ userId, walletId: wallet.id, type: 'INCOME', amount: '10', date: new Date() });
+      await createTx({ userId, walletId: wallet.id, type: 'INCOME', amount: '100', date: new Date(period.periodEnd.getTime() - 1) });
+      // Exactly the exclusive end belongs to the next month, never this one.
+      await createTx({ userId, walletId: wallet.id, type: 'INCOME', amount: '1000', date: period.periodEnd });
+
+      const result = await overview().getOverview({ userId, period: 'current-month' });
+      expect(result.income.toString()).toBe('111');
+      expect(result.transactionCount).toBe(3);
+    });
+
     it('returns a zeroed overview (no Infinity/NaN) for a user with no transactions', async () => {
       const userId = await createUser('ov-empty');
       const result = await overview().getOverview({ userId, period: 'current-month' });
@@ -138,7 +192,7 @@ describe.skipIf(!TEST_DATABASE_URL)('Analytics v2 (disposable PostgreSQL)', () =
       const userId = await createUser('cat-uncat');
       const wallet = await createWallet(userId);
       const food = await createCategory(userId, 'Makan', 'EXPENSE');
-      const now = new Date('2026-07-10T04:00:00.000Z');
+      const now = new Date(); // frozen — see FROZEN_NOW
 
       await createTx({ userId, walletId: wallet.id, categoryId: food.id, type: 'EXPENSE', amount: '30000', date: now });
       await createTx({ userId, walletId: wallet.id, categoryId: null, type: 'EXPENSE', amount: '10000', date: now });
@@ -156,7 +210,7 @@ describe.skipIf(!TEST_DATABASE_URL)('Analytics v2 (disposable PostgreSQL)', () =
       const userId = await createUser('wallet-breakdown');
       const active = await createWallet(userId, 'Active');
       await createWallet(userId, 'Idle');
-      const now = new Date('2026-07-10T04:00:00.000Z');
+      const now = new Date(); // frozen — see FROZEN_NOW
       await createTx({ userId, walletId: active.id, type: 'INCOME', amount: '20000', date: now });
 
       const result = await wallets().getWalletBreakdown({ userId, period: 'current-month' });
@@ -193,6 +247,8 @@ describe.skipIf(!TEST_DATABASE_URL)('Analytics v2 (disposable PostgreSQL)', () =
       const userId = await createUser('drill-page');
       const wallet = await createWallet(userId);
       const food = await createCategory(userId, 'Makan', 'EXPENSE');
+      // Explicit bounds, not a relative period — the literal date is deliberate
+      // and calendar-independent, so it stays pinned.
       const now = new Date('2026-07-10T04:00:00.000Z');
       for (let i = 0; i < 5; i++) {
         await createTx({ userId, walletId: wallet.id, categoryId: food.id, type: 'EXPENSE', amount: `${1000 + i}`, date: now });
@@ -216,7 +272,7 @@ describe.skipIf(!TEST_DATABASE_URL)('Analytics v2 (disposable PostgreSQL)', () =
       const walletA = await createWallet(userA, 'A Wallet');
       const categoryA = await createCategory(userA, 'A Category', 'EXPENSE');
       const walletB = await createWallet(userB, 'B Wallet');
-      const now = new Date('2026-07-10T04:00:00.000Z');
+      const now = new Date(); // frozen — see FROZEN_NOW
 
       await createTx({ userId: userA, walletId: walletA.id, categoryId: categoryA.id, type: 'EXPENSE', amount: '999999', date: now });
       await db().budget.create({ data: { userId: userA, categoryId: categoryA.id, amount: '1000000' } });
