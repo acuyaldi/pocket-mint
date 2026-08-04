@@ -115,9 +115,9 @@ Entity selection response shape:
 }
 ```
 
-When `transaction.create` is otherwise valid but category and/or date is missing, the Backend persists a guided-fields `ClarificationRequest` in the same engine. The frontend may render only the fields the Backend includes. Category values submitted from this guided path are untrusted text and are resolved again server-side; the client never submits a Category ID. Date values are validated as calendar days before the clarification is consumed. A guided clarification creates no draft until all required fields have been validated/resolved.
+When `transaction.create` is otherwise valid but category and/or date is missing, the Backend no longer asks: a missing date becomes today in the reporting timezone, and a missing or unresolvable category is inferred deterministically — the owner-scoped keyword/merchant-mapping suggestion engine first (HIGH/MEDIUM confidence only), then the user's catch-all `Lainnya` category. Both are backend-computed; the client never supplies either. The user corrects an inferred value on the draft before confirming. Only a genuinely ambiguous reference — two or more owned wallets or categories matching the same text — still produces a pre-draft clarification, and it is always a token-based entity selection. If the user owns neither a matching nor a catch-all category, the turn ends with a safe `provider_text` message instead of a draft.
 
-Guided fields response shape:
+Guided fields are therefore no longer created. The response shape and the guided-submit route below remain supported for clarifications persisted before this behavior changed:
 
 ```json
 {

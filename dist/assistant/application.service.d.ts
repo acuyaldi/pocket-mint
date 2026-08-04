@@ -6,6 +6,9 @@ import type { AssistantFinancialDraftService } from './financial-draft.service';
 import type { AssistantContextService, BuildAssistantExecutionContextInput } from './context.service';
 import { type EntityResolutionService } from './entity-resolution';
 import type { ClarificationService } from './clarification.service';
+import type { Prisma } from '../generated/prisma/client';
+import type { CategorySuggestion } from '../domain/categorization';
+type TxClient = Prisma.TransactionClient;
 export interface AssistantApplicationResult {
     response: AssistantCanonicalResponse;
     httpStatus: number;
@@ -18,6 +21,12 @@ export declare function createAssistantApplicationService(deps: {
     financialDrafts?: AssistantFinancialDraftService;
     entityResolution?: EntityResolutionService;
     clarification?: ClarificationService;
+    /** Deterministic keyword/merchant-mapping category suggestion (owner-scoped). */
+    categorization?: {
+        getSuggestions(userId: string, description: string, type: 'INCOME' | 'EXPENSE', options?: {
+            transaction?: TxClient;
+        }): Promise<readonly CategorySuggestion[]>;
+    };
 }): {
     execute: (userId: string, correlationId: string, request: AssistantCanonicalRequest) => Promise<AssistantApplicationResult>;
     prepareProviderExecution: (input: BuildAssistantExecutionContextInput) => Promise<import("./context.types").AssistantContext>;
@@ -27,3 +36,4 @@ export declare function createAssistantApplicationService(deps: {
     getAssistantState: (userId: string, conversationId: string) => Promise<import("./clarification.types").AssistantStateProjection>;
 };
 export type AssistantApplicationService = ReturnType<typeof createAssistantApplicationService>;
+export {};

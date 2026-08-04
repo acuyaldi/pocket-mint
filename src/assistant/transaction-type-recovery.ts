@@ -5,6 +5,10 @@ const EXPENSE_SIGNALS = [
   /\bbeli\b/iu,
   /\bbelanja\b/iu,
   /\bkeluar\b/iu,
+  /\btagihan\b/iu,
+  /\blangganan\b/iu,
+  /\btop\s?up\b/iu,
+  /\bisi\s+bensin\b/iu,
   /\btransfer\s+untuk\s+membayar\b/iu,
   /\bpotong\s+saldo\b/iu,
   /\bdebit\b/iu,
@@ -14,9 +18,13 @@ const INCOME_SIGNALS = [
   /\bterima\b/iu,
   /\bdapat\b/iu,
   /\bmasuk\b/iu,
-  /\bgaji\s+masuk\b/iu,
+  /\bgaji\b/iu,
+  /\bbonus\b/iu,
+  /\brefund\b/iu,
+  /\bcashback\b/iu,
+  /\bbunga\b/iu,
+  /\bdividen\b/iu,
   /\bdibayar\s+oleh\b/iu,
-  /\brefund\s+masuk\b/iu,
 ];
 
 function hasAnySignal(message: string, signals: readonly RegExp[]): boolean {

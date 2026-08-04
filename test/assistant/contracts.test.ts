@@ -121,7 +121,7 @@ describe('transaction.create input validation', () => {
     });
   });
 
-  it('accepts missing category/date for deterministic guided-field clarification but keeps amount required', () => {
+  it('accepts missing category/date for deterministic backend inference but keeps amount required', () => {
     expect(transactionCreate.validateInput(missingDateWithReference)).toEqual({
       ...missingDateWithReference,
       categoryId: '',

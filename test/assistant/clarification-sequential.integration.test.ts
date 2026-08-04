@@ -6,6 +6,9 @@ import { createAssistantApplicationService } from '../../src/assistant/applicati
 import { createAssistantFinancialDraftService } from '../../src/assistant/financial-draft.service';
 import { createClarificationService } from '../../src/assistant/clarification.service';
 import { createTransactionService } from '../../src/services/transaction.service';
+import { createCategorizationService } from '../../src/services/categorization.service';
+import { reportingConfig } from '../../src/config';
+import { formatReportingDate } from '../../src/domain/reportingTime';
 import { ToolRegistry } from '../../src/assistant/registry';
 import { monthlySpendingSummary, transactionCreate } from '../../src/assistant/tools';
 import {
@@ -62,6 +65,7 @@ describe.skipIf(!url)('Clarification sequential flow (disposable PostgreSQL)', (
       financialDrafts: drafts,
       entityResolution,
       clarification,
+      categorization: createCategorizationService(db),
     });
 
     return { conversations, drafts, clarification, application, entityResolution, db };
@@ -892,6 +896,60 @@ describe.skipIf(!url)('Clarification sequential flow (disposable PostgreSQL)', (
     expect(await db.clarificationRequest.count({ where: { userId: user.id } })).toBe(0);
     expect(await db.clarificationOption.count()).toBe(0);
     expect(await db.assistantFinancialDraft.count({ where: { userId: user.id } })).toBe(0);
+    expect(await db.transaction.count({ where: { userId: user.id } })).toBe(0);
+  });
+
+  // ---- Regression: MVP low-friction flow --------------------------------------
+  // "bayar internet 350 ribu dari bca" must cost exactly one clarification (the
+  // genuinely ambiguous wallet) and then land on a draft. No amount, type,
+  // category, or date question anywhere in between.
+
+  it('drafts after a single wallet clarification with an inferred category and today as the date', async () => {
+    const db = resources!.prisma;
+    const user = await db.user.create({ data: { email: `mvp-${Date.now()}-${Math.random()}@test.local`, name: 'mvp' } });
+    users.push(user.id);
+    await db.wallet.create({ data: { userId: user.id, name: 'BCA', type: 'BANK', balance: 500000 } });
+    await db.wallet.create({ data: { userId: user.id, name: 'BCA Kredit', type: 'CREDIT_CARD', balance: -250000, creditLimit: 10000000 } });
+    const tagihan = await db.category.create({ data: { userId: user.id, name: 'Tagihan', type: 'EXPENSE', icon: 'bill', color: '#000000' } });
+    await db.category.create({ data: { userId: user.id, name: 'Lainnya', type: 'EXPENSE', icon: 'other', color: '#111111' } });
+    const { application } = buildServices();
+
+    // The provider plan for that sentence: no date, no category id.
+    const r1 = await application.execute(user.id, 'corr-mvp1', {
+      intent: 'transaction.create',
+      message: 'bayar internet 350 ribu dari bca',
+      arguments: {
+        type: 'EXPENSE',
+        amount: '350000',
+        walletReference: 'bca',
+        categoryReference: 'internet',
+        description: 'Internet',
+      },
+    });
+
+    expect(r1.response.status).toBe('clarification_required');
+    const data = r1.response.data as any;
+    expect(data.entityType).toBe('wallet');
+    expect(data.clarification.options.map((option: any) => option.label).sort()).toEqual(['BCA', 'BCA Kredit']);
+
+    const chosen = data.clarification.options.find((option: any) => option.label === 'BCA');
+    const r2 = await application.selectClarification(user.id, 'corr-mvp2', chosen.token, r1.response.conversationId);
+
+    expect(r2.response.status).toBe('success');
+    expect(r2.response.data).toHaveProperty('draftId');
+
+    // Exactly one clarification in the whole flow
+    expect(await db.clarificationRequest.count({ where: { userId: user.id } })).toBe(1);
+
+    const draft = await db.assistantFinancialDraft.findFirstOrThrow({ where: { userId: user.id } });
+    expect(draft.status).toBe('PENDING_CONFIRMATION');
+    expect(draft.amount.toString()).toBe('350000');
+    // "internet" → Tagihan via the deterministic keyword engine, not a question
+    expect(draft.categoryId).toBe(tagihan.id);
+    expect(formatReportingDate(draft.transactionDate, reportingConfig.timezone))
+      .toBe(formatReportingDate(new Date(), reportingConfig.timezone));
+
+    // Still nothing committed until the user confirms
     expect(await db.transaction.count({ where: { userId: user.id } })).toBe(0);
   });
 

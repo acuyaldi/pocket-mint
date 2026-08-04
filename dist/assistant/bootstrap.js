@@ -19,6 +19,7 @@ const conversation_service_1 = require("./conversation.service");
 const application_service_1 = require("./application.service");
 const financial_draft_service_1 = require("./financial-draft.service");
 const transaction_service_1 = require("../services/transaction.service");
+const categorization_service_1 = require("../services/categorization.service");
 const context_service_1 = require("./context.service");
 const clarification_service_1 = require("./clarification.service");
 const config_1 = require("../config");
@@ -52,6 +53,7 @@ exports.assistantApplicationService = (0, application_service_1.createAssistantA
     financialDrafts: exports.assistantFinancialDraftService,
     entityResolution: exports.entityResolutionService,
     clarification: exports.clarificationService,
+    categorization: categorization_service_1.categorizationService,
 });
 exports.assistantProviderAuditService = (0, provider_audit_service_1.createAssistantProviderAuditService)(prisma_1.default);
 exports.assistantProviderRuntime = config_1.assistantProviderConfig.enabled

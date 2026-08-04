@@ -15,6 +15,7 @@ import { createAssistantConversationService } from './conversation.service';
 import { createAssistantApplicationService } from './application.service';
 import { createAssistantFinancialDraftService } from './financial-draft.service';
 import { transactionService } from '../services/transaction.service';
+import { categorizationService } from '../services/categorization.service';
 import { createAssistantContextService } from './context.service';
 import { createClarificationService } from './clarification.service';
 import { assistantProviderConfig } from '../config';
@@ -59,6 +60,7 @@ export const assistantApplicationService = createAssistantApplicationService({
   financialDrafts: assistantFinancialDraftService,
   entityResolution: entityResolutionService,
   clarification: clarificationService,
+  categorization: categorizationService,
 });
 export const assistantProviderAuditService = createAssistantProviderAuditService(prisma);
 export const assistantProviderRuntime = assistantProviderConfig.enabled
