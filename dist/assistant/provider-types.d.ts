@@ -67,4 +67,18 @@ export type AssistantPlan = {
     readonly kind: 'unsupported';
     readonly message: string;
 };
-export declare const ASSISTANT_RESPONSE_JSON_SCHEMA: Readonly<Record<string, unknown>>;
+/**
+ * Builds the structured-output schema sent to the provider.
+ *
+ * `arguments` must enumerate the capability argument keys explicitly. Gemini
+ * constrains decoding to the supplied schema, and it reads a bare
+ * `{ type: 'object' }` as an object with no permitted keys — it then always
+ * emits `arguments: {}` and silently drops every argument it inferred. The
+ * key list is derived from the tool registry catalog so the schema and the
+ * catalog in the system instruction cannot drift apart.
+ *
+ * This is a decoding constraint, not the trust boundary: `validateAssistantPlan`
+ * still allow-lists arguments per intent and revalidates them against the
+ * tool contract.
+ */
+export declare function buildAssistantResponseJsonSchema(catalog: readonly ProviderCapability[]): Readonly<Record<string, unknown>>;

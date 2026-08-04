@@ -15,7 +15,7 @@ function assembleAssistantModelRequest(context, catalog, signal = new AbortContr
         // model answers in the user's language instead of defaulting to English.
         systemInstruction: (0, provider_instruction_1.buildAssistantSystemInstruction)(catalog, context.system.locale),
         messages: [{ role: 'user', content: JSON.stringify(untrustedContent) }],
-        responseSchema: provider_types_1.ASSISTANT_RESPONSE_JSON_SCHEMA,
+        responseSchema: (0, provider_types_1.buildAssistantResponseJsonSchema)(catalog),
         signal,
     };
 }
