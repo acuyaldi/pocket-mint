@@ -334,7 +334,7 @@ describe.skipIf(!url)('Assistant provider runtime (disposable PostgreSQL)', () =
       description: 'Lunch',
     });
     expect(prepared.body.data.data.preview).not.toHaveProperty('walletId');
-    expect(prepared.body.data.renderedText).not.toContain('Transaction created successfully');
+    expect(prepared.body.data.data.renderedText).not.toContain('Transaction created successfully');
     expect(await resources!.prisma.transaction.count({ where: { userId: user.id } })).toBe(0);
     expect((await resources!.prisma.wallet.findUniqueOrThrow({ where: { id: wallet.id } })).balance.toString()).toBe('100000');
 

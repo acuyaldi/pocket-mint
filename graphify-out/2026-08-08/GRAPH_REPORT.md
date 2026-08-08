@@ -1,16 +1,16 @@
-# Graph Report - pocket-mint-backend  (2026-08-08)
+# Graph Report - pocket-mint-backend  (2026-08-04)
 
 ## Corpus Check
-- 446 files · ~516,536 words
+- 446 files · ~515,807 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 10670 nodes · 18869 edges · 343 communities (226 shown, 117 thin omitted)
+- 10667 nodes · 18864 edges · 341 communities (224 shown, 117 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 562 edges (avg confidence: 0.62)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7c5b2112`
+- Built from commit: `1049c705`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -26,17 +26,17 @@
 - library.js
 - Decimal
 - wasm-engine-edge.js
-- inbound.worker.ts
+- interaction.service.ts
 - getAuthenticatedUserId
 - edge-esm.js
-- assistant/bootstrap.ts
+- AssistantError
 - entity-resolution/index.ts
 - config/index.ts
-- entity-resolution/types.ts
+- assistant/bootstrap.ts
 - analytics.controller.ts
-- transaction.controller.ts
+- prisma/client.js
 - account.controller.ts
-- telegram-channel.integration.test.ts
+- ChannelError
 - provider-runtime.ts
 - categorization/index.ts
 - L
@@ -48,13 +48,13 @@
 - reportingTime.ts
 - reportingEffect.ts
 - addErrorMessage
-- prisma/client.js
+- application.service.ts
 - addErrorMessage
 - addErrorMessage
 - installment-payment.service.ts
 - addErrorMessage
-- transaction
-- Ne
+- constructor
+- slice
 - addErrorMessage
 - addErrorMessage
 - routes/index.ts
@@ -63,7 +63,7 @@
 - reconciliation.ts
 - .slice
 - slice
-- recurringTransaction.service.ts
+- recurringTransaction.controller.ts
 - a
 - ro
 - jo
@@ -77,7 +77,7 @@
 - co
 - PrismaClient
 - toString
-- interpretNode
+- T
 - wo
 - .includes
 - Ca
@@ -85,35 +85,35 @@
 - a
 - r
 - e
-- constructor
+- fs
 - write
 - query_engine_bg.js
 - applyEnv
-- toString
+- Vo
 - r
 - write
-- installment.controller.ts
+- logger.ts
 - constructor
-- ha
+- el
 - toString
 - .slice
 - notification.service.ts
 - What You Must Do When Invoked
-- xn
+- hp
 - getTracingHelper
 - dependencies
 - Assistant observability runbook
-- Fr
-- authContext.ts
+- durableProcessing.integration.test.ts
+- getTracingHelper
 - compilerOptions
-- dashboard-query.service.ts
+- authContext.ts
 - requestInternal
 - devDependencies
 - billingCycle.ts
-- t
+- ja
 - $transaction
 - ai
-- concat
+- no
 - Prisma__UserClient
 - AssistantConversationDelegate
 - AssistantFinancialDraftDelegate
@@ -140,8 +140,8 @@
 - TransactionDelegate
 - UserDelegate
 - WalletDelegate
-- get
-- EntityResolverRegistry
+- interpretNode
+- constructor
 - Git Workflow — Pocket Mint Backend
 - Prisma migration baseline reconstruction & reconciliation
 - write
@@ -153,9 +153,9 @@
 - Backend deployment runbook — JWT-only auth (Sprint 3I)
 - PrismaPromise
 - write
-- ln
+- pi
 - write
-- installment-query.service.ts
+- installment.controller.ts
 - St
 - Assistant Core — Pocket Mint Backend
 - requestInternal
@@ -163,16 +163,16 @@
 - concat
 - Financial Logic — Pocket Mint Backend
 - Wallet Command & Query Service Architecture (Sprints 3C–3D)
-- envelope.ts
+- telegram.service.ts
 - Deployment & Operations
 - HTTP & Application Boundary Architecture (Sprint 3F)
 - k
-- get
+- inbound.worker.ts
 - UI System — Pocket Mint
 - Prisma__AssistantConversationClient
 - Prisma__TransactionClient
 - g
-- constructor
+- telegram-channel.integration.test.ts
 - Span
 - Span
 - r
@@ -183,7 +183,7 @@
 - scripts
 - exports
 - MergedExtensionsList
-- constructor
+- #i
 - MergedExtensionsList
 - Et
 - Authentication & Security — JWT-Only
@@ -207,7 +207,7 @@
 - Prisma__WalletClient
 - a
 - RequestHandler
-- toString
+- t
 - NullTypesEnumValue
 - RequestHandler
 - from
@@ -220,7 +220,7 @@
 - ./runtime/client
 - #wasm-compiler-loader
 - Engine
-- candidate.ts
+- rupiah-amount-recovery.ts
 - index-browser.d.ts
 - telegramAdapterBoundary.test.ts
 - Pocket Mint — Session Task Prompt
@@ -252,7 +252,7 @@
 - PrismaPromise_2
 - Sql
 - TracingHelper
-- go
+- client.ts
 - wasm.js
 - copy-prisma-client.cjs
 - 20260722201000_add_assistant_conversation_persistence/migration.sql
@@ -262,11 +262,11 @@
 - Prisma__ClarificationOptionClient
 - ./edge
 - ./extension
-- entity-resolution.fixture.ts
+- ./index
 - ./runtime/index-browser
 - ./runtime/wasm-compiler-edge
 - l
-- E
+- S
 - TraceState
 - TraceState
 - 10. Analytics Rules
@@ -339,11 +339,9 @@
 - ErrorRegistry
 - JsonConvertible
 - strip-prisma-whitespace.cjs
-- reference.ts
+- dn
 - transactionController.test.ts
-- rp
-- merchant-resolver.integration.test.ts
-- ./index-browser
+- notificationController.test.ts
 
 ## God Nodes (most connected - your core abstractions)
 1. `Decimal` - 117 edges
@@ -372,7 +370,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (343 total, 117 thin omitted)
+## Communities (341 total, 117 thin omitted)
 
 ### Community 0 - "index.d.ts"
 Cohesion: 0.00
@@ -388,79 +386,79 @@ Nodes (309): AccelerateExtensionFetch, AccelerateExtensionFetchDecorator, Action
 
 ### Community 3 - "react-native.js"
 Cohesion: 0.02
-Nodes (59): An(), as(), be(), bp(), bs(), dispatchEngineSpans(), ds(), ep() (+51 more)
+Nodes (61): An(), applyPendingMigrations(), be(), buildQueryError(), connect(), consumeError(), cp(), deref() (+53 more)
 
 ### Community 4 - "runtime/client.js"
 Cohesion: 0.02
-Nodes (83): Ad(), ai(), Am(), an(), bn(), Bp(), Ca(), Cd() (+75 more)
+Nodes (90): Ad(), ae(), ai(), Am(), an(), bn(), Bp(), Ca() (+82 more)
 
 ### Community 5 - "wasm-compiler-edge.js"
 Cohesion: 0.02
-Nodes (55): Sa(), aa(), ap(), Bm(), Bn(), bp(), clone(), _cloneInto() (+47 more)
+Nodes (61): Sa(), aa(), addField(), addItem(), Bm(), Bn(), bs(), clone() (+53 more)
 
 ### Community 6 - "runtime/edge.js"
 Cohesion: 0.02
-Nodes (61): addItem(), ao(), bn(), bs(), bu(), Ci(), cp(), cs() (+53 more)
+Nodes (57): ao(), bn(), bs(), bu(), Ci(), cp(), cs(), dispatchEngineSpans() (+49 more)
 
 ### Community 7 - "telegram-callback.integration.test.ts"
 Cohesion: 0.05
-Nodes (80): createAssistantApplicationService(), createClarificationService(), createAssistantConversationService(), createCategoryResolver(), createMerchantResolver(), createEntityResolutionService(), createWalletResolver(), createAssistantFinancialDraftService() (+72 more)
+Nodes (81): createAssistantApplicationService(), createClarificationService(), createAssistantConversationService(), categoryConstraintsForType(), createCategoryResolver(), createMerchantResolver(), EntityResolverRegistry, createEntityResolutionService() (+73 more)
 
 ### Community 8 - "library.js"
-Cohesion: 0.03
-Nodes (57): Af(), Bc(), bi(), Bm(), Bu(), Cm(), dispatchEngineSpans(), dm() (+49 more)
+Cohesion: 0.02
+Nodes (82): an(), Bc(), bi(), Bm(), Bu(), ca(), cl(), Cm() (+74 more)
 
 ### Community 10 - "wasm-engine-edge.js"
 Cohesion: 0.03
-Nodes (49): Vl(), ao(), as(), cn(), dispatchEngineSpans(), dn(), eu(), fn() (+41 more)
+Nodes (48): as(), Bo(), cn(), constructor(), ct(), dispatchEngineSpans(), es(), Fe() (+40 more)
 
-### Community 11 - "inbound.worker.ts"
-Cohesion: 0.04
-Nodes (84): logExecution(), AssistantProviderRuntime, ChannelCallbackInteractionType, claimCallbackToken(), createCallbackToken(), CreateCallbackTokenInput, digestCallbackToken(), expireCallbackToken() (+76 more)
+### Community 11 - "interaction.service.ts"
+Cohesion: 0.10
+Nodes (29): AssistantProviderRuntime, ChannelCallbackInteractionType, claimCallbackToken(), createCallbackToken(), CreateCallbackTokenInput, digestCallbackToken(), expireCallbackToken(), findCallbackTokenByRaw() (+21 more)
 
 ### Community 12 - "getAuthenticatedUserId"
-Cohesion: 0.07
-Nodes (43): channelLinkTokenService, AnalyticsController, mapPeriodQuery(), BudgetController, respondWithUsage(), toBudgetDto(), getSuggestions(), VALID_TYPES (+35 more)
+Cohesion: 0.06
+Nodes (60): channelLinkTokenService, AnalyticsController, mapPeriodQuery(), BudgetController, respondWithUsage(), toBudgetDto(), getSuggestions(), VALID_TYPES (+52 more)
 
 ### Community 13 - "edge-esm.js"
-Cohesion: 0.03
-Nodes (57): At(), bo(), cs(), dc(), dispatchEngineSpans(), du(), Ee(), fc() (+49 more)
+Cohesion: 0.02
+Nodes (59): At(), bo(), cs(), dc(), dispatchEngineSpans(), du(), Ee(), es() (+51 more)
 
-### Community 14 - "assistant/bootstrap.ts"
-Cohesion: 0.04
-Nodes (39): assistantApplicationService, assistantContextService, assistantConversationService, assistantFinancialDraftService, assistantProviderAuditService, clarificationService, entityResolutionService, entityResolverRegistry (+31 more)
+### Community 14 - "AssistantError"
+Cohesion: 0.05
+Nodes (21): terminalizeOrReportActual(), terminalStatusError(), AssistantError, executeTool(), logExecution(), withTimeout(), renderTransactionDraftPreview(), DraftReadyTransactionInput (+13 more)
 
 ### Community 15 - "entity-resolution/index.ts"
-Cohesion: 0.14
-Nodes (20): aliasesFromCategoryName(), CATEGORY_TRANSACTION_CREATE_CONSTRAINTS, categoryConstraintsForType(), CategoryTransactionCreateConstraints, EntityResolutionErrorCode, matchEntityCandidate(), aliasesFromMerchantName(), MerchantTransactionCreateConstraints (+12 more)
+Cohesion: 0.06
+Nodes (65): boundedNonEmpty(), compareText(), createEntityCandidate(), CreateEntityCandidateInput, revalidateEntityCandidate(), safeDisplay(), aliasesFromCategoryName(), CATEGORY_TRANSACTION_CREATE_CONSTRAINTS (+57 more)
 
 ### Community 16 - "config/index.ts"
 Cohesion: 0.04
-Nodes (52): app, channelConnectionService, workerOwnerId, createInboundWorker(), LoopOptions, runWorkerLoop(), sleep(), AssistantProviderConfig (+44 more)
+Nodes (49): app, channelConnectionService, workerOwnerId, createInboundWorker(), LoopOptions, runWorkerLoop(), sleep(), createOutboundWorker() (+41 more)
 
-### Community 17 - "entity-resolution/types.ts"
-Cohesion: 0.13
-Nodes (22): confidenceFromEvidence(), EVIDENCE_ORDER, EVIDENCE_SCORES, normalizeEvidence(), compareScored(), compareText(), ScoredCandidate, ENTITY_RESOLUTION_POLICY (+14 more)
+### Community 17 - "assistant/bootstrap.ts"
+Cohesion: 0.08
+Nodes (21): assistantApplicationService, assistantContextService, assistantConversationService, assistantFinancialDraftService, assistantProviderAuditService, clarificationService, entityResolutionService, entityResolverRegistry (+13 more)
 
 ### Community 18 - "analytics.controller.ts"
 Cohesion: 0.06
 Nodes (44): num(), serializeBudgetPerformance(), serializeCategories(), serializeOverview(), serializePercentageChange(), serializeTrends(), serializeWallets(), AnalyticsPeriod (+36 more)
 
-### Community 19 - "transaction.controller.ts"
-Cohesion: 0.07
-Nodes (38): csvField(), csvSanitizeText(), EXPORT_PERIOD_MONTHS, ExportPeriod, mapCreateTransactionRequest(), mapUpdateTransactionRequest(), serializeSummary(), transactionsToCsv() (+30 more)
+### Community 19 - "prisma/client.js"
+Cohesion: 0.05
+Nodes (41): TransactionType, TransactionError, assertValidType(), buildWhere(), createTransactionQueryService(), currentReportingMonth(), resolveMonthRange(), resolveMonthYear() (+33 more)
 
 ### Community 20 - "account.controller.ts"
-Cohesion: 0.04
+Cohesion: 0.05
 Nodes (55): createWallet(), CreateWalletBody, CREDIT_TYPES, deleteWallet(), getAllWallets(), getWalletSparkline(), LIABILITY_TYPES, mapCreateWalletRequest() (+47 more)
 
-### Community 21 - "telegram-channel.integration.test.ts"
-Cohesion: 0.05
-Nodes (35): ChannelConnectionService, ChannelConnectionSummary, createChannelConnectionService(), ChannelError, createInboundJob(), ChannelLinkTokenService, createChannelLinkTokenService(), ChannelProviderName (+27 more)
+### Community 21 - "ChannelError"
+Cohesion: 0.12
+Nodes (10): ChannelConnectionService, ChannelError, ChannelLinkTokenService, InboundWorkerDeps, CommandHandlerDeps, handleTelegramCommand(), HELP_TEXT, parseTelegramCommand() (+2 more)
 
 ### Community 22 - "provider-runtime.ts"
-Cohesion: 0.04
-Nodes (71): AssistantApplicationResult, AssistantApplicationService, AssistantContext, AssistantConversationService, AssistantFinancialDraftService, createAssistantProviderAuditService(), buildProviderCapabilityCatalog(), buildAssistantSystemInstruction() (+63 more)
+Cohesion: 0.05
+Nodes (56): AssistantApplicationService, AssistantConversationService, AssistantFinancialDraftService, evaluatePolicy(), buildProviderCapabilityCatalog(), buildAssistantSystemInstruction(), replyLanguageDirective(), RULES (+48 more)
 
 ### Community 23 - "categorization/index.ts"
 Cohesion: 0.07
@@ -468,30 +466,30 @@ Nodes (39): computeConfidence(), groupByCategory(), KIND_CONFIDENCE, pickBest(),
 
 ### Community 24 - "L"
 Cohesion: 0.07
-Nodes (44): Ae(), cr(), Dp(), ea(), em(), Fe(), fu(), Gd() (+36 more)
+Nodes (43): _a(), cm(), connect(), disconnect(), dm(), ea(), equals(), Eu() (+35 more)
 
 ### Community 25 - "slice"
-Cohesion: 0.05
-Nodes (53): et(), addItem(), alloc(), allocUnsafe(), allocUnsafeSlow(), am(), ao(), byteLength() (+45 more)
+Cohesion: 0.06
+Nodes (48): et(), alloc(), allocUnsafe(), allocUnsafeSlow(), ao(), byteLength(), construct(), dt() (+40 more)
 
 ### Community 26 - "addErrorMessage"
-Cohesion: 0.11
-Nodes (55): addErrorMessage(), addField(), addItem(), addSuggestion(), al(), asObject(), bl(), cl() (+47 more)
+Cohesion: 0.10
+Nodes (56): addErrorMessage(), addField(), addItem(), addSuggestion(), al(), asObject(), Bi(), bl() (+48 more)
 
 ### Community 27 - "budget-query.service.ts"
 Cohesion: 0.06
-Nodes (41): APPROACHING_THRESHOLD, BudgetStatus, BudgetUsage, computeBudgetUsage(), HUNDRED, BudgetListStatus, CreateBudgetDto, UpdateBudgetAmountDto (+33 more)
+Nodes (38): APPROACHING_THRESHOLD, BudgetStatus, BudgetUsage, computeBudgetUsage(), HUNDRED, BudgetError, budgetQueryService, createBudgetQueryService() (+30 more)
 
 ### Community 28 - "#a"
-Cohesion: 0.07
-Nodes (53): #a(), apiKey(), Ba(), br(), cl(), commitTransaction(), Da(), deserialize() (+45 more)
+Cohesion: 0.06
+Nodes (56): #a(), aa(), apiKey(), Ba(), br(), cl(), commitTransaction(), Da() (+48 more)
 
 ### Community 29 - "r"
-Cohesion: 0.07
-Nodes (40): la(), Rp(), constructor(), cp(), Ds(), e(), getAllBatchQueryCallbacks(), _getNamespace() (+32 more)
+Cohesion: 0.09
+Nodes (26): cp(), io(), Jo(), jp(), ki(), lp(), lu(), middlewareArgsToRequestArgs() (+18 more)
 
 ### Community 30 - "reportingTime.ts"
-Cohesion: 0.11
+Cohesion: 0.12
 Nodes (39): exportFilename(), resolveExportRange(), ANALYTICS_PERIODS, AnalyticsPeriodInput, clip(), currentReportingMonth(), equalLengthPreviousRange(), generateTrendBuckets() (+31 more)
 
 ### Community 31 - "reportingEffect.ts"
@@ -499,20 +497,20 @@ Cohesion: 0.26
 Nodes (10): getAggregateCashFlowEffect(), getWalletReportingEffect(), persistedWalletAmount(), ReportingTransaction, FinancialTxType, calculateNetWorth(), classifyWalletForNetWorth(), WalletInput (+2 more)
 
 ### Community 32 - "addErrorMessage"
-Cohesion: 0.12
-Nodes (44): addErrorMessage(), addField(), addSuggestion(), asObject(), bu(), Do(), fu(), getDeepField() (+36 more)
+Cohesion: 0.13
+Nodes (43): addErrorMessage(), addField(), addSuggestion(), asObject(), bu(), Do(), fu(), getDeepField() (+35 more)
 
-### Community 33 - "prisma/client.js"
-Cohesion: 0.05
-Nodes (53): TxClient, assembleAssistantContext(), canonicalSafeValue(), compareNewest(), compareText(), DEFAULT_ASSISTANT_CONTEXT_LIMITS, draftContext(), HIDDEN_KEYS (+45 more)
+### Community 33 - "application.service.ts"
+Cohesion: 0.06
+Nodes (45): TxClient, assertValidTokenDigest(), assembleAssistantContext(), canonicalSafeValue(), compareNewest(), compareText(), DEFAULT_ASSISTANT_CONTEXT_LIMITS, draftContext() (+37 more)
 
 ### Community 34 - "addErrorMessage"
-Cohesion: 0.12
-Nodes (47): addErrorMessage(), addField(), addSuggestion(), ap(), asObject(), at(), Do(), ec() (+39 more)
+Cohesion: 0.08
+Nodes (59): addErrorMessage(), addField(), addSuggestion(), ap(), asObject(), at(), Do(), ec() (+51 more)
 
 ### Community 35 - "addErrorMessage"
 Cohesion: 0.11
-Nodes (53): ac(), addErrorMessage(), addSuggestion(), asObject(), bc(), _c(), cc(), dc() (+45 more)
+Nodes (53): ac(), addErrorMessage(), addField(), addSuggestion(), asObject(), bc(), _c(), cc() (+45 more)
 
 ### Community 36 - "installment-payment.service.ts"
 Cohesion: 0.11
@@ -520,27 +518,27 @@ Nodes (20): computeFinalMonthlyAmount(), computeInstallmentPlan(), HUNDRED, Inst
 
 ### Community 37 - "addErrorMessage"
 Cohesion: 0.13
-Nodes (49): ac(), addErrorMessage(), addField(), addSuggestion(), ar(), asObject(), Be(), cc() (+41 more)
+Nodes (47): ac(), addErrorMessage(), addField(), addSuggestion(), ar(), asObject(), Be(), cc() (+39 more)
 
-### Community 38 - "transaction"
-Cohesion: 0.10
-Nodes (35): Aa(), buildQueryError(), consumeError(), convertProtocolErrorsToClientError(), df(), dispatchBatches(), dr(), Ft() (+27 more)
+### Community 38 - "constructor"
+Cohesion: 0.06
+Nodes (49): Aa(), bf(), buildQueryError(), constructor(), consumeError(), convertProtocolErrorsToClientError(), df(), dispatchBatches() (+41 more)
 
-### Community 39 - "Ne"
-Cohesion: 0.08
-Nodes (31): S, ae(), br(), co(), cp(), fi(), fr(), g() (+23 more)
+### Community 39 - "slice"
+Cohesion: 0.05
+Nodes (47): ae(), ai(), Ba(), bn(), br(), co(), _e(), enabled() (+39 more)
 
 ### Community 40 - "addErrorMessage"
 Cohesion: 0.14
 Nodes (44): ad(), addErrorMessage(), addField(), addItem(), addSuggestion(), asObject(), bd(), cd() (+36 more)
 
 ### Community 41 - "addErrorMessage"
-Cohesion: 0.12
-Nodes (48): ac(), addErrorMessage(), addField(), addSuggestion(), asObject(), _c(), cc(), dc() (+40 more)
+Cohesion: 0.14
+Nodes (44): ac(), addErrorMessage(), addSuggestion(), asObject(), _c(), cc(), dc(), es() (+36 more)
 
 ### Community 42 - "routes/index.ts"
 Cohesion: 0.10
-Nodes (29): authConfig, bearerToken(), requireUser(), requireVerifiedJwt(), unauthorized(), verifyBearer(), VerifyResult, ipKey() (+21 more)
+Nodes (28): authConfig, bearerToken(), requireUser(), requireVerifiedJwt(), unauthorized(), verifyBearer(), VerifyResult, ipKey() (+20 more)
 
 ### Community 43 - "query_compiler_fast_bg.js"
 Cohesion: 0.07
@@ -560,55 +558,55 @@ Nodes (34): cn(), Da(), enabled(), Er(), eu(), Fa(), Fl(), gi() (+26 more)
 
 ### Community 47 - "slice"
 Cohesion: 0.07
-Nodes (40): Ye(), Wa(), bn(), Ci(), ed(), fn(), fp(), Fs() (+32 more)
+Nodes (41): Ye(), bn(), Ci(), e(), ed(), fn(), fp(), Fs() (+33 more)
 
-### Community 48 - "recurringTransaction.service.ts"
-Cohesion: 0.12
-Nodes (22): RecurrenceFrequency, RecurringAmountMode, RecurringTransactionType, RecurringTransactionError, createRecurringTransactionService(), parseDate(), recurringTransactionService, resolveReminder() (+14 more)
+### Community 48 - "recurringTransaction.controller.ts"
+Cohesion: 0.09
+Nodes (27): mapCreateRequest(), mapUpdateRequest(), CreateRecurringTransactionDto, RecurrenceFrequency, RecurringAmountMode, RecurringTransactionType, UpdateRecurringTransactionDto, RecurringTransactionError (+19 more)
 
 ### Community 49 - "a"
-Cohesion: 0.09
-Nodes (9): a(), Ai(), Le(), re(), Ri(), Ti(), Va(), W() (+1 more)
+Cohesion: 0.08
+Nodes (10): a(), Ai(), es(), Le(), re(), Ri(), Ti(), Va() (+2 more)
 
 ### Community 50 - "ro"
 Cohesion: 0.09
-Nodes (38): addItem(), ae(), At(), bc(), de(), Et(), Fe(), getArgumentName() (+30 more)
+Nodes (38): addItem(), At(), bc(), es(), Et(), Fe(), findField(), getAllQueryCallbacks() (+30 more)
 
 ### Community 51 - "jo"
-Cohesion: 0.11
-Nodes (34): ac(), addItem(), au(), be(), bn(), cc(), ec(), findField() (+26 more)
+Cohesion: 0.09
+Nodes (39): ac(), au(), be(), bn(), cc(), findField(), Ft(), getAllComputedFields() (+31 more)
 
 ### Community 52 - "transaction"
-Cohesion: 0.08
-Nodes (41): Be(), buildQueryError(), consumeError(), convertProtocolErrorsToClientError(), Cu(), deref(), dispatchBatches(), dt() (+33 more)
+Cohesion: 0.09
+Nodes (38): Be(), buildQueryError(), consumeError(), convertProtocolErrorsToClientError(), Cu(), deref(), dispatchBatches(), dt() (+30 more)
 
 ### Community 53 - "savingGoal.controller.ts"
-Cohesion: 0.09
-Nodes (24): mapCreateRequest(), mapProgressRequest(), mapUpdateRequest(), CreateSavingGoalDto, SavingGoalStatus, UpdateSavingGoalDto, UpdateSavingGoalProgressDto, SavingGoalError (+16 more)
+Cohesion: 0.08
+Nodes (26): mapCreateRequest(), mapProgressRequest(), mapUpdateRequest(), SavingGoalController, serialize(), CreateSavingGoalDto, SavingGoalStatus, UpdateSavingGoalDto (+18 more)
 
 ### Community 54 - "r"
-Cohesion: 0.06
-Nodes (42): Ba(), bi(), cc(), cn(), cr(), Da(), de(), ea() (+34 more)
+Cohesion: 0.07
+Nodes (43): Ba(), bi(), cc(), cn(), cr(), Da(), de(), ea() (+35 more)
 
 ### Community 55 - "Sa"
-Cohesion: 0.12
-Nodes (33): Ea(), em(), eo(), Et(), eu(), findField(), getArgumentName(), getArgumentPath() (+25 more)
+Cohesion: 0.09
+Nodes (41): ar(), Ea(), em(), eo(), Et(), findField(), ga(), getAllComputedFields() (+33 more)
 
 ### Community 56 - "slice"
-Cohesion: 0.17
-Nodes (20): C(), v(), A(), Ae(), Ai(), da(), Et(), hu() (+12 more)
+Cohesion: 0.09
+Nodes (34): a(), C(), R(), v(), A(), aa(), Ae(), Ai() (+26 more)
 
 ### Community 57 - "assistant/index.ts"
-Cohesion: 0.04
-Nodes (57): assertValidTokenDigest(), ClarificationRequestClient, ClarificationService, digestToken(), generateToken(), KNOWN_ENTITY_TYPES, terminalizeOrReportActual(), terminalStatusError() (+49 more)
+Cohesion: 0.06
+Nodes (52): AssistantApplicationResult, ClarificationRequestClient, ClarificationService, digestToken(), generateToken(), KNOWN_ENTITY_TYPES, TokenPair, tokenToDigest() (+44 more)
 
 ### Community 58 - "r"
 Cohesion: 0.07
-Nodes (41): a(), R(), Cs(), $l(), an(), at(), au(), Bi() (+33 more)
+Nodes (41): Cs(), $l(), an(), at(), au(), e(), getAllClientExtensions(), getAllModelExtensions() (+33 more)
 
 ### Community 59 - "co"
-Cohesion: 0.08
-Nodes (39): jl(), aa(), br(), Ce(), co(), ds(), enabled(), Fe() (+31 more)
+Cohesion: 0.10
+Nodes (33): jl(), br(), Ce(), co(), ds(), fs(), ft(), getArgumentName() (+25 more)
 
 ### Community 61 - "toString"
 Cohesion: 0.06
@@ -624,41 +622,41 @@ Nodes (38): {
   skip
 }, Prisma, PrismaClient, bl(), Bu(), $c(), Di(), el() (+30 more)
 
-### Community 62 - "interpretNode"
+### Community 62 - "T"
 Cohesion: 0.07
-Nodes (41): ap(), Bd(), bs(), cp(), Dd(), ds(), Ei(), Ep() (+33 more)
+Nodes (43): ap(), cp(), Dd(), ds(), ee(), Ei(), Ep(), Fd() (+35 more)
 
 ### Community 63 - "wo"
-Cohesion: 0.14
-Nodes (28): bc(), be(), dc(), fc(), findField(), gc(), getArgumentName(), getArgumentPath() (+20 more)
+Cohesion: 0.12
+Nodes (32): as(), bc(), be(), dc(), Ic(), fc(), findField(), gc() (+24 more)
 
 ### Community 64 - ".includes"
-Cohesion: 0.10
-Nodes (24): Aa(), ar(), Ca(), Et(), g(), getURLAndAPIKey(), I(), Ia() (+16 more)
+Cohesion: 0.08
+Nodes (30): Aa(), ai(), ap(), ar(), Ca(), d(), Et(), g() (+22 more)
 
 ### Community 65 - "Ca"
-Cohesion: 0.14
-Nodes (20): Aa(), Ca(), Ce(), ci(), Da(), di(), Ei(), en() (+12 more)
+Cohesion: 0.16
+Nodes (18): Aa(), as(), Ca(), Ce(), ci(), di(), Ei(), en() (+10 more)
 
 ### Community 66 - "ys"
-Cohesion: 0.11
-Nodes (36): da(), de(), dt(), ep(), findField(), Gc(), getAllComputedFields(), getArgumentName() (+28 more)
+Cohesion: 0.14
+Nodes (29): da(), de(), ep(), findField(), Gc(), getArgumentName(), getArgumentPath(), getComputedFields() (+21 more)
 
 ### Community 67 - "a"
 Cohesion: 0.10
 Nodes (7): a(), bi(), Ei(), Le(), re(), W(), xi()
 
 ### Community 68 - "r"
-Cohesion: 0.07
-Nodes (46): Jm(), _a(), as(), Bt(), cancelAllTransactions(), Cl(), cm(), commitTransaction() (+38 more)
+Cohesion: 0.06
+Nodes (49): Jm(), Ae(), ap(), as(), Bt(), cancelAllTransactions(), Cl(), commitTransaction() (+41 more)
 
 ### Community 69 - "e"
 Cohesion: 0.13
 Nodes (22): bo(), destroy(), digest(), digestInto(), e(), finish(), getAllComputedFields(), getOrCreate() (+14 more)
 
-### Community 70 - "constructor"
-Cohesion: 0.06
-Nodes (42): applyPendingMigrations(), buildQueryError(), connect(), constructor(), consumeError(), deref(), dispatchBatches(), ea() (+34 more)
+### Community 70 - "fs"
+Cohesion: 0.07
+Nodes (31): bp(), bs(), ds(), fs(), ge(), getAllClientExtensions(), getAllComputedFields(), getAllModelExtensions() (+23 more)
 
 ### Community 71 - "write"
 Cohesion: 0.13
@@ -672,53 +670,53 @@ Nodes (3): ce(), H(), m
 Cohesion: 0.14
 Nodes (18): buildApp(), { findUnique }, UNIFORM, buildApp(), { findUnique }, buildApp(), applyEnv(), key (+10 more)
 
-### Community 74 - "toString"
-Cohesion: 0.09
-Nodes (33): zl(), addField(), addItem(), bn(), De(), dr(), es(), getAllBatchQueryCallbacks() (+25 more)
+### Community 74 - "Vo"
+Cohesion: 0.12
+Nodes (27): zl(), constructor(), De(), dr(), ea(), getArgumentName(), getArgumentPath(), getGlobalOmit() (+19 more)
 
 ### Community 75 - "r"
 Cohesion: 0.11
-Nodes (24): ap(), bc(), Bt(), _c(), fo(), getAllClientExtensions(), getOrCreate(), gr() (+16 more)
+Nodes (24): addItem(), bc(), Bt(), _c(), dr(), ec(), fo(), getAllClientExtensions() (+16 more)
 
 ### Community 76 - "write"
-Cohesion: 0.14
-Nodes (29): addMarginSymbol(), afterNextNewline(), compare(), copy(), getCurrentLineLength(), getPrintWidth(), indent(), J() (+21 more)
+Cohesion: 0.10
+Nodes (36): addMarginSymbol(), afterNextNewline(), compare(), copy(), eo(), equals(), getCurrentLineLength(), getPrintWidth() (+28 more)
 
-### Community 77 - "installment.controller.ts"
-Cohesion: 0.19
-Nodes (16): getInstallments(), getPaylaterRates(), payInstallment(), PAYLATER_RATES, serializeInstallment(), serializePayment(), mapSummaryQuery(), QueryValue (+8 more)
+### Community 77 - "logger.ts"
+Cohesion: 0.17
+Nodes (17): safeEqual(), telegramWebhook(), verifyTelegramWebhookSecret(), telegramWebhookLimiter, telegramRouter, AssistantLogEvent, emit(), IdempotencyOutcome (+9 more)
 
 ### Community 78 - "constructor"
-Cohesion: 0.11
-Nodes (21): constructor(), dr(), e(), es(), get(), getAllBatchQueryCallbacks(), _getNamespace(), hn() (+13 more)
+Cohesion: 0.09
+Nodes (23): constructor(), dispatchBatches(), e(), En(), getAllBatchQueryCallbacks(), _getNamespace(), handleAndLogRequestError(), handleRequestError() (+15 more)
 
-### Community 79 - "ha"
-Cohesion: 0.08
-Nodes (26): Bl(), ar(), bl(), Bo(), el(), ga(), getAllQueryCallbacks(), getGlobalOmit() (+18 more)
+### Community 79 - "el"
+Cohesion: 0.13
+Nodes (16): Bl(), bl(), Bo(), el(), eu(), getAllQueryCallbacks(), gl(), handleRequestError() (+8 more)
 
 ### Community 80 - "toString"
-Cohesion: 0.10
-Nodes (25): At, $c(), d(), Ee(), g(), getAllClientExtensions(), getAllModelExtensions(), gl() (+17 more)
+Cohesion: 0.09
+Nodes (28): addItem(), bo(), $c(), Ee(), Er(), getAllClientExtensions(), getAllComputedFields(), getAllModelExtensions() (+20 more)
 
 ### Community 81 - ".slice"
-Cohesion: 0.07
-Nodes (37): bo(), br(), cu(), di(), enabled(), Ep(), Er(), getGlobalOmit() (+29 more)
+Cohesion: 0.09
+Nodes (27): At, br(), cu(), d(), di(), enabled(), g(), He() (+19 more)
 
 ### Community 82 - "notification.service.ts"
-Cohesion: 0.10
-Nodes (21): serializeTransaction, NotificationError, createNotificationService(), notificationService, ConfirmReminderInput, ConfirmReminderResult, DecimalInput, ListNotificationsInput (+13 more)
+Cohesion: 0.13
+Nodes (17): NotificationError, createNotificationService(), notificationService, ConfirmReminderInput, ConfirmReminderResult, DecimalInput, ListNotificationsInput, ListNotificationsResult (+9 more)
 
 ### Community 83 - "What You Must Do When Invoked"
 Cohesion: 0.08
 Nodes (24): For /graphify add and --watch, For /graphify query, For the commit hook and native CLAUDE.md integration, For --update and --cluster-only, /graphify, Honesty Rules, Interpreter guard for subcommands, Part A - Structural extraction for code files (+16 more)
 
-### Community 84 - "xn"
-Cohesion: 0.12
-Nodes (19): ee(), es(), Fd(), getAllClientExtensions(), getAllModelExtensions(), getAllQueryCallbacks(), Go(), hr() (+11 more)
+### Community 84 - "hp"
+Cohesion: 0.28
+Nodes (9): la(), Rp(), Ds(), hp(), hu(), Is(), Qs(), st() (+1 more)
 
 ### Community 85 - "getTracingHelper"
-Cohesion: 0.11
-Nodes (20): au(), _d(), dispatchEngineSpans(), #f(), fl(), generate(), getActiveContext(), getTraceParent() (+12 more)
+Cohesion: 0.10
+Nodes (21): Od(), au(), _d(), dispatchEngineSpans(), #f(), fl(), generate(), getActiveContext() (+13 more)
 
 ### Community 86 - "dependencies"
 Cohesion: 0.09
@@ -728,21 +726,21 @@ Nodes (23): cors, dotenv, express, express-rate-limit, @google/genai, helmet, jo
 Cohesion: 0.09
 Nodes (21): Archive, Assistant Conversations API, Cancel, Clarification selection and cancellation, Conversation state and recovery, Execute, Financial transaction drafts, List and history (+13 more)
 
-### Community 88 - "Fr"
-Cohesion: 0.11
-Nodes (18): ai(), d(), dispatchBatches(), En(), Fr(), h(), handleAndLogRequestError(), handleRequestError() (+10 more)
+### Community 88 - "durableProcessing.integration.test.ts"
+Cohesion: 0.10
+Nodes (21): cleanupChannelRecords(), ChannelWorkerConfig, Environment, loadChannelWorkerConfig(), ClaimedDelivery, claimInboundJobs(), ClaimOptions, claimOutboundDeliveries() (+13 more)
 
-### Community 89 - "authContext.ts"
-Cohesion: 0.17
-Nodes (10): UserController, userSelect, AuthContext, WithAuth, CategoryPrismaClient, categoryService, createCategoryService(), DEFAULT_CATEGORIES (+2 more)
+### Community 89 - "getTracingHelper"
+Cohesion: 0.29
+Nodes (8): dispatchEngineSpans(), #f(), getActiveContext(), getTraceParent(), getTracingHelper(), isEnabled(), runInChildSpan(), xr()
 
 ### Community 90 - "compilerOptions"
 Cohesion: 0.09
 Nodes (21): dist, ES2020, node_modules, src/**/*.ts, compilerOptions, baseUrl, declaration, esModuleInterop (+13 more)
 
-### Community 91 - "dashboard-query.service.ts"
-Cohesion: 0.24
-Nodes (7): createDashboardQueryService(), dashboardQueryService, DashboardQueryPrismaClient, DashboardSummaryResult, GetDashboardSummaryInput, MIXED, svc()
+### Community 91 - "authContext.ts"
+Cohesion: 0.13
+Nodes (14): getDashboardSummary(), serializeDashboardSummary(), AuthContext, WithAuth, dashboardRouter, createDashboardQueryService(), dashboardQueryService, DashboardQueryPrismaClient (+6 more)
 
 ### Community 92 - "requestInternal"
 Cohesion: 0.19
@@ -756,29 +754,29 @@ Nodes (21): devDependencies, prisma, supertest, ts-node-dev, @types/cors, @types
 Cohesion: 0.42
 Nodes (9): addBillingMonth(), assertBillingDay(), BillingCycleInput, calculateFirstDueDate(), CalendarDate, clampDay(), formatDate(), nextMonthlyOccurrence() (+1 more)
 
-### Community 95 - "t"
-Cohesion: 0.09
-Nodes (34): Cn(), am(), au(), ba(), Ei(), Fr(), getAllClientExtensions(), getAllComputedFields() (+26 more)
+### Community 95 - "ja"
+Cohesion: 0.17
+Nodes (18): am(), Fr(), getAllClientExtensions(), getAllModelExtensions(), he(), ja(), Lm(), lr() (+10 more)
 
 ### Community 96 - "$transaction"
 Cohesion: 0.11
 Nodes (7): AdapterInfo, DriverAdapterFactory, Queryable, SqlDriverAdapter, SqlDriverAdapterFactory, SqlQueryable, $transaction()
 
 ### Community 97 - "ai"
-Cohesion: 0.17
-Nodes (20): ai(), ec(), hr(), ic(), Jo(), Jt(), nc(), otherwise() (+12 more)
+Cohesion: 0.18
+Nodes (19): ai(), ec(), hr(), ic(), Jt(), nc(), oc(), otherwise() (+11 more)
 
-### Community 98 - "concat"
-Cohesion: 0.17
-Nodes (12): concat(), eo(), equals(), Er(), ir(), Ne(), renderAllMessages(), Sr() (+4 more)
+### Community 98 - "no"
+Cohesion: 0.11
+Nodes (18): Vl(), ao(), eu(), fn(), getAllComputedFields(), getAllQueryCallbacks(), isEmpty(), it() (+10 more)
 
-### Community 125 - "get"
-Cohesion: 0.10
-Nodes (25): aa(), as(), cs(), Do(), get(), Id(), il(), Io() (+17 more)
+### Community 125 - "interpretNode"
+Cohesion: 0.11
+Nodes (23): as(), Bd(), bs(), cs(), getTransaction(), Ia(), Id(), interpretNode() (+15 more)
 
-### Community 126 - "EntityResolverRegistry"
-Cohesion: 0.21
-Nodes (4): compareText(), EntityResolverRegistry, EntityResolver, isEntityType()
+### Community 126 - "constructor"
+Cohesion: 0.12
+Nodes (17): bu(), constructor(), deserialize(), du(), execute(), forSql(), getConnectionInfo(), im() (+9 more)
 
 ### Community 127 - "Git Workflow — Pocket Mint Backend"
 Cohesion: 0.12
@@ -793,12 +791,12 @@ Cohesion: 0.22
 Nodes (17): addMarginSymbol(), afterNextNewline(), getCurrentLineLength(), getPrintWidth(), indent(), lu(), newLine(), setColor() (+9 more)
 
 ### Community 130 - "constructor"
-Cohesion: 0.09
-Nodes (25): al(), bp(), constructor(), dispatchBatches(), e(), getAllBatchQueryCallbacks(), _getNamespace(), h() (+17 more)
+Cohesion: 0.08
+Nodes (29): al(), bp(), constructor(), dispatchBatches(), e(), Ep(), getAllBatchQueryCallbacks(), getGlobalOmit() (+21 more)
 
 ### Community 131 - "write"
-Cohesion: 0.14
-Nodes (24): addMarginSymbol(), afterNextNewline(), getCurrentLineLength(), getPrintWidth(), indent(), indentedCurrentLine(), io(), newLine() (+16 more)
+Cohesion: 0.11
+Nodes (28): addMarginSymbol(), afterNextNewline(), Fr(), getCurrentLineLength(), getPrintWidth(), h(), indent(), indentedCurrentLine() (+20 more)
 
 ### Community 132 - "write"
 Cohesion: 0.22
@@ -809,8 +807,8 @@ Cohesion: 0.12
 Nodes (7): AdapterInfo, DriverAdapterFactory, Queryable, SqlDriverAdapter, SqlDriverAdapterFactory, SqlQueryable, $transaction()
 
 ### Community 134 - ".includes"
-Cohesion: 0.18
-Nodes (12): Ct(), gi(), gp(), h(), hi(), isPreviewFeatureOn(), isRawAction(), rt() (+4 more)
+Cohesion: 0.11
+Nodes (20): Ct(), ep(), getLocation(), gi(), gp(), hi(), isPreviewFeatureOn(), isRawAction() (+12 more)
 
 ### Community 135 - "Backend deployment runbook — JWT-only auth (Sprint 3I)"
 Cohesion: 0.12
@@ -824,21 +822,21 @@ Nodes (4): Prisma__ChannelAssistantOperationClient, Prisma__ChannelOutboundDeliv
 Cohesion: 0.24
 Nodes (16): addMarginSymbol(), afterNextNewline(), getCurrentLineLength(), getPrintWidth(), indent(), newLine(), setColor(), underline() (+8 more)
 
-### Community 138 - "ln"
+### Community 138 - "pi"
 Cohesion: 0.16
-Nodes (16): an(), ba(), de(), di(), Ea(), fi(), hc(), ln() (+8 more)
+Nodes (15): an(), ba(), de(), di(), Ea(), fi(), hc(), mi() (+7 more)
 
 ### Community 139 - "write"
 Cohesion: 0.24
 Nodes (16): addMarginSymbol(), afterNextNewline(), getCurrentLineLength(), getPrintWidth(), indent(), newLine(), setColor(), underline() (+8 more)
 
-### Community 140 - "installment-query.service.ts"
-Cohesion: 0.18
-Nodes (12): InstallmentError, createInstallmentQueryService(), installmentQueryService, VALID_STATUSES, InstallmentListItem, InstallmentQueryPrismaClient, ListInstallmentsInput, D() (+4 more)
+### Community 140 - "installment.controller.ts"
+Cohesion: 0.12
+Nodes (22): getInstallments(), getPaylaterRates(), payInstallment(), PAYLATER_RATES, serializeInstallment(), serializePayment(), InstallmentError, createInstallmentQueryService() (+14 more)
 
 ### Community 141 - "St"
-Cohesion: 0.22
-Nodes (11): Bd(), cu(), equals(), Ks(), lu(), qd(), ri(), St() (+3 more)
+Cohesion: 0.18
+Nodes (14): Bd(), cu(), Hd(), jd(), ki(), Ks(), kt(), lu() (+6 more)
 
 ### Community 142 - "Assistant Core — Pocket Mint Backend"
 Cohesion: 0.13
@@ -849,12 +847,12 @@ Cohesion: 0.22
 Nodes (15): convertProtocolErrorsToClientError(), ep(), handleError(), je(), json(), metrics(), prometheus(), propagateResponseExtensions() (+7 more)
 
 ### Community 144 - "digest"
-Cohesion: 0.21
-Nodes (13): cd(), destroy(), digest(), digestInto(), finish(), keccak(), ld(), pd() (+5 more)
+Cohesion: 0.17
+Nodes (15): cd(), destroy(), digest(), digestInto(), finish(), keccak(), ld(), pd() (+7 more)
 
 ### Community 145 - "concat"
 Cohesion: 0.13
-Nodes (21): bs(), concat(), ei(), fp(), Fs(), getAllClientExtensions(), getAllModelExtensions(), getAllQueryCallbacks() (+13 more)
+Nodes (20): bp(), concat(), ei(), fp(), getAllClientExtensions(), getAllModelExtensions(), ie(), Ke() (+12 more)
 
 ### Community 146 - "Financial Logic — Pocket Mint Backend"
 Cohesion: 0.14
@@ -864,9 +862,9 @@ Nodes (13): 0. Assistant-Originated Transactions, 14. Operations That Must Be At
 Cohesion: 0.14
 Nodes (14): Dependency injection, No `isDefault` / default-wallet behavior, No `$transaction` here — on purpose, No wallet-detail endpoint, Project status, Serialization boundary, Typed errors, Wallet Command & Query Service Architecture (Sprints 3C–3D) (+6 more)
 
-### Community 148 - "envelope.ts"
-Cohesion: 0.33
-Nodes (6): normalizeTelegramUpdate(), isRecord(), parseTelegramCallbackQuery(), parseTelegramUpdate(), TelegramPrivateCallbackQuery, TelegramPrivateTextMessage
+### Community 148 - "telegram.service.ts"
+Cohesion: 0.13
+Nodes (14): createInboundJob(), InboundChannelMessage, OutboundChannelMessage, normalizeTelegramUpdate(), isRecord(), parseTelegramCallbackQuery(), parseTelegramUpdate(), TelegramPrivateCallbackQuery (+6 more)
 
 ### Community 149 - "Deployment & Operations"
 Cohesion: 0.15
@@ -876,9 +874,9 @@ Nodes (12): CI/CD, Common Mistakes, Cost-Conscious Defaults (<~10 users), Deploy
 Cohesion: 0.15
 Nodes (13): Auth middleware contract, Canonical authenticated request context, Defense-in-depth change (the one identified hardening), Deliberate non-goals (deferred, with rationale), Files, HTTP & Application Boundary Architecture (Sprint 3F), Operational error forwarding (`src/http/forwardError.ts`), Query parsing (`src/http/queryParsers.ts`) (+5 more)
 
-### Community 152 - "get"
-Cohesion: 0.17
-Nodes (13): ca(), get(), getURLAndAPIKey(), jr(), Kl(), lt(), ro(), sm() (+5 more)
+### Community 152 - "inbound.worker.ts"
+Cohesion: 0.22
+Nodes (16): beginAssistantOperation(), beginCallbackOperation(), CallbackOperationBeginResult, channelOperationId(), completeAssistantOperation(), completeCallbackOperation(), OperationBeginResult, ensureKeyboardCleanupDelivery() (+8 more)
 
 ### Community 153 - "UI System — Pocket Mint"
 Cohesion: 0.17
@@ -888,13 +886,13 @@ Nodes (11): Anti-patterns — NEVER do these, Card Component Rules, Dashboard La
 Cohesion: 0.17
 Nodes (12): ae(), fe(), ft(), g(), ge(), ke(), le(), ot() (+4 more)
 
-### Community 157 - "constructor"
-Cohesion: 0.18
-Nodes (13): Bo(), constructor(), getAllBatchQueryCallbacks(), _getNamespace(), Kn(), ko(), mapQueryEngineResult(), pa() (+5 more)
+### Community 157 - "telegram-channel.integration.test.ts"
+Cohesion: 0.14
+Nodes (13): ChannelConnectionSummary, createChannelConnectionService(), createChannelLinkTokenService(), ChannelProviderName, createChannelLinkControllers(), createTelegramService(), fakeTelegramClient(), ingestCallback() (+5 more)
 
 ### Community 160 - "r"
-Cohesion: 0.08
-Nodes (32): ai(), Ba(), Do(), _e(), enabled(), getOrCreate(), ho(), Hs() (+24 more)
+Cohesion: 0.07
+Nodes (35): addItem(), bo(), Da(), Do(), Fa(), Ga(), get(), getOrCreate() (+27 more)
 
 ### Community 161 - "Dashboard Query Service Architecture (Sprint 3E)"
 Cohesion: 0.18
@@ -918,11 +916,11 @@ Nodes (11): scripts, build, db:backup, db:restore, db:verify, dev, prisma:genera
 
 ### Community 166 - "exports"
 Cohesion: 0.18
-Nodes (11): default, exports, ./client, ./index, ./package.json, ./sql, default, import (+3 more)
+Nodes (11): default, exports, ./client, ./index-browser, ./package.json, ./sql, default, import (+3 more)
 
-### Community 168 - "constructor"
-Cohesion: 0.07
-Nodes (32): bc(), bu(), constructor(), deserialize(), dispatchBatches(), du(), execute(), Fi() (+24 more)
+### Community 168 - "#i"
+Cohesion: 0.12
+Nodes (20): am(), bc(), dispatchBatches(), Dp(), Fi(), get(), getPlaceholderValues(), #i() (+12 more)
 
 ### Community 170 - "Et"
 Cohesion: 0.24
@@ -1009,17 +1007,17 @@ Nodes (9): Backup & restore, Build & deploy, Environment variables, Local setup,
 Cohesion: 0.33
 Nodes (9): a(), at(), dt(), gt(), lt(), st(), x(), xe() (+1 more)
 
-### Community 192 - "toString"
-Cohesion: 0.07
-Nodes (36): Zc(), an(), ap(), bf(), cl(), fl(), getCurrentBinaryTarget(), Gt() (+28 more)
+### Community 192 - "t"
+Cohesion: 0.08
+Nodes (33): Cn(), Zc(), Af(), ap(), au(), ba(), dp(), Ei() (+25 more)
 
 ### Community 193 - "NullTypesEnumValue"
 Cohesion: 0.22
 Nodes (5): AnyNull, DbNull, JsonNull, NullTypesEnumValue, ObjectEnumValue
 
 ### Community 195 - "from"
-Cohesion: 0.10
-Nodes (22): alloc(), allocUnsafe(), allocUnsafeSlow(), byteLength(), construct(), es(), fill(), from() (+14 more)
+Cohesion: 0.28
+Nodes (9): alloc(), allocUnsafe(), allocUnsafeSlow(), construct(), fill(), from(), ho(), zn() (+1 more)
 
 ### Community 196 - "Database backup & restore runbook (PM-STAB-010C)"
 Cohesion: 0.25
@@ -1041,9 +1039,9 @@ Nodes (8): ./runtime/client, default, require, default, import, node, require, t
 Cohesion: 0.25
 Nodes (8): imports, #main-entry-point, #wasm-compiler-loader, default, default, edge-light, worker, workerd
 
-### Community 205 - "candidate.ts"
-Cohesion: 0.27
-Nodes (7): boundedNonEmpty(), compareText(), createEntityCandidate(), CreateEntityCandidateInput, revalidateEntityCandidate(), safeDisplay(), EntityResolutionError
+### Community 205 - "rupiah-amount-recovery.ts"
+Cohesion: 0.18
+Nodes (14): recoverMissingTransactionFields(), Candidate, canonicalIfValid(), containsNumericOutsideCandidates(), hasNegativeSignBefore(), normalizeIntegerText(), normalizeSuffixText(), parseSupportedToken() (+6 more)
 
 ### Community 206 - "index-browser.d.ts"
 Cohesion: 0.25
@@ -1138,9 +1136,9 @@ Nodes (5): config, Prisma, PrismaClient, {
   createParam,
 }, empty()
 
-### Community 237 - "go"
-Cohesion: 0.17
-Nodes (12): bo(), get(), go(), highlight(), ic(), jc(), Nt(), qn() (+4 more)
+### Community 237 - "client.ts"
+Cohesion: 0.16
+Nodes (9): CallbackActionResult, InteractionButton, InteractionKeyboard, TelegramCallOutcome, TelegramClientDeps, TelegramInlineKeyboard, TelegramSendOutcome, renderInlineKeyboard() (+1 more)
 
 ### Community 238 - "wasm.js"
 Cohesion: 0.33
@@ -1192,9 +1190,9 @@ Nodes (5): default, import, require, types, ./edge
 Cohesion: 0.40
 Nodes (5): ./extension, default, import, require, types
 
-### Community 248 - "entity-resolution.fixture.ts"
-Cohesion: 0.31
-Nodes (6): toPublicEntityResolutionResult(), CandidateFixture, constraints(), createFixtureResolver(), resolver(), service()
+### Community 248 - "./index"
+Cohesion: 0.40
+Nodes (5): ./index, default, import, require, types
 
 ### Community 249 - "./runtime/index-browser"
 Cohesion: 0.40
@@ -1208,9 +1206,9 @@ Nodes (5): ./runtime/wasm-compiler-edge, default, import, require, types
 Cohesion: 0.40
 Nodes (5): be(), ee(), l(), q(), se()
 
-### Community 252 - "E"
-Cohesion: 0.40
-Nodes (5): E(), it(), W(), y(), ze()
+### Community 252 - "S"
+Cohesion: 0.33
+Nodes (6): E(), it(), S, W(), y(), ze()
 
 ### Community 255 - "10. Analytics Rules"
 Cohesion: 0.50
@@ -1284,42 +1282,34 @@ Nodes (3): 8. Transaction Update and Delete, Delete rules, Update rules
 Cohesion: 0.25
 Nodes (9): Hc(), He(), lo(), $o(), qo(), Vo(), wc(), yr() (+1 more)
 
-### Community 338 - "reference.ts"
-Cohesion: 0.31
-Nodes (8): ALLOWED_KEYS, isPlainObject(), ParsedReference, parseEntityReferenceInput(), safeMetadata(), ENTITY_REFERENCE_SOURCES, EntityReferenceInput, NormalizedEntityReference
+### Community 338 - "dn"
+Cohesion: 0.22
+Nodes (9): dn(), Er(), handleAndLogRequestError(), handleRequestError(), Ie(), Rs(), sanitizeMessage(), Ur() (+1 more)
 
 ### Community 339 - "transactionController.test.ts"
 Cohesion: 0.38
 Nodes (4): aggregate(), balanceWrites(), h, netFor()
 
-### Community 340 - "rp"
-Cohesion: 0.22
-Nodes (9): as(), ft(), ls(), rp(), ss(), us(), zr(), Xc() (+1 more)
-
-### Community 341 - "merchant-resolver.integration.test.ts"
-Cohesion: 0.33
-Nodes (4): MERCHANT_TRANSACTION_CREATE_CONSTRAINTS, resolve(), service(), users
-
-### Community 342 - "./index-browser"
+### Community 340 - "notificationController.test.ts"
 Cohesion: 0.40
-Nodes (5): ./index-browser, default, import, require, types
+Nodes (3): h, notification, pagination
 
 ## Knowledge Gaps
-- **4667 isolated node(s):** `name`, `version`, `private`, `main`, `node` (+4662 more)
+- **4666 isolated node(s):** `name`, `version`, `private`, `main`, `node` (+4661 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **117 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `v()` connect `slice` to `L`, `wasm-engine-edge.js`, `runtime/client.js`?**
-  _High betweenness centrality (0.332) - this node is a cross-community bridge._
+- **Why does `v()` connect `slice` to `L`, `wasm-engine-edge.js`, `runtime/client.js`, `no`?**
+  _High betweenness centrality (0.334) - this node is a cross-community bridge._
 - **Why does `collectAllKeys()` connect `slice` to `telegram-callback.integration.test.ts`?**
   _High betweenness centrality (0.288) - this node is a cross-community bridge._
 - **Why does `Decimal` connect `Decimal` to `config/index.ts`, `library.d.ts`?**
   _High betweenness centrality (0.091) - this node is a cross-community bridge._
 - **What connects `name`, `version`, `private` to the rest of the system?**
-  _4667 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _4666 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `index.d.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.0006144393241167435 - nodes in this community are weakly interconnected._
 - **Should `library.d.ts` be split into smaller, more focused modules?**

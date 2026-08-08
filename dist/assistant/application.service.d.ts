@@ -34,6 +34,7 @@ export declare function createAssistantApplicationService(deps: {
     submitGuidedClarification: (userId: string, correlationId: string, fields: Record<string, unknown>, conversationId: string, clarificationId: string) => Promise<AssistantApplicationResult>;
     cancelClarification: (userId: string, correlationId: string, clarificationId: string, conversationId: string) => Promise<AssistantApplicationResult>;
     getAssistantState: (userId: string, conversationId: string) => Promise<import("./clarification.types").AssistantStateProjection>;
+    inferCategoryId: (userId: string, type: "INCOME" | "EXPENSE", hint: string | undefined, transaction?: TxClient) => Promise<string | undefined>;
 };
 export type AssistantApplicationService = ReturnType<typeof createAssistantApplicationService>;
 export {};

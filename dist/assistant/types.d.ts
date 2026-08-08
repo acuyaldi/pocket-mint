@@ -94,7 +94,8 @@ export interface AssistantCanonicalRequest {
 /** Successful execution — rendered answer ready for the client. */
 export interface AssistantSuccessResponse {
     readonly status: 'success';
-    readonly renderedText: string;
+    /** Chat-bubble text for analytics responses. Omitted for draft creation — the Transaction Review workspace replaces it. */
+    readonly renderedText?: string;
     /** Safe structured data the client may render independently. */
     readonly data: unknown;
     readonly correlationId: string;

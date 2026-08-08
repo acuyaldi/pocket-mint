@@ -189,14 +189,13 @@ async function processCallback(deps, job, correlationId) {
                 return terminal('restart_required');
             const idempotencyKey = `channel:telegram:${found.id}`;
             const result = await deps.providerRuntime.confirmDraft(userId, found.financialDraftId, idempotencyKey, correlationId);
-            return { terminalStatus: result.status.toLowerCase(), replyText: result.renderedText, clearOriginalKeyboard: true };
+            return { terminalStatus: result.status.toLowerCase(), replyText: 'Transaction confirmed.', clearOriginalKeyboard: true };
         }
         // DRAFT_CANCEL
         if (!found.financialDraftId)
             return terminal('restart_required');
         const result = await deps.providerRuntime.cancelDraft(userId, found.financialDraftId, correlationId);
-        const cancelReply = 'renderedText' in result ? result.renderedText : `Draft ${result.draftId} has expired.`;
-        return { terminalStatus: result.status.toLowerCase(), replyText: cancelReply, clearOriginalKeyboard: true };
+        return { terminalStatus: result.status.toLowerCase(), replyText: 'Draft cancelled.', clearOriginalKeyboard: true };
     }
     catch (error) {
         const status = error instanceof errors_1.AssistantError ? mapAssistantErrorToStatus(error) : 'failed';

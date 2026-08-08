@@ -6,7 +6,32 @@ type DraftReadyTransactionInput = TransactionCreateInput & {
     categoryId: string;
     date: string;
 };
-export declare function createAssistantFinancialDraftService(db: PrismaClient, transactions: TransactionService, clock?: () => Date): {
+/** Fields the user may override when confirming a draft. All optional — missing fields use the draft's original values. */
+export interface DraftConfirmOverride {
+    amount?: number;
+    walletId?: string;
+    categoryId?: string;
+    description?: string;
+    /** YYYY-MM-DD in the user's reporting timezone. */
+    date?: string;
+}
+/**
+ * Row shape needed by `confirm()` to merge overrides — a subset of the full
+ * `AssistantFinancialDraft` row.
+ */
+export interface DraftRowForValidation {
+    transactionType: string;
+    amount: Prisma.Decimal;
+    walletId: string;
+    categoryId: string;
+    transactionDate: Date;
+    description: string | null;
+}
+export declare function createAssistantFinancialDraftService(db: PrismaClient, transactions: TransactionService, deps?: (() => {
+    inferCategoryId?: (userId: string, type: 'INCOME' | 'EXPENSE', hint: string | undefined, tx?: Prisma.TransactionClient) => Promise<string | undefined>;
+}) | {
+    inferCategoryId?: (userId: string, type: 'INCOME' | 'EXPENSE', hint: string | undefined, tx?: Prisma.TransactionClient) => Promise<string | undefined>;
+}, clock?: () => Date): {
     prepare: (input: DraftReadyTransactionInput & {
         walletDisplayLabel?: string;
         merchantDisplayLabel?: string;
@@ -40,13 +65,12 @@ export declare function createAssistantFinancialDraftService(db: PrismaClient, t
         confirmationRequired: boolean;
         renderedText: string;
     }>;
-    confirm: (userId: string, draftId: string, keyValue: unknown, correlationId: string) => Promise<{
+    confirm: (userId: string, draftId: string, keyValue: unknown, correlationId: string, overrides?: DraftConfirmOverride) => Promise<{
         idempotencyOutcome: "replay";
         draftId: string;
         status: "COMMITTED";
         transactionId: string;
         conversationId: string;
-        renderedText: string;
         readonly error?: undefined;
         turnId?: undefined;
     } | {
@@ -55,12 +79,10 @@ export declare function createAssistantFinancialDraftService(db: PrismaClient, t
         transactionId: string;
         conversationId: string;
         turnId: string;
-        renderedText: string;
         idempotencyOutcome: "new";
         readonly error?: undefined;
     }>;
     cancel: (userId: string, draftId: string, correlationId: string) => Promise<{
-        renderedText: string;
         turnId?: string | undefined;
         draftId: string;
         status: "CANCELLED";

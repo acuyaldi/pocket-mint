@@ -1,6 +1,6 @@
 import { Prisma, type PrismaClient } from '../generated/prisma/client';
 import { reportingConfig } from '../config';
-import { parseBusinessDate } from '../domain/reportingTime';
+import { formatReportingDate, parseBusinessDate } from '../domain/reportingTime';
 import { TransactionError } from '../services/transaction.errors';
 import type { TransactionService } from '../services/transaction.service';
 import { AssistantError } from './errors';
@@ -119,18 +119,31 @@ export function createAssistantFinancialDraftService(
         const effectiveType = draft.transactionType as 'INCOME' | 'EXPENSE';
         const effectiveAmount = overrides?.amount !== undefined ? new Prisma.Decimal(overrides.amount) : draft.amount;
         const effectiveWalletId = overrides?.walletId ?? draft.walletId;
-        const effectiveDate = overrides?.date ?? draft.transactionDate.toISOString().slice(0, 10);
+        const effectiveDate = overrides?.date ?? formatReportingDate(draft.transactionDate, reportingConfig.timezone);
         const descriptionChanged = overrides?.description !== undefined && overrides.description !== (draft.description ?? undefined);
         const effectiveDescription = overrides?.description !== undefined ? overrides.description : (draft.description ?? undefined);
 
-        // ---- Re-run deterministic validation (same pipeline as prepare) ----
-        // 1. Validate wallet ownership
-        const wallet = await tx.wallet.findFirst({ where: { id: effectiveWalletId, userId }, select: { id: true } });
-        if (!wallet) throw AssistantError.draftNotFound();
+        // ---- Re-run deterministic validation only for caller-supplied overrides ----
+        // The draft's own walletId/categoryId were already validated at prepare()
+        // time; re-checking them here would intercept a since-changed domain state
+        // (e.g. a deleted or retyped category) with a generic 404 and skip the
+        // FAILED-lifecycle recording that transactions.createTransaction() below
+        // already produces for that case. Only an explicit override — untrusted
+        // input like prepare()'s — needs this ownership/type gate up front.
+        // 1. Validate wallet ownership (only when overridden)
+        if (overrides?.walletId !== undefined) {
+          const wallet = await tx.wallet.findFirst({ where: { id: effectiveWalletId, userId }, select: { id: true } });
+          if (!wallet) throw AssistantError.draftNotFound();
+        }
 
         // 2. Determine effective category (rule priority: explicit user choice > backend inference > draft proposal)
         let effectiveCategoryId: string;
         if (overrides?.categoryId !== undefined) {
+          const category = await tx.category.findFirst({
+            where: { id: overrides.categoryId, userId, type: effectiveType },
+            select: { id: true },
+          });
+          if (!category) throw AssistantError.draftNotFound();
           effectiveCategoryId = overrides.categoryId;
         } else if (descriptionChanged && resolvedDeps?.inferCategoryId) {
           const inferred = await resolvedDeps.inferCategoryId(userId, effectiveType, effectiveDescription, tx);
@@ -139,14 +152,7 @@ export function createAssistantFinancialDraftService(
           effectiveCategoryId = draft.categoryId;
         }
 
-        // 3. Validate category ownership + type match
-        const category = await tx.category.findFirst({
-          where: { id: effectiveCategoryId, userId, type: effectiveType },
-          select: { id: true },
-        });
-        if (!category) throw AssistantError.draftNotFound();
-
-        // 4. Parse and validate date
+        // 3. Parse and validate date
         const parsedDate = parseBusinessDate(effectiveDate, reportingConfig.timezone);
 
         // ---- Build canonical transaction input ----
