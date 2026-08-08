@@ -61,6 +61,46 @@ function selectClarificationRequest(body) {
     }
     return false;
 }
+/** Strictly parses the confirm-draft override payload. Returns `null` when the body shape is invalid (not an object, or contains unknown keys). */
+function readDraftConfirmOverride(body) {
+    // undefined body (no Content-Type or empty) → no overrides, use all draft values
+    if (body === undefined || body === '')
+        return undefined;
+    if (typeof body !== 'object' || body === null || Array.isArray(body))
+        return null;
+    const value = body;
+    const allowed = new Set(['amount', 'walletId', 'categoryId', 'description', 'date']);
+    const keys = Object.keys(value);
+    if (keys.some((k) => !allowed.has(k)))
+        return null;
+    const overrides = {};
+    if ('amount' in value) {
+        if (typeof value.amount !== 'number' || value.amount <= 0 || !Number.isFinite(value.amount))
+            return null;
+        overrides.amount = value.amount;
+    }
+    if ('walletId' in value) {
+        if (typeof value.walletId !== 'string' || !value.walletId.trim())
+            return null;
+        overrides.walletId = value.walletId;
+    }
+    if ('categoryId' in value) {
+        if (typeof value.categoryId !== 'string' || !value.categoryId.trim())
+            return null;
+        overrides.categoryId = value.categoryId;
+    }
+    if ('description' in value) {
+        if (typeof value.description !== 'string')
+            return null;
+        overrides.description = value.description;
+    }
+    if ('date' in value) {
+        if (typeof value.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value.date))
+            return null;
+        overrides.date = value.date;
+    }
+    return Object.keys(overrides).length > 0 ? overrides : undefined;
+}
 function createAssistantControllers(application, conversations, drafts, providerRuntime) {
     async function execute(req, res, next) {
         const elapsed = (0, logger_1.startTimer)();
@@ -204,7 +244,10 @@ function createAssistantControllers(application, conversations, drafts, provider
                 return (0, response_1.sendError)(res, 'Unauthorized', 401);
             if (!drafts)
                 return (0, response_1.sendError)(res, 'Assistant financial drafts unavailable', 503);
-            const { idempotencyOutcome, ...result } = await drafts.confirm(userId, routeId(req.params.draftId), req.header('Idempotency-Key'), req.correlationId);
+            const overrides = readDraftConfirmOverride(req.body);
+            if (overrides === null)
+                return (0, response_1.sendError)(res, 'Request body must be a JSON object with optional fields: amount, walletId, categoryId, description, date', 400, 'BAD_REQUEST');
+            const { idempotencyOutcome, ...result } = await drafts.confirm(userId, routeId(req.params.draftId), req.header('Idempotency-Key'), req.correlationId, overrides);
             (0, logger_1.logEvent)('info', {
                 event: 'assistant.draft.confirmed',
                 requestId: req.correlationId,

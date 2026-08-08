@@ -128,13 +128,12 @@ export declare const assistantFinancialDraftService: {
         confirmationRequired: boolean;
         renderedText: string;
     }>;
-    confirm: (userId: string, draftId: string, keyValue: unknown, correlationId: string) => Promise<{
+    confirm: (userId: string, draftId: string, keyValue: unknown, correlationId: string, overrides?: import("./financial-draft.service").DraftConfirmOverride) => Promise<{
         idempotencyOutcome: "replay";
         draftId: string;
         status: "COMMITTED";
         transactionId: string;
         conversationId: string;
-        renderedText: string;
         readonly error?: undefined;
         turnId?: undefined;
     } | {
@@ -143,12 +142,10 @@ export declare const assistantFinancialDraftService: {
         transactionId: string;
         conversationId: string;
         turnId: string;
-        renderedText: string;
         idempotencyOutcome: "new";
         readonly error?: undefined;
     }>;
     cancel: (userId: string, draftId: string, correlationId: string) => Promise<{
-        renderedText: string;
         turnId?: string | undefined;
         draftId: string;
         status: "CANCELLED";
@@ -179,6 +176,7 @@ export declare const assistantApplicationService: {
     submitGuidedClarification: (userId: string, correlationId: string, fields: Record<string, unknown>, conversationId: string, clarificationId: string) => Promise<import("./application.service").AssistantApplicationResult>;
     cancelClarification: (userId: string, correlationId: string, clarificationId: string, conversationId: string) => Promise<import("./application.service").AssistantApplicationResult>;
     getAssistantState: (userId: string, conversationId: string) => Promise<import("./clarification.types").AssistantStateProjection>;
+    inferCategoryId: (userId: string, type: "INCOME" | "EXPENSE", hint: string | undefined, transaction?: import("@/generated/prisma").Prisma.TransactionClient) => Promise<string | undefined>;
 };
 export declare const assistantProviderAuditService: import("./provider-runtime").AssistantProviderAudit;
 export declare const assistantProviderRuntime: {
@@ -191,7 +189,6 @@ export declare const assistantProviderRuntime: {
         status: "COMMITTED";
         transactionId: string;
         conversationId: string;
-        renderedText: string;
         readonly error?: undefined;
         turnId?: undefined;
     } | {
@@ -200,12 +197,10 @@ export declare const assistantProviderRuntime: {
         transactionId: string;
         conversationId: string;
         turnId: string;
-        renderedText: string;
         idempotencyOutcome: "new";
         readonly error?: undefined;
     }>;
     cancelDraft: (userId: string, draftId: string, correlationId: string) => Promise<{
-        renderedText: string;
         turnId?: string | undefined;
         draftId: string;
         status: "CANCELLED";

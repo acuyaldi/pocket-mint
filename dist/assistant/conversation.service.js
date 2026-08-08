@@ -71,10 +71,15 @@ function createAssistantConversationService(db) {
                     status: input.status, completedAt: now, durationMs: input.durationMs, safeErrorCode: input.safeErrorCode,
                     outputSummary: input.outputSummary,
                 } });
-            await tx.assistantMessage.create({ data: {
-                    conversationId: input.conversationId, turnId: input.turnId, role: 'ASSISTANT',
-                    source: input.assistantSource, content: input.assistantContent,
-                } });
+            // Skip the ASSISTANT message when content is empty — the Transaction Review
+            // workspace replaces chat bubbles for draft creation (Phase 2). All other
+            // callers pass non-empty content and are unaffected.
+            if (input.assistantContent.length > 0) {
+                await tx.assistantMessage.create({ data: {
+                        conversationId: input.conversationId, turnId: input.turnId, role: 'ASSISTANT',
+                        source: input.assistantSource, content: input.assistantContent,
+                    } });
+            }
             await tx.assistantTurn.update({ where: { id: input.turnId }, data: {
                     status: input.turnStatus, safeErrorCode: input.safeErrorCode, finishedAt: now,
                 } });

@@ -25,8 +25,19 @@ import {
 import type { ClarificationService } from './clarification.service';
 import type { CanonicalContext } from './clarification.types';
 import type { Prisma } from '../generated/prisma/client';
+import { reportingConfig } from '../config';
+import { formatReportingDate } from '../domain/reportingTime';
+import type { CategorySuggestion } from '../domain/categorization';
 
 type TxClient = Prisma.TransactionClient;
+
+/**
+ * Catch-all category seeded for every user in both directions by
+ * `DEFAULT_CATEGORIES` (`services/category.service.ts`). Used as the last
+ * deterministic step before giving up on a category, so a missing category
+ * never becomes a conversation turn.
+ */
+const FALLBACK_CATEGORY_NAME = 'Lainnya';
 
 export interface AssistantApplicationResult { response: AssistantCanonicalResponse; httpStatus: number }
 
@@ -38,6 +49,15 @@ export function createAssistantApplicationService(deps: {
   financialDrafts?: AssistantFinancialDraftService;
   entityResolution?: EntityResolutionService;
   clarification?: ClarificationService;
+  /** Deterministic keyword/merchant-mapping category suggestion (owner-scoped). */
+  categorization?: {
+    getSuggestions(
+      userId: string,
+      description: string,
+      type: 'INCOME' | 'EXPENSE',
+      options?: { transaction?: TxClient },
+    ): Promise<readonly CategorySuggestion[]>;
+  };
 }) {
   async function prepareProviderExecution(input: BuildAssistantExecutionContextInput) {
     if (!deps.contexts) throw new Error('Assistant context service is not configured');
@@ -160,52 +180,30 @@ export function createAssistantApplicationService(deps: {
     };
   }
 
-  async function guidedFieldsClarificationResponse(params: {
-    userId: string;
-    correlationId: string;
-    turn: { conversationId: string; turnId: string };
-    executionId: string;
-    startedAt: number;
-    transactionInput: TransactionCreateToolInput;
-    walletData?: ResolvedWallet;
-    merchantData?: ResolvedMerchant;
-    categoryData?: ResolvedCategory;
-    transaction?: TxClient;
-  }): Promise<AssistantApplicationResult> {
-    if (!deps.clarification) throw new Error('Clarification service is not configured');
-    const missingFields = missingTransactionFields(params.transactionInput, params.categoryData);
-    const prompt = missingFields.length === 1 && missingFields[0] === 'date'
-      ? 'Tanggal transaksi belum lengkap. Pilih atau isi tanggal transaksi.'
-      : 'Beberapa detail transaksi belum lengkap. Lengkapi kategori dan tanggal transaksi.';
-    const fields = missingFields.map((field) => field === 'date'
-      ? { field: 'date' as const, required: true as const, input: { type: 'date' as const } }
-      : { field: 'category' as const, required: true as const, input: { type: 'text' as const, placeholder: 'Nama kategori' } });
-    const projection = await deps.clarification.createGuidedFields({
-      userId: params.userId,
-      conversationId: params.turn.conversationId,
-      turnId: params.turn.turnId,
-      executionId: params.executionId,
-      entityType: 'transaction_fields',
-      trustedContext: buildCanonicalContext(params.transactionInput, params.walletData, params.merchantData, params.categoryData),
-      prompt,
-      fields,
-    }, ...(params.transaction ? [{ transaction: params.transaction }] as const : []));
-    await deps.conversations.finalize({
-      executionId: params.executionId, ...params.turn, status: 'SUCCEEDED', turnStatus: 'CLARIFICATION_REQUIRED',
-      assistantContent: prompt, assistantSource: 'DETERMINISTIC_RENDERER',
-      durationMs: Date.now() - params.startedAt,
-      outputSummary: { operation: 'transaction.create', missingFields, clarificationId: projection.clarificationId },
-    }, ...(params.transaction ? [{ transaction: params.transaction }] as const : []));
-    return {
-      httpStatus: 200,
-      response: {
-        status: 'clarification_required',
-        message: prompt,
-        data: { kind: 'guided_fields' as const, clarification: projection },
-        correlationId: params.correlationId,
-        ...params.turn,
-      },
-    };
+  // ---- Deterministic category inference -------------------------------------
+  // Category is never a blocking question: a high/medium-confidence keyword or
+  // merchant-mapping suggestion wins, otherwise the user's catch-all category.
+  // Both are backend-owned, owner-scoped reads — the user corrects the result on
+  // the draft instead of answering a prompt before seeing one.
+
+  async function inferCategoryId(
+    userId: string,
+    type: 'INCOME' | 'EXPENSE',
+    hint: string | undefined,
+    transaction?: TxClient,
+  ): Promise<string | undefined> {
+    const trimmedHint = hint?.trim();
+    if (deps.categorization && trimmedHint) {
+      const [best] = await deps.categorization.getSuggestions(
+        userId,
+        trimmedHint,
+        type,
+        transaction ? { transaction } : {},
+      );
+      if (best && best.confidence !== 'LOW') return best.categoryId;
+    }
+    const fallback = await resolveEntity(userId, 'category', FALLBACK_CATEGORY_NAME, type, transaction);
+    return fallback.kind === 'resolved' ? fallback.entity.internalId : undefined;
   }
 
   // ---- Main execute ---------------------------------------------------------
@@ -307,7 +305,8 @@ export function createAssistantApplicationService(deps: {
     }
 
     // Step 2: Resolve merchant (from merchantReference, or description)
-    const merchantRef = (transactionInput as { merchantReference?: string }).merchantReference
+    const explicitMerchantRef = (transactionInput as { merchantReference?: string }).merchantReference;
+    const merchantRef = explicitMerchantRef
       ?? (deps.entityResolution ? transactionInput.description : undefined)
       ?? '';
     let merchantData: ResolvedMerchant | undefined;
@@ -315,7 +314,10 @@ export function createAssistantApplicationService(deps: {
     if (merchantRef && deps.entityResolution) {
       const merchantResult = await resolveEntity(userId, 'merchant', merchantRef);
 
-      if (merchantResult.kind === 'ambiguous') {
+      // Only a merchant the user actually named is worth a question. Ambiguity in
+      // a merchant guessed from the description is dropped — the merchant is
+      // display metadata, not a reason to interrupt the draft.
+      if (merchantResult.kind === 'ambiguous' && explicitMerchantRef) {
         const canonical = buildCanonicalContext(transactionInput, walletData);
         const projection = await createEntityClarification({
           userId, conversationId: turn.conversationId, turnId: turn.turnId,
@@ -379,16 +381,7 @@ export function createAssistantApplicationService(deps: {
       }
       if (categoryResult.kind === 'resolved') {
         categoryData = { internalId: categoryResult.entity.internalId, displayLabel: categoryResult.displayLabel, categoryType: transactionInput.type };
-      } else if (categoryResult.kind === 'not_found') {
-        const message = renderCategoryNotFound(categoryResult);
-        await deps.conversations.finalize({
-          executionId, ...turn, status: 'SUCCEEDED', turnStatus: 'CLARIFICATION_REQUIRED',
-          assistantContent: message, assistantSource: 'DETERMINISTIC_RENDERER',
-          durationMs: Date.now() - startedAt,
-          outputSummary: { operation: 'transaction.create', categoryResolution: 'not_found' },
-        });
-        return { httpStatus: 200, response: { status: 'clarification_required', message, data: { kind: 'provider_text' as const }, correlationId, ...turn } };
-      } else {
+      } else if (categoryResult.kind !== 'not_found') {
         // Any other kind is an invalid reference — reject before drafting
         const invalid = AssistantError.invalidInput('transaction.create', 'categoryReference is invalid');
         const safeMsg = safeRejectedAssistantMessage(invalid.code);
@@ -400,6 +393,7 @@ export function createAssistantApplicationService(deps: {
         });
         return { httpStatus: invalid.statusCode, response: { status: 'rejected', code: invalid.code, message: safeMsg, correlationId, ...turn } };
       }
+      // not_found: fall through — the draft infers a category from the same hint
     }
 
     // All resolved — create draft
@@ -422,19 +416,30 @@ export function createAssistantApplicationService(deps: {
   ): Promise<AssistantApplicationResult> {
     if (!deps.financialDrafts) throw new Error('Financial draft service is not configured');
 
-    const missingFields = missingTransactionFields(transactionInput, categoryData);
-    if (missingFields.length > 0) {
-      return guidedFieldsClarificationResponse({
-        userId, correlationId, turn, executionId, startedAt,
-        transactionInput, walletData, merchantData, categoryData, transaction,
-      });
-    }
-
     const walletId = walletData?.internalId ?? (transactionInput as TransactionCreateInput).walletId;
-    const categoryId = categoryData?.internalId ?? (transactionInput as { categoryId: string }).categoryId;
-    const transactionDate = transactionInput.date;
-    if (!walletId || !categoryId || !transactionDate) {
-      throw AssistantError.invalidInput('transaction.create', 'wallet, category, and date are required before drafting');
+    // An omitted date is today in the reporting timezone — never a question.
+    const transactionDate = transactionInput.date || formatReportingDate(new Date(), reportingConfig.timezone);
+    const providedCategoryId = categoryData?.internalId || (transactionInput as { categoryId?: string }).categoryId;
+    const categoryId = providedCategoryId || await inferCategoryId(
+      userId,
+      transactionInput.type,
+      (transactionInput as { categoryReference?: string }).categoryReference ?? transactionInput.description,
+      transaction,
+    );
+    if (!categoryId) {
+      // Nothing left to infer from: the user owns no matching and no catch-all
+      // category, so drafting is impossible. Terminal safe message, not a wizard.
+      const message = renderCategoryNotFound();
+      await deps.conversations.finalize({
+        executionId, ...turn, status: 'SUCCEEDED', turnStatus: 'CLARIFICATION_REQUIRED',
+        assistantContent: message, assistantSource: 'DETERMINISTIC_RENDERER',
+        durationMs: Date.now() - startedAt,
+        outputSummary: { operation: 'transaction.create', categoryResolution: 'not_found' },
+      }, { transaction });
+      return { httpStatus: 200, response: { status: 'clarification_required', message, data: { kind: 'provider_text' as const }, correlationId, ...turn } };
+    }
+    if (!walletId) {
+      throw AssistantError.invalidInput('transaction.create', 'wallet is required before drafting');
     }
     const draftInput: TransactionCreateInput & { walletId: string; categoryId: string; date: string } = {
       type: transactionInput.type,
@@ -455,13 +460,14 @@ export function createAssistantApplicationService(deps: {
         executionId,
         ...(transaction ? { transaction } : {}),
       });
+      // No ASSISTANT chat bubble for drafts — the Transaction Review workspace replaces it.
       await deps.conversations.finalize({
         executionId, ...turn, status: 'SUCCEEDED', turnStatus: 'SUCCEEDED',
-        assistantContent: draft.renderedText, assistantSource: 'DETERMINISTIC_RENDERER',
+        assistantContent: '', assistantSource: 'DETERMINISTIC_RENDERER',
         durationMs: Date.now() - startedAt,
         outputSummary: { draftId: draft.draftId, operation: 'transaction.create', status: 'PENDING_CONFIRMATION' },
       }, { transaction });
-      return { httpStatus: 200, response: { status: 'success', renderedText: draft.renderedText, data: draft, correlationId, ...turn } };
+      return { httpStatus: 200, response: { status: 'success', data: draft, correlationId, ...turn } };
     } catch (error) {
       if (transaction) {
         // Inside the caller's transaction (the select/claim flow): propagate
@@ -546,7 +552,8 @@ export function createAssistantApplicationService(deps: {
           const ref = ctx.merchantReference ?? ctx.description ?? '';
           if (ref) {
             const mr = await resolveEntity(userId, 'merchant', ref, undefined, tx);
-            if (mr.kind === 'ambiguous') {
+            // Same rule as the first turn: only a user-named merchant may clarify.
+            if (mr.kind === 'ambiguous' && ctx.merchantReference) {
               const projection = await createEntityClarification({
                 userId, conversationId, turnId: turn.turnId,
                 executionId, entityType: 'merchant',
@@ -708,16 +715,7 @@ export function createAssistantApplicationService(deps: {
         return finalizeTransactionDraft(userId, correlationId, turn, executionId, startedAt, txInput, walletData, merchantData,
           { internalId: cr.entity.internalId, displayLabel: cr.displayLabel, categoryType: txInput.type }, transaction);
       }
-      if (cr.kind === 'not_found') {
-        const message = renderCategoryNotFound(cr);
-        await deps.conversations.finalize({
-          executionId, ...turn, status: 'SUCCEEDED', turnStatus: 'CLARIFICATION_REQUIRED',
-          assistantContent: message, assistantSource: 'DETERMINISTIC_RENDERER',
-          durationMs: Date.now() - startedAt,
-          outputSummary: { operation: 'transaction.create', categoryResolution: 'not_found' },
-        }, { transaction });
-        return { httpStatus: 200, response: { status: 'clarification_required', message, data: { kind: 'provider_text' as const }, correlationId, ...turn } };
-      }
+      // not_found: fall through — the draft infers a category from the same hint
     }
     // No category reference: use direct categoryId from input → draft
     return finalizeTransactionDraft(userId, correlationId, turn, executionId, startedAt, txInput, walletData, merchantData, undefined, transaction);
@@ -829,7 +827,7 @@ export function createAssistantApplicationService(deps: {
     return { httpStatus: 200, response: { status: 'success', renderedText, data: result.output, correlationId, ...turn } };
   }
 
-  return { execute, prepareProviderExecution, selectClarification, submitGuidedClarification, cancelClarification, getAssistantState };
+  return { execute, prepareProviderExecution, selectClarification, submitGuidedClarification, cancelClarification, getAssistantState, inferCategoryId };
 }
 
 export type AssistantApplicationService = ReturnType<typeof createAssistantApplicationService>;
@@ -857,9 +855,7 @@ function renderWalletNotFound(
   return 'Wallet tersebut tidak ditemukan atau tidak dapat digunakan. Sebutkan nama wallet aktif yang lain.';
 }
 
-function renderCategoryNotFound(
-  _resolution: Extract<EntityResolutionResult, { kind: 'not_found' }>,
-): string {
+function renderCategoryNotFound(): string {
   return 'Kategori tidak ditemukan. Silakan mulai ulang pembuatan transaksi dengan kategori yang valid.';
 }
 
@@ -868,18 +864,4 @@ function isCalendarDay(value: string): boolean {
   const [year, month, day] = value.split('-').map(Number);
   const parsed = new Date(Date.UTC(year, month - 1, day));
   return parsed.getUTCFullYear() === year && parsed.getUTCMonth() === month - 1 && parsed.getUTCDate() === day;
-}
-
-function missingTransactionFields(
-  transactionInput: TransactionCreateToolInput,
-  categoryData?: { internalId: string },
-): Array<'category' | 'date'> {
-  const missing: Array<'category' | 'date'> = [];
-  const hasCategoryId = typeof (transactionInput as { categoryId?: unknown }).categoryId === 'string'
-    && Boolean((transactionInput as { categoryId?: string }).categoryId?.trim());
-  const hasCategoryReference = typeof (transactionInput as { categoryReference?: unknown }).categoryReference === 'string'
-    && Boolean((transactionInput as { categoryReference?: string }).categoryReference?.trim());
-  if (!categoryData && !hasCategoryId && !hasCategoryReference) missing.push('category');
-  if (!transactionInput.date) missing.push('date');
-  return missing;
 }

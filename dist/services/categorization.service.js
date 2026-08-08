@@ -114,13 +114,14 @@ function createCategorizationService(db) {
      * Returns an empty array when the description is empty or no source
      * matches.
      */
-    async function getSuggestions(userId, description, type) {
+    async function getSuggestions(userId, description, type, options) {
+        const client = options?.transaction ?? db;
         const descriptionTrimmed = description?.trim() ?? '';
         if (descriptionTrimmed.length === 0)
             return [];
         const normalizedMerchant = (0, categorization_1.normalizeMerchant)(descriptionTrimmed);
         if (normalizedMerchant.length > 0) {
-            const mapping = await db.merchantMapping.findFirst({
+            const mapping = await client.merchantMapping.findFirst({
                 where: { userId, normalizedMerchant, category: { type } },
                 include: { category: true },
             });
@@ -136,7 +137,7 @@ function createCategorizationService(db) {
             }
         }
         // Fetch categories of the matching type for this user
-        const categories = await db.category.findMany({
+        const categories = await client.category.findMany({
             where: { userId, type },
             select: { id: true, name: true },
         });

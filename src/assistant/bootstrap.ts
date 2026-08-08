@@ -15,6 +15,7 @@ import { createAssistantConversationService } from './conversation.service';
 import { createAssistantApplicationService } from './application.service';
 import { createAssistantFinancialDraftService } from './financial-draft.service';
 import { transactionService } from '../services/transaction.service';
+import { categorizationService } from '../services/categorization.service';
 import { createAssistantContextService } from './context.service';
 import { createClarificationService } from './clarification.service';
 import { assistantProviderConfig } from '../config';
@@ -48,7 +49,17 @@ entityResolverRegistry.finalize();
 
 export const assistantConversationService = createAssistantConversationService(prisma);
 export const assistantContextService = createAssistantContextService(prisma);
-export const assistantFinancialDraftService = createAssistantFinancialDraftService(prisma, transactionService);
+
+// Lazy wiring: `inferCategoryId` lives on the application service, but the draft
+// service needs it for description-change re-inference during confirm. Resolve at
+// runtime to avoid a circular module dependency.
+let inferCategoryIdForDrafts: ((userId: string, type: 'INCOME' | 'EXPENSE', hint: string | undefined, tx?: import('../generated/prisma/client').Prisma.TransactionClient) => Promise<string | undefined>) | undefined;
+export const assistantFinancialDraftService = createAssistantFinancialDraftService(
+  prisma,
+  transactionService,
+  () => ({ inferCategoryId: inferCategoryIdForDrafts }),
+);
+
 export const entityResolutionService = createEntityResolutionService(entityResolverRegistry);
 export const clarificationService = createClarificationService(prisma);
 export const assistantApplicationService = createAssistantApplicationService({
@@ -59,7 +70,11 @@ export const assistantApplicationService = createAssistantApplicationService({
   financialDrafts: assistantFinancialDraftService,
   entityResolution: entityResolutionService,
   clarification: clarificationService,
+  categorization: categorizationService,
 });
+
+// Wire the deferred dependency now that application service exists.
+inferCategoryIdForDrafts = assistantApplicationService.inferCategoryId;
 export const assistantProviderAuditService = createAssistantProviderAuditService(prisma);
 export const assistantProviderRuntime = assistantProviderConfig.enabled
   ? createAssistantProviderRuntime({

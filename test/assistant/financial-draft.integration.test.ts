@@ -35,7 +35,7 @@ describe.skipIf(!url)('Assistant financial drafts (disposable PostgreSQL)', () =
   }
   function app(clock?: () => Date) {
     const conversations = createAssistantConversationService(resources!.prisma);
-    const drafts = createAssistantFinancialDraftService(resources!.prisma, createTransactionService(resources!.prisma), clock);
+    const drafts = createAssistantFinancialDraftService(resources!.prisma, createTransactionService(resources!.prisma), undefined, clock);
     const registry = new ToolRegistry(); registry.register(monthlySpendingSummary); registry.register(transactionCreate);
     const application = createAssistantApplicationService({ conversations, toolRegistry: registry, handlerRegistry: new Map(), financialDrafts: drafts });
     const controllers = createAssistantControllers(application, conversations, drafts);

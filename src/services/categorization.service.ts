@@ -127,13 +127,15 @@ export function createCategorizationService(db: CategorizationPrismaClient) {
     userId: string,
     description: string,
     type: 'INCOME' | 'EXPENSE',
+    options?: { transaction?: CategorizationPrismaClient },
   ): Promise<CategorySuggestion[]> {
+    const client = options?.transaction ?? db;
     const descriptionTrimmed = description?.trim() ?? '';
     if (descriptionTrimmed.length === 0) return [];
 
     const normalizedMerchant = normalizeMerchant(descriptionTrimmed);
     if (normalizedMerchant.length > 0) {
-      const mapping = await db.merchantMapping.findFirst({
+      const mapping = await client.merchantMapping.findFirst({
         where: { userId, normalizedMerchant, category: { type } },
         include: { category: true },
       });
@@ -150,7 +152,7 @@ export function createCategorizationService(db: CategorizationPrismaClient) {
     }
 
     // Fetch categories of the matching type for this user
-    const categories = await db.category.findMany({
+    const categories = await client.category.findMany({
       where: { userId, type },
       select: { id: true, name: true },
     });

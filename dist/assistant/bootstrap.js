@@ -19,6 +19,7 @@ const conversation_service_1 = require("./conversation.service");
 const application_service_1 = require("./application.service");
 const financial_draft_service_1 = require("./financial-draft.service");
 const transaction_service_1 = require("../services/transaction.service");
+const categorization_service_1 = require("../services/categorization.service");
 const context_service_1 = require("./context.service");
 const clarification_service_1 = require("./clarification.service");
 const config_1 = require("../config");
@@ -41,7 +42,11 @@ exports.entityResolverRegistry.register((0, entity_resolution_1.createCategoryRe
 exports.entityResolverRegistry.finalize();
 exports.assistantConversationService = (0, conversation_service_1.createAssistantConversationService)(prisma_1.default);
 exports.assistantContextService = (0, context_service_1.createAssistantContextService)(prisma_1.default);
-exports.assistantFinancialDraftService = (0, financial_draft_service_1.createAssistantFinancialDraftService)(prisma_1.default, transaction_service_1.transactionService);
+// Lazy wiring: `inferCategoryId` lives on the application service, but the draft
+// service needs it for description-change re-inference during confirm. Resolve at
+// runtime to avoid a circular module dependency.
+let inferCategoryIdForDrafts;
+exports.assistantFinancialDraftService = (0, financial_draft_service_1.createAssistantFinancialDraftService)(prisma_1.default, transaction_service_1.transactionService, () => ({ inferCategoryId: inferCategoryIdForDrafts }));
 exports.entityResolutionService = (0, entity_resolution_1.createEntityResolutionService)(exports.entityResolverRegistry);
 exports.clarificationService = (0, clarification_service_1.createClarificationService)(prisma_1.default);
 exports.assistantApplicationService = (0, application_service_1.createAssistantApplicationService)({
@@ -52,7 +57,10 @@ exports.assistantApplicationService = (0, application_service_1.createAssistantA
     financialDrafts: exports.assistantFinancialDraftService,
     entityResolution: exports.entityResolutionService,
     clarification: exports.clarificationService,
+    categorization: categorization_service_1.categorizationService,
 });
+// Wire the deferred dependency now that application service exists.
+inferCategoryIdForDrafts = exports.assistantApplicationService.inferCategoryId;
 exports.assistantProviderAuditService = (0, provider_audit_service_1.createAssistantProviderAuditService)(prisma_1.default);
 exports.assistantProviderRuntime = config_1.assistantProviderConfig.enabled
     ? (0, provider_runtime_1.createAssistantProviderRuntime)({

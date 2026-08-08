@@ -2,9 +2,14 @@ import { describe, expect, it, vi } from 'vitest';
 import { createAssistantApplicationService } from '../../src/assistant/application.service';
 import { ToolRegistry } from '../../src/assistant/registry';
 import { monthlySpendingSummary, transactionCreate } from '../../src/assistant/tools';
+import { reportingConfig } from '../../src/config';
+import { formatReportingDate } from '../../src/domain/reportingTime';
 
 /** Stand-in for a Prisma interactive transaction client in mocked tests. */
 const TX_STUB = { __tx: true };
+
+/** The reporting-timezone day the service defaults an omitted transaction date to. */
+const today = () => formatReportingDate(new Date(), reportingConfig.timezone);
 
 function setup() {
   const conversations = {
@@ -108,9 +113,20 @@ function setup() {
         resumeAt: new Date().toISOString(),
       },
     }),
+    createGuidedFields: vi.fn(),
     cancel: vi.fn().mockResolvedValue(undefined),
     getAssistantState: vi.fn().mockResolvedValue({}),
     runInTransaction: vi.fn((work: (tx: unknown) => unknown) => work(TX_STUB)),
+  };
+  const categorization = {
+    getSuggestions: vi.fn().mockResolvedValue([{
+      categoryId: 'category-tagihan',
+      categoryName: 'Tagihan',
+      confidence: 'HIGH',
+      reason: 'Exact keyword match',
+      matchedKeyword: 'internet',
+      normalizedMerchant: 'internet',
+    }]),
   };
   const context = {
     system: { contextVersion: '1' as const, locale: 'id-ID' },
@@ -126,6 +142,7 @@ function setup() {
     financialDrafts,
     entityResolution,
     clarification,
+    categorization,
     service: createAssistantApplicationService({
       conversations,
       contexts,
@@ -134,6 +151,7 @@ function setup() {
       financialDrafts: financialDrafts as never,
       entityResolution: entityResolution as never,
       clarification: clarification as never,
+      categorization: categorization as never,
     }),
   };
 }
@@ -287,18 +305,12 @@ describe('Assistant application lifecycle', () => {
     });
   });
 
-  it('creates a persisted guided date clarification after resolving transaction entities without drafting', async () => {
-    const { service, clarification, financialDrafts, conversations } = setup();
-    clarification.createGuidedFields = vi.fn().mockResolvedValue({
-      kind: 'guided',
-      clarificationId: 'clar-date',
-      fields: [
-        { field: 'date', required: true, input: { type: 'date' } },
-      ],
-      expiresAt: '2026-07-23T00:15:00.000Z',
-    });
+  // ---- Low-friction drafting: date and category are inferred, never asked ----
 
-    const result = await service.execute('u1', 'corr-guided-date', {
+  it('defaults an omitted date to today in the reporting timezone and drafts without clarification', async () => {
+    const { service, clarification, financialDrafts } = setup();
+
+    const result = await service.execute('u1', 'corr-date-default', {
       intent: 'transaction.create',
       arguments: {
         type: 'EXPENSE',
@@ -308,91 +320,254 @@ describe('Assistant application lifecycle', () => {
       },
     });
 
-    expect(result.response).toMatchObject({
-      status: 'clarification_required',
-      data: {
-        kind: 'guided_fields',
-        clarification: {
-          kind: 'guided',
-          clarificationId: 'clar-date',
-          fields: [
-            { field: 'date', required: true, input: { type: 'date' } },
-          ],
-        },
-      },
-    });
-    expect(clarification.createGuidedFields).toHaveBeenCalledWith(expect.objectContaining({
-      userId: 'u1',
-      entityType: 'transaction_fields',
-      trustedContext: expect.objectContaining({
-        version: 1,
-        operation: 'transaction.create',
-        type: 'EXPENSE',
-        amount: '20000',
-        wallet: { internalId: 'wallet-resolved', displayLabel: 'BCA Debit' },
-        category: { internalId: 'category-resolved', displayLabel: 'Food', categoryType: 'EXPENSE' },
-      }),
-      fields: [
-        { field: 'date', required: true, input: { type: 'date' } },
-      ],
+    expect(result.response.status).toBe('success');
+    expect(financialDrafts.prepare).toHaveBeenCalledWith(expect.objectContaining({
+      categoryId: 'category-resolved',
+      date: today(),
     }));
-    expect(financialDrafts.prepare).not.toHaveBeenCalled();
-    expect(conversations.finalize).toHaveBeenCalledWith(expect.objectContaining({
-      status: 'SUCCEEDED',
-      turnStatus: 'CLARIFICATION_REQUIRED',
-      outputSummary: expect.objectContaining({
-        operation: 'transaction.create',
-        missingFields: ['date'],
-        clarificationId: 'clar-date',
-      }),
-    }));
+    expect(clarification.createGuidedFields).not.toHaveBeenCalled();
   });
 
-  it('creates one guided clarification for missing category and date after wallet resolution', async () => {
-    const { service, clarification, financialDrafts } = setup();
-    clarification.createGuidedFields = vi.fn().mockResolvedValue({
-      kind: 'guided',
-      clarificationId: 'clar-fields',
-      fields: [
-        { field: 'category', required: true, input: { type: 'text', placeholder: 'Nama kategori' } },
-        { field: 'date', required: true, input: { type: 'date' } },
-      ],
-      expiresAt: '2026-07-23T00:15:00.000Z',
-    });
+  it('infers a category from the transaction hint when no category was provided', async () => {
+    const { service, clarification, categorization, financialDrafts } = setup();
 
-    const result = await service.execute('u1', 'corr-guided-fields', {
+    const result = await service.execute('u1', 'corr-category-inferred', {
       intent: 'transaction.create',
       arguments: {
         type: 'EXPENSE',
-        amount: '20000',
+        amount: '350000',
         walletReference: 'bca',
+        description: 'internet',
+      },
+    });
+
+    expect(result.response.status).toBe('success');
+    expect(categorization.getSuggestions).toHaveBeenCalledWith('u1', 'internet', 'EXPENSE', {});
+    expect(financialDrafts.prepare).toHaveBeenCalledWith(expect.objectContaining({
+      categoryId: 'category-tagihan',
+      date: today(),
+    }));
+    expect(clarification.createGuidedFields).not.toHaveBeenCalled();
+    expect(clarification.create).not.toHaveBeenCalled();
+  });
+
+  it.each(['no match', 'low confidence'] as const)(
+    'falls back to the default catch-all category on a %s suggestion',
+    async (kind) => {
+      const { service, categorization, entityResolution, financialDrafts } = setup();
+      categorization.getSuggestions.mockResolvedValue(kind === 'no match' ? [] : [{
+        categoryId: 'category-weak',
+        categoryName: 'Makanan',
+        confidence: 'LOW',
+        reason: 'Single token match',
+        matchedKeyword: 'makan',
+        normalizedMerchant: 'bayar sesuatu',
+      }]);
+
+      const result = await service.execute('u1', `corr-category-fallback-${kind}`, {
+        intent: 'transaction.create',
+        arguments: {
+          type: 'EXPENSE',
+          amount: '20000',
+          walletReference: 'bca',
+          description: 'sesuatu yang tidak dikenal',
+        },
+      });
+
+      expect(result.response.status).toBe('success');
+      expect(entityResolution.resolve).toHaveBeenCalledWith(expect.objectContaining({
+        reference: expect.objectContaining({ entityType: 'category', referenceText: 'Lainnya' }),
+      }));
+      expect(financialDrafts.prepare).toHaveBeenCalledWith(expect.objectContaining({
+        categoryId: 'category-resolved',
+      }));
+    },
+  );
+
+  it('drafts with the catch-all category when an explicit category reference cannot be resolved', async () => {
+    const { service, categorization, entityResolution, financialDrafts } = setup();
+    categorization.getSuggestions.mockResolvedValue([]);
+    entityResolution.resolve.mockImplementation(async (input: any) => {
+      if (input.reference.entityType === 'category') {
+        return input.reference.referenceText === 'Lainnya'
+          ? {
+            kind: 'resolved',
+            entityType: 'category',
+            entity: { internalId: 'category-lainnya' },
+            displayLabel: 'Lainnya',
+            confidence: { score: 1000, band: 'exact' },
+            evidence: [{ kind: 'canonical_exact', scoreContribution: 1000 }],
+          }
+          : { kind: 'not_found', entityType: 'category', normalizedReference: 'private category' };
+      }
+      return {
+        kind: 'resolved',
+        entityType: input.reference.entityType,
+        entity: { internalId: `${input.reference.entityType}-resolved` },
+        displayLabel: 'BCA Debit',
+        confidence: { score: 1000, band: 'exact' },
+        evidence: [{ kind: 'canonical_exact', scoreContribution: 1000 }],
+      };
+    });
+
+    const result = await service.execute('u1', 'corr-category-nf-fallback', {
+      intent: 'transaction.create',
+      arguments: {
+        type: 'EXPENSE',
+        amount: '45000',
+        walletReference: 'bca',
+        categoryReference: 'Private Category',
+        date: '2026-07-23',
+      },
+    });
+
+    expect(result.response.status).toBe('success');
+    expect(financialDrafts.prepare).toHaveBeenCalledWith(expect.objectContaining({
+      categoryId: 'category-lainnya',
+    }));
+  });
+
+  it('returns a safe message without drafting when no category can be inferred at all', async () => {
+    const { service, categorization, entityResolution, financialDrafts, clarification } = setup();
+    categorization.getSuggestions.mockResolvedValue([]);
+    entityResolution.resolve.mockImplementation(async (input: any) => (
+      input.reference.entityType === 'category'
+        ? { kind: 'not_found', entityType: 'category', normalizedReference: 'private category' }
+        : {
+          kind: 'resolved',
+          entityType: input.reference.entityType,
+          entity: { internalId: `${input.reference.entityType}-resolved` },
+          displayLabel: 'BCA Debit',
+          confidence: { score: 1000, band: 'exact' },
+          evidence: [{ kind: 'canonical_exact', scoreContribution: 1000 }],
+        }
+    ));
+
+    const result = await service.execute('u1', 'corr-category-none', {
+      intent: 'transaction.create',
+      arguments: {
+        type: 'EXPENSE',
+        amount: '45000',
+        walletReference: 'bca',
+        date: '2026-07-23',
       },
     });
 
     expect(result.response).toMatchObject({
       status: 'clarification_required',
-      data: {
-        kind: 'guided_fields',
-        clarification: {
-          clarificationId: 'clar-fields',
-          fields: [
-            { field: 'category', required: true, input: { type: 'text', placeholder: 'Nama kategori' } },
-            { field: 'date', required: true, input: { type: 'date' } },
+      data: { kind: 'provider_text' },
+    });
+    expect(financialDrafts.prepare).not.toHaveBeenCalled();
+    expect(clarification.createGuidedFields).not.toHaveBeenCalled();
+  });
+
+  it('does not clarify merchant ambiguity that was only derived from the description', async () => {
+    const { service, entityResolution, clarification, financialDrafts } = setup();
+    entityResolution.resolve.mockImplementation(async (input: any) => {
+      if (input.reference.entityType === 'merchant') {
+        return {
+          kind: 'ambiguous',
+          entityType: 'merchant',
+          options: [
+            { displayLabel: 'Warteg Bahari', confidence: { score: 900, band: 'strong' }, evidence: [], selection: { internalId: 'private-mapping-a' } },
+            { displayLabel: 'Warteg Barokah', confidence: { score: 900, band: 'strong' }, evidence: [], selection: { internalId: 'private-mapping-b' } },
           ],
-        },
+        };
+      }
+      return {
+        kind: 'resolved',
+        entityType: input.reference.entityType,
+        entity: { internalId: `${input.reference.entityType}-resolved` },
+        displayLabel: 'BCA Debit',
+        confidence: { score: 1000, band: 'exact' },
+        evidence: [{ kind: 'canonical_exact', scoreContribution: 1000 }],
+      };
+    });
+
+    const result = await service.execute('u1', 'corr-merchant-desc-ambiguous', {
+      intent: 'transaction.create',
+      arguments: {
+        type: 'EXPENSE',
+        amount: '50000',
+        walletReference: 'bca',
+        categoryId: 'category-1',
+        date: '2026-07-23',
+        description: 'warteg',
       },
     });
-    expect(clarification.createGuidedFields).toHaveBeenCalledWith(expect.objectContaining({
-      fields: [
-        { field: 'category', required: true, input: { type: 'text', placeholder: 'Nama kategori' } },
-        { field: 'date', required: true, input: { type: 'date' } },
-      ],
-      trustedContext: expect.not.objectContaining({
-        category: expect.anything(),
-        date: expect.anything(),
-      }),
+
+    expect(result.response.status).toBe('success');
+    expect(clarification.create).not.toHaveBeenCalled();
+    expect(financialDrafts.prepare).toHaveBeenCalled();
+  });
+
+  // ---- MVP acceptance: "bayar internet 350 ribu dari bca" --------------------
+  // One wallet clarification, then straight to the draft: no amount, type,
+  // category, or date question anywhere in the flow.
+
+  it('reaches a draft after a single wallet clarification for an ambiguous wallet with inferred category and date', async () => {
+    const { service, entityResolution, clarification, financialDrafts } = setup();
+    entityResolution.resolve.mockImplementation(async (input: any) => {
+      if (input.reference.entityType === 'wallet') {
+        return {
+          kind: 'ambiguous',
+          entityType: 'wallet',
+          options: [
+            { displayLabel: 'BCA', discriminator: 'BANK', confidence: { score: 950, band: 'strong' }, evidence: [], selection: { internalId: 'secret-wallet-a' } },
+            { displayLabel: 'BCA Kredit', discriminator: 'CREDIT_CARD', confidence: { score: 950, band: 'strong' }, evidence: [], selection: { internalId: 'secret-wallet-b' } },
+          ],
+        };
+      }
+      // "internet" is not a category the user owns
+      return { kind: 'not_found', entityType: input.reference.entityType, normalizedReference: 'internet' };
+    });
+    clarification.select.mockResolvedValue({
+      clarificationId: 'clar-1',
+      entityType: 'wallet',
+      status: 'CONSUMED',
+      selectedCandidateId: 'wallet-bca',
+      selectedDisplayLabel: 'BCA',
+      trustedContext: {
+        version: 1,
+        operation: 'transaction.create',
+        type: 'EXPENSE',
+        amount: '350000',
+        description: 'Internet',
+        categoryReference: 'internet',
+        resumeAt: new Date().toISOString(),
+      },
+    });
+
+    const first = await service.execute('u1', 'corr-mvp-1', {
+      intent: 'transaction.create',
+      message: 'bayar internet 350 ribu dari bca',
+      arguments: {
+        type: 'EXPENSE',
+        amount: '350000',
+        walletReference: 'bca',
+        categoryReference: 'internet',
+        description: 'Internet',
+      },
+    });
+
+    expect(first.response).toMatchObject({
+      status: 'clarification_required',
+      data: { kind: 'entity_selection', entityType: 'wallet' },
+    });
+
+    const second = await service.selectClarification('u1', 'corr-mvp-2', 'clarify_token_a', 'c1');
+
+    expect(second.response.status).toBe('success');
+    expect(clarification.create).toHaveBeenCalledTimes(1);
+    expect(clarification.createGuidedFields).not.toHaveBeenCalled();
+    expect(financialDrafts.prepare).toHaveBeenCalledWith(expect.objectContaining({
+      type: 'EXPENSE',
+      amount: '350000',
+      walletId: 'wallet-bca',
+      categoryId: 'category-tagihan',
+      date: today(),
+      description: 'Internet',
     }));
-    expect(financialDrafts.prepare).not.toHaveBeenCalled();
   });
 
   it('continues a guided date clarification into a pending draft after server-side date validation', async () => {
@@ -490,90 +665,82 @@ describe('Assistant application lifecycle', () => {
     expect(financialDrafts.prepare).not.toHaveBeenCalled();
   });
 
-  it.each(['ambiguous', 'not_found'] as const)(
-    'returns safe category %s clarification without drafting or exposing Category IDs',
-    async (kind) => {
-      const { service, entityResolution, financialDrafts, conversations } = setup();
-      entityResolution.resolve.mockImplementation(async (input: any) => {
-        if (input.reference.entityType === 'wallet') {
-          return {
-            kind: 'resolved',
-            entityType: 'wallet',
-            entity: { internalId: 'wallet-resolved' },
-            displayLabel: 'BCA',
-            confidence: { score: 1000, band: 'exact' },
-            evidence: [{ kind: 'canonical_exact', scoreContribution: 1000 }],
-          };
-        }
-        if (input.reference.entityType === 'merchant') {
-          return {
-            kind: 'resolved',
-            entityType: 'merchant',
-            entity: { internalId: 'mapping-secret' },
-            displayLabel: 'Starbucks',
-            confidence: { score: 1000, band: 'exact' },
-            evidence: [{ kind: 'canonical_exact', scoreContribution: 1000 }],
-          };
-        }
-        return kind === 'ambiguous'
-          ? {
-            kind,
-            entityType: 'category',
-            options: [
-              {
-                displayLabel: 'Food Drink',
-                discriminator: 'EXPENSE',
-                confidence: { score: 900, band: 'strong' },
-                evidence: [{ kind: 'normalized_exact', scoreContribution: 900 }],
-                selection: { internalId: 'private-category-a' },
-              },
-              {
-                displayLabel: 'Food-Drink',
-                discriminator: 'EXPENSE',
-                confidence: { score: 900, band: 'strong' },
-                evidence: [{ kind: 'normalized_exact', scoreContribution: 900 }],
-                selection: { internalId: 'private-category-b' },
-              },
-            ],
-          }
-          : {
-            kind,
-            entityType: 'category',
-            normalizedReference: 'private category',
-          };
-      });
+  // Category ambiguity is the one category question that survives: two owned
+  // categories match the reference, so no deterministic pick exists. It stays a
+  // one-tap entity selection, never a free-text prompt.
+  it('returns a safe category ambiguity clarification without drafting or exposing Category IDs', async () => {
+    const { service, entityResolution, financialDrafts, conversations } = setup();
+    entityResolution.resolve.mockImplementation(async (input: any) => {
+      if (input.reference.entityType === 'wallet') {
+        return {
+          kind: 'resolved',
+          entityType: 'wallet',
+          entity: { internalId: 'wallet-resolved' },
+          displayLabel: 'BCA',
+          confidence: { score: 1000, band: 'exact' },
+          evidence: [{ kind: 'canonical_exact', scoreContribution: 1000 }],
+        };
+      }
+      if (input.reference.entityType === 'merchant') {
+        return {
+          kind: 'resolved',
+          entityType: 'merchant',
+          entity: { internalId: 'mapping-secret' },
+          displayLabel: 'Starbucks',
+          confidence: { score: 1000, band: 'exact' },
+          evidence: [{ kind: 'canonical_exact', scoreContribution: 1000 }],
+        };
+      }
+      return {
+        kind: 'ambiguous',
+        entityType: 'category',
+        options: [
+          {
+            displayLabel: 'Food Drink',
+            discriminator: 'EXPENSE',
+            confidence: { score: 900, band: 'strong' },
+            evidence: [{ kind: 'normalized_exact', scoreContribution: 900 }],
+            selection: { internalId: 'private-category-a' },
+          },
+          {
+            displayLabel: 'Food-Drink',
+            discriminator: 'EXPENSE',
+            confidence: { score: 900, band: 'strong' },
+            evidence: [{ kind: 'normalized_exact', scoreContribution: 900 }],
+            selection: { internalId: 'private-category-b' },
+          },
+        ],
+      };
+    });
 
-      const result = await service.execute('u1', `corr-category-${kind}`, {
-        intent: 'transaction.create',
-        arguments: {
-          type: 'EXPENSE',
-          amount: '45000',
-          walletReference: 'BCA',
-          merchantReference: 'Starbucks',
-          categoryReference: 'Private Category',
-          date: '2026-07-23',
-        },
-      });
+    const result = await service.execute('u1', 'corr-category-ambiguous', {
+      intent: 'transaction.create',
+      arguments: {
+        type: 'EXPENSE',
+        amount: '45000',
+        walletReference: 'BCA',
+        merchantReference: 'Starbucks',
+        categoryReference: 'Private Category',
+        date: '2026-07-23',
+      },
+    });
 
-      expect(result.response).toMatchObject({
-        status: 'clarification_required',
-        data: kind === 'ambiguous'
-          ? { kind: 'entity_selection', entityType: 'category' }
-          : { kind: 'provider_text' },
-      });
-      expect(JSON.stringify(result.response)).not.toContain('private-category-');
-      expect(financialDrafts.prepare).not.toHaveBeenCalled();
-      expect(conversations.finalize).toHaveBeenCalledTimes(1);
-      expect(conversations.finalize).toHaveBeenCalledWith(expect.objectContaining({
-        status: 'SUCCEEDED',
-        turnStatus: 'CLARIFICATION_REQUIRED',
-        outputSummary: expect.objectContaining({
-          operation: 'transaction.create',
-          categoryResolution: kind,
-        }),
-      }));
-    },
-  );
+    expect(result.response).toMatchObject({
+      status: 'clarification_required',
+      data: { kind: 'entity_selection', entityType: 'category' },
+    });
+    expect(JSON.stringify(result.response)).not.toContain('private-category-');
+    expect(financialDrafts.prepare).not.toHaveBeenCalled();
+    expect(conversations.finalize).toHaveBeenCalledTimes(1);
+    expect(conversations.finalize).toHaveBeenCalledWith(expect.objectContaining({
+      status: 'SUCCEEDED',
+      turnStatus: 'CLARIFICATION_REQUIRED',
+      outputSummary: expect.objectContaining({
+        operation: 'transaction.create',
+        categoryResolution: 'ambiguous',
+      }),
+    }));
+  });
 
   it('rejects an invalid category reference without drafting', async () => {
     const { service, entityResolution, financialDrafts } = setup();

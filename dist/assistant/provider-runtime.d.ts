@@ -56,7 +56,6 @@ export declare function createAssistantProviderRuntime(deps: RuntimeDependencies
         status: "COMMITTED";
         transactionId: string;
         conversationId: string;
-        renderedText: string;
         readonly error?: undefined;
         turnId?: undefined;
     } | {
@@ -65,12 +64,10 @@ export declare function createAssistantProviderRuntime(deps: RuntimeDependencies
         transactionId: string;
         conversationId: string;
         turnId: string;
-        renderedText: string;
         idempotencyOutcome: "new";
         readonly error?: undefined;
     }>;
     cancelDraft: (userId: string, draftId: string, correlationId: string) => Promise<{
-        renderedText: string;
         turnId?: string | undefined;
         draftId: string;
         status: "CANCELLED";
