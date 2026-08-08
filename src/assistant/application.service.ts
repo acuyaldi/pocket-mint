@@ -460,13 +460,14 @@ export function createAssistantApplicationService(deps: {
         executionId,
         ...(transaction ? { transaction } : {}),
       });
+      // No ASSISTANT chat bubble for drafts — the Transaction Review workspace replaces it.
       await deps.conversations.finalize({
         executionId, ...turn, status: 'SUCCEEDED', turnStatus: 'SUCCEEDED',
-        assistantContent: draft.renderedText, assistantSource: 'DETERMINISTIC_RENDERER',
+        assistantContent: '', assistantSource: 'DETERMINISTIC_RENDERER',
         durationMs: Date.now() - startedAt,
         outputSummary: { draftId: draft.draftId, operation: 'transaction.create', status: 'PENDING_CONFIRMATION' },
       }, { transaction });
-      return { httpStatus: 200, response: { status: 'success', renderedText: draft.renderedText, data: draft, correlationId, ...turn } };
+      return { httpStatus: 200, response: { status: 'success', data: draft, correlationId, ...turn } };
     } catch (error) {
       if (transaction) {
         // Inside the caller's transaction (the select/claim flow): propagate
@@ -826,7 +827,7 @@ export function createAssistantApplicationService(deps: {
     return { httpStatus: 200, response: { status: 'success', renderedText, data: result.output, correlationId, ...turn } };
   }
 
-  return { execute, prepareProviderExecution, selectClarification, submitGuidedClarification, cancelClarification, getAssistantState };
+  return { execute, prepareProviderExecution, selectClarification, submitGuidedClarification, cancelClarification, getAssistantState, inferCategoryId };
 }
 
 export type AssistantApplicationService = ReturnType<typeof createAssistantApplicationService>;
